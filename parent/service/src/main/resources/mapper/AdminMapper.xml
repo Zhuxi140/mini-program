@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhuxi.mapper.AdminMapper">
+    <update id="updateAdmin" parameterType="src.main.java.com.zhuxi.pojo.VO.AdminVO">
+        UPDATE admin
+        <set>
+            <if test="username != null">
+                username = #{username},
+            </if>
+            <if test="status != null">
+                status = #{status},
+            </if>
+            <if test="realName != null">
+                real_name = #{realName},
+            </if>
+        </set>
+        WHERE id = #{id}
+
+
+    </update>
+    <select id="queryAdminList" resultType="src.main.java.com.zhuxi.pojo.VO.AdminVO">
+        SELECT
+            id,
+            username,
+            real_name,
+            status,
+            last_login
+        FROM admin
+    </select>
+</mapper>

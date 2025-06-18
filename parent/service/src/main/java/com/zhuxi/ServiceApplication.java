@@ -1,4 +1,4 @@
-package com.zhuxi.service;
+package com.zhuxi;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
