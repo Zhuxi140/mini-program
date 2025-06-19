@@ -1,0 +1,1993 @@
+一.工厂模式
+    好处: 解耦合
+    简单实现原理: main-java-Spring-Factory-Demo1
+
+二.Spring 核心API
+    ApplicationContext
+        作用:Spring提供的ApplicationContext工厂用于对象的创建
+        好处:解耦合
+    ApplicationContext接口类型
+        接口:屏蔽实现差异
+        非web环境: ClassPathXmlApplicationContext
+        Web环境: XmlWebApplicationContext
+    重量级资源
+        ApplicationContext工厂是重量级资源（这里的ApplicationContext工厂指ApplicationContext接口的实现类（也就是上方两个主要实现类））
+        即ApplicationContext工厂会占用大量内存
+        所以一般一个应用只会创建一个工厂对象。 由于只有一个对象，则必然会有多人使用同一对象情况，即多线程并发情景
+        所以还必须保证线程安全
+
+三.程序开发（使用Spring框架实现 main-java-Spring-Factory-SpringDemo）
+    1.创建类型
+    2.配置文件 applicationContext.xml   <!--id属性——唯一标识符 class属性——配置全限定名-->
+    3.通过工厂类获取对象
+        核心代码：
+        ApplicationContext ctx =  new ClassPathXmlApplicationContext("/applicationContext.xml");
+        UserSerivice usi = (UserSeriviceImpl) ctx.getBean("UserSeriviceImpl");
+四.细节分析
+    名词解释
+        Spring工厂创建的对象一般被称作bean或者component（组件）
+
+    其他Spring工厂常用方法
+        main-java-Spring-Factory-SpringDemo-test-@Test testOtherMethods中
+
+    配置文件中的细节
+
+        1.只配置class属性 即 <<bean class="Spring.Factory.SpringDemo.UserSeriviceImpl" />
+                                <bean class="Spring.Factory.SpringDemo.UserDAOImpl" />    可以吗？
+                经SpringDemo-test-@Test test3 检验  ✔可以
+
+            (1)问题: 上述不指定id的bean标签 其有id值吗或者说会有默认id值吗？
+                经SpringDemo-test-@Test test3 检验 有默认值:   默认格式为 包名.类名# + 数字（数字从0开始） 如果同样类型且未指定id值的 数字会依次排列
+                                                      输出示例:Spring.Factory.SpringDemo.UserSeriviceImpl#0
+                                                              Spring.Factory.SpringDemo.UserDAOImpl#0
+
+            (2)应用场景: 如果这个bean只需使用一次， 那么就可以省略id值
+                        如果这个bean会多次使用或者被引用多次则需要设置id值
+
+        2.name属性(别名)
+            (1)作用: 用于配置文件中为bean对象定义别名 (经SpringDemo-test-@Test test4 检验)
+            (2)与name属性的异同
+                同:
+                    (1)都可以正常使用getBean()等方法获取对象
+                    (2)<bean id="" class=""/> 等效于 <bean name="" calss=""/>  (等效并不是相等！id的核心作用在于作为唯一标识)
+                异:
+                    (1)name可以定义好几个，但是id属性只能有一个值
+                    (2)XML的id属性值有命名要求:必须以字母开头，可以使用字母 数字 下划线 连字符。
+                          name属性值无命名要求  name属性值会在特殊情景下命名为 类似 /UserSerivice (如struts1中要求以/开头 不过struts1已经被淘汰)
+                    注意: XML如今已经发展到现今 上述限制已经不存在了 但是一般开发中还是推荐使用遵守上述规则
+                          lazy-init="true": 懒加载 可以让bean 在需要获取时再被创建
+
+            (3)其他Spring工厂常用方法中 containsBeanDefinition和containsBean的区别
+                containsBeanDefinition只可以判断是否存在指定id值
+                containsBean既可以判断是否存在指定id值也可以判断指定name值是否存在
+
+五.Spring工厂的底层实现原理（简易版）
+    1、通过ClassPathXmlApplicationContext工厂读取配置文件 即ApplicationContext ctx = new ClassPathXmlApplicationContext("/applicationContext.xml");
+    2、获取bean标签相关信息（id、name、class等） 如:<bean id="" name="" class="" />
+    3、通过反射创建对象   Class<?> calzz = Class.forName(class值);
+                        id值 = clazz.newInstance();  newInStance原理是通过反射调用了目标对象的无参构造器创建了对象
+        Spring工厂中的原理也是类似上面的代码 使用反射来创建对象默认调用无参构造器 且即使构造器是私有的 仍然可以创建对象（反射可以暴力破解）
+    SpringDemo-test-@Test test5例子可得;
+
+
+    即xml------代码  一一对应
+     <bean id="" name="account" class="com.zhuxi.demo.account" />
+        等效于 Account account = new Account();
+
+六.思考
+    问题:未来开发中，是不是所有对象都交给spring工厂创建呢？
+    回答:理论上是的，但是有特例:实体类对象(entity)是不会交给Spring创建，而是由持久层框架进行创建
+
+Spring5.x与日志框架的整合
+    1、Spring与日志框架进行整合,日志框架就可以在控制台中输出Spring框架运行过程中的一些重要信息
+        好处: 便于了解Spring框架的运行过程,利于程序调试
+    2、Spring如何整合日志框架
+    默认下
+        Spring1.2.3早期都是commons-logging.jar
+        Spring5.x默认整合的是logback log4j2
+    3、Spring5.x整合log4j
+        1.引入log4j jar包
+        2.引入log4.poperties配置文件
+            (1)pom.xml中添加
+                 <dependency>
+                            <groupId>log4j</groupId>
+                            <artifactId>log4j</artifactId>
+                            <version>1.2.17</version>
+                 </dependency>
+                 <dependency>
+                             <groupId>org.slf4j</groupId>
+                             <artifactId>slf4j-log4j12</artifactId>
+                             <version>1.7.25</version>
+                 </dependency>
+            (2)log4j.properties中添加
+                # resources文件夹根目录下
+                ### 配置根
+                log4j.rootLogger = debug, console
+
+                ### 将日志输出到控制台
+                log4j.appender.console = org.apache.log4j.ConsoleAppender
+                log4j.appender.console.Target = System.out
+                log4j.appender.console.layout = org.apache.log4j.PatternLayout
+                log4j.appender.console.layout.ConversionPattern = %d{yyyy-MM-dd HH:mm:ss} %-5p %c{1}:%L - %m%n
+    输出示例:
+            2025-01-18 14:54:23 DEBUG ClassPathXmlApplicationContext:629 - Refreshing org.springframework.context.support.ClassPathXmlApplicationContext@17579e0f
+            2025-01-18 14:54:23 DEBUG XmlBeanDefinitionReader:393 - Loaded 2 bean definitions from class path resource [applicationContext.xml]
+            2025-01-18 14:54:23 DEBUG DefaultListableBeanFactory:225 - Creating shared instance of singleton bean 'userDAOImpl'
+            I'm UserDAOImpl
+            2025-01-18 14:54:23 DEBUG DefaultListableBeanFactory:225 - Creating shared instance of singleton bean 'UserSeriviceImpl'
+
+注入
+    1、什么是注入
+        通过Spring工厂配置文件，为所创建的的对象的成员变量赋值
+    2、为什么要注入
+           默认下我们通过ser/get方法进行赋值
+           ClassPathXmlApplicationContext ctx = new ClassPathXmlApplicationContext("/applicationContext.xml");
+                personal p = (personal) ctx.getBean("personal");
+                p.setName("张三");   //这里和下行代码一样都存在耦合  如果我这里不使用张三而是李四 那么那么传统方法我就要修改代码。
+                p.setAge(18);       //修改代码就意味着要重新编译、重新部署 所以需要避免这种情况
+                System.out.println("p = " + p);
+    3、如何注入
+        1.要注入的类中必须提供成员变量的set和get方法
+        2.配置Spring配置文件
+              <!--注入-->
+                <bean id="personal" class="Spring.Factory.SpringDemo.personal">
+                       <property name="name">
+                           <value>张三</value>
+                       </property>
+                       <property name="age">
+                           <value>18</value>
+                       </property>
+                       <property name="sex">
+                           <value>男</value>
+                       </property>
+                </bean>
+
+        4.注入的好处: 解耦合
+
+注入的底层原理（简易版）
+    <bean id="personal" class="Spring.Factory.SpringDemo.personal">  ==(等效于) personal personal = new personal();
+    <property name="name" value="张三" />  ==(等效于) personal.setName("张三");
+    <property name="age" value="18" />  同理
+    <property name="sex" value="男" />  同理、
+    即Spring通过底层调用对象属性对应的set方法,完成成员变量的赋值，这种方式称为注入
+
+Set注入详解
+    Set注入: Spring调用set方法,通过配置文件,为成员变量赋值
+    针对不同类型的成员变量，再<property>标签里嵌套其他标签
+    即<property>
+        xxxxxx
+      </property>
+
+    针对此将类型分为: 1.JDK内置类型[8种基本类型+String 数组类型 set集合 map集合 list集合 propertites集合 其它复杂的JDK内置类型]
+                    2.用户自定义类型[如personal类]
+
+    1. JDK内置类型 示例SpringDemo-test-@Test test7
+        1.1 String+8种基本类型
+            使用<value></value>
+
+        1.2 数组
+               <property name="a">
+               使用<list>标签
+                       <value>1</value>
+                       <value>2</value>
+                       <value>3</value>
+                       <value>4</value>
+                   </list>
+               </property>
+
+        1.3 Set集合
+             <property name="b">
+            使用<set>标签                      注意: 这里重点在于<Set>标签 至于Set标签内可以随意使用其他标签 因为Set<T> 有泛型存在具体需根据你泛型填的是什么
+                   <value>1</value>                 如private Set<personal> b; 这里就是用的自定义类型 那么标签内就应该使用<ref bean 标签
+                   <value>nihao</value>       且需注意这里填入的数据也会遵守你所定义的Set类型，这里使用的是Set 故而会遵循Set的无序、不重复等特点
+                   <value>buxixi</value>       选择其他Set的实现类会有不同的遵守特点 如果不表明使用的是哪个实现类 如直接使用Set 那么一般会默认使用HashSet
+                   <value>buxixi</value>
+               </set>
+             </property>
+
+        1.4 List集合
+            <property name="c">
+            使用<list>标签
+                   <value>sb</value>
+                   <value>sb</value>           这里与上面的同理 重点在于<list>标签
+                   <value>shi</value>
+                   <value>ni</value>
+               </list>
+            </property>
+
+        1.5 map集合
+        <property name="d">                  map集合是双列集合 在javase里学过 map的键值对叫做entry 所以在这里使用entry标签标示一个键值对
+            <map>                       每个entry标签为一个键值对 其中需要嵌套一个key标签表示键，在键中继续嵌套标签来表示键。 除了key标签外，
+                <entry>                 entry标签里也需要提供值的标签   这里的重点跟上面的集合是同理的 重要的是entry key标签 其中的嵌套是可以
+                    <key>               使用别的标签的 这需要根据你的泛型里规定的类型来判断
+                        <value>1</value>
+                    </key>
+                    <value>开!</value>
+                </entry>
+                <entry>
+                    <key>
+                        <value>2</value>
+                    </key>
+                    <value>总座高见!</value>
+                </entry>
+            </map>
+        </property> 这里的标签就是表示 一共有两个键值对: k=1 v=开! k=2 v=总座高见!
+
+        1.6 Propertes集合
+        <property name="e">
+           <props>                               Properties集合则使用props标签表示 其中的每一个对使用prop标签表示，且标签内提供一个
+               <prop key="a">AAA</prop>       key属性值来添加键，而键值则写在<prop></prop>中间。且由于Properties集合只能使用String
+               <prop key="b">BBB</prop>       类型，所以在prop标签中不用在使用<value>标签，可以直接写值。
+           </props>
+       </property>
+
+       1.7 其它复杂的JDK内置类型
+            后面会讲。
+
+
+    2.用户自定义类型
+       2.1 第一种方法
+           (1)为对象成员变量提供get、set方法
+           (2)在配置文件中进行注入:
+                <bean id="UserSeriver" class="Spring.Factory.SpringDemo.UserSeriviceImpl">
+                    <property name="userDAO">  这里在property中添加一个name属性 表示set要注入的目标对象
+                        <bean class="Spring.Factory.SpringDemo.UserDAOImpl"/>   因为要注入对象类型 bean标签就可以表示对象 所以使用bean标签
+                    </property>                         这里只使用了class值也是承接了前面讲的 这里只使用一次 所以只给class值
+                </bean>
+       2.2 第二种方式
+           1 为什么要引入第二种方式
+             第一种方式的问题:
+                (1) 配置文件代码冗余
+                     <bean id="UserSeriver" class="Spring.Factory.SpringDemo.UserSeriviceImpl">
+                         <property name="userDAO">
+                             <bean class="Spring.Factory.SpringDemo.UserDAOImpl"/>
+                         </property>
+                     </bean>  这个是为了服务于UserSeriver 这个类 即用户服务  所以必须使用UserDAO这个关于数据库的类 所以需要注入(创建了一个UserDAO对象 注入到了UserSeriviceImpl中了)
+
+                     那要是我还有比如 OrderSeriver呢？ 我一样也需要写跟上面一样的代码 只是把id和class改成了OrderSeriver对应的 下面的代码是高度一致的。
+                     那如果我有很多个服务类或其他类需要使用UserDAO呢？  那岂不是要写很多个这样的代码
+                (2) 被注入的对象可能会被多次创建 浪费内存资源(这里的内存指JVM中的内存)
+                     同上代码，每次我要创建一个需要使用UserDAO的类 就会因为注入又一次创建了UserDAO这个类，而这个类是有关数据库的，即这个类里面提供的方法是固定不变的，所以
+                    它是可以只用一个对象来让所有其他需要使用它的类来使用的。
+
+           2 第二种方法
+                (1)为对象成员变量提供get、set方法
+                (2)在配置文件中进行注入:
+                        <!--第二种方式-->
+                                <bean id="UserDAO" class="Spring.Factory.SpringDemo.UserDAOImpl"></bean>
+
+                                <bean id="UserSeriviceImpl" class="Spring.Factory.SpringDemo.UserSeriviceImpl">
+                                    <property name="userDAO">
+                                        <ref bean="UserDAO"/>  ref意为引用
+                                    </property>
+                                </bean>
+                        第二种方法是 先使用一个bean标签提前创建UserDAO对象  然后在分别在需要注入它的对象类中使用ref标签，这样往后需要注入UserDAO的对象类所写只需
+                       写一个ref标签 标明要注入的是 bean="UserDAO" 即可  这样看虽然代码冗余没解决很多 但是仅创建了一次对象 大大节省了内存资源。
+                注意:
+                    <property name="userDAO">  这里的name="userDAO" 它指定的是需要注入的目标 即最外面Spring.Factory.SpringDemo.UserSeriviceImpl中的UserDAO对象成员变量
+                    <ref bean="UserDAO"/>      这里的bean="UserDAO" 它指的是上面已经提早创建了的UserDAO
+
+                    Spring 4.x 开始废除了 <ref local=""> 它和 <ref bean="">是等效的
+                    因为一些公司它可能使用的是Spring 3.x 。 loucal只能引用本配置文件中的  而bean可以引用本配置文件及父容器中的 (父容器在SPring MVC 会讲)
+
+    Set注入简化写法
+        在可以简写地方均有简写版。
+        基于p命令空间的简化
+
+    构造注入
+          Spring调用构造器，通过配置文件，对为变量赋值
+                <bean id="customer" class="Spring.Factory.SpringDemo.customer">
+                    <constructor-arg>          使用constructor-arg标签  property标签对应的是set方法   constructor-arg标签对应的是构造器
+                        <value>张三哎嘿</value>             依然是重点是constructor-arg标签  其中的标签根据变量的类型进行使用不同的标签
+                    </constructor-arg>
+                    <constructor-arg>
+                        <value>1999</value>
+                    </constructor-arg>
+                </bean>
+
+    构造重载
+        1 当构造器的参数个数不同时，可以通过constructor-arg标签的数量进行区分
+        2 当构造参数个数相同时
+                        需要在constructor-arg标签中添加type标签进行区分: <constructor-arg type="int">
+                原因是: 按照1中的标签数量进行区分的话，如果我有两个都是单单参数的构造方法,且第一个参数为String sex; 第二个为int age;
+               当我只使用一个constructor-arg标签时，有多个单参数的构造方法，它会默认匹配代码中最上面的构造方法。但如果这里我想给age赋
+               值而不是sex，在constructor-arg标签中填入18，由于其会默认匹配最上面的，就会把18当成字符串传给了sex变成了 sex=18
+    思考:
+        未来开发中使用set注入多，还是构造注入多？
+            set注入使用多
+                原因: 1 构造注入麻烦(重载)
+                     2  Spring框架底层也是使用了大量的set注入 变相地反映了一个态度-set注入使用更多
+
+反转(转移)控制（IOC inverse of Control）
+    控制: 对于成员变量赋值的控制权
+    反转控制: 把对于成员变量赋值的控制权，从代码中反转(转移)带Spring工厂和配置文件中完成
+    好处: 解耦合
+        如:  最初在UserSeriverImpl里需要创建UserDAO对象，使用的是new 或者使用方法获得这是你就相当于 你的变量的控制权在代码手里 即代码控制
+         而你同过spring后,你发现你只用是用工厂及配置文件就可以赋值，这就是反转控制
+    底层原理: 工厂设计模式
+依赖注入
+    当一个类需要另一个类时，就意味着依赖，一旦出现依赖，就可以把一个类作为本类的成员变量，最终通过Spring配置文件进行注入(赋值)
+            如: 前面有过的UserSeriverImpl里需要使用UserDAO类 那么就意味着UserSeriverImpl依赖UserDAO类 故而可以使用Spring配置文件进行注入
+    好处: 解耦合
+
+Spring工厂创建复杂对象
+    1 什么是复杂对象?
+        复杂对象: 指的就是不能直接通过new构造方法创建的对象
+                如: Connection(我们使用的是getConnection(url,use,password)获取的对象)
+                    SqlSessionFfacto
+        简单对象: 指的就是可以直接通过new构造方法创建的对象
+    2 Spring工厂创建复杂对象的3种方式
+        2.1 FactoryBean接口
+                1 实现FactoryBean接口
+                    public class MyFactoryBean implements FactoryBean{
+                        @Override
+                        public Object getObject(){
+                            //用于书写创建复杂对象的代码
+                        }
+                        @Override
+                        public Class getObjectType(){
+                            //用于返回所创建复杂对象的Class对象
+                        }
+                        @Override
+                        public bollean isSingleton(){
+                            return true;   //需要创建一次时
+                            return false; //需要每一次都调用都需要创建一个新的复杂对象时
+                        }
+                    }
+                2 配置文件进行配置
+                    <bean id="Connection" class="Spring.Factory.SpringDemo.ConnectionFactoryBean"></bean>
+                    这里虽然使用bean和创建简单对象使用一样，但是其含义发生了变化。
+                  正常情况根据该id应该获得的是class中的ConnectionFactoryBean这个对象，但是对于FactoryBean接口
+                  Spring进行了特定设置，让其获得是ConnectionFactoryBean中返回的复杂对象
+
+                3 细节注意
+                    如果我只是想获得FactoryBean接口的实现类而不是其中返回的复杂对象呢?
+                        只需在getBean方法的参数中添加&  如: getBean("&Connection")
+                    isSingleton方法的运用
+                        返回true只会创建一个复杂对象
+                        返回false每次都会创建一个对象
+                        对于以上规则遵循的是具体问题具体分析来决定其使用true还是false
+                            如Connection如果使用true就有可能会造成事务遇到并发问题导致线程安全问题 所以Connection通常返回false
+                            如SqlSessionFfacto 其是一个重量型资源，所以通常我们返回true确保只有一个
+
+                    谨记依赖注入思想
+                        对于我的FactoryBean实现类的ConnectionFactoryBean中的:
+                                                        forName("com.mysql.cj.jdbc.Driver");
+                                                        Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/zhuxi", "root", "123456");
+                                                其中的url user password 是不是都很重要 也是需要的， 刚才讲了需要就是依赖。所以要使用注入将其注入来达到解耦合
+                                                        <bean id="Connection" class="Spring.Factory.SpringDemo.ConnectionFactoryBean">
+                                                            <property name="url" value="jdbc:mysql://localhost:3306/zhuxi"></property>
+                                                            <property name="username" value="root"></property>
+                                                            <property name="password" value="123456"></property>
+                                                            <property name="driver" value="com.mysql.jdbc.Driver"></property>
+                                                        </bean>
+        2.2 实例工厂
+                为什么要使用实例工厂
+                    1 避免Spring框架的侵入   即我的项目不能完全依赖Spring吧？ 万一没了Spring岂不是我依据Spring写的代码不是都失效了？ 所以有时候并不会使用FactoryBean接口
+                    2 整合遗留系统    即现实你入职开发 往往都是接手人家写过的的，并不是原生让你从零开始写的 假如有一个FactoryBean这个类提供了返回复杂对象的任务且并没有实现FactoryBean接口
+                                   而你没办法获取到源码将其实现FactoryBean接口  那么这个时候就需要使用实例工厂的模式来进行配置SPring
+                如何使用
+                    将没法获取的代码类配置到Spring文件中:
+                                        <bean id="FactoryBean" class="Spring.Factory.SpringDemo.FactoryBean"></bean>
+                    在进行配置一个对象与其建立联系:
+                                        <bean id="conn" factory-bean="FactoryBean" factory-method="getConnection"></bean>
+                                           这里使用了factory-bean和factory-method标签  factory-bean即要建立联系的类   factory-metho要建立联系的类中的方法
+
+        2.3 静态工厂
+                与实例工厂相比 只是方法为静态的
+                这个时候配置文件就不用使用factory-bean建立联系 直接在该类的bean标签中使用factory-method即可
+                <bean id="connn" class="Spring.Factory.SpringDemo.staticConnection" factory-method="getConnection"/>
+
+    如何控制创建简单对象的次数？
+        在bean标签中使用scope标签(scope默认值为singleton)
+            scope值为singleton时 对象只能创建一次
+                <bean id="green" scope="singleton"   class="Spring.Factory.SpringDemo.green"></bean>
+            scope值为prototype，每次都会创建一个新对象
+                <bean id="green" scope="prototype"   class="Spring.Factory.SpringDemo.green"></bean>
+
+    如何控制创建复杂对象的次数?
+       如果是实现了FactoryBean接口的 按照isSingleton方法返回的true和false来决定
+       如果没有isSingletion方法则按照按照简单对象的规则执行
+
+    为什么要控制对象的创建次数?
+        好处: 节省不必要的内存浪费
+    什么样的对象之创建一次什么样的对象每次都要创建新的?
+        只要没有线程安全问题且可以共用的或者是重量级资源都只需创建一次 如: SqlSessionFactory DAO Service
+        只要涉及到线程安全都必须每次使用都要创建新的  如: Connection SqlSession Session Struts2 Action
+
+对象的生命周期
+    指的是一个对象创建、存活、消亡的一个完整过程
+    1 为什么要学习对象的生命周期?
+        原本的我们都是直接new对象然后使用 并不太会考虑生命周期 基本上JVM虚拟机内存不够或者回收 对象才会消亡
+      而我们现在是使用的是Spring，由Spring负责了对象的创建、存活、消亡的过程，所以了解生命周期有利于我们使用好spring
+    2 生命周期的3个阶段
+        创建对象阶段
+            Spring工厂何时创建对象
+                scope= "singleton"时
+                    Spring工厂创建的同时，创建对象   依据test14可知 在new ClassPathXmlApplicationContext后 立马输出了son
+                注意: 如果我想即创建一次又执行获取对象的同时才创建对象呢？ 可以在bean标签中添加lazy-init="true" 即懒加载 延迟其创建
+
+                scope= "prototype"时
+                    Spring工厂会在获取对象的同时，创建对象 (这里的获取对象指getBean方法)   同样依据test14 将scope改为prototype后 只new ClassPathXmlApplicationContext不会输出son了
+                                                                                  添加getBean方法后输出son
+        初始化阶段
+            Spring工厂在创建完对象后，会调用对象的初始方法，完成对应的初始化操作
+                注意: 1 初始化方法的提供: 程序员根据需求，提供初始化方法，最终完成初始化操作
+                      2 初始化方法的调用: Spring工厂进行调用
+                实现初始化的方法
+                    1 实现initializingBean接口并重写afterPropertiesSet方法
+                        实例: sonn类
+                    2 对象中提供一个自定义的普通方法
+                        public void 自定义名称(){}
+                        在配置文件里进行配置增添一个init-method标签指定它即可
+                        <bean id="sonnn" init-method="sonnnnnn" class="Spring.Factory.SpringDemo.sonnn"></bean>
+                细节分析
+                    1 如果一个对象即实现了InitializingBean接口，又自定义了初始化方法并配置了配置文件  那么这两个初始化方法的执行顺序?
+                        先执行从InitializingBean接口重写的afterPropertiesSet方法
+                        再执行自定义的初始化方法
+                    2 注入一定发生在初始化操作前面完成  可以从Spring提供的接口的抽象方法看出来afterPropertiesSet   在注入后初始化
+                    3 什么叫初始化操作
+                        资源的初始化:数据库 IO 网络....
+        销毁阶段
+            与初始化阶段有点类似
+            1 实现DispposableBean接口
+                示例:sonn类
+            2 自定义销毁方法并在配置文件中配置 使用destory-method="destroyMehod"
+                <bean id="sonn" init-method="initMethod" destroy-method="destroyMethod" class="Spring.Factory.SpringDemo.sonn"></bean>
+
+            同理顺序也是接口的优先
+            细节注意:
+                销毁操作只适于scope="singleton" prototype情况下不会被执行
+配置文件参数化
+    即把Spring配置文件中需要经常修改的字符串信息，转移到一个更小的配置文件中
+        1 Spring的配置文件中存在需要经常修改的字符串？
+            存在 如数据库链接相关参数
+        2 经常变化的字符串，在Spring的配置文件中直接修改 不利于项目维护(修改)
+        3 转移到一个小配置文件后(.properties) 更利于维护(修改)
+
+    配置文件如何参数化
+        提供一个小的配置文件(xxx.preopeties)
+            名字:随便 位置:随便
+            jdbc.driverClassName = com.mysql.cj.jdbc.Driver
+            jdbc.url = jdbc:mysql://localhost:3306/zhuxi
+            jdbc.username = root
+            jdbc.password = 123456
+        Spring的配置文件与小配置文件进行整合
+            <context:property-placeholder location="classpath:/db.properties"/>
+        在Spring中通过${key}获取小配置文件中对应的值
+            <bean id="Connection" class="Spring.Factory.SpringDemo.ConnectionFactoryBean">
+                <property name="url" value="${jdbc.url}"></property>
+                <property name="username" value="${jdbc.username}"></property>
+                <property name="password" value="${jdbc.password}"></property>
+                <property name="driver" value="${jdbc.driverClassName}"></property>
+            </bean>
+自定义类型转换器
+    1 类型转换器
+        作用: Spring通过类型转换器把配置文件中字符串类型的数据,转换成对象中成员变量对应类型的数据，进而完成了注入
+    为什么要使用类型转换器
+        如: 一个类中有变量private Date date;
+            而我xml文件内为:<bean id="date" class="Spring.Factory.SpringDemo.Date">
+                              <property name="date" value="2020-01-01"></property>
+                              <property name="name" value="ababab"></property>
+                          </bean>
+        最终执行后报异常Failed to convert property value of type 'java.lang.String' to required type 'Spring.Factory.SpringDemo.Date' for property 'date';
+          意为: 不能将String类型赋值给Date类型
+
+    那为什么value="" 这里使用的是双引号 那不也将String赋值给int吗 为什么没有报错?
+        因为Spring有内置转换器 帮你把String转换为int类型了所以可以正常运行
+    哪为什么这里内置转换器没有帮我把String转换为Date类型?
+        Spring有提供转换Date的转换器 但是各国的时间格式不一样 且Spring这个转换器对输入的时间格式有要求 所以Spring不知道要转换成那个 所以就引出了自定义转换器
+
+    2 自定义类型转换器
+        当Spring内部没有提供特定类型的转换器或者转换器转换的格式不是想要的 而程序员在应用过程需要使用，那就需要程序员自定义类型转换器
+
+        如何自定义转换器
+            创建自定义建转换器类继承Converter<s,t>接口 并实现其中的convert方法
+                                    s指原本类型  t指要转换的类型
+                    public class DateCon implements Converter<String, Date> {
+                        @Override
+                        public Date convert(String source){
+                            Date parese = null;
+                            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+                            try {
+                                parese = sdf.parse(source);
+                            } catch (ParseException e) {
+                                throw new RuntimeException(e);
+                            }
+
+                            return parese;
+                        }
+                    }
+            这里有两个问题: 1 convert方法如何获取到要注入的值呢?
+                                Spring帮你解决了 param:source 代表的就是配置文件中的那个值  比如<value>2025-1-23</value> source就是2025-1-23
+                          2 转换后的值如何进行注入呢?
+                                Spring同样帮你注入了 return: 当转换好的值 会作为convert方法的返回值返回，Spring会自动的为需要注入的属性进行注入
+
+            在Spring配置文件中进行配置
+                将自定义转换器类配置到配置文件
+                    <bean id="DateCon" class="Spring.Converter.DateCon"></bean>
+                类型转换器的注册
+                    目的:告知Spring框架，我们所创建的类是一个自定义转换器
+                        <bean id="conversionService" class="org.springframework.context.support.ConversionServiceFactoryBean">
+                            <property name="converters">   上面那行conversionService 是死的不能写错且必须写它
+                                <set>
+                                    <ref bean="DateCon"/>
+                                </set>
+                            </property>
+                        </bean>
+                    这里Spring提供了一个内置的类帮你注册转换器即ConversionServiceFactoryBean 其中有个converters成员变量需要你将要注册的转换器注入给它
+
+            细节分析:
+                1 DateCon类中的convert方法中有一个字符串做参数了  谨记依赖注入思想 因为这个"yyyy-hh-dd"格式被需要了 所以是依赖的所以需要注入
+                2 <bean id="conversionService" class="org.springframework.context.support.ConversionServiceFactoryBean">
+              由于该类是Spring提供的 所以它的id值必须写成conversionService 不然也不行
+                3 其实Spring也内置了时间日期的转换器 只是它的格式为年/月/日 而我们写的是2025-1-23 如果按照要求也是可以的
+后置处理bean
+    BeanPostProcessor作用: 对Spring工厂所创建的对象进行再加工
+    BeanPostProcessor是一个接口, 其中含有两个需要实现的方法:
+    Object postProcessBeforeInitialization(Object bean, String beanName){                //通过参数获取Spring创建的对象并进行一系列加工然后通过返回值交还给Spring
+        return bean;
+    }
+
+    Object postProcessAfterInitialization(Object bean, String beanName){                //同理
+        return bean;
+    }
+    从方法名字就可以看出来 一个是在初始化之前执行的加工操作，一个是在初始化后执行的加工操作
+    具体流程:
+        Spring通过ApplicationContext和配置文件 ——>调用构造方法创建对象——>注入——>Before加工操作——>初始化——>After加工操作——>........
+
+    注意:  实战中，往往很少处理初始化操作，也就是说往往没有初始化操作。这个时候不需要区分before和after这两个加工操作。合并为实现其一即可，即before中不做任何操作直接把获取的对象原路返回
+      而在after加工操作中进行所需要的一系列操作.
+
+    BeanPostProcessor开发步骤
+        1 类中实现BeanPostProcessor接口
+            public class MyBeanPostProcessor implements BeanPostProcessor {
+                //这里并没有提示你必须实现before和after那两个加工方法  原因是因为这两个方法再BeanPostProcessor接口中是默认的 即default Method 所以不强制实现
+                @Override
+                public Object postProcessBeforeInitialization(Object bean, String beanName) {
+                    System.out.println("我是before加工操作");
+                    return bean;
+                }
+                @Override
+                public Object postProcessAfterInitialization(Object bean, String beanName){
+                    if (bean instanceof Bactory){
+                        Bactory bactory = (Bactory) bean;
+                        bactory.setName("我是after加工操作");
+                    }
+                    return bean;
+                }
+            }
+        2 Spring配置文件中进行配置
+         <bean id="MyBeanPostProcessor" class="Spring.BeanPost.MyBeanPostProcessor"></bean>
+    细节分析
+            BeanPostProcessor会对所有Spring工厂中创建过的对象都进行加工处理 而我们是想要让其处理特定类的 故而需要在加工操作中添加if判断来确定需要处理的类
+
+------AOP编程-----
+
+静态代理设计模式
+    为什么要代理设计模式
+    问题: 在JavaEE分层开发中，那个层次对于我们来说是重要的?
+        DAO--->Service--->Controller
+       答曰: Service层
+    Service层包含了那些代码
+        Service层中 包含了: 核心功能 + 额外功能(附加功能)
+        1、核心功能
+            业务运算
+            DAO调用
+        2、额外功能
+            1. 不属于业务
+            2. 可有可无
+            3. 代码量很小
+            如:  事务:  对数据库进行同步保证数据库数据记录的数据准确和安全性。  如 小明取了100转给了小红 数据库中小明应该-100 小红+100 这个时候在代码层面即在业务执行前 开启事务，然后执行一系列业务
+               功能。如果中间有错误给出，则可以回滚事务(即所做操作的结果都不被记录到数据库 即小明的-100和小红+100都不进入数据库) 以保证数据的安全。 如果没有任何问题则提交事务，即将所做操作的结果持久化到数据库中。事务的
+               代码不多，且并不是所有操作都需要事务的，如查看、查询等等操作并不产生什么需要持久化到数据库的结果。
+
+                 日志: 记录用户重要操作的流水账(格式一般为: 谁 + 时间 + 地点 + 干了什么事)  并不是所有都需要记录日志的 比如查询、查看等操作都是不需要记录日志的 因为没有必要  一般记录的均为设置、增删改等等
+               而且日志的代码一样就几行很简单。
+
+                 性能: 一般以记录一个开始时间 一个结尾时间 两者差来衡量一个性能  其也不是必须要的。 因为你完成开发后进行优化 这个时候是需要这个性能的 但是你已经优化过准备开始投入使用了 这个时候就不会再有这
+               个性能的功能存在了。
+
+        额外功能书写到Service中好不好?
+            站在Service层的调用者(controller)角度: 需要Service层书写额外功能  : 调用者想的必须保证这个项目或者程序是完整的 是安全的 所以需要额外功能 如事务 日志等
+            站在软件设计者的角度: Service不需要额外功能   : 软件设计者想的是 这些额外功能是可有可无的 并非都需要的 如果写则会增加代码的维护难度 说白了就是想让Service只集中处理核心的业务运算和DAO调用等
+
+        可视化生活化形容:
+             房客(调用者){                                           房东(Service)｛
+                                    ------------------------->         额外功能: 广告张贴、看房
+             }                                                         主要功能: 签合同、收钱
+                                                                                ｝
+             如图，房东在该市每个电线杆上张贴广告，然后才引来了房客前来进行看房。  但是每次房东都需要重新进行张贴广告 带着人看房。房东烦了，他想不张贴广告不带人看房 就直接能签合同、收钱
+           这个时候房客不愿意了 没了广告不知道哪里有房子信息、没人带着去看房什么也不知道。 这你房东想直接签合同收钱 房客包不愿意啊 抢劫呢?
+
+           将上述的 房客类比为调用者: 需要额外功能
+                   房东类比为软件设计者: 不需要额外功能
+
+           解决方法: 引入代理(proxy)  生活化形容: 中介
+
+             房客(调用者):                   中介(proxy):                              房东(Service):
+                                               出租房屋(){                                  出租房屋(){
+                 --------------------->          额外功能: 张贴广告 ------------------->     核心功能: 签合同、收钱
+                                                房东.出租房屋();                                      }
+             }                                  }
+
+            如图 将Service只保留核心功能，解决软件设计师的诉求。然后将额外功能交于代理(proxy)，解决了调用者的诉求。并且额外功能是代理的 并不在核心点上 后续对"张贴广告"不满意后 可以换一个代理
+          比如我换成 高德、百度等等看房软件 是不是提供的额外功能比原本的好很多 也就是说我们只需再重新创建一个代理类重写额外功能 再调用核心功能即可  这样保证了核心代码的稳定——————即不需要修改核心代码
+
+代理设计模式
+    通过代理类，为原始类(目标类)增加额外功能
+    好处:利于原始类(目标类)的维护                            目标类/原始类: 指业务类(即核心功能--> 业务运算+ DAO调用)
+
+代理类 =  目标类(原始类) + 额外功能 + 原始类(目标类)实现相同的接口或者具有继承关系     (代理的三要素)
+    以下在讲到Cglib和JDK动态代理之前  为符合前面讲的逻辑 都先默认实现同一接口  后面会讲
+
+    public interface UserService{
+            m1
+    }
+    UserServiceImpl implements UserService{
+            m1-->业务运算+ DAO调用
+    }
+    UserServiceProxy implement UserService｛
+            m1--> 额外功能+ 调用UserServiceImpl中的m1
+    ｝
+这样设计的好处:  更好地支持Spring中的AOP机制，同时也能提高代码的灵活性、可维护性和可测试性。这种设计模式符合面向接口编程的原则，有助于构建更健壮、灵活的应用程序
+
+    静态代理的简单实现:
+        如main-java-Spring-Proxy包下的实现
+
+    为什么称为静态代理?
+      因为需要手动为每一个原始类手工一个代理类 故而为静态
+
+    静态代理存在的问题
+                1 静态类文件太多，不利于项目管理   假如我有100个原始类 就需要手写100个代理类 有很多代理类提供的额外功能是高度重复 比如事务 日志等
+                2 额外功能维护性差  如我要修改额外功能 如果一个原始类中有20多个方法呢？ 如果再加上是100个原始类呢？
+
+Spring动态代理开发
+    概念好处同静态代理一样
+    搭建环境
+        <dependency>
+                    <groupId>org.springframework</groupId>
+                    <artifactId>spring-aop</artifactId>
+                    <version>5.3.30</version>
+        </dependency>
+        <dependency>
+            <groupId>org.aspectj</groupId>
+            <artifactId>aspectjrt</artifactId>
+            <version>1.9.22</version>
+        </dependency>
+        <dependency>
+            <groupId>org.aspectj</groupId>
+            <artifactId>aspectjweaver</artifactId>
+            <version>1.9.22</version>
+        </dependency>
+    开发步骤
+        1 创建原始对象
+            public class OrderService implements Order{
+
+                public void addOrder(){
+                    System.out.println("添加订单");
+                }
+
+                public void deleteOrder(){
+                    System.out.println("删除订单");
+                }
+            }
+            <bean id="OrderService" class="Spring.Proxy.OrderService"></bean>
+        2 额外功能
+             MethodBeforeAdvice接口
+                额外功能书写到接口的实现中 即Before方法 运行在原始方法之前
+             public class orderServiceProxy implements MethodBeforeAdvice {
+                 @Override
+                 public void before(Method method, Object[] args, Object target) throws Throwable {
+                     System.out.println("before 额外功能");
+                 }
+             }
+        3 定义切入点
+            切入点: 额外功能加入的位置
+            目的: 程序员根据自己的需要，决定额外功能加入给那个原始方法
+
+            这里初学 所以例子为所有原始方法都加入
+            <aop:config>
+                    <aop:pointcut id="pc" expression="execution(* *(..))"></aop:pointcut>
+            </aop:config>
+        4 组装(即将2 3 整合或者说建立联系)
+            <aop:advisor advice-ref="OrderProxy" pointcut-ref="pc"></aop:advisor>
+        5调用
+            目的: 获得Spring工厂创建的动态代理对象，并进行调用
+            ApplicationContext ctx = new ClassPathXmlApplicationContext("/applicationContext.xml")
+            注意:
+                1 Spring工厂通过原始对象的id获取的实质上是代理对象
+                    ctx.getBean("OrderService")获取的实质上是代理对象
+                    这点可以通过调用功能检查是否既执行了额外功能又执行了核心功能
+
+                2 获取代理对象后，可以通过声明接口类型，进行对象的存储
+                    即动态代理与静态代理一样保存了代理类和原始类实现于同一接口 (代理3要素: 原始对象 额外功能 代理对象和原始对象实现同一个接口或具有继承关系)
+                    Order o = (Order)getBean("OrderService");
+
+                    o.addOrder();
+                    o.deleteOrder();
+
+    动态代理细节分析
+        1 Spring创建的动态代理类在哪里
+            Spring框架在运行时，通过动态字节码技术，在JVM创建的，运行在JVM内部,等程序结束后，会和JVM一起消失
+
+        小知识:
+                java运行以一个类——实际上是JVM运行这个类的字节码
+                  即  .java——> .class(字节码) ——> JVM获得字节码创建对象
+
+        动态字节码技术: 通过第三方动态字节码框架，直接在JVM中创建对应的字节码，进而创建对象。
+                即 第三方动态字节码框架(ASM、Javassist、Cglib等) ——> 直接在JVM生成字节码(动态字节码)
+
+        本例的Order o = (Order)getBean("OrderService"); 获取的实际就是 JVM根据动态字节码创建的代理对象 跳过了.java——> .class这个步骤
+
+        2 动态代理那里简化了?
+            本例使用的是<aop:config>
+                              <aop:pointcut id="pc" expression="execution(* *(..))"></aop:pointcut>
+                      </aop:config>
+                      即对所有可作为原始对象的的原始方法或者说切入点是所有原始方法  所以执行的时候有很多个 "before 额外功能" 打印
+            动态代理相比静态的好处就是 不用大量写代理类 可以更好地管理  并且 如果我想给某个类加入额外功能 在xml文件中只需创建该类的bean文件即可
+
+        3 额外功能的维护大大增强
+            <bean id="OrderProxy" class="Spring.Proxy.orderServiceProxy"></bean>
+            <aop:config>
+                <aop:pointcut id="pc" expression="execution(* *(..))"></aop:pointcut>
+                <aop:advisor advice-ref="OrderProxy" pointcut-ref="pc"></aop:advisor>
+            </aop:config>
+            对于以上xml文件 OrderProxy是代理  如果我不满足该额外功能  如果直接在OrderProxy中更改before则违背了开闭原则(对扩展打开，对修改关闭)
+          但是采用动态代理 可以我们在创建一个OrderProxy1 然后在这个类中书写新的额外功能  然后在xml中的<aop:advisor 修改指定的额外功能即可
+             <bean id="OrderProxy" class="Spring.Proxy.orderServiceProxy"></bean>
+             <bean id="OrderProxy1" class="Spring.Proxy.orderServiceProxy1"></bean>
+             <aop:config>
+                 <aop:pointcut id="pc" expression="execution(* *(..))"></aop:pointcut>
+                 <aop:advisor advice-ref="OrderProxy1" pointcut-ref="pc"></aop:advisor>
+             </aop:config>
+
+MethodBeforeAdvice接口详解
+
+        public class orderServiceProxy implements MethodBeforeAdvice {
+             @Override
+             public void before(Method method, Object[] args, Object target) throws Throwable {
+             }
+        }
+
+        这其中Method: 指额外功能所添加到的那个原始方法
+             Object[] : 指额外功能所增加给的那个原始方法参数 以数组形式呈现      如: 原始方法参数为String username，String password   那么Object[]中 就是这两个参数
+             Object : 额外功能所增加给的那个原始对象
+
+        验证: 可以通过打断点 调试  通过Idea的Threads & Variables 窗口查看变量信息
+
+    MethodBeforeAdvice接口作用: 额外功能运行在原始方法之前，进行额外功能操作
+
+    before方法的3个参数在实战中该如何使用?
+        before方法的参数，在实战中会根据需要进行使用，不一定都会用到，也可能都不用
+                                                    (15年开发经验 前Oracle高级架构师 孙帅 表示他开发到现在都没用过. 草！ 从入门到白学是吧)
+
+MethodInterceptor接口(方法拦截器)
+    MethodBeforeAdvice接口——> 原始方法执行前运行
+    MethodInterceptor接口——> 原始方法运行前、后或前后都运行。
+如下:
+    public class OrderServiceProxy2 implements MethodInterceptor {
+        @Override
+        public Object invoke(MethodInvocation invocation) throws Throwable {
+            额外功能;
+            Object proceed = invocation.proceed();
+            额外功能;
+            return proceed;
+        }
+    }
+
+    其中invoke方法: 额外功能书写地
+    参数: MethodInvocation : 额外功能所增加给的那个原始方法 (类似于MethodBeforeAdvice接口中before方法的Method参数)
+    invocation.proceed(); : 即调用原始方法( 你可以写在额外功能前面或后面 或者额外功能夹着它  因为这个特性所以才能 原始方法运行前、后或前后都运行)
+    返回值Object :  原始方法的返回值   如 原始方法为 void add()  那invocation.proceed()返回的就是一个null 如果原始方法返回类型的String  那invocation.proceed()返回的就是String
+
+    什么样的额外功能运行在原始方法之前之后都要添加?
+        典型代表: 事务.
+      @Override
+        public Object invoke(MethodInvocation invocation) throws Throwable {
+            开启事务;
+            Object proceed = invocation.proceed();
+            提交事务;
+            return proceed;
+        }
+
+    额外功能在原始方法抛出异常时运行的场景
+        1 原始方法需要throw 异常
+        2
+          @Override
+            public Object invoke(MethodInvocation invocation) throws Throwable {
+            Object proceed = null;
+            try{
+                Object proceed = invocation.proceed();
+                }catch(Throwable throwable){
+                    额外功能;
+                    throwable.printStackTrace();
+                }
+                    return proceed;
+            }
+    MethodInterceptor影响原始方法的返回值
+        当原始方法返回值直接作为Invoke方法的返回值返回(即直接用的invocation.proceed()的值)，MethodInterceptor不会影响原始方法的返回值;
+        当在Invoke方法中进行了一些处理，不使用invocation.proceed()的值， 而使用了其他值  则就是MethodInterceptor影响了原始方法的返回值
+
+    切入点详解
+        切入点决定了额外功能加入的位置
+
+        <aop:pointcut id="pc" expression="execution(* *(..))"/>
+        这里的execution(* *(..)) ——> 匹配的是所有的方法
+            其中
+                execution()  ——> 称为切入点函数
+                * *(..)  ——> 称为切入点表达式
+        我们想要的是指定根据程序需求的原始方法 而不是像上面这样广谱的进行
+
+    切入点表达式
+        定义一个方法:      public void add(int x, int y)
+            横向对比你回发现      *      *(..)
+        实际上:
+            第一个* ——> 修饰符 + 返回值类型      *为对修饰符和返回值类型没有要求
+            第二个* ——> 方法名                  同理
+            () ——> 参数表
+            (..)中的.. ——> 参数                ..表示对参数没有要求
+
+        故而依据上述表达式语法修改为如下进行测试
+            针对方法名:
+            <aop:pointcut id="pc" expression="execution(* addOrder(..))"></aop:pointcut>
+            经检验 成功
+
+            针对方法名和参数:
+                <aop:pointcut id="pc" expression="execution(* addOrder(int))"></aop:pointcut>
+                经检验 成功   并可知这里的括号内填入参数类型即可 多个参数中间用" , "隔开即可
+
+                注意事项:
+                         如果为非java.lang包里的中的类型,必须要写全限定名
+                            如:execution(* addOrder(Spring.Factory.SpringDemo.personal))
+
+                         有类似可变参数的机制
+                                如execution(* addOrder(String,..)) 表达的是第一个参数必须是String 其他有或没或随意参数个数类型都可以
+
+            至于第一个*所对应的 修饰符和返回值类型 书写时正常书写即可
+
+            问题:  如果 我的a包中的一个类有个User add(String password)  b包中一个类也同样有一个一致的呢? 而我只是想在a包中的那个当做切入点
+                实际上，这个切入点表达式的完整格式为:
+                                              修饰符 返回值类型 类路径.方法名(参数)  其中修饰符和类路径是可以省略的
+
+                所以如果出现了上述问题，为了解决就需要把类路径完全写出来 如写成User com.zhuxi.a.add(String) 这样就匹配的是a包的
+
+        上述均为以方法为切入点，切入表达式的构成都需要注意才能匹配到自己想要的。
+        但如果只是想让某个类中所有方法都作为切入点，则以类为切入点
+
+        以类切入点
+            即 * 类路径.*(..)  不关心方法的构成部分 只关心类的部分
+                    如<aop:pointcut id="pc" expression="execution(* Spring.Proxy.OrderService.*(..))"></aop:pointcut>
+
+            注意事项:  如果我想针对的是UserServiceImpl这个类  而这个类a包中有 b包中也有  而采取上述则必须选择其中一个包。
+                 这个时候可以将类路径中一些地方使用*代替表示所有即可
+                    比如针对上述问题  则可写为 execution(* *.UserServiceImpl.*(..))
+
+                    但是需注意。 如果这里的类所在包是个多层的即  com-Spring-a、b  那么上面举例的写法则就不正确了
+                    因为*只能代表一层，所以如果多层的情况下  可以写成* *.*.*.UserServiceImpl.*(..) 即有多层包就写多少个*
+                   或者使用".." 表示往下继续递推获得子包中的  上述据此可写为 * *..UserServiceImpl.*(..)
+
+        以包为切入点
+                同理不在赘述。 即 * 包路径.*(..)
+                注意事项:  *这里指定包下所有 但是其只会作用于该包下的所有类  而该包下的子包并不会被继续往下递推
+                    即 一个包为 com.zhuxi.a、b、xi.java、yi.java  其中a-dd.java  b-ccc.java
+                      那么 execution(* com.zhuxi.*.*(..))  这个语句只会对上述包的 xi.java和yi.java作用 并不会对dd.java和ccc.java作用
+
+                    如果想让子包也继续递推下去 那么需使用 ".."
+                        即 execution(* com.zhuxi..*.*(..))  这么就会连同子包也会一起作为切入点
+
+    切入点函数
+        execution : 最重要也是最全面的切入点函数
+                可以根据切入点方式的不同执行各种方式
+            弊端:  书写麻烦   (我觉得还行唉 QAQ)
+            其他函数均为对execution函数的简化书写 且功能专一化
+
+        args函数:
+                作用: 主要用于对方法参数的匹配
+                如: 针对方法参数必须是2个字符串类型得参数  execution和args函数对比:
+                                                                      execution(* *(String,String))
+                                                                      args(String,String)
+
+        within函数:
+                作用: 主要用于进行类、包切入点表达式的匹配
+
+                与execution对比:
+                              以类为切入点
+                                execution(* *..UserServiceImpl.*(..)
+                                within(*..UserServiceImpl)
+                              以包为切入点
+                                execution(* com.zhuxi..*.*(..))
+                                within(com.zhuxi..*)
+
+
+    @annotation
+        作用: 为具有特殊注解的方法加入额外功能
+            如 <aop:pointcut id="pc" expression="@annotation(Spring.Proxy.log)"></aop:pointcut>
+            其中Spring.Proxy.log 即要加入额外功能的方法所含的特殊注解  @annotation(Spring.Proxy.log)即 所有含log注解的方法加入额外功能
+
+切入点函数的逻辑运算
+     即 整合多个切入点函数一起配合工作进而完成更为复杂的需求
+
+     and与操作
+        案例: 我想让方法名为login 且含有两个字符串类型的参数
+             1:   execution(* login(String,String)
+             2:   execution(* login(..)) and args(String,String)
+        注意: and与操作不能用于同种类型的函数  比如 execution()  and  execution()  这是错误的
+
+     or或操作
+        案例:  我想让方法名为login和register作为切入点
+            只能写成  execution(* login(..)) or execution(* register(..))
+          这里也同样解释了为什么and不同作用有同类型 正如上例子 如果为and那不就是意思为 即是login方法又是register方法了吗？
+
+AOP(Aspect Oriented Programing 面向切面编程)概念
+
+    以切面为基本单位的程序开发，通过切面间的彼此协同，相互调用，完成程序的构建
+    切面= 切入点 + 额外功能
+    依据上面动态代理的开发步骤可知 第四步的组装(整合2、3)实际上就是将他们组装成切面4
+    因此可以说  面向切面的编程 = SPring动态代理开发
+
+    开发步骤
+        同Spring动态代理
+
+AOP动态代理的底层原理
+    核心问题: 1、 AOP如何创建动态代理类(动态字节码技术)
+             2、 Spring工厂如何加工创建代理对象(人话: 为什么通过原始对象的id值 获取的是代理对象而不是原始对象)
+
+1、 AOP如何创建动态代理类(动态字节码技术)
+
+    JDK动态代理分析
+        代理三要素: 原始对象 额外功能  原始对象和代理对象必须实现同一接口或者具有继承关系
+
+        JDK创建动态对象
+        Proxy.newProxyInstance(classloader,interface,invocationhandler).var
+
+        这里的 classloader —— 类加载器
+              interface —— 实现的同一接口
+              invocationhanler —— 该接口invocationhanler的实现类  其中的invoke方法用于书写额外功能
+
+        invocationhanler接口
+           其中有一个方法需实现即
+                    Object invoke(Object proxy,Method method,Object[] args){
+                        额外功能                            这其中  Proxy(不用管)  代表的是代理对象
+                        调用原始方法                                Method  代表额外功能所增加给的那个原始方法
+                        额外功能                                    Object[] 原始方法的参数
+                        返回值
+                    }
+
+                我们知道对于一个方法调用它通常需要 对象、方法名、参数 这三个必须得要素
+                                        如: userService.login("zhuxi","123456")
+                所以对于上述方法我们也是参考这三个必要的要素
+                     由于我们这里并没有获取原始对象 且参数中提供了Method 即原始方法
+                        所以这里采用反射 因为反射格式为  方法.invoke(原始对象,参数)
+                        Object invoke(Object proxy,Method method,Object[] args){
+                            额外功能
+                            Object ref = Method.invoke(UserService,args);
+                            额外功能
+                            return ref;
+                        }
+                观察看 可以知道其形式和前面动态代理学的MethodInterceptor接口很相似
+                        MethodInterceptor接口
+                                Object invoke(MethodInvocation invocation){
+                                    额外功能
+                                    Object ref = invocation.proceed();
+                                    额外功能
+                                    return ref;
+                                }
+
+                    事实上 Spring的动态代理 是对上述的JDK动态代理和Cglib动态代理的封装 所以他们很类似
+
+           到此，代理三要素中的 原始方法和额外功能的底层原理 已经明晰
+            还剩的实现同一接口
+                Proxy.newProxyInstance(classloader,interface,invocationhandler).var
+             前面有说过这里的interface是实现的统一接口
+             那么如何获取这个接口呢？
+             答案是 反射！
+                假如他们都要实现 Order 我们可以使用 UserService.getClass().getInterface()  来获取UserService的接口
+
+        对于Proxy.newProxyInstance(classloader,interface,invocationhandler).var
+            还剩classloader 类加载器:
+
+                类加载器(ClassLoader)
+                    作用:  1 通过类加载器把对应的字节码文件加载到JVM中
+                          2  通过类加载器创建类的Class对象，进而创建这个类的对象
+
+
+             可视化:  这里用CL代指类加载器
+                 获取一个对象的流程:
+                    User.java ——————>  User.class ——————————————> JVM: 字节码、其他  ————————————————————————————>  JVM : User类的Class对象、其他  ————————> new 对象
+                               编译       字节码     通过CL(作用1)                      通过CL(作用2)将字节码转换为
+
+             那么如何获取一个类加载器呢?
+                    类加载器会在 上述可视化中  User.class —————> JVM  过程中依据每一个类的class文件 自动为每一个类的class文件分配与之对应的ClassLoader
+
+             我们知道动态代理那部分讲过  这里的代理类他是没有 User.java ——————>  User.class ——————————————> JVM  这个过程的
+                是采用了动态字节码技术 即直接将字节码加载到JVM中 那么对于类加载器来说 其就无法获取到类加载器，因为类加载器的分配必须要ser.class —————> JVM 这个过程中而进行的分配
+
+            对此 ， 我们就可以理解为什么Proxy.newProxyInstance(classloader,interface,invocationhandler).var 需要有一个classloader类加载器参数
+                          即我们需要借一个classloader类加载器 来为我们创建代理类的Class对象，进而创建代理对象.
+                                        使用反射借用类加载器:   某类.class.getClassLoader(); 注意这里的某类 必须有User.class ——————————————> JVM: 字节码 这个过程
+
+    Cglib动态代理分析
+        代理三要素我们刚才说是其中一个是 实现同一个接口或者具有继承关系
+                那么如果我们遇到的是一个原始方法没有实现任何接口的类呢？  那么此时如何进行解决呢？
+             这就引出了Cglib动态代理
+        Cglib:
+
+            没有实现任何接口的类:
+                public class UserServiceImpl{
+                        login方法
+                        register方法
+                }
+            代理类
+                public class UserServiceProxy extends UserServiceImpl{
+                    login(){
+                        额外功能
+                        super.login
+                        额外功能
+                    }
+                    register(){
+                        额外功能
+                        super.register
+                        额外功能
+                    }
+                }
+
+    Cglib动态代理编码:
+            类似于JDK的实现: Proxy.newProxyInstance(classloader,interface,invocationhandler).var
+
+             Cglib也有一个接口MethodInterceptor 用来实现额外功能:
+                public class UserServiceProxy implements MethodInterceptor {
+                    private UserService userService;
+                    public UserServiceProxy(UserService userService) {
+                        this.userService = userService;
+                    }
+                    @Override                      这些参数与前面讲的动态代理的参数基本一致
+                        public Object intercept(Object o, Method method, Object[] objects, MethodProxy methodProxy) throws Throwable {
+                        System.out.println("before");
+                        Object invoke = methodProxy.invokeSuper(o, objects);  这里使用o 是因为 参数Object o是代理对象的实例 因为继承关系所以这里的invokeSuper方法中也应该写代理对象而不是原始对象 因为要子类调父类方法嘛
+                        return invoke;
+                    }
+                }
+             注意:  这里的MethodInterceptor接口和前面讲的Spring动态代理的MethodInterceptor接口不一样
+                           这里的MethodInterceptor 是import org.springframework.cglib.proxy包下的MethodInterceptor
+                           前面Spring哪里讲的是import org.aopalliance.intercept包里的MethodInterceptor
+
+             核心代码:
+                public static void main(String[] args) {
+                        UserService userService = new UserService();
+                        UserServiceProxy userServiceProxy = new UserServiceProxy(userService);
+
+                        Enhancer enhancer = new Enhancer();      类似JDK的三个参数(classloader,interface,invocationhandler)
+                        enhancer.setClassLoader(Test.class.getClassLoader());  提供类加载器
+                        enhancer.setSuperclass(UserService.class);             提供欺父类是谁
+                        enhancer.setCallback(userServiceProxy);                提供额外功能
+
+                        UserService userService1 = (UserService) enhancer.create();  获取代理类并转换类型  因为enhancer.create()返回值是object
+                        userService1.add();
+                        userService1.delete();
+
+                    }
+
+        所以Cglib动态代理的底层原理: 父子继承关系创建代理对象，原始类作为父类，代理类作为子类，这样既可以两者方法一致，同时在代理类提供新的实现
+
+      至此，我们可以知道Spring创建动态代理的底层原理就是JDK和Cglib的原理  所以我们在使用Spring创建动态代理时，只要原始对象实现了接口 那么Spring会默认使用JDK来
+    创建动态代理。如果原始对象没有实现任何接口，那么Spring则默认使用Cglib创建动态代理
+       上述两个创建代理的方式又称:  JDK动态代理 ———— 基于接口代理   Cglib动态代理 ————— 基于类代理
+
+2、 Spring工厂如何加工创建代理对象(人话: 为什么通过原始对象的id值 获取的是代理对象而不是原始对象)
+       还记BeanPost吗  即加工操作 事实上动态代理就是在加工操作给你完成了
+
+       原理:
+            <bean id .......> ————————>  调用构造方法  ——————>  BeanPostProcessor的Before加工操作
+                                                                        Object PostProcessBeforeInitialization(Object bean, String beanName){
+                                                                                return bean;                      |
+                                                                        }                                         |
+                                                                                                                  |
+             BeanPostProcessor中的After加工操作 <———— InitializingBean和init-method="myInit"(初始化操作)    <—————————
+                  |
+                  |
+             Object PostProcessAfterInitialization(Object bean, String beanName){
+             }                           这里的bean传入的就是原始对象  下方参数类加载器可以得到  接口也可以得到   inovcationHandler中的方法的参数这里也传入了beanName(即id) 所以方法内的参数也有了
+                     这里以JDk为例   userServiceProxy = Proxy.newProxyInstance(classloader,interface,inovcationHandler);
+                     return userServiceProxy;
+             }                   |
+                                 |
+                                 |
+                    Application ctx = new ClassPathXmlApplicationContext("/applicationContext.xml");
+                    ctx.getBean("xxx").var;
+
+            如上图所示原理  代理这步在加工操作中After中完成并返回了代理对象  所以我们获取的就是代理对象而不是原始对象
+
+     基于注解的AOP编程开发步骤
+      1 原始对象
+      2 额外功能
+      3 切入点
+      4 组装切面
+
+      通过切面类 定义了额外功能@Around
+                定义了切入点  @Around("excution(* say(..))")
+                @Aspect 表示该类为切面类
+
+      如:
+            /*
+            原本
+                额外功能:
+                public class MyArround implements MethodInterceptor{
+                    public Object invoke(MethodInvocation methodInvocation) throws Throwable {
+                        额外功能;
+                        object ret = invocation.proceed();
+                        额外功能;
+                        return ret;
+                    }
+                }
+
+                切入点:
+                  <aop:config
+                      <aop:pointcut id="pc" expression="execution(* say(..))"/>
+            */
+
+
+            @Aspect
+            public class MyAspect {
+                @Around("execution(* say(..))")
+                public Object arround(ProceedingJoinPoint joinPoint) throws Throwable {
+                    System.out.println("额外方法");
+                    Object proceed = joinPoint.proceed();
+                    System.out.println("额外方法");
+                    return proceed;
+                }
+            }
+
+      XML配置
+            <bean id="Student" class="Spring.aspect.Student"></bean>
+            <bean id="MyAspect" class="Spring.aspect.MyAspect"></bean>
+
+            <aop:aspectj-autoproxy/>  这里的意义是告诉Spring我们要以注解AOP了
+
+     切入点复用:
+            如下:
+                @Aspect
+                public class MyAspect {
+                    @Around("execution(* say(..))")
+                    public Object arround(ProceedingJoinPoint joinPoint) throws Throwable {
+                        System.out.println("额外方法 事务");
+                        Object proceed = joinPoint.proceed();
+                        return proceed;
+                    }
+
+                    @Around("execution(* say(..))")
+                    public Object arround1(ProceedingJoinPoint joinPoint) throws Throwable {
+                        System.out.println("额外方法  性能");
+                        Object proceed = joinPoint.proceed();
+                        System.out.println("额外方法");
+                        return proceed;
+                    }
+                     @Around("execution(* say(..))")
+                    public Object arround1(ProceedingJoinPoint joinPoint) throws Throwable {
+                        System.out.println("额外方法  日志");
+                        Object proceed = joinPoint.proceed();
+                        System.out.println("额外方法");
+                        return proceed;
+                    }
+                }
+
+      如上，如果我是想给run方法添加额外功能 需要更改切面类所有中的execution函数 如果方法多等等情况 需要一个个改 过于冗杂 不好维护
+
+     所以Spring有提供一个@Pointcut注解 用于复用切入点
+     如下:
+        @Aspect
+        public class MyAspect {
+            @Pointcut("execution(* say(..))")
+            public void pc(){}             将切入点放入@Pointcut注解中  然后让@Around注解调用被@Pointcut注解的方法
+
+            @Around(value="pc()")           value可以省略不写
+            public Object arround(ProceedingJoinPoint joinPoint) throws Throwable {
+                System.out.println("额外方法 事务");
+                Object proceed = joinPoint.proceed();
+                return proceed;
+            }
+
+            @Around(value="pc()")           value可以省略不写
+            public Object arround1(ProceedingJoinPoint joinPoint) throws Throwable {
+                System.out.println("额外方法 性能");
+                Object proceed = joinPoint.proceed();
+                return proceed;
+            }
+
+            @Around(value="pc()")           value可以省略不写
+            public Object arround2(ProceedingJoinPoint joinPoint) throws Throwable {
+                System.out.println("额外方法 日志");
+                Object proceed = joinPoint.proceed();
+                return proceed;
+            }
+        }
+
+    再遇JDK & Cglib
+         默认情况呀下, AOP编程使用JDK作为底层应用的动态代理创建方式
+      自行更改创建方式:
+                  基于注解AOP开发:
+                        <aop:aspectj-autoproxy proxy-target-class="true"/>   proxy-target-class值默认为false 即JDK  值为true则为Cglib
+                  传统的AOP开发:
+                  <aop:config proxy-target-class="true" >    同上
+                      <aop:pointcut id="pc" expression="@annotation(Spring.Proxy.log)"></aop:pointcut>
+                      <aop:advisor advice-ref="OrderProxy" pointcut-ref="pc"></aop:advisor>
+                  </aop:config>
+
+    基于上述，AOP开发中可能遇到的坑:
+        如下:
+                @Override
+                public void say() {
+                    System.out.println(
+                            "我是大学生 v我50"
+                    );
+                    this.run();
+                }
+
+                @Override
+                public void run() {
+                    System.out.println(
+                            "你给路大有"
+                    );
+                }
+            }
+        开发中会常常遇到原始类中，需要使用其中一个原始方法调用另一个原始方法，这个时候就有可能遇到一个小bug，即这时候在test.java中获取的是代理类，调用的也是代理类。
+    当你调用了代理类的say方法，额外功能和say中的执行完后，开始执行this.run()时。这里的this它指的是原始类对象，所以这里的this.run()实际上是赤裸裸地只调用了原始类
+    中的原始方法，其并没有依据我们为其加入的额外功能。
+
+    解决方法，让需要调用的方法也为代理类调用而不是原始类调用即可。
+        注意: Spring工厂是是一个重量级资源，最好只创建一个，故而我们需要的不是再创建，而是让其公用一个ClassPathXmlApplication
+
+        如下， ApplicationContextAware接口中提供了setApplicationContext方法 可以让已创建过的Spring工厂对象传入使用
+
+        public class Student implements People, ApplicationContextAware {
+
+            private ApplicationContext ctx;
+            @Override
+            public void say() {
+                System.out.println(
+                        "我是大学生 v我50"
+                );
+                People student = (People) ctx.getBean("student");
+                student.run();
+            }
+
+            @Override
+            public void run() {
+                System.out.println(
+                        "你给路大有"
+                );
+            }
+
+            @Override
+            public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+                this.ctx= applicationContext;
+            }
+        }
+
+Spring与持久层整合
+          -----------------------------------------
+    Mybatis开发:
+            1 实体
+            2 实体别名
+            3 表
+            4 创建DAO接口
+            5 实现Mapper文件
+            6 注册Mapper文件
+            7 MybatisAPI调用
+        存在的问题:  配置繁琐(2、6)  代码冗余(7)
+
+    Spring与mybatis整合:
+            对于原本的mybatis开发中的:
+                         InputStream resourceAsStream = Resources.getResourceAsStream("mybatis-config.xml");
+                         SqlSessionFactory build = new SqlSessionFactoryBuilder().build(resourceAsStream);
+
+                         以及mybatis-config.xml,而mybatis内容总体可以分为:  1 dataSource
+                                                                         2 typeAliases
+                                                                         3 mapper文件注册
+
+            这里依据是依赖注入核心思想
+            Spring提供了SqlSessionFactoryBean类进行了封装 这个类有三个变量: dataSource、typeAliasesPackage、mapperLocations(注入时变量名不能写错哦)
+
+            <bean id="dataSource" class=""/>
+                <bean id="ssfb" class="SqlSessionFactoryBean">
+                    <property name="dataSource" ref=dataSource">  这里需要提供dataSource即 数据库的环境核心(连接池) 需要一个类
+                    <property name="typeAliasesPackage"  ......>
+                                            这里的typeAliasesPackage的值指实体所对应的包，Spring会为其自动创建别名  如: com.zhuxi.User会被创建为别名User(有点类似于mybatis本来就带的那个)
+                    <property name="mapperLocations" .........>
+                                            这里的mapperLocations值为XXXmapper.xml的所在位置。 XXXMapper.xml文件在实际开发是不止一个的。 原本在Mybatis中是需要写很多个<mapper resource
+                                        Spring则采用了通配的设置来解决了这个冗余问题，即可以使用通配符 "*"  比如这里写成"*Mapper.xml"这样就可以匹配所有后部分为 Mapper.xml 如 UserDAOMapper.xml、OrderDAOManger.xml等等
+                                                                                                 (有点类似于Mybatis中的<package name=.....)
+
+            对于原本Mybatis中的:
+
+                    SqlSession sqlSession = build.openSession();
+                    UserMapper mapper = sqlSession.getMapper(UserMapper.class);
+
+               Spring提供了MapperScannerConfigure类来封装上述代码  该类中有两个变量为: sqlSessionFactoryBeanName、basePackage(同上，Spring提供的不能写错)
+                    <bean id="scanner" class="MapperScannerConfigure">
+                        <property name="sqlSessionFactoryBeanName" value="ssfb">
+                                               这里sqlSessionFactoryBeanName从名字就可以看出封装了最上面的SqlSessionFactory和这里的openSession() 那么按照正常流程这个SqlSessionFactory是由最上面提供的
+                                         所以依据给的这个sqlSessionFactoryBeanName变量可知 我们需要提供上一步SqlSessionFactoryBean的bean标签中的id值
+                        <property name="basePackage" ......>
+                                            这里的basePackage值指DAO接口所在包   对应sqlSession.getMapper(UserMapper.class);
+                    </bean>
+
+               最终——调用API
+                    问题: 这里上述我们的basePackage所注入的我DAO所在的包 而DAO是有多个的，那么我们使用getBean("id")时 我们获取的是根据哪个DAO.class而获取的呢？
+                        为了解决这个问题，Spring提供了一个公共的规范:
+                                                           及DAO的书写需要第一个单词的首字母需大写。 如: UserDAO、OrderDAO等等
+                                       只要遵循这个规范，那么Spring在你使用getBean("id")时，这里的id值 可以针对上述规范将第一个单词首字母变为小写以匹配你需要根据的DAO.class
+
+           示例:
+              在pom.xml中引入mybatis-spring 和 mybatis依赖
+
+              applicationContext.xml:
+
+                    <context:property-placeholder location="classpath:/db.properties"/>
+                    <bean id="datasource" class="com.alibaba.druid.pool.DruidDataSource">
+                        <property name="driverClassName" value="${jdbc.driverClassName}"/>
+                        <property name="url" value="${jdbc.url}"/>
+                        <property name="username" value="${jdbc.username}"/>
+                        <property name="password" value="${jdbc.password}"/>
+                    </bean>
+
+                    <bean id="ssfb" class="org.mybatis.spring.SqlSessionFactoryBean">
+                        <property name="dataSource" ref="datasource"/>
+                        <property name="typeAliasesPackage" value="Spring.MybatisSpring.Service"/>
+                        <property name="mapperLocations">
+                            <list>
+                                <value>classpath:Mapper/*Mapper.xml</value>
+                            </list>
+                        </property>
+                    </bean>
+
+                    <bean id="scanner" class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+                        <property name="sqlSessionFactoryBeanName" value="ssfb"/>
+                        <property name="basePackage" value="Spring.MybatisSpring.DAO"/>
+                    </bean>
+
+              mapper.xml:
+                    <mapper namespace="Spring.MybatisSpring.DAO.AniamlDAO">
+                        <select id="selectALL" resultType="cat">
+                            select * from mybatis;
+                        </select>
+                    </mapper>
+
+              核心代码:
+                 ApplicationContext ctx = new ClassPathXmlApplicationContext("applicationContext3.xml");
+                 AniamlDAO aniamlDAO = (AniamlDAO) ctx.getBean("aniamlDAO");
+
+                 List<cat> cats = aniamlDAO.selectALL();
+                 System.out.println("cats = " + cats);
+
+          注意: mybatis-spring和 mybatis的版本兼容
+
+
+     Spring和Mybatis整合细节
+
+        问题: Spring与Mybatis整合后，为什么DAO不提交事务，但是数据能够插入到数据库中( 演示中用的不是插入语句 )
+
+           本质上是Connection控制事务(tx) 而Mybatis也是通过Connection来控制事务的
+        而通过日志会发现，日志上写了Spring并没有参与控制
+
+        1. Mybatis提供的连接池对象——> 创建了Connection
+                    Connection.setAutoCommit(false)  手工控制了事务， 操作完成后再进行手工回滚或者提交
+        2 在本示例中，我们是使用了alibb的Druid(X3P0 DBCP)作为连接池————> 创建了连接池
+                    Connection.setAutoCommit(true)   true时则表明为默认值 即自动控制事务，一条sql语句自动提交
+        所以之所以不用手动提交是因为这里引入了外部连接池对象，而其自动控制了事务。
+
+        注意: 未来实战中，我们还是需要手动控制事务的,因为这里的自动控制为一条sql自动提交。 我们需要的是多条sql一起成功或一起失败。后续Spring会通过事务控制解决这个问题
+
+事务
+    什么是事务?
+        保证业务操作完整性的一种数据机制
+    事务的4特点:
+            1 原子性
+            2 一致性
+            3 隔离性
+            4 持久性
+    如何控制事务?
+        JDBC:
+            Connection.setAutoCommit(false);
+            Connection.commit();
+            Connection.rollback();
+        Mybatis:
+            Mybatis自动开启事务;
+            sqlSession(底层为Connection).commit();
+            sqlSession(底层为Connection).rollback();
+    综上两种框架的事务控制，可得————————控制事务的底层都是Connection对象完成的
+
+Spring控制事务开发
+    Spring是通过AOP的方式进行事务开发
+
+    AOP事务开发:
+        1 原始对象
+            public class XXXUserServiceImpl{
+                private xxxDAO xxxDAO;
+                set、get方法
+                1 核心功能(业务处理 + DAO调用)
+                2 DAO是被调用，那么是不是意味着DAO是被依赖的，那么DAO作为Service的成员，依赖注入方式进行赋值
+            }
+        2 额外功能
+            1 MethodInterceptor & MethodAdvice
+                public Object invoke(MethodInvocation invocation){
+                    try{
+                        Connection.setAutoCommit(false)
+                        Object ret = invocation.proceed();
+                        Connection.commit();
+                    }catch(Exception e){                对比这里的MethodInterceptor & MethodAdvice 以及 下面的@Aspect  他们对于事务处理都是代码的重合度都是高度一致
+                        Connection.rollback();      所以为了减少代码冗余，Spring提供了另一个方式
+                    }
+                    return ret;
+                }
+            2 @Aspect
+              @Around
+            3  (1)在Spring中进行事务时， Spring提供了一个org.Springframework.jdbc.datasource.DataSourceTransactionManger类 封装了上述大量额外功能+事务连接
+               (2) 注入DataSource
+        3 切入点
+            @Transactional
+              :即 将事务的额外功能加入给那些业务方法
+
+            该注解可作用于: 1 类上——类中所有方法都江加入事务
+                          2 方法上——该方法加入事务
+        4 组装切面
+            1 切入点
+            2 额外功能
+          将上面两点组装即为切面
+            这里Spring 提供了标签
+                        <tx:annotation-driven transaction-manger=""/>       该标签会自动扫描到具有@Transactional标签的类或
+
+    细节:
+        该标签是用来组装切面(即创建代理)   其还有一个属性  proxy-target-class=""  其作用跟前面讲的一致
+        <tx:annotation-driven transaction-manager="DataSourceTransactionManger" proxy-target-class="true'/>
+
+
+什么是事务属性
+    事务属性: 描述事务特征的一系列值
+        如:
+             1 隔离属性
+             2 传播属性
+             3 只读属性
+             4 超时属性
+             5 异常属性
+    如何添加事务属性
+        只需在标签@Transactional(isloation= ,propagation=, 等等) 的括号内添加
+
+    事务属性详解
+        1、隔离属性
+             即描述了事务解决并发问题的特征
+          这里的并发是: 多个事务(用户)在同一时间，访问操作了相同的数据   (类似java线程安全那里)
+
+          并发会导致的问题:
+                    1 脏读
+                    2 不可重复读
+                    3 幻影读
+          如何解决并发问题
+                    通过隔离属性解决，隔离属性中设置不同的值，解决并发处理过程中的问题
+
+                脏读:  一个事务读取了另一个事务中没有提交的数据，导致在本事务中产生数据不一致问题
+                        如:  A和B存了1000  A去取钱了取了200  正好同一时间B也去取钱了  而A由于有别的操作其并没有提交事务  这时候B正好读取了A中的没有提交的事务  即B读取到钱为800 这个时候B取了300
+                  并提交  钱这个时候成了500  但是A想了想又把钱返回了(回滚)  最后钱成了700  但是A和B看到钱是不一的  虽然看起来好像并没发生什么错误  但是现实中是可能会有逻辑错误亦或者这个未提交的数据
+                  也会干扰人的判断，比如: 银行职员的判断
+
+                解决方法: @Transactional(isolation=Isolation.READ_COMMITTED)
+
+                不可重复读: 一个事务中，多次读取相同的数据，但是读取结果不一样。会在本事务中产生数据不一致问题
+                        如:  同上例， A去查钱 显示1000  然后去做其他事情并没有提交事务  这个时候B取了500并提交事务 钱变成了500  这个时候A的事务还没有结束 他又查询了一次钱 发现钱变成了500 这就是不可
+                    重复读  实际中同样可能会引发严重的逻辑问题
+
+                解决方法: @Transactional(isolation=Isolation.REPEATABLE_READ)
+                      实际上相当于加了一把行锁
+
+                幻影读: 一个事务中，多次对整表查询或统计，但是呈现的结果不一样，会在本事务中产生数据不一致的问题
+                    如: 一个表中有3个数据分别为100、200、300   这个时候A在查询统计第一次统计为600但是其并没有提交事务  这个时候B也访问了这个表 并添加(或删除)了一个新的数据500 然后提交了事务 之后A又一次
+                查询统计发现钱变成了1100  同样的实际中可能会引发严重的逻辑问题
+
+                解决方法: @Transactional(isolation=Isolation.SERIALIZABLE)
+                       实际上相当于加上了表锁
+
+                注意事项:
+                        1 不可重复读不是脏读
+                        2 不可重复读和幻影读都是一个事务中
+                        3 不可重复读强调的是数据被修改而导致的一个事务中的不同结果
+                        4 幻影读强调的是数据被删除或添加而导致的一个事务中的不同结果
+
+                并发安全级别:  SERIALIZABLE > REPEATABLE_READ > READ_COMMITTED
+                运行效率:      READ_COMMITTED > REPEATABLE_READ > SERIALIZABLE
+
+        数据库对隔离属性的支持
+            隔离属性值                          Mysql        Oracle
+        ISOLATION_READ_COMMITTED                ✔            ✔
+        ISOLATION_REPEATABLE_READ               ✔            ✖
+        ISOLATION_SERIALIZABLE                  ✔            ✔
+
+        Oracle不支持REPEATABLE_READ 那么其如何解决不可重复读？
+            Oracle采用的是多版本比对的方式 (即mvcc)
+
+        默认隔离属性
+            在控制台的日志可以看到事务显示的是 ISOLATION_DEFAULT  即如果不给标签中设置ISOLATION值 那么即为默认
+            各数据库默认的隔离属性
+                    Mysql:    REPEATABLE_READ           验证:  select @@transaction_isolation;
+                    Oracle:   READ_COMMITTED            验证:  略
+
+        隔离属性在实战中的建议
+            推荐使用Spring指定的ISOLATION_DEFAULT
+                1 Mysql  REPEATABLE_READ
+                2 Oracle READ_COMMITTED
+
+            问题: 如果使用默认 ，像Oracle这种使用了安全级别最低的如果出现了并发安全问题怎么办?
+
+                   答曰: 显示实战中，并发访问的情况很少，因为从命令执行后发出请求到数据库中间还会经历服务器等等一系列操作，一般时间都会被隔离开。且只有有海量用户或者数据的前提下，并发安全问题的发生率才会高
+               如果真的遇到了并发问题，一般也是尽量不使用隔离属性，因为会降低效率。可以使用乐观锁:
+                                                                                  Hibernate(JPA)  Version
+                                                                                  Mybatis         通过拦截器自定义开发
+
+    2 传播属性(PROPAGATION)
+        概念: 描述了事务解决嵌套问题的特征
+              一般Service中是调用DAO  但也有调用Service方法调用Service方法的情况 事务嵌套一般多发于此场景
+        事务嵌套可能造成的问题:    大事务与小事务彼此影响导致失去了事务的原子性
+                    如:      A{                                              可能出现的情况:         TXA------------------
+                                    TXA----------                                                  MethodA(){
+                                    MethodA(){}                                                         TXB-------------
+                                    TXA----------                                                       MethodB(){}
+                                                                                                        TXB-------------
+                                    TXB----------
+                                    MethodB(){}                                                         TXC-------------            此例子中事务TXB正常开启并提交 但是假如TXC事务出现异常 就需要回滚
+                                    TXB----------                                                       MethodC(){}             这个时候TXC可以回滚 但是TXB事务由于已经提交了 不能回滚 对于整体来说也
+                                                                                                        TXC-------------        就是TXA事务，就违背了原子性 因为要么全部都成功 要么就全部都失败
+                                    TXC----------                                                  }
+                                    MethodC(){}                                                    TXA------------------
+                                    TXC----------
+                    }
+
+    嵌套的解决方法:
+        传播属性的值及其用法
+                传播属性的值          外部不存在的事务        外部存在的事务                    用法                                                                   常用场景
+                REQUIRED              开启新的事务           融合到外部事务中                 @Transactional(propagation= Propagation.REQUIRED)                       增删改
+                SUPPORTS              不开启事务             融合到外部事务中                 @Transactional(propagation= Propagation.SUPPORTS)                       查询
+                REQUIRES_NEW          开启新事务            挂起外部事务，创建新事务            @Transactional(propagation= Propagation.REQUIRES_NEW)                  日志
+                NOT_SUPPORTED         不开启事务            挂起外部事务                      @Transactional(propagation= Propagation.NOT_SUPPORTED)                及其不常用
+                NEVER                 不开启事务            抛出异常                         @Transactional(propagation= Propagation.NEVER)                         及其不常用
+                MANDATORY             抛出异常              融合到外部事务中                  @Transactional(propagation= Propagation.MANDATORY)                    及其不常用
+
+        这里讲一下REQUIRES_NEW
+                    如:      A{      @Transactional(propagation= Propagation.REQUIRES_NEW)
+                                    TXA----------
+                                    MethodA(){
+
+                                        日志(){};
+
+                                        假如这里出错抛出异常              如此例子 如果在事务TXA中有异常 那么事务就需要回滚 这时候日志也被回滚了 即日志并没有记录下来 但是日志是无论发生什么都需记录的
+                                    }                          此时使用了REQUIRES_NEW值 就可以判断  外部存在事务  则先把外部事务挂起 创建新的事务让日志能正常运行 此时运行该新的事务 直到日志记录完
+                                                               成并提交  这个时候再继续原本的事务
+                                    TXA----------
+                            ｝
+        默认传播属性
+            据日志上得默认传播属性为:PROPAGATION_REQUIRED
+        推荐传播属性的使用方式
+                    增删改 等 : 直接使用默认值即可
+                    查询、日志等 : 显式指定传播属性
+
+
+    3 只读属性(readOnly)
+        针对只进行查询操作的业务方法，可以加入只读属性，提供运行效率
+        默认值为: false  配置为true则为只读  这个时候会相应的对其进行优化即减少一些不必要的操作 如加锁等等
+
+    4 超时属性(timeout)
+       概念: 指定了事务等待的最长时间
+
+        1. 为什么事务进行等待?
+            当前事务访问数据时，有可能访问的数据被别的事务进行加锁处理，那么此时本事务就必须等待
+        2. 等待的时间是以秒为单位
+        3. 如: @Transactional(timeout= 2)
+        4. 超时属性的默认值为 -1
+                即等待时间由其使用的数据库来指定
+
+    5 异常属性
+        Spring在事务处理过程中
+            默认 对于RuntimeException和error及其他们的子类 的异常出现时 采用的是回滚的策略
+            默认 对于除了上面的外的其他异常 都采用的是提交的策略
+
+        通过异常属性配置 可以自由的控制那些异常采用提交那些采用回滚
+            rollbackFor = {java.lang.Exception,xxx,xxx,...}
+            noRollbackFor = {java.lang.RuntimeException,xxx,xxx,...}
+
+        @Transactional(rollbackFor = {java.lang.Exception,xxx,xxx,...},noRollbackFor = {java.lang.RuntimeException,xxx,xxx,...})
+
+    建议: 实战中使用默认值即可
+
+
+第二种事务开发方式
+
+    1 基于注解的事务配置
+        <bean id="ServiceImpl" class="Spring.txSpring.Service.ServiceImpl">
+            <property name="bookDAO" ref="bookDAO"/>
+        </bean>
+
+        <bean id="DataSourceTransactionManger" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+            <property name="dataSource" ref="dataSource"/>
+        </bean>
+
+        @Transactional(isolation=,propagation= ,)
+         public void UserService implements User{
+                   ........
+         }
+
+        <tx:annotation-driven transaction-manager="DataSourceTransactionManger" proxy-target-class="false"/>
+
+    2 基于标签的事务配置
+        <bean id="ServiceImpl" class="Spring.txSpring.Service.ServiceImpl">
+            <property name="bookDAO" ref="bookDAO"/>
+        </bean>
+
+        <bean id="DataSourceTransactionManger" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+            <property name="dataSource" ref="dataSource"/>
+        </bean>
+
+       这里配置的就相当于原本的Transactional里的事务属性
+        <tx: advice id="txAdvice" transaction-manager="DataSourceTransactionManger">
+            <tx:attributes>
+                    <tx:method name="bugBook" isolation="",propagation=''.... />
+                    <tx:method name="delBook" isolation="",propagation=''.... />
+            </tx:attributes>
+        </tx:advice>
+
+        回到了原本的AOP编程为方法添加额外功能
+
+        组装切入点和额外功能
+        <aop:config>
+            <aop:pointcut id="pc" expression="execution(* *(..))"/>
+            <aop:advisor advice-ref="txAdvice" pointcut-ref="pc"/>
+        </aop:config>
+
+
+    细节:
+
+       在这里指定方法的事务属性时 是可以使用通配符的 且 每个<tx:method 标签会按照从上到下分优先级
+        <tx: advice id="txAdvice" transaction-manager="DataSourceTransactionManger">
+            <tx:attributes>
+                    <tx:method name="*Book" isolation="",propagation=''.... />   这里即为先让所有后缀为Book的方法添加指定的事务属性
+                    <tx:method name="*" isolation="",propagation=''.... />       这里使用* 原本意思应该是匹配所有方法 但是因为有优先级存在 所以这里的意思是 除了上一个标签已经匹配过的方法外的所有方法
+            </tx:attributes>                                                   通常可以让最后一个标签为* 以匹配所有查询操作 并为其指定事务属性
+        </tx:advice>
+
+
+
+Spring MVC
+
+   搭建web环境
+        略
+
+   为什么要整合MVC框架
+        1 MVC框架提供了控制器(Controller)调用Service
+           DAO --> Service  ---> Controller
+        2 请求响应的处理
+        3 接受请求参数  request.getParameter("")
+        4 控制程序的运行流程
+        5 视图解析(JSP JSON Freemarker Thyemeleaf)
+     以上都是原生java无法完成并解决的问题 而MVC框架可以解决上述问题
+
+   Spring可以整合那些MVC框架
+        1. struts1     |
+        2. webwork     |——————>  这三者都是老旧 已经被淘汰
+        3. jsf         |
+        4. struts2    后来被曝有大bug后 使用量也大大骤减
+        5. springMVC   主要以SpringMVC为重点使用
+      所以下面的以springMVC为主要讲解
+
+
+   Spring整合MVC的核心思路
+        1、准备工作
+                1. web开发过程中如何创建工厂
+                        ApplicationContext ctx = new ClassPathXmlApplication("/applicationContext");
+                                             web环境: WebXmlApplicationContext("");
+
+                2. 工厂是一个重量级的资源 我们需要保持只有一个且都共用这个工厂
+                   如何保证工厂唯一且被共用?
+                        共用:     Web中 request|session|ServletContext
+                               其中ServletContext是一个全局范围的对象，被所有对象、用户和请求等共享。所以如果我们把ctx存入到ServletContext
+                               其它都是会调用ServletContext的，这个时候从ServletContext获得的ctx就是确保了是同一个工厂 且是共用的
+                            ServletContext.setAttribute("xxx",ctx);
+
+                        唯一:  如果按照平常的ApplicationContext ctx = new WebXmlApplicationContext("");
+                            我们每运行一次就会创建一次工厂，如何保持只创建一次工厂一直用呢?
+                               ServletContext是只会被创建一次的，也就是说ServletContext具有唯一性。那就意味着只要保证ServletContext创建的同时，创建对象即可。
+                            但是ServletContext我们是没法获得其什么时候创建的。 这个时候有一个ServletContextListener(监听器), 当ServletContext创建成功后，
+                            监听器就能获取到ServletContext常见成功(即监听器会被调用一次)。所以我们只需把创建工厂的代码写到监听器里即可
+
+                   总结:      ServletContextListener(唯一){
+                                    ApplicationContext ctx = new WebXmlApplicationContext("");
+                                    .....
+                              }
+
+                              ServletContext.setAttribute("xxx",ctx);
+
+                   整合:  Spring封装了一个ContextLoaderListener
+                            其将上述: 1 创建工厂
+                                     2 把工厂存在ServletContext中
+                                    封装了
+                        ContextLoaderListener使用方式
+                            web.xml:
+                                    //加入封装
+                                    <listener>
+                                            <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+                                    </listener>
+
+                                    <context-param>   //指定配置文件位置
+                                        <param-name>contextConfigLocation</param-name>
+                                        <param-value>classpath:applicationContext.xml</param-value>
+                                    </context-param>
+        2、代码整合
+              依赖注入: 把Service对象注入控制器对象
+
+              控制器:
+                public class xxxController{                                                                 public class xxxController{
+                1.接受client请求参数                                                                                  private XXXService xxxService;
+                2.调用Service对象               这里Service是必须调用 也就是依赖 所以可以通过配置文件注入                    set和get方法
+                3.流程跳转(响应JSON)                                                                          }
+                }
+
+
+-----------------------------------MVC 我恨你啊  暂停
+
+
+Spring————注解编程              实战内容终于开始了QAQ
+
+    1. 什么是注解
+            略
+    2.为什么讲解注解?
+        1 注解开发方便 代码简洁 开发速度大大提高
+        2 Spring潮流
+            Spring2.x引入 Spring3.x完善  SpringBoot开始普及大力推广 可以说是java后端避不开的内容
+
+    注解的作用
+        1 替换XML这种配置形式，简化配置
+        2 替换接口，实现调用双方的契约性:
+            接口的契约性:
+                    调用者 implements 接口{                 接口{                                   Service implements 接口{
+                        接口.method();                      void method();                      public void method(){
+                                                                                                                   xxxx
+                                     }                          }                                               }
+
+                  如上述, 现实开发中 往往调用和功能代码的书写并都是你，所以有时你作为调用者，你并不知道功能代码的方法名是什么而无法调用。所以就约定，将在接口中书写功能代码的方法名。
+              然后都实现这个接口，这样两者都能保证都使用一个方法名且都知道方法名，调用者只需要使用 接口名.方法名()来调用(多态)
+
+                这就是我们前面的很多比如AOP了 代理 都涉及到了接口 因为接口可以说是作为了一个契约来告诉了Spring你写的类、方法等信息
+
+            注解的契约性:
+
+                调用者{                                            Service｛
+                   通过反射扫描注解从而实现方法                         @compaut  //这里随便起的注解名
+                }                                                   public void m1(){}
+                                                                  }
+                和接口同理 但是注解更灵活更好用
+
+            对于以上两种注解和接口   有一个非常典型的例子————————AOP开发  有两种模式  一种就是实现像MethodBeforeAdvice和MethodInterceptor接口  另一种是使用注解@Around("excution(* *(..))")
+
+    Spring的基础注解(Spring2.x)
+        这个阶段，仅仅是简化XML的配置，并不能完全代替XML
+
+    1. 对象创建相关注解
+        搭建环境
+            <context:component-scan base-package="com.zhuxi"/>
+            作用: 让Spring框架在设置包及其子包中扫描注解
+
+    2.对象创建相关注解
+        @Component
+            作用:替换原有Spring配置文件中的<bean>标签
+            注意:
+                id属性 component注解 提供默认的设置方式 即首单词的首字母小写
+                class属性 通过反射获得class内容
+
+        @Component细节
+           如何显式指定工厂创建对象的id值
+            @Component("us")
+           Spring配置文件覆盖注解配置内容
+           applicationContext.xml:
+                    <bean id="us" class="com.zhuxi.Demo.User"/>
+                 注意: id值和class值要和注解中的设置保持一致
+
+        @Component的衍生注解
+            @Repository
+            @Service
+            @Controller
+            注意: 本质上这些衍生注解就是@Component
+            用法也会@Component一样
+            作用:  更加准确地表示一个类型的作用(就是给人看的 看到他就知道这个类型的作用)
+                如: @Repository经常使用于XXXDAO类中   @Service常用于Service类中  @Controller更常用于XXXAction类中
+
+            注意: Spring整合Mybatis的开发过程中不使用@Repository @Component  (Spring整合Mybatis时是自动生成DAO的 所以DAO是不用自己加)
+
+
+        @Scope注解
+            @Scope("singleton|prototype")
+            作用: 控制简单对象创建次数
+            注意: 不添加@Scope Spring提供默认值(Singleton)
+            <bean id="" class="" scope="singleton | prototype" />
+
+        @Lazy注解
+            @Lazy("true|false")
+            作用: 延迟创建单实例对象
+            注意: 一旦使用了@Lazy注解后，Spring会在使用这个对象时候，才进行这个对象的创建
+                <bean id="" class="" lazy="false"/>
+
+
+        生命周期方法相关注解
+            1.初始化相关方法 @PostConstruct
+                InitializingBean接口
+                <bean init-method=""/>
+            2. 销毁方法 @PreDestroy
+                DisposableBean
+                <bean destroy-method=""/>
+
+            注意: 上述2个注解并不是Spring提供的，而是JSR(JavaEE规范)520的  只是Spring兼容了
+
+        注入相关注解
+
+            用户自定义类型注解 @Autowired
+                使用方法:
+                 @Repository("UDAOImpl")
+                 public class UserDAOImpl implements UserDAO {
+                     @Override
+                     public void save() {
+                         System.out.println("执行mysql的save操作");
+                     }
+                 }
+
+                 @Service("USImpl")
+                 public class UserServiceImpl implements UserService {
+                     private UserDAO userDAO;
+
+                     public UserDAO getUserDAO() {
+                         return userDAO;
+                     }
+
+                     @Autowired   //这里 使用该注解可以为你注入需要注入的用户自定义类型  相当于原本bean标签里的property标签+ref标签
+                     public void setUserDAO(UserDAO userDAO) {
+                         System.out.println("setUserDAO");
+                         this.userDAO = userDAO;
+                     }
+
+
+                     @Override
+                     public void save() {
+                         userDAO.save();
+                     }
+                 }
+
+            @Autowired细节
+                1. Autowired注解基于类型进行注入(推荐)
+                        注入对象的类型，必须与目标成员变量类型相同或者是其子类(实现类)  (如果接口有多个实现类会提示错误)
+                2. Autowired配合Qualifier使用 基于名字进行注入  (适用于要注入的 接口又多个实现类)
+                        注入对象的id值，必须与Qualifier注解中设置的名字相同
+                3. Autowired注解放置位置
+                        (a 放置在对应成员变量的set方法
+                        (b 直接把这个注解放置在成员变量之上，Spring通过反射直接对成员变量进行注入(赋值) ｛推荐使用｝
+                4 JavaEE规范中类似功能的注解
+                    JSR250 : @Resource(name="USDAOImpl")  即基于名字进行注入   ｛当今开发中常用｝
+                         事实上，@Resource(name="") 相当于@Autowired + @Qualifier("")
+                         注意:  如果你并没有配置名字或者名字没有配置成功  这个时候其就会变成按照类型进行注入  (同理 如果接口有两个实现类 其运行时会报异常)
+
+                    JSR330 @Inject 相当于Autowired   仅了解即可  现在基本没人用
+
+            JDK类型注解 @Value
+
+                使用方法:
+                 1. 设置xxx.properties文件
+                     name="zhuxi"
+                     age=18
+                     sex="\u7537"       //properties文件默认不支持UTF-8 所以使用中文需要Unicode转义
+                 2. Xml中配置properties位置
+                    <context:property-placeholder location="classpath:Properties/init.properties"/>
+                 3. 在类中使用@Value注解
+                        @Component("T")
+                        public class Teacher {
+                            @Value("${name}")
+                            private String name;
+                            @Value("${age}")
+                            private int age;
+                            @Value("${sex}")
+                            private String sex;
+                        }
+
+                 @PropertySource注解
+                    作用: 用于替代@Value开发步骤中的<context:property-placeholder location="classpath:Properties/init.properties"/>
+
+                    使用方法：
+                        1. 设置xxx.properties文件
+                        2.在要注入的类上使用@PropertySource("classpath:Properties/init.properties")
+                        3.在类中使用@Value
+                            @Component("T")
+                            @PropertySource("classpath:Properties/init.properties")
+                            public class Teacher {
+                                @Value("${name}")
+                                private String name;
+                                @Value("${age}")
+                                private int age;
+                                @Value("${sex}")
+                                private String sex;
+                            }
+
+                 @Value注解细节
+                    1. @Value不能应用在静态变量中
+                    2. @Value注解+properties文件 这种模式不能注入集合类型
+                         Spring提供了新的配置形式  如: YAML、YML等 (是SpringBoot中的)
+                         、
+            注解扫描详解
+                <context:component-scan base-package="com.zhuxi"/>
+                扫描当前包、及其子包
+            问题: 把zhuxi下的包都扫描了 有些包是不想让其扫描的 如果再指定精确位置 那又需要写很多个<context:component-scan
+
+            1. 排除方式
+            <context:component-scan base-package="">
+                <context:exclude-filter type="" expression=""/>
+                       这里的Type有:   assignable: 排除特定类型 不进行扫描            _________ |
+                                      annotation: 排除特定注解 不进行扫描            _________ |--------常用 其中aspectj最常用
+                                      aspectj: 使用切入点表达式排除一些 不进行扫描     __________|
+                                                类切入点: *..类名
+                                                包切入点: com.zhuxi.Demo..*
+                                      regex: 使用正则表达式排除                           这两个均在开发中不常用
+                                      custom: 自定义排除策略 (框架底层开发使用多)
+
+                使用方法:
+
+            以下代码用于获取包扫描注解指定范围内内所以对象的id值
+                 ApplicationContext ctx = new ClassPathXmlApplicationContext("/applicationContext.xml");
+                 String[] beanDefinitionNames = ctx.getBeanDefinitionNames();
+                 for (String beanDefinitionName : beanDefinitionNames) {
+                     System.out.println(beanDefinitionName);
+                 }
+
+            运行上述代码可知  现在已有的对象id值为: UDAOImpl、dd、USImpl、us、T、spring框架的一些对象id值
+
+            type="assignable"时
+
+              <context:exclude-filter type="assignable" expression="com.zhuxi.Demo.User"/>
+                                指定排除User类及其子类   也可以写接口 变成排除该接口的所有实现类
+
+            得id值:UDAOImpl、dd、USImpl、T、spring框架的一些对象id值
+
+            type="annotation"时
+                <context:exclude-filter type="annotation" expression="org.springframework.stereotype.Repository"/>
+                    指定排除所有@Reponsitory注解的类  注意: 如果写org.springframework.stereotype.Component  则会把所有使用注解创建的类全部排除  因为其他注解都是基于Component
+
+            type="aspectj"
+                <context:exclude-filter type="aspectj" expression="com.zhuxi.Value..*"/>
+                    指定Value包及其子包中所有都排除 不扫描
+
+        注意:
+            排除策略可以重叠使用
+                <context:component-scan base-package="com.zhuxi">
+                      <context:exclude-filter type="aspectj" expression="com.zhuxi.Value..*"/>
+                      <context:exclude-filter type="annotation" expression="org.springframework.stereotype.Repository"/>
+               </context:component-scan>     即 排除Value包及其子包后 再排除所有@Repository注解的类
+
+
+            2. 包含方式
+                <context:component-scan base-package="com.zhuxi" use-default-filters="false">
+                      <context:include-filter type="" expression=""/>
+               </context:component-scan>
+
+            1. use-default-filters="false"
+                作用： 让spring默认的注解扫描规则失效
+            2.剩余与排除规则一样 只不过作用是反着来
+            <context:component-scan base-package="">
+                <context:exclude-filter type="" expression=""/>
+                       这里的Type有:   assignable: 扫描特定类型              _________ |
+                                      annotation: 扫描特定注解              _________ |--------常用 其中aspectj最常用
+                                      aspectj: 使用切入点表达式              __________|
+                                                类切入点: *..类名
+                                                包切入点: com.zhuxi.Demo..*
+                                      regex: 使用正则表达式                         这两个均在开发中不常用
+                                      custom: 自定义包含策略 (框架底层开发使用多)
+
+            同理 包含模式也支持叠加
+
+
+        思考: 什么情况下使用注解 什么情况下使用配置文件
+
+            现阶段学习的都是(@Component @Autowired @Value) 都属于基础注解
+
+            1. 如果是程序员(即自己)开发的，则可以使用注解为主  配置文件为辅
+            2. 如果是使用他人开发的类型或一些框架  他们的源码中没有使用注释  你也没有办法在源码中添加注释  则只能使用配置文件  如: SqlSessionFactoryBean MapperScannerConfigure
+

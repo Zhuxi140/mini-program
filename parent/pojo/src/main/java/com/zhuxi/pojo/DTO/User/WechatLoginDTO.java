@@ -1,6 +1,6 @@
-package src.main.java.com.zhuxi.pojo.DTO;
+package src.main.java.com.zhuxi.pojo.DTO.User;
 
-public class UserLoginDTO {
+public class WechatLoginDTO {
 
     private String phone;
     private String nickName;
@@ -8,7 +8,7 @@ public class UserLoginDTO {
     private String wxAvatarUrl;
     private String customAvatarUrl;
 
-    public UserLoginDTO(String phone, String nickName, String wxNickName, String wxAvatarUrl, String customAvatarUrl) {
+    public WechatLoginDTO(String phone, String nickName, String wxNickName, String wxAvatarUrl, String customAvatarUrl) {
         this.phone = phone;
         this.nickName = nickName;
         this.wxNickName = wxNickName;
@@ -16,7 +16,7 @@ public class UserLoginDTO {
         this.customAvatarUrl = customAvatarUrl;
     }
 
-    public UserLoginDTO() {
+    public WechatLoginDTO() {
     }
 
     // getter or setter

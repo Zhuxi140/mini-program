@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.zhuxi.utils.properties.JwtProperties;
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.MalformedJwtException;
 import org.springframework.stereotype.Component;
@@ -27,8 +28,6 @@ public class JwtUtils {
 
     /**
      * 创建token
-     * @param claims  存储数据
-     * @return  token
      */
     public String createToken(Map<String,Object> claims){
         return Jwts.builder()
@@ -41,8 +40,6 @@ public class JwtUtils {
 
     /**
      * 解析token
-     * @param token  token
-     * @return  claims
      */
     public Claims parseToken(String token){
         int dotCount = 0;
@@ -58,17 +55,31 @@ public class JwtUtils {
         String headerJson = new String(Base64.getDecoder().decode(headerBase64), StandardCharsets.UTF_8);
 
         ObjectMapper objectMapper = new ObjectMapper();
+
         try {
             objectMapper.readTree(headerJson);
         } catch (JsonProcessingException e) {
-            throw new MalformedJwtException(e.getMessage());
+            throw new RuntimeException(e);
         }
+
 
         return Jwts.parser()
                 .verifyWith(jwtProperties.getSecretKey())
                 .build()
                 .parseSignedClaims(token)
                 .getPayload();
+    }
+
+    /**
+     * 验证token合法性
+     */
+    public boolean verifyToken(String token){
+        try {
+            parseToken(token);
+            return true;
+        }catch (JwtException e){
+            return false;
+        }
     }
 
 }

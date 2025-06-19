@@ -2,11 +2,14 @@ package src.main.java.com.zhuxi.pojo.VO;
 
 public class UserLoginVO {
     private String token;
-    private UserVO userVO;
+    private AdminUserVO adminUserVO;
 
-    public UserLoginVO(String token, UserVO userVO) {
+    public UserLoginVO(String token, AdminUserVO adminUserVO) {
         this.token = token;
-        this.userVO = userVO;
+        this.adminUserVO = adminUserVO;
+    }
+
+    public UserLoginVO() {
     }
 
     // getter and setter
@@ -18,11 +21,11 @@ public class UserLoginVO {
         this.token = token;
     }
 
-    public UserVO getUserVO() {
-        return userVO;
+    public AdminUserVO getUserVO() {
+        return adminUserVO;
     }
 
-    public void setUserVO(UserVO userVO) {
-        this.userVO = userVO;
+    public void setUserVO(AdminUserVO adminUserVO) {
+        this.adminUserVO = adminUserVO;
     }
 }

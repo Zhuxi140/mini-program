@@ -2,7 +2,7 @@ package src.main.java.com.zhuxi.pojo.entity;
 
 
 public class User {
-    private Integer id;
+    private Long id;
     private String openId;          //微信标识
     private String phone;           //手机号
     private String nickName;        // 自定义昵称
@@ -11,7 +11,7 @@ public class User {
     private String customAvatarUrl; // 自定义头像url
     private String status;          // 状态           1表示启用  0表示禁用
 
-    public User(Integer id, String openId, String phone, String nickName, String wxNickName, String wxAvatarUrl, String customAvatarUrl, String status) {
+    public User(Long id, String openId, String phone, String nickName, String wxNickName, String wxAvatarUrl, String customAvatarUrl, String status) {
         this.id = id;
         this.openId = openId;
         this.phone = phone;
@@ -22,13 +22,15 @@ public class User {
         this.status = status;
     }
 
+    public User() {
+    }
 
     //getter or setter
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

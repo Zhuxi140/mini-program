@@ -12,7 +12,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
-import src.main.java.com.zhuxi.pojo.DTO.AdminLoginDTO;
+import src.main.java.com.zhuxi.pojo.DTO.Admin.AdminLoginDTO;
 import src.main.java.com.zhuxi.pojo.VO.AdminLoginVO;
 import src.main.java.com.zhuxi.pojo.VO.AdminVO;
 import src.main.java.com.zhuxi.pojo.entity.Admin;
@@ -70,7 +70,7 @@ public class AdminServiceImpl implements AdminService {
     public Result<Void> registerAdmin(Admin admin) {
 
         if(admin == null || StringUtils.isBlank(admin.getUsername()) || StringUtils.isBlank(admin.getPassword()))
-            return Result.error(Message.PARAM_ERROR);
+            return Result.error(Message.BODY_NO_MAIN);
 
         boolean exit = adminMapper.isExists(admin.getUsername());
         if(exit)
@@ -105,9 +105,20 @@ public class AdminServiceImpl implements AdminService {
         }
     }
 
+
+    /**
+     * 删除管理员
+     */
     @Override
+    @Transactional
     public Result<Void> deleteAdmin(Integer id) {
-        return null;
+        if(id == null)
+            return Result.error(Message.PARAM_ERROR);
+        Boolean b = adminMapper.deleteAdmin(id);
+        if(b)
+            return Result.success(Message.OPERATION_SUCCESS);
+
+        return Result.error(Message.OPERATION_ERROR);
     }
 
     /**
@@ -118,11 +129,11 @@ public class AdminServiceImpl implements AdminService {
     public Result<Void> updateAdmin(AdminVO  admin) {
 
         if(admin == null || admin.getId() == null)
-            return Result.error(Message.PARAM_ERROR);
+            return Result.error(Message.BODY_NO_MAIN);
 
         boolean isStatus = admin.getStatus() == null;
         if (StringUtils.isBlank(admin.getUsername()) &&
-                isStatus &&
+                isStatus &&  admin.getRole() == null &&
                 StringUtils.isBlank(admin.getRealName())) {
             return Result.error(Message.AT_LEAST_ONE_FIELD);
         }
@@ -132,7 +143,7 @@ public class AdminServiceImpl implements AdminService {
             return Result.success(Message.OPERATION_SUCCESS);
 
 
-        return Result.error(Message.OPERATION_ERROR);
+        return Result.error(Message.USER_NOT_EXIST);
     }
 
     /**

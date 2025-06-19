@@ -19,6 +19,9 @@ public class Result<T> {
         this.code = code;
     }
 
+    public Result() {
+    }
+
     // 快速返回错误
     public static Result error(){
         return new Result(Message.OPERATION_ERROR,500);

@@ -3,16 +3,22 @@ package com.zhuxi.service;
 
 
 
+import com.zhuxi.Result.Result;
+import src.main.java.com.zhuxi.pojo.DTO.User.UserLoginDTO;
+import src.main.java.com.zhuxi.pojo.DTO.User.UserUpdateDTO;
 import src.main.java.com.zhuxi.pojo.VO.UserLoginVO;
-import src.main.java.com.zhuxi.pojo.VO.UserVO;
 
 
 public interface UserService {
 
 
-    // 登录
-    UserLoginVO login(String phone);
+    // 登录(手机号）
+    UserLoginVO loginPhone(String phone);
 
-    // 获取信息
-    UserVO getInfo(String token);
+    //登录（测试）
+    Result<UserLoginDTO> loginTest(UserLoginDTO userLoginDTO);
+
+    //更新用户个人信息
+    Result<Void> updateUserInfo(String token,UserUpdateDTO userUpdateDTO);
+
 }

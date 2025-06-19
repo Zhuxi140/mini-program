@@ -22,6 +22,13 @@ jwt:
   secret-key: ODIyNjA4Njc3NTIyODE2NjYxMDE3NDIyMjUwMDgxMjgwMjU0MDM2Mzc0MzU4NDc1Nzg2MzM0ODA1MDgxMjM2Mg==
   expiration-time: 604800
 
+# jwt拦截器放行路径
+jwt-properties:
+  exclude-paths:
+    - /login/user
+    - /login/admin
+
+
 # aliyun oss配置
 oss:
   access-key-id: LTAI5t9uR1xN1GRPXpxVUwQ2
@@ -31,8 +38,14 @@ oss:
   endpoint: mini-programm.oss-cn-beijing.aliyuncs.com  # oss-cn-beijing.aliyuncs.com
   expire-time: 1800  # 7天
 
+#BCrypt配置
 bcrypt:
   strength: 10 # 密码加密强度
+
+
+logging:
+  level:
+    root: info
 
 
 

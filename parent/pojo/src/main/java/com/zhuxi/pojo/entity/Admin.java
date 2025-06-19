@@ -7,6 +7,7 @@ public class Admin {
     private Integer id;
     private String username;
     private String password;
+    private Role role = Role.ADMIN;
     private String realName;
     private Integer status = 1;
     private LocalDateTime lastLogin;
@@ -14,13 +15,14 @@ public class Admin {
     public Admin() {
     }
 
-    public Admin(Integer id, String username, String password, String realName, int status, LocalDateTime lastLogin) {
+    public Admin(Integer id, String username, String password, String realName, int status, LocalDateTime lastLogin, Role role) {
         this.id = id;
         this.username = username;
         this.password = password;
         this.realName = realName;
         this.status = status;
         this.lastLogin = lastLogin;
+        this.role = role;
     }
 
     public Integer getId() {
@@ -59,7 +61,7 @@ public class Admin {
         return status;
     }
 
-    public void setStatus(int status) {
+    public void setStatus(Integer status) {
         this.status = status;
     }
 
@@ -70,4 +72,14 @@ public class Admin {
     public void setLastLogin(LocalDateTime lastLogin) {
         this.lastLogin = lastLogin;
     }
+
+    public Role getRole() {
+        return role;
+    }
+
+    public void setRole(Role role) {
+        this.role = role;
+    }
+
+
 }

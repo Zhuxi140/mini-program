@@ -1,17 +1,21 @@
-package src.main.java.com.zhuxi.pojo.DTO;
+package src.main.java.com.zhuxi.pojo.DTO.Admin;
+
+import src.main.java.com.zhuxi.pojo.entity.Role;
 
 public class AdminLoginDTO {
     private Integer  id;
     private String username;
     private String password;
+    private Role role;
 
     public AdminLoginDTO() {
     }
 
-    public AdminLoginDTO(Integer id, String username, String password) {
+    public AdminLoginDTO(Integer id, String username, String password, Role role) {
         this.id = id;
         this.username = username;
         this.password = password;
+        this.role = role;
     }
 
     public String getUsername() {
@@ -38,4 +42,11 @@ public class AdminLoginDTO {
         this.id = id;
     }
 
+    public Role getRole() {
+        return role;
+    }
+
+    public void setRole(Role role) {
+        this.role = role;
+    }
 }

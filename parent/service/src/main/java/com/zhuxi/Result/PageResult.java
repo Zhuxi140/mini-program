@@ -3,10 +3,10 @@ package com.zhuxi.Result;
 import java.util.List;
 
 public class PageResult<T> {
-    private List<T> items;
-    private Long nextCursor;
-    private boolean hasPrevious;
-    private boolean hasNext;
+    private List<T> items; // 当前页数据
+    private Long nextCursor; // 下一页游标
+    private boolean hasPrevious; // 是否有上一页
+    private boolean hasNext; // 是否有下一页
 
     public PageResult(List<T> items, Long nextCursor, boolean hasPrevious, boolean hasNext) {
         this.items = items;
