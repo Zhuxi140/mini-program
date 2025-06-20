@@ -70,7 +70,7 @@ public class AdminServiceImpl implements AdminService {
     public Result<Void> registerAdmin(Admin admin) {
 
         if(admin == null || StringUtils.isBlank(admin.getUsername()) || StringUtils.isBlank(admin.getPassword()))
-            return Result.error(Message.BODY_NO_MAIN);
+            return Result.error(Message.BODY_NO_MAIN_OR_IS_NULL);
 
         boolean exit = adminMapper.isExists(admin.getUsername());
         if(exit)
@@ -129,7 +129,7 @@ public class AdminServiceImpl implements AdminService {
     public Result<Void> updateAdmin(AdminVO  admin) {
 
         if(admin == null || admin.getId() == null)
-            return Result.error(Message.BODY_NO_MAIN);
+            return Result.error(Message.BODY_NO_MAIN_OR_IS_NULL);
 
         boolean isStatus = admin.getStatus() == null;
         if (StringUtils.isBlank(admin.getUsername()) &&

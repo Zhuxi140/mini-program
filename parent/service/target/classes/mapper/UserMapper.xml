@@ -19,7 +19,7 @@
     </select>
 
 
-    <update id="updateUser" parameterType="src.main.java.com.zhuxi.pojo.DTO.UserUpdateDTO">
+    <update id="updateUser" parameterType="src.main.java.com.zhuxi.pojo.DTO.User.UserUpdateDTO">
         UPDATE user
         <set>
             <if test="nickName != null">

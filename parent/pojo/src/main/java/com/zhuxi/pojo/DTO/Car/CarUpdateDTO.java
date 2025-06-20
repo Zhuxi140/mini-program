@@ -2,13 +2,11 @@ package src.main.java.com.zhuxi.pojo.DTO.Car;
 
 public class CarUpdateDTO {
     private Long id;
-    private Long userId;
-    private Long productId;
-    private Integer quantity;
+    private Long productId ;
+    private Integer quantity = 1;
 
-    public CarUpdateDTO(Long id, Long userId, Long productId, Integer quantity) {
+    public CarUpdateDTO(Long id,Long productId, Integer quantity) {
         this.id = id;
-        this.userId = userId;
         this.productId = productId;
         this.quantity = quantity;
     }
@@ -22,14 +20,6 @@ public class CarUpdateDTO {
 
     public void setId(Long id) {
         this.id = id;
-    }
-
-    public Long getUserId() {
-        return userId;
-    }
-
-    public void setUserId(Long userId) {
-        this.userId = userId;
     }
 
     public Long getProductId() {

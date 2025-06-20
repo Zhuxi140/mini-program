@@ -38,7 +38,7 @@ public class UserServiceImpl implements UserService {
     public Result<UserLoginDTO> loginTest(UserLoginDTO userLoginDTO) {
 
         if(userLoginDTO.getOpenId() == null || userLoginDTO.getOpenId().isBlank())
-            return Result.error(Message.BODY_NO_MAIN);
+            return Result.error(Message.BODY_NO_MAIN_OR_IS_NULL);
 
         UserLoginDTO userExist = userMapper.isUserExist(userLoginDTO.getOpenId());
         if(userExist == null)
@@ -63,7 +63,7 @@ public class UserServiceImpl implements UserService {
         userUpdateDTO.setId(claims.get("id",Long.class));
 
         if(userUpdateDTO.getId() == null)
-            return Result.error(Message.BODY_NO_MAIN);
+            return Result.error(Message.BODY_NO_MAIN_OR_IS_NULL);
 
         String nickName = userUpdateDTO.getNickName();
         String customAvatarUrl = userUpdateDTO.getCustomAvatarUrl();

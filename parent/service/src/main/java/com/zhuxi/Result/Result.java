@@ -37,6 +37,10 @@ public class Result<T> {
         return new Result(Message.OPERATION_SUCCESS,200,data);
     }
 
+    public static <T> Result<T> success(T data){
+        return new Result(Message.OPERATION_SUCCESS,200,data);
+    }
+
     // 返回带数据的错误
     public static <T> Result<T> error(String message, T data){
         return new Result(message,500,data);

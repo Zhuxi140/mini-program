@@ -40,7 +40,7 @@ public class AdminController {
     @RequireRole(Role.ADMIN)
     public Result<Void> modifyAdmin(@PathVariable Integer id,@RequestBody AdminVO  admin){
         if(!Objects.equals(id, admin.getId()))
-            return Result.error(Message.PARAM_ERROR + " or " + Message.BODY_NO_MAIN);
+            return Result.error(Message.PARAM_ERROR + " or " + Message.BODY_NO_MAIN_OR_IS_NULL);
         return adminService.updateAdmin(admin);
     }
 
