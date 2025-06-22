@@ -1,12 +1,18 @@
 package com.zhuxi.Result;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
 import java.util.List;
 
 public class PageResult<T> {
-    private List<T> items; // 当前页数据
-    private Long nextCursor; // 下一页游标
-    private boolean hasPrevious; // 是否有上一页
-    private boolean hasNext; // 是否有下一页
+    @Schema(description = "当前页数据")
+    private List<T> items;
+    @Schema(description = "下一页游标")
+    private Long nextCursor;
+    @Schema(description = "是否有上一页")
+    private boolean hasPrevious;
+    @Schema(description = "是否有下一页")
+    private boolean hasNext;
 
     public PageResult(List<T> items, Long nextCursor, boolean hasPrevious, boolean hasNext) {
         this.items = items;

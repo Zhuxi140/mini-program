@@ -13,8 +13,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 import src.main.java.com.zhuxi.pojo.DTO.Admin.AdminLoginDTO;
-import src.main.java.com.zhuxi.pojo.VO.AdminLoginVO;
-import src.main.java.com.zhuxi.pojo.VO.AdminVO;
+import src.main.java.com.zhuxi.pojo.DTO.Admin.AdminUpdateDTO;
+import src.main.java.com.zhuxi.pojo.VO.Admin.AdminLoginVO;
+import src.main.java.com.zhuxi.pojo.VO.Admin.AdminVO;
 import src.main.java.com.zhuxi.pojo.entity.Admin;
 import java.security.SecureRandom;
 import java.time.LocalDateTime;
@@ -126,14 +127,13 @@ public class AdminServiceImpl implements AdminService {
      */
     @Override
     @Transactional
-    public Result<Void> updateAdmin(AdminVO  admin) {
+    public Result<Void> updateAdmin(AdminUpdateDTO admin) {
 
         if(admin == null || admin.getId() == null)
             return Result.error(Message.BODY_NO_MAIN_OR_IS_NULL);
 
         boolean isStatus = admin.getStatus() == null;
-        if (StringUtils.isBlank(admin.getUsername()) &&
-                isStatus &&  admin.getRole() == null &&
+        if (isStatus &&  admin.getRole() == null &&
                 StringUtils.isBlank(admin.getRealName())) {
             return Result.error(Message.AT_LEAST_ONE_FIELD);
         }

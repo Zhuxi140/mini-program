@@ -1,25 +1,20 @@
 package src.main.java.com.zhuxi.pojo.DTO.Car;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
 public class CarUpdateDTO {
-    private Long id;
+
+    @Schema(description = "商品id",requiredMode = Schema.RequiredMode.REQUIRED)
     private Long productId ;
+    @Schema(description = "数量（若为第一次加入购物车，不需填写）",requiredMode = Schema.RequiredMode.REQUIRED)
     private Integer quantity = 1;
 
-    public CarUpdateDTO(Long id,Long productId, Integer quantity) {
-        this.id = id;
+    public CarUpdateDTO(Long productId, Integer quantity) {
         this.productId = productId;
         this.quantity = quantity;
     }
 
     public CarUpdateDTO() {
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public Long getProductId() {

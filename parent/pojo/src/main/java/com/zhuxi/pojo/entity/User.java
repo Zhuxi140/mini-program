@@ -9,9 +9,10 @@ public class User {
     private String wxNickName;      // 微信昵称
     private String wxAvatarUrl;     // 微信头像url
     private String customAvatarUrl; // 自定义头像url
-    private String status;          // 状态           1表示启用  0表示禁用
+    private Integer status;          // 状态           1表示启用  0表示禁用
+    private Long addressId;
 
-    public User(Long id, String openId, String phone, String nickName, String wxNickName, String wxAvatarUrl, String customAvatarUrl, String status) {
+    public User(Long id, String openId, String phone, String nickName, String wxNickName, String wxAvatarUrl, String customAvatarUrl, Integer status, Long addressId) {
         this.id = id;
         this.openId = openId;
         this.phone = phone;
@@ -20,6 +21,7 @@ public class User {
         this.wxAvatarUrl = wxAvatarUrl;
         this.customAvatarUrl = customAvatarUrl;
         this.status = status;
+        this.addressId = addressId;
     }
 
     public User() {
@@ -82,11 +84,19 @@ public class User {
         this.customAvatarUrl = customAvatarUrl;
     }
 
-    public String getStatus() {
+    public Integer getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(Integer status) {
         this.status = status;
+    }
+
+    public Long getAddressId() {
+        return addressId;
+    }
+
+    public void setAddressId(Long addressId) {
+        this.addressId = addressId;
     }
 }

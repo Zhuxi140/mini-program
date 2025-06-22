@@ -1,10 +1,15 @@
 package src.main.java.com.zhuxi.pojo.DTO.User;
 
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
 public class UserUpdateDTO{
 
+    @Schema(description = "用户id",requiredMode = Schema.RequiredMode.NOT_REQUIRED)
     private Long id;
+    @Schema(description = "昵称",requiredMode = Schema.RequiredMode.REQUIRED)
     private String nickName;
+    @Schema(description = "自定义头像oss地址",requiredMode = Schema.RequiredMode.REQUIRED)
     private String customAvatarOss;
 
     public UserUpdateDTO(String nickName,String customAvatarOss,Long id) {
@@ -24,12 +29,12 @@ public class UserUpdateDTO{
         this.nickName = nickName;
     }
 
-    public String getCustomAvatarUrl() {
+    public String getCustomAvatarOss() {
         return customAvatarOss;
     }
 
-    public void setCustomAvatarUrl(String customAvatarUrl) {
-        this.customAvatarOss = customAvatarUrl;
+    public void setCustomAvatarOss(String customAvatarOss) {
+        this.customAvatarOss = customAvatarOss;
     }
 
     public Long getId() {

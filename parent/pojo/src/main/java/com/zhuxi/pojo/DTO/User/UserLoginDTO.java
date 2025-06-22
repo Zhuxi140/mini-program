@@ -1,12 +1,17 @@
 package src.main.java.com.zhuxi.pojo.DTO.User;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import src.main.java.com.zhuxi.pojo.entity.Role;
 
 public class UserLoginDTO {
 
+    @Schema(description = "用户id",requiredMode = Schema.RequiredMode.NOT_REQUIRED)
     private Long id;
+    @Schema(description = "微信openId",requiredMode = Schema.RequiredMode.REQUIRED)
     private String openId;
+    @Schema(description = "权限",requiredMode = Schema.RequiredMode.NOT_REQUIRED)
     private Role role;
+    @Schema(description = "jwt-token(含用户id和权限)",requiredMode = Schema.RequiredMode.NOT_REQUIRED)
     private String token;
 
     public UserLoginDTO() {

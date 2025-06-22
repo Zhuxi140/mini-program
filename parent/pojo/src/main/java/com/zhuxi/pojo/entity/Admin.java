@@ -1,15 +1,23 @@
 package src.main.java.com.zhuxi.pojo.entity;
 
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
 import java.time.LocalDateTime;
 
 public class Admin {
+    @Schema(description = "管理员id",requiredMode = Schema.RequiredMode.NOT_REQUIRED)
     private Integer id;
+    @Schema(description = "用户名",requiredMode = Schema.RequiredMode.REQUIRED)
     private String username;
+    @Schema(description = "密码",requiredMode = Schema.RequiredMode.REQUIRED)
     private String password;
     private Role role = Role.ADMIN;
+    @Schema(description = "真实名字",requiredMode = Schema.RequiredMode.REQUIRED)
     private String realName;
+    @Schema(description = "是否启用（默认启用）",requiredMode = Schema.RequiredMode.NOT_REQUIRED)
     private Integer status = 1;
+    @Schema(description = "上一次登录时间",requiredMode = Schema.RequiredMode.NOT_REQUIRED)
     private LocalDateTime lastLogin;
 
     public Admin() {

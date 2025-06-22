@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import src.main.java.com.zhuxi.pojo.DTO.User.UserLoginDTO;
 import src.main.java.com.zhuxi.pojo.DTO.User.UserUpdateDTO;
-import src.main.java.com.zhuxi.pojo.VO.UserLoginVO;
+import src.main.java.com.zhuxi.pojo.VO.User.UserLoginVO;
 
 
 @Service
@@ -34,6 +34,10 @@ public class UserServiceImpl implements UserService {
         return null;
     }
 
+
+    /**
+     * 登录
+     */
     @Override
     public Result<UserLoginDTO> loginTest(UserLoginDTO userLoginDTO) {
 
@@ -66,7 +70,7 @@ public class UserServiceImpl implements UserService {
             return Result.error(Message.BODY_NO_MAIN_OR_IS_NULL);
 
         String nickName = userUpdateDTO.getNickName();
-        String customAvatarUrl = userUpdateDTO.getCustomAvatarUrl();
+        String customAvatarUrl = userUpdateDTO.getCustomAvatarOss();
 
         if((nickName == null || nickName.isBlank())
            && (customAvatarUrl == null || customAvatarUrl.isBlank())

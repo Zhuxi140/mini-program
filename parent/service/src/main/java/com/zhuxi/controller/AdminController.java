@@ -1,19 +1,22 @@
 package com.zhuxi.controller;
 
 
-import com.zhuxi.Constant.Message;
 import com.zhuxi.Result.Result;
 import com.zhuxi.annotation.RequireRole;
 import com.zhuxi.service.AdminService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.web.bind.annotation.*;
-import src.main.java.com.zhuxi.pojo.VO.AdminVO;
+import src.main.java.com.zhuxi.pojo.DTO.Admin.AdminUpdateDTO;
+import src.main.java.com.zhuxi.pojo.VO.Admin.AdminVO;
 import src.main.java.com.zhuxi.pojo.entity.Admin;
 import src.main.java.com.zhuxi.pojo.entity.Role;
 import java.util.List;
-import java.util.Objects;
 
 @RestController
 @RequestMapping("/admins")
+@Tag(name = "管理端接口")
 public class AdminController {
 
     private final AdminService adminService;
@@ -25,9 +28,15 @@ public class AdminController {
     /**
      * 注册管理员接口
      */
+    @Operation(
+            summary = "注册管理员接口",
+            description = "注册管理员接口"
+    )
     @PostMapping
     @RequireRole(Role.SUPER_ADMIN)
-    public Result<Void> registerAdmin(@RequestBody Admin admin){
+    public Result<Void> registerAdmin(
+            @RequestBody Admin admin
+    ){
 
         return adminService.registerAdmin(admin);
     }
@@ -36,21 +45,30 @@ public class AdminController {
     /**
      * 修改管理员信息接口
      */
-    @PutMapping("/{id}")
-    @RequireRole(Role.ADMIN)
-    public Result<Void> modifyAdmin(@PathVariable Integer id,@RequestBody AdminVO  admin){
-        if(!Objects.equals(id, admin.getId()))
-            return Result.error(Message.PARAM_ERROR + " or " + Message.BODY_NO_MAIN_OR_IS_NULL);
+    @Operation(
+            summary = "修改管理员信息接口",
+            description = "至少有一个需要修改的字段"
+    )
+    @PutMapping
+    @RequireRole(Role.SUPER_ADMIN)
+    public Result<Void> modifyAdmin(@RequestBody AdminUpdateDTO admin){
         return adminService.updateAdmin(admin);
     }
 
 
     /**
-     * 获取管理员信息接口
+     * 根据id获取管理员信息接口
      */
+    @Operation(
+            summary = "根据id获取管理员信息接口",
+            description = "根据id获取管理员信息接口"
+    )
     @GetMapping("/{id}")
     @RequireRole(Role.ADMIN)
-    public Result<AdminVO> getAdminInfo(@PathVariable Integer id){
+    public Result<AdminVO> getAdminInfo(
+            @Parameter(description = "管理员id", required = true)
+            @PathVariable Integer id
+    ){
         return adminService.getAdminById(id);
     }
 
@@ -58,6 +76,10 @@ public class AdminController {
     /**
      * 获取管理员列表接口
      */
+    @Operation(
+            summary = "获取管理员列表接口",
+            description = "获取管理员列表接口"
+    )
     @GetMapping
     @RequireRole(Role.ADMIN)
     public Result<List<AdminVO>> getAdminList(){
@@ -68,9 +90,15 @@ public class AdminController {
     /**
      * 删除管理员接口
      */
+    @Operation(
+            summary = "删除管理员接口",
+            description = "删除管理员接口"
+    )
     @DeleteMapping("/{id}")
     @RequireRole(Role.SUPER_ADMIN)
-    public Result<Void> deleteAdmin(@PathVariable Integer id){
+    public Result<Void> deleteAdmin(
+            @Parameter(description = "管理员id", required = true)
+            @PathVariable Integer id){
         return adminService.deleteAdmin(id);
     }
 

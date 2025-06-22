@@ -47,5 +47,10 @@ logging:
   level:
     root: info
 
-
+springdoc:
+  swagger-ui:
+    csrf:
+      enabled: true
+  api-docs:
+    enabled: true
 

@@ -1,8 +1,9 @@
 package com.zhuxi.service;
 
 import com.zhuxi.Result.Result;
-import src.main.java.com.zhuxi.pojo.VO.AdminLoginVO;
-import src.main.java.com.zhuxi.pojo.VO.AdminVO;
+import src.main.java.com.zhuxi.pojo.DTO.Admin.AdminUpdateDTO;
+import src.main.java.com.zhuxi.pojo.VO.Admin.AdminLoginVO;
+import src.main.java.com.zhuxi.pojo.VO.Admin.AdminVO;
 import src.main.java.com.zhuxi.pojo.entity.Admin;
 
 import java.util.List;
@@ -17,7 +18,7 @@ public interface AdminService {
     Result<AdminVO> getAdminById(Integer id);
 
     // 修改管理员信息
-    Result<Void> updateAdmin(AdminVO  admin);
+    Result<Void> updateAdmin(AdminUpdateDTO admin);
 
     // 注册
     Result<Void> registerAdmin(Admin  admin);

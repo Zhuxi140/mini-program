@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.zhuxi.mapper.UserAddressMapper">
+    <select id="getList" resultType="src.main.java.com.zhuxi.pojo.VO.User.UserAddressVO">
+
+        SELECT
+            id,
+            recipient,
+            phone,
+            province,
+            city,
+            district,
+            detail,
+            is_default
+        FROM
+            user_address
+        WHERE
+            user_id = #{userId}
+        ORDER BY
+            is_default DESC,
+            created_at DESC
+    </select>
+
+    <update id="update" parameterType="src.main.java.com.zhuxi.pojo.DTO.User.UserAddressDTO">
+        UPDATE user_address
+        <set>
+            <if test=" uADto.recipient != null">
+                recipient = #{uADto.recipient},
+            </if>
+            <if test="uADto.phone != null">
+                phone = #{uADto.phone},
+            </if>
+            <if test="uADto.province != null">
+                province = #{uADto.province},
+            </if>
+            <if test="uADto.city != null">
+                city = #{uADto.city},
+            </if>
+            <if test="uADto.district != null">
+                district = #{uADto.district},
+            </if>
+            <if test="uADto.detail != null">
+                detail = #{uADto.detail},
+            </if>
+            <if test="uADto.isDefault != null">
+                is_default = #{uADto.isDefault},
+            </if>
+        </set>
+        WHERE
+            id = #{addressId}
+    </update>
+</mapper>

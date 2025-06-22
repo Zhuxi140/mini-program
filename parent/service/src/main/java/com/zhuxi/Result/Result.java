@@ -1,10 +1,14 @@
 package com.zhuxi.Result;
 
 import com.zhuxi.Constant.Message;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 public class Result<T> {
+    @Schema(description = "响应信息")
     private String msg;
+    @Schema(description = "状态码，200成功，500失败")
     private int code;  // 200成功 500失败
+    @Schema(description = "响应数据")
     private T data;
 
 

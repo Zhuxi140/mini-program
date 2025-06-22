@@ -6,19 +6,18 @@ import com.zhuxi.Result.Result;
 import com.zhuxi.service.AdminService;
 import com.zhuxi.service.UserService;
 import com.zhuxi.utils.JwtUtils;
-import io.swagger.v3.oas.annotations.tags.Tag;
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.web.bind.annotation.*;
 import src.main.java.com.zhuxi.pojo.DTO.Admin.AdminLoginDTO;
 import src.main.java.com.zhuxi.pojo.DTO.User.UserLoginDTO;
-import src.main.java.com.zhuxi.pojo.VO.AdminLoginVO;
+import src.main.java.com.zhuxi.pojo.VO.Admin.AdminLoginVO;
 
 import java.util.HashMap;
 import java.util.Map;
 
 @RestController
 @RequestMapping("/login")
-@Tag(name = "登录接口",description = "用户以及管理员登录接口")
 @Log4j2
 public class LoginController {
 
@@ -36,7 +35,12 @@ public class LoginController {
     /**
      * 用户登录
      */
-    @GetMapping("/user")
+    @Operation(
+            summary = "用户登录",
+            description = "根据交换微信openid登录",
+            tags = {"用户端接口"}
+    )
+    @PostMapping("/user")
     public Result<UserLoginDTO> loginUser(@RequestBody UserLoginDTO userLogin){
 
         Result<UserLoginDTO> voidResult = userService.loginTest(userLogin);
@@ -57,6 +61,11 @@ public class LoginController {
     /**
      * 管理员登录
      */
+    @Operation(
+            summary = "管理员登录",
+            description = "根据提供的账号密码登录",
+            tags = {"管理端接口"}
+    )
     @PostMapping("/admin")
     public Result<AdminLoginVO> loginAdmin(@RequestBody AdminLoginDTO adminLogin){
 

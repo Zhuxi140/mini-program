@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhuxi.mapper.ProductMapper">
+    <select id="getListProducts"  resultType="src.main.java.com.zhuxi.pojo.VO.Product.ProductOverviewVO">
+    <![CDATA[
+        SELECT
+            id,
+            name,
+            price,
+            cover_url
+        FROM product
+        WHERE id < #{lastId}
+        ORDER BY id DESC,created_at DESC
+        LIMIT #{pageSize}
+    ]]>
+    </select>
+
+    <select id="getListAdminProductsDESC" resultType="src.main.java.com.zhuxi.pojo.VO.Admin.AdminProductVO">
+     <![CDATA[
+        SELECT
+            id,
+            name,
+            price,
+            stock,
+            stock_status
+        FROM product_stock_status
+        WHERE id < #{lastId}
+        ORDER BY id DESC
+        ]]>
+    </select>
+
+
+    <select id="getListAdminProductsASC" resultType="src.main.java.com.zhuxi.pojo.VO.Admin.AdminProductVO">
+        SELECT
+            id,
+            name,
+            price,
+            stock,
+            stock_status
+        FROM product_stock_status
+        WHERE id > #{lastId}
+        ORDER BY id ASC
+    </select>
+
+</mapper>

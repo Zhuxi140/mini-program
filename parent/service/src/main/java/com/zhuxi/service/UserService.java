@@ -6,7 +6,7 @@ package com.zhuxi.service;
 import com.zhuxi.Result.Result;
 import src.main.java.com.zhuxi.pojo.DTO.User.UserLoginDTO;
 import src.main.java.com.zhuxi.pojo.DTO.User.UserUpdateDTO;
-import src.main.java.com.zhuxi.pojo.VO.UserLoginVO;
+import src.main.java.com.zhuxi.pojo.VO.User.UserLoginVO;
 
 
 public interface UserService {

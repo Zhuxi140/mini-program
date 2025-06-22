@@ -4,6 +4,9 @@ package com.zhuxi.controller;
 import com.zhuxi.Result.Result;
 import com.zhuxi.annotation.RequireRole;
 import com.zhuxi.service.UserService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.web.bind.annotation.*;
 import src.main.java.com.zhuxi.pojo.DTO.User.UserUpdateDTO;
@@ -11,7 +14,7 @@ import src.main.java.com.zhuxi.pojo.entity.Role;
 
 @RestController
 @RequestMapping("/users")
-@Log4j2
+@Tag(name = "用户端接口")
 public class UserController {
     private final UserService userService;
 
@@ -26,7 +29,13 @@ public class UserController {
      */
     @PutMapping
     @RequireRole(Role.USER)
-    public Result<Void> updateUserInfo(@RequestBody UserUpdateDTO userUpdateDTO, @RequestHeader("Authorization") String token){
+    @Operation(
+            summary = "修改用户信息",
+            description = "至少修改一个字段"
+    )
+    public Result<Void> updateUserInfo(@RequestBody UserUpdateDTO userUpdateDTO,
+                                       @Parameter(description = "用户token",hidden = true)
+                                       @RequestHeader("Authorization") String token){
 
         return userService.updateUserInfo(token,userUpdateDTO);
     }

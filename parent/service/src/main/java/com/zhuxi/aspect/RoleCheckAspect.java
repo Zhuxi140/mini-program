@@ -5,6 +5,7 @@ import com.zhuxi.Constant.Message;
 import com.zhuxi.Result.Result;
 import com.zhuxi.utils.JwtUtils;
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.JwtException;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.log4j.Log4j2;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -42,7 +43,7 @@ public class RoleCheckAspect {
 
         Claims claims = jwtUtils.parseToken(token);
         if(claims == null){
-            log.warn("Role error :{} ",claims);
+            log.warn("Role error1 :{} ",claims);
             return Result.error(Message.JWT_ERROR);
         }
 
@@ -58,8 +59,8 @@ public class RoleCheckAspect {
             if(role.equals(Role.SUPER_ADMIN) && requireRole.value() != Role.USER)
                 return joinPoint.proceed();
 
-        }catch (Exception e){
-            log.warn("Role error :{} ",e.getMessage());
+        }catch (JwtException e){
+            log.warn("Role error2 :{} ",e.getMessage());
             return Result.error(Message.JWT_ERROR);
         }
 

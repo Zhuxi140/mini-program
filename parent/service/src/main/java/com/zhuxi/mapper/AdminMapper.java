@@ -3,7 +3,8 @@ package com.zhuxi.mapper;
 
 import org.apache.ibatis.annotations.*;
 import src.main.java.com.zhuxi.pojo.DTO.Admin.AdminLoginDTO;
-import src.main.java.com.zhuxi.pojo.VO.AdminVO;
+import src.main.java.com.zhuxi.pojo.DTO.Admin.AdminUpdateDTO;
+import src.main.java.com.zhuxi.pojo.VO.Admin.AdminVO;
 import src.main.java.com.zhuxi.pojo.entity.Admin;
 
 import java.time.LocalDateTime;
@@ -44,7 +45,7 @@ public interface AdminMapper {
     Boolean insertAdmin(Admin  admin);
 
     // 修改用户信息
-    int updateAdmin(AdminVO  admin);
+    int updateAdmin(AdminUpdateDTO admin);
 
     // 查询所有用户信息
     List<AdminVO> queryAdminList();
