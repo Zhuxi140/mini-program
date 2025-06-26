@@ -18,6 +18,9 @@ public interface CartService {
     //删除购物车商品
     Result<Void> delete(Long productId,String token);
 
+    //清空购物车商品
+    Result<Void> deleteAll(String token);
+
     //获取购物车商品列表
     Result<List<CarVO>> getList(String token);
 }

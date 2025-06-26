@@ -7,6 +7,7 @@ import com.zhuxi.service.CartService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.apache.ibatis.annotations.Delete;
 import org.springframework.web.bind.annotation.*;
 import src.main.java.com.zhuxi.pojo.DTO.Car.CarUpdateDTO;
 import src.main.java.com.zhuxi.pojo.VO.Car.CarVO;
@@ -102,4 +103,20 @@ public class CarController {
         return cartService.getList(token);
     }
 
+
+    /**
+     * 删除所有购物车商品
+     */
+    @DeleteMapping
+    @RequireRole(Role.USER)
+    @Operation(
+            summary = "删除所有购物车商品",
+            description = "删除所有购物车商品"
+    )
+    public Result<Void> deleteAllCart(
+            @Parameter(description = "用户token",hidden = true)
+            @RequestHeader("Authorization") String token
+    ){
+        return cartService.deleteAll(token);
+    }
 }

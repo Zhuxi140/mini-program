@@ -5,6 +5,7 @@ import com.zhuxi.Result.PageResult;
 import com.zhuxi.Result.Result;
 import com.zhuxi.mapper.ProductMapper;
 import com.zhuxi.service.AdminProductService;
+import com.zhuxi.service.TxService.ProductTxService;
 import org.springframework.stereotype.Service;
 import src.main.java.com.zhuxi.pojo.VO.Admin.AdminProductVO;
 
@@ -13,11 +14,10 @@ import java.util.List;
 
 @Service
 public class AdminProductServiceImpl implements AdminProductService {
+    private ProductTxService productTxService;
 
-    private ProductMapper productMapper;
-
-    public AdminProductServiceImpl(ProductMapper productMapper) {
-        this.productMapper = productMapper;
+    public AdminProductServiceImpl(ProductTxService productTxService) {
+        this.productTxService = productTxService;
     }
 
     /**
@@ -52,7 +52,8 @@ public class AdminProductServiceImpl implements AdminProductService {
             lastId = Long.MAX_VALUE;
         }
 
-        List<AdminProductVO> items = productMapper.getListAdminProductsDESC(lastId, pageSize + 1);
+        List<AdminProductVO> items = productTxService.getListAdminProductsDESC(lastId, pageSize + 1);
+
 
         if (items.size() == pageSize + 1) {
             hasMore = true;
@@ -78,7 +79,7 @@ public class AdminProductServiceImpl implements AdminProductService {
         if(lastId == null)
             lastId = 0L;
 
-        List<AdminProductVO> items = productMapper.getListAdminProductsASC(lastId, pageSize + 1);
+        List<AdminProductVO> items = productTxService.getListAdminProductsASC(lastId, pageSize + 1);
 
         if(items.size() == pageSize + 1){
             hasMore = true;

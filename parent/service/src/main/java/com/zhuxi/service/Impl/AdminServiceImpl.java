@@ -4,6 +4,7 @@ import com.zhuxi.Constant.Message;
 import com.zhuxi.Result.Result;
 import com.zhuxi.mapper.AdminMapper;
 import com.zhuxi.service.AdminService;
+import com.zhuxi.service.TxService.AdminTxService;
 import com.zhuxi.utils.BCryptUtils;
 import com.zhuxi.utils.JwtUtils;
 import io.micrometer.common.util.StringUtils;
@@ -26,12 +27,11 @@ import java.util.List;
 @Log4j2
 public class AdminServiceImpl implements AdminService {
 
-    private final AdminMapper adminMapper;
     private final BCryptUtils bCryptUtils;
+    private final AdminTxService adminTxService;
 
-    public AdminServiceImpl(AdminMapper adminMapper, BCryptUtils bCryptUtils, JwtUtils jwtUtils) {
-
-        this.adminMapper = adminMapper;
+    public AdminServiceImpl(AdminTxService adminTxService, BCryptUtils bCryptUtils, JwtUtils jwtUtils) {
+        this.adminTxService = adminTxService;
         this.bCryptUtils = bCryptUtils;
     }
 
@@ -39,13 +39,12 @@ public class AdminServiceImpl implements AdminService {
      * 登录
      */
     @Override
+    @Transactional
     public Result<AdminLoginVO> login(String username, String password) {
 
-        AdminLoginDTO LoginDTO = adminMapper.getPasswordByUsername(username);
-
+        AdminLoginDTO LoginDTO = adminTxService.getPasswordByUsername(username);
 
         String vPassword = AdminServiceImpl.getRandomDummyHash();
-
         String hashPassword = LoginDTO != null ? LoginDTO.getPassword() : vPassword;
 
         if(LoginDTO == null || !bCryptUtils.checkPw(password,hashPassword)){
@@ -57,11 +56,16 @@ public class AdminServiceImpl implements AdminService {
         AdminLoginVO adminLoginVO = new AdminLoginVO();
         BeanUtils.copyProperties(LoginDTO,adminLoginVO);
         adminLoginVO.setLastLogin(LocalDateTime.now());
-        if(adminMapper.updateLastLogin(adminLoginVO.getId(),adminLoginVO.getLastLogin()) > 0)
-            return Result.success(Message.OPERATION_SUCCESS,adminLoginVO);
+        adminTxService.updateLastLogin(adminLoginVO.getId(),adminLoginVO.getLastLogin());
 
-        return Result.error(Message.DATABASE_UPDATE_ERROR);
+        return Result.success(Message.LOGIN_SUCCESS,adminLoginVO);
     }
+
+
+    /**
+     * 退出
+     */
+
 
     /**
      *  注册
@@ -73,20 +77,12 @@ public class AdminServiceImpl implements AdminService {
         if(admin == null || StringUtils.isBlank(admin.getUsername()) || StringUtils.isBlank(admin.getPassword()))
             return Result.error(Message.BODY_NO_MAIN_OR_IS_NULL);
 
-        boolean exit = adminMapper.isExists(admin.getUsername());
-        if(exit)
-            return Result.error(Message.USER_EXIST);
-
+       adminTxService.isExists(admin.getUsername());
         String hashPassword = bCryptUtils.hashCode(admin.getPassword());
         admin.setPassword(hashPassword);
+        adminTxService.insertAdmin( admin);
 
-        Boolean b = adminMapper.insertAdmin(admin);
-
-        if(b)
-            return Result.success(Message.OPERATION_SUCCESS);
-
-
-        return Result.error(Message.OPERATION_ERROR);
+        return Result.success(Message.OPERATION_SUCCESS);
     }
 
     /**
@@ -95,7 +91,7 @@ public class AdminServiceImpl implements AdminService {
     @Override
     public Result<List<AdminVO>> getAdminList() {
         try {
-            List<AdminVO> adminList = adminMapper.queryAdminList();
+            List<AdminVO> adminList = adminTxService.queryAdminList();
             if (CollectionUtils.isEmpty(adminList))
                 return Result.error(Message.NO_DATA);
 
@@ -115,11 +111,9 @@ public class AdminServiceImpl implements AdminService {
     public Result<Void> deleteAdmin(Integer id) {
         if(id == null)
             return Result.error(Message.PARAM_ERROR);
-        Boolean b = adminMapper.deleteAdmin(id);
-        if(b)
-            return Result.success(Message.OPERATION_SUCCESS);
+       adminTxService.deleteAdmin( id);
 
-        return Result.error(Message.OPERATION_ERROR);
+       return Result.success(Message.OPERATION_SUCCESS);
     }
 
     /**
@@ -138,12 +132,9 @@ public class AdminServiceImpl implements AdminService {
             return Result.error(Message.AT_LEAST_ONE_FIELD);
         }
 
-        int b = adminMapper.updateAdmin(admin);
-        if(b > 0)
-            return Result.success(Message.OPERATION_SUCCESS);
+        adminTxService.updateAdmin( admin);
 
-
-        return Result.error(Message.USER_NOT_EXIST);
+        return Result.success(Message.OPERATION_SUCCESS);
     }
 
     /**
@@ -155,11 +146,8 @@ public class AdminServiceImpl implements AdminService {
         if(id == null)
             return Result.error(Message.PARAM_ERROR);
 
-        AdminVO adminById = adminMapper.getAdminById(id);
-        if(adminById != null)
-            return Result.success(Message.OPERATION_SUCCESS,adminById);
-
-        return Result.error(Message.USER_NOT_EXIST);
+        AdminVO adminById = adminTxService.getAdminById(id);
+        return Result.success(Message.OPERATION_SUCCESS,adminById);
     }
 
 

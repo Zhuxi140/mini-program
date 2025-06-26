@@ -4,11 +4,13 @@ package com.zhuxi.service.Impl;
 import com.zhuxi.Constant.Message;
 import com.zhuxi.Result.Result;
 import com.zhuxi.mapper.UserMapper;
+import com.zhuxi.service.TxService.UserTxService;
 import com.zhuxi.service.UserService;
 import com.zhuxi.utils.JwtUtils;
 import io.jsonwebtoken.Claims;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import src.main.java.com.zhuxi.pojo.DTO.User.UserLoginDTO;
 import src.main.java.com.zhuxi.pojo.DTO.User.UserUpdateDTO;
@@ -19,12 +21,12 @@ import src.main.java.com.zhuxi.pojo.VO.User.UserLoginVO;
 @Log4j2
 public class UserServiceImpl implements UserService {
 
-    private final UserMapper userMapper;
+    private final UserTxService userTxService;
     private final JwtUtils jwtUtils;
 
-    public UserServiceImpl(UserMapper userMapper, JwtUtils jwtUtils) {
-        this.userMapper = userMapper;
+    public UserServiceImpl(UserTxService userTxService, JwtUtils jwtUtils) {
         this.jwtUtils = jwtUtils;
+        this.userTxService = userTxService;
     }
 
 
@@ -44,9 +46,7 @@ public class UserServiceImpl implements UserService {
         if(userLoginDTO.getOpenId() == null || userLoginDTO.getOpenId().isBlank())
             return Result.error(Message.BODY_NO_MAIN_OR_IS_NULL);
 
-        UserLoginDTO userExist = userMapper.isUserExist(userLoginDTO.getOpenId());
-        if(userExist == null)
-            return Result.error(Message.USER_NOT_EXIST);
+        UserLoginDTO userExist = userTxService.isUserExist(userLoginDTO.getOpenId());
 
         return Result.success(Message.LOGIN_SUCCESS,userExist);
     }
@@ -77,11 +77,7 @@ public class UserServiceImpl implements UserService {
         )
             return Result.error(Message.AT_LEAST_ONE_FIELD);
 
-        int i = userMapper.updateUser(userUpdateDTO);
-
-        if(i < 1)
-            return Result.error(Message.OPERATION_ERROR);
-
+        userTxService.updateUser(userUpdateDTO);
 
         return Result.success(Message.OPERATION_SUCCESS);
     }

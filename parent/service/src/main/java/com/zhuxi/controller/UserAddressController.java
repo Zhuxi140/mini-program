@@ -84,6 +84,9 @@ public class UserAddressController {
     }
 
 
+    /**
+     * 获取用户地址列表接口
+     */
     @GetMapping
     @RequireRole(Role.USER)
     @Operation(
@@ -98,6 +101,9 @@ public class UserAddressController {
     }
 
 
+    /**
+     * 删除用户地址接口
+     */
     @DeleteMapping
     @RequireRole(Role.USER)
     @Operation(
@@ -113,6 +119,9 @@ public class UserAddressController {
         return userAddressService.delete(addressId, token);
     }
 
+    /**
+     * 修改用户地址接口
+     */
     @PutMapping("/update")
     @RequireRole(Role.USER)
     @Operation(

@@ -4,6 +4,7 @@ import com.zhuxi.Result.PageResult;
 import com.zhuxi.Result.Result;
 import com.zhuxi.mapper.ProductMapper;
 import com.zhuxi.service.ProductService;
+import com.zhuxi.service.TxService.ProductTxService;
 import org.springframework.stereotype.Service;
 import src.main.java.com.zhuxi.pojo.VO.Product.ProductOverviewVO;
 
@@ -12,12 +13,13 @@ import java.util.List;
 
 @Service
 public class ProductServiceImpl implements ProductService {
-    private ProductMapper productMapper;
 
-    public ProductServiceImpl(ProductMapper productMapper) {
-        this.productMapper = productMapper;
+    private final ProductTxService productTxService;
+
+    public ProductServiceImpl(ProductTxService productTxService) {
+
+        this.productTxService = productTxService;
     }
-
 
     /**
      * 获取商品列表
@@ -31,7 +33,7 @@ public class ProductServiceImpl implements ProductService {
         if(lastId == null || lastId < 0)
             lastId = Long.MAX_VALUE;
 
-        List<ProductOverviewVO> listProducts = productMapper.getListProducts(lastId, pageSize + 1);
+        List<ProductOverviewVO> listProducts = productTxService.getListProducts(lastId, pageSize + 1);
 
         if(listProducts.size() == pageSize + 1){
             hasMore = true;

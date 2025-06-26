@@ -34,7 +34,7 @@ public class AdminUserController {
     )
     public Result<PageResult<AdminUserVO>> getListUser(
            @Parameter(description = "上一页最后一条数据的id(第一次查询时不需填写，后续需要根据响应数据来填写)")
-            Integer lastId,
+           Long lastId,
            @Parameter(description = "每页数量(后端默认10)")
            @RequestParam(defaultValue = "10") Integer pageSize,
            @Parameter(description = "排序方式, 为1时为降序",required = true)
@@ -58,7 +58,7 @@ public class AdminUserController {
                @Parameter(description = "禁用状态, 0为禁用, 1为启用",required = true)
                @PathVariable Integer status,
                @Parameter(description = "用户id",required = true)
-               @RequestParam("userId") Integer id
+               @RequestParam("userId") Long id
    ){
        return userService.disableUser(status, id);
    }

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.zhuxi.mapper.ArticleMapper">
+    <select id="getListArticle" resultType="src.main.java.com.zhuxi.pojo.VO.Article.ArticleVO">
+        SELECT
+            id,
+            title,
+            type,
+            cover_oss,
+            created_at
+        FROM article
+    </select>
+
+    <select id="getListArticleDESC" resultType="src.main.java.com.zhuxi.pojo.VO.Article.ArticleVO">
+     <![CDATA[
+        SELECT
+            id,
+            title,
+            type,
+            cover_oss,
+            created_at
+        FROM article
+        WHERE id < #{lastId}
+        ORDER BY id DESC
+        LIMIT #{pageSize}
+        ]]>
+    </select>
+</mapper>

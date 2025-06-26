@@ -23,13 +23,13 @@ public interface UserMapper {
 
 
     // 分页查询获取所有用户信息
-    List<AdminUserVO> getListUserDESC(@Param("lastId") Integer lastId, @Param("pageSize") Integer pageSize);
+    List<AdminUserVO> getListUserDESC(@Param("lastId") Long lastId, @Param("pageSize") Integer pageSize);
 
-    List<AdminUserVO> getListUserASC(@Param("lastId") Integer lastId, @Param("pageSize") Integer pageSize);
+    List<AdminUserVO> getListUserASC(@Param("lastId") Long lastId, @Param("pageSize") Integer pageSize);
 
 
     @Update("UPDATE user SET status = #{status} WHERE id = #{id}")
-    int updateUserStatus(Integer status, Integer id);
+    int updateUserStatus(Integer status, Long id);
 
     // 更新用户信息
     int updateUser(UserUpdateDTO userUpdateDTO);

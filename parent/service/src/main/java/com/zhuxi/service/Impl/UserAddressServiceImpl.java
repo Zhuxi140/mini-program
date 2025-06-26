@@ -2,7 +2,7 @@ package com.zhuxi.service.Impl;
 
 import com.zhuxi.Constant.Message;
 import com.zhuxi.Result.Result;
-import com.zhuxi.mapper.UserAddressMapper;
+import com.zhuxi.service.TxService.UserAddressTxService;
 import com.zhuxi.service.UserAddressService;
 import com.zhuxi.utils.JwtUtils;
 import io.jsonwebtoken.Claims;
@@ -15,14 +15,14 @@ import java.util.List;
 
 
 @Service
-public class UserAddressMapperImpl implements UserAddressService {
+public class UserAddressServiceImpl implements UserAddressService {
 
-    private final UserAddressMapper userAddressMapper;
     private final JwtUtils jwtUtils;
+    private final UserAddressTxService userAddressTxService;
 
-    public UserAddressMapperImpl(UserAddressMapper userAddressMapper, JwtUtils jwtUtils) {
-        this.userAddressMapper = userAddressMapper;
+    public UserAddressServiceImpl(JwtUtils jwtUtils, UserAddressTxService userAddressTxService) {
         this.jwtUtils = jwtUtils;
+        this.userAddressTxService = userAddressTxService;
     }
 
     /**
@@ -37,34 +37,25 @@ public class UserAddressMapperImpl implements UserAddressService {
             return Result.error(result.getMsg());
 
         Long userId = result.getData();
-        int exist = userAddressMapper.isExist(userId);
+        int exist = userAddressTxService.isExist(userId);
 
-        if(exist == 0){
+        if(exist == 5)
+            return Result.error(Message.USER_ADDRESS_MAX);
+        else if(exist == 0){
             userAddressDTO.setIsDefault(1);
         }
-        else if(exist == 5)
-            return Result.error(Message.USER_ADDRESS_MAX);
 
         if(userAddressDTO.getIsDefault() == 1){
 
-            Long defaultAddressId = userAddressMapper.getDefaultAddressId(userId);
+            Long defaultAddressId = userAddressTxService.getDefaultAddressId(userId);
 
             if(defaultAddressId != null)
-                if(!userAddressMapper.cancelDefault(defaultAddressId))
-                    return Result.error(Message.OPERATION_ERROR);
+                userAddressTxService.cancelDefault(defaultAddressId);
         }
 
+        userAddressTxService.insertAndUpdateUserAddressId(userAddressDTO,userId);
 
-        if(userAddressMapper.insert(userAddressDTO,userId)){
-            if(userAddressMapper.updateUserAddressId(userAddressDTO.getId(),userId))
-                return Result.success(Message.OPERATION_SUCCESS);
-
-            return Result.success(Message.OPERATION_ERROR);
-        }
-
-
-        return Result.error(Message.OPERATION_ERROR);
-
+        return Result.success(Message.OPERATION_SUCCESS);
     }
 
     /**
@@ -74,8 +65,9 @@ public class UserAddressMapperImpl implements UserAddressService {
     @Transactional
     public Result<Void> setDefault(Long addressId, String token) {
 
-        if (addressId == null)
-            return Result.error(Message.PARAM_ERROR);
+        if (addressId == null || userAddressTxService.isExistAddressId(addressId))
+            return Result.error(Message.PARAM_ERROR + " 或 " + Message.USER_ADDRESS_NOT_EXIST);
+
 
         Result<Long> result = getUserId(token);
 
@@ -83,23 +75,14 @@ public class UserAddressMapperImpl implements UserAddressService {
             return Result.error(result.getMsg());
 
         Long userId = result.getData();
-
-        Long defaultAddressId = userAddressMapper.getDefaultAddressId(userId);
+        Long defaultAddressId = userAddressTxService.getDefaultAddressId(userId);
 
         if(defaultAddressId != null)
-            if(!userAddressMapper.cancelDefault(defaultAddressId))
-                return Result.error(Message.OPERATION_ERROR);
+            userAddressTxService.cancelDefault(defaultAddressId);
 
+        userAddressTxService.setDefaultAndUpdateUserAddressId(addressId,userId);
 
-
-        if(userAddressMapper.setDefault(1,addressId)){
-            if (userAddressMapper.updateUserAddressId(addressId,userId))
-                return Result.success(Message.OPERATION_SUCCESS);
-            return Result.success(Message.OPERATION_ERROR);
-        }
-
-
-        return Result.error(Message.OPERATION_ERROR);
+        return Result.success(Message.OPERATION_SUCCESS);
     }
 
 
@@ -120,14 +103,9 @@ public class UserAddressMapperImpl implements UserAddressService {
 
         Long userId = result.getData();
 
-        if(userAddressMapper.cancelDefault(addressId)){
-            if (userAddressMapper.updateUserAddressId(0L,userId))
-                return Result.success(Message.OPERATION_SUCCESS);
+        userAddressTxService.cancelDefaultAndUpdateUserAddressId(addressId,userId);
 
-            return Result.success(Message.OPERATION_ERROR);
-        }
-
-        return Result.error(Message.OPERATION_ERROR);
+        return Result.success(Message.OPERATION_SUCCESS);
     }
 
 
@@ -142,13 +120,13 @@ public class UserAddressMapperImpl implements UserAddressService {
         if(result.getCode() != 200)
             return Result.error(result.getMsg());
 
-        Long data = result.getData();
+        Long userId = result.getData();
 
-        List<UserAddressVO> list = userAddressMapper.getList(data);
+        List<UserAddressVO> list = userAddressTxService.getList(userId);
         if(list != null)
             return Result.success(Message.OPERATION_SUCCESS,list);
 
-        return Result.error(Message.OPERATION_ERROR);
+        return Result.error(Message.NO_USER_ADDRESS);
     }
 
     /**
@@ -168,16 +146,12 @@ public class UserAddressMapperImpl implements UserAddressService {
 
         Long userId = result.getData();
 
-        if (userAddressMapper.isDefault(addressId))
-            if(!userAddressMapper.updateUserAddressId(0L,userId))
-                return Result.error(Message.OPERATION_ERROR);
+        userAddressTxService.isDefaultAndUpdateUserAddressId(addressId,userId);
+        userAddressTxService.delete(addressId);
 
-
-        if(userAddressMapper.delete(addressId))
-            return Result.success(Message.OPERATION_SUCCESS);
-
-        return Result.error(Message.OPERATION_ERROR);
+        return Result.success(Message.OPERATION_SUCCESS);
     }
+
 
     /**
      * 修改用户地址信息
@@ -196,22 +170,19 @@ public class UserAddressMapperImpl implements UserAddressService {
         Long userId = result.getData();
 
         if(userAddressDTO.getIsDefault() == 1){
-            Long defaultAddressId = userAddressMapper.getDefaultAddressId(userId);
-            if(defaultAddressId != null)
-                if(!userAddressMapper.cancelDefault(defaultAddressId))
-                    return Result.error(Message.OPERATION_ERROR);
-
-            if(!userAddressMapper.updateUserAddressId(0L,userId))
-                return Result.error(Message.OPERATION_ERROR);
+            Long defaultAddressId = userAddressTxService.getDefaultAddressId(userId);
+            userAddressTxService.cancelDefaultAndUpdateUserAddressId(defaultAddressId,userId);
         }
 
-        if(userAddressMapper.update(userAddressDTO,addressId))
-            return Result.success(Message.OPERATION_SUCCESS);
+        userAddressTxService.update(userAddressDTO,addressId);
 
-        return Result.error(Message.OPERATION_ERROR);
+        return Result.success(Message.OPERATION_SUCCESS);
     }
 
 
+    /**
+     * 通过jwt获取用户Id
+     */
     private Result<Long> getUserId(String token){
         if (token == null) {
             return Result.error(Message.JWT_IS_NULL);
@@ -229,5 +200,7 @@ public class UserAddressMapperImpl implements UserAddressService {
 
         return Result.success(userId);
     }
+
+
 
 }

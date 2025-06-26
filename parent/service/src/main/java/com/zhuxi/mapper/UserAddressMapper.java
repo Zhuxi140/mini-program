@@ -24,10 +24,10 @@ public interface UserAddressMapper {
     int isExist(Long userId);
 
     @Update("UPDATE user_address SET is_default = 0 WHERE id = #{addressId}")
-    Boolean cancelDefault(Long addressId);
+    int cancelDefault(Long addressId);
 
     @Update("UPDATE user_address SET is_default = #{isDefault} WHERE id = #{addressId}")
-    Boolean setDefault(Integer isDefault, Long addressId);
+    int setDefault(Integer isDefault, Long addressId);
 
     List<UserAddressVO> getList(Long userId);
 
@@ -38,10 +38,13 @@ public interface UserAddressMapper {
     Boolean update( UserAddressDTO uADto,Long addressId);
 
     @Update("UPDATE user SET address_id = #{addressId} WHERE id = #{userId}")
-    Boolean updateUserAddressId(Long addressId, Long userId);
+    int updateUserAddressId(Long addressId, Long userId);
 
     @Select("SELECT is_default = 1 FROM user_address WHERE  id=#{addressId}")
     Boolean isDefault(Long addressId);
+
+    @Select("SELECT 1 FROM user_address WHERE id = #{addressId}")
+    Boolean isExistAddressId(Long addressId);
 
 
 

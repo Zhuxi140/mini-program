@@ -1,5 +1,6 @@
 package src.main.java.com.zhuxi.pojo.VO.Admin;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.v3.oas.annotations.media.Schema;
 import src.main.java.com.zhuxi.pojo.entity.Role;
 
@@ -17,6 +18,7 @@ public class AdminVO {
     @Schema(description = "是否启用",requiredMode = Schema.RequiredMode.NOT_REQUIRED)
     private Integer status;
     @Schema(description = "上次登录时间",requiredMode = Schema.RequiredMode.NOT_REQUIRED)
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime lastLogin;
 
     public AdminVO() {

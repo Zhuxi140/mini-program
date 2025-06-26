@@ -5,6 +5,7 @@ import com.zhuxi.Result.PageResult;
 import com.zhuxi.Result.Result;
 import com.zhuxi.mapper.UserMapper;
 import com.zhuxi.service.AdminUserService;
+import com.zhuxi.service.TxService.AdminUserTxService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import src.main.java.com.zhuxi.pojo.VO.Admin.AdminUserVO;
@@ -13,17 +14,18 @@ import java.util.List;
 
 @Service
 public class AdminUserServiceImpl implements AdminUserService {
-    private  final UserMapper userMapper;
 
-    public AdminUserServiceImpl(UserMapper userMapper) {
-        this.userMapper = userMapper;
+    private final AdminUserTxService adminUserTxService;
+
+    public AdminUserServiceImpl(AdminUserTxService adminUserTxService) {
+        this.adminUserTxService = adminUserTxService;
     }
 
     /**
      * 分页获取所有用户信息列表
      */
     @Override
-    public Result<PageResult<AdminUserVO>> getListUser(Integer lastId, Integer pageSize,Integer DESC) {
+    public Result<PageResult<AdminUserVO>> getListUser(Long lastId, Integer pageSize,Integer DESC) {
 
         if(DESC == null)
             return Result.error(Message.PARAM_ERROR);
@@ -44,17 +46,14 @@ public class AdminUserServiceImpl implements AdminUserService {
      */
     @Override
     @Transactional
-    public Result<Void> disableUser(Integer status,Integer id) {
+    public Result<Void> disableUser(Integer status,Long id) {
 
         if(status == null || status < 0 || status > 1)
             return Result.error(Message.PARAM_ERROR);
         if(id == null || id <= 0)
             return Result.error(Message.PARAM_ERROR);
 
-        int i = userMapper.updateUserStatus(status, id);
-        if(i < 1)
-            return Result.error(Message.OPERATION_ERROR);
-
+        adminUserTxService.updateUserStatus(status, id);
         return Result.success(Message.OPERATION_SUCCESS);
     }
 
@@ -62,15 +61,15 @@ public class AdminUserServiceImpl implements AdminUserService {
     /**
      * 降序分页获取所有用户信息列表
      */
-    private PageResult<AdminUserVO> PageDesc(Integer lastId, Integer pageSize){
+    private PageResult<AdminUserVO> PageDesc(Long lastId, Integer pageSize){
         boolean hasMore = false;
         Long nextCursor = null;
 
         if (lastId == null || lastId <= 0) {
-            lastId = Integer.MAX_VALUE;
+            lastId = Long.MAX_VALUE;
         }
 
-        List<AdminUserVO> items = userMapper.getListUserDESC(lastId, pageSize + 1);
+        List<AdminUserVO> items = adminUserTxService.getListUserDESC(lastId, pageSize + 1);
 
         if (items.size() == pageSize + 1) {
             hasMore = true;
@@ -89,14 +88,14 @@ public class AdminUserServiceImpl implements AdminUserService {
     /**
      * 升序分页获取所有用户信息列表
      */
-    private PageResult<AdminUserVO> PageAsc(Integer lastId, Integer pageSize){
+    private PageResult<AdminUserVO> PageAsc(Long lastId, Integer pageSize){
         boolean hasMore = false;
         Long nextCursor = null;
 
         if(lastId == null)
-            lastId = 0;
+            lastId = 0L;
 
-        List<AdminUserVO> items = userMapper.getListUserASC(lastId, pageSize + 1);
+        List<AdminUserVO> items = adminUserTxService.getListUserASC(lastId, pageSize + 1);
 
         if(items.size() == pageSize + 1){
             hasMore = true;

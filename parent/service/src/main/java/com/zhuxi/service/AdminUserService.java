@@ -8,8 +8,8 @@ public interface AdminUserService {
 
 
     // 获取用户信息列表(管理员端)
-    Result<PageResult<AdminUserVO>> getListUser(Integer lastId, Integer pageSize,Integer DESC);
+    Result<PageResult<AdminUserVO>> getListUser(Long lastId, Integer pageSize,Integer DESC);
 
     // 禁用用户
-    Result<Void> disableUser(Integer status,Integer id);
+    Result<Void> disableUser(Integer status,Long id);
 }

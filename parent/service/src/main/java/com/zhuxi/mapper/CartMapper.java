@@ -24,4 +24,9 @@ public interface CartMapper {
         WHERE user_id = #{userId}
         """)
     List<CarVO> getListCar(Long userId);
+
+
+    //清空
+    @Delete("DELETE FROM cart WHERE user_id = #{userId}")
+    Boolean deleteAll(Long userId);
 }
