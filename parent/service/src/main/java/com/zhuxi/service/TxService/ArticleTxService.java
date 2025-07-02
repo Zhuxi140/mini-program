@@ -2,11 +2,11 @@ package com.zhuxi.service.TxService;
 
 import com.zhuxi.Constant.Message;
 import com.zhuxi.Exception.transactionalException;
-import com.zhuxi.Result.Result;
 import com.zhuxi.mapper.ArticleMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import src.main.java.com.zhuxi.pojo.DTO.article.ArticleInsertOrUpdateDTO;
 import src.main.java.com.zhuxi.pojo.VO.Article.ArticleDetailVO;
 import src.main.java.com.zhuxi.pojo.VO.Article.ArticleVO;
 
@@ -30,19 +30,40 @@ public class ArticleTxService {
     }
 
     @Transactional(readOnly = true,propagation = Propagation.REQUIRES_NEW)
-    public List<ArticleVO> getListArticle() {
-        List<ArticleVO> listArticle = articleMapper.getListArticle();
+    public List<ArticleVO> getListArticle(Integer  type) {
+        List<ArticleVO> listArticle = articleMapper.getListArticle(type);
         if(listArticle.isEmpty())
             throw new transactionalException(Message.NO_DATA);
         return listArticle;
     }
 
     @Transactional(readOnly = true,propagation = Propagation.REQUIRES_NEW)
-    public List<ArticleVO> getListArticleDESC(Long lastId, Integer pageSize) {
-        List<ArticleVO> listArticleDESC = articleMapper.getListArticleDESC(lastId, pageSize);
+    public List<ArticleVO> getListArticleDESC(Long lastId, Integer pageSize,Integer type) {
+        List<ArticleVO> listArticleDESC = articleMapper.getListArticleDESC(lastId, pageSize,type);
         if(listArticleDESC.isEmpty())
             throw new transactionalException(Message.NO_DATA);
         return listArticleDESC;
     }
 
+    @Transactional(rollbackFor = transactionalException.class)
+    public void insertArticle(ArticleInsertOrUpdateDTO articleInsertOrUpdateDTO) {
+        Boolean b = articleMapper.insertArticle(articleInsertOrUpdateDTO);
+        if(!b)
+            throw new transactionalException(Message.INSERT_ERROR);
+    }
+
+
+    @Transactional(rollbackFor = transactionalException.class)
+    public void updateArticle(ArticleInsertOrUpdateDTO articleInsertOrUpdateDTO,Long id) {
+        int i = articleMapper.updateArticle(articleInsertOrUpdateDTO, id);
+        if(i <= 0)
+            throw new transactionalException(Message.UPDATE_ERROR);
+    }
+
+    @Transactional(rollbackFor = transactionalException.class)
+    public void deleteArticle(Long id) {
+        Boolean b = articleMapper.deleteArticle(id);
+        if(!b)
+            throw new transactionalException(Message.DELETE_ERROR);
+    }
 }

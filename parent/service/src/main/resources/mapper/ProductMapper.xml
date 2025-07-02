@@ -11,7 +11,7 @@
             price,
             cover_url
         FROM product
-        WHERE id < #{lastId}
+        WHERE id < #{lastId} AND status = 1
         ORDER BY id DESC,created_at DESC
         LIMIT #{pageSize}
     ]]>

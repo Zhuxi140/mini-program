@@ -6,10 +6,7 @@ import com.zhuxi.service.ArticleService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import src.main.java.com.zhuxi.pojo.VO.Article.ArticleDetailVO;
 import src.main.java.com.zhuxi.pojo.VO.Article.ArticleVO;
 import src.main.java.com.zhuxi.pojo.entity.Role;
@@ -17,13 +14,23 @@ import src.main.java.com.zhuxi.pojo.entity.Role;
 import java.util.List;
 
 @RestController
-@RequestMapping("/article")
-@Tag(name = "用户端接口")
-public class ArticleController {
+@Tag(name = "通用文章接口")
+@RequestMapping("/Common")
+public class Controller {
+
     private final ArticleService articleService;
 
-    public ArticleController(ArticleService articleService) {
+    public Controller(ArticleService articleService) {
         this.articleService = articleService;
+    }
+
+    @GetMapping
+    @Operation(summary = "获取文章列表 ")
+    public Result<List<ArticleVO>> getArticleList(
+            @Parameter(description = "文章类型(默认所有类型 1为公告 2为新闻/文章)",required = false)
+            @RequestParam(required = false) Integer type
+    ){
+        return articleService.getListArticle(type);
     }
 
 
@@ -37,10 +44,4 @@ public class ArticleController {
         return articleService.getArticleDetailById(id);
     }
 
-    @GetMapping
-    @RequireRole(Role.USER)
-    @Operation(summary = "获取文章列表")
-    public Result<List<ArticleVO>>  getArticleList(){
-        return articleService.getListArticle();
-    }
 }

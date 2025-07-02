@@ -1,11 +1,13 @@
 package com.zhuxi.service.Impl;
 
+import com.zhuxi.Constant.Message;
 import com.zhuxi.Result.PageResult;
 import com.zhuxi.Result.Result;
 import com.zhuxi.mapper.ProductMapper;
 import com.zhuxi.service.ProductService;
 import com.zhuxi.service.TxService.ProductTxService;
 import org.springframework.stereotype.Service;
+import src.main.java.com.zhuxi.pojo.VO.Product.ProductDetailVO;
 import src.main.java.com.zhuxi.pojo.VO.Product.ProductOverviewVO;
 
 import java.util.List;
@@ -45,5 +47,18 @@ public class ProductServiceImpl implements ProductService {
         }
 
         return Result.success(new PageResult<>(listProducts, lastId, hasPrevious, hasMore));
+    }
+
+    /**
+     * 获取商品详情
+     */
+    @Override
+    public Result<ProductDetailVO> getProductDetail(Long id) {
+
+        if(id == null)
+            return Result.error(Message.ARTICLE_ID_IS_NULL);
+
+        ProductDetailVO productDetail = productTxService.getProductDetail(id);
+        return Result.success(Message.OPERATION_SUCCESS, productDetail);
     }
 }

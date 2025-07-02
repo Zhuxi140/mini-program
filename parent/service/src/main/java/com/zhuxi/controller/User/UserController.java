@@ -1,4 +1,4 @@
-package com.zhuxi.controller;
+package com.zhuxi.controller.User;
 
 
 import com.zhuxi.Result.Result;
@@ -7,7 +7,6 @@ import com.zhuxi.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import lombok.extern.log4j.Log4j2;
 import org.springframework.web.bind.annotation.*;
 import src.main.java.com.zhuxi.pojo.DTO.User.UserUpdateDTO;
 import src.main.java.com.zhuxi.pojo.entity.Role;

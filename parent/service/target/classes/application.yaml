@@ -10,6 +10,10 @@ spring:
     url: jdbc:mysql://cd-cdb-chi3okas.sql.tencentcdb.com:23033/mini_program
     username: zhu
     password: zhu123456
+  web:
+    resources:
+      static-locations:
+        - classpath:/META-INF/resources/
 
 # mybatis配置
 mybatis:
@@ -22,6 +26,7 @@ jwt:
   secret-key: ODIyNjA4Njc3NTIyODE2NjYxMDE3NDIyMjUwMDgxMjgwMjU0MDM2Mzc0MzU4NDc1Nzg2MzM0ODA1MDgxMjM2Mg==
   expiration-time: 604800
 
+
 # jwt拦截器放行路径
 jwt-properties:
   exclude-paths:
@@ -31,12 +36,12 @@ jwt-properties:
 
 # aliyun oss配置
 oss:
-  access-key-id: LTAI5t9uR1xN1GRPXpxVUwQ2
+  access-key-id: ${OSS_ACCESS_KEY_ID}
   access-key-secret: PqDDxxnGypD9El4NEyDXRZe6sRigAk
   bucket-name: mini-programm
-  callback-url: /oss/upload#  回调地址
-  endpoint: mini-programm.oss-cn-beijing.aliyuncs.com  # oss-cn-beijing.aliyuncs.com
-  expire-time: 1800  # 7天
+  callback-url: /oss/upload    #回调地址
+  endpoint: mini-programm.oss-cn-beijing.aliyuncs.com  # 存储空间
+  expire-time: 3600 # 签名过期时间 默认1小时
 
 #BCrypt配置
 bcrypt:
@@ -53,4 +58,5 @@ springdoc:
       enabled: true
   api-docs:
     enabled: true
+
 

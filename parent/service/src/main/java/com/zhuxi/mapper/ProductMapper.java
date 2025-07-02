@@ -2,7 +2,9 @@ package com.zhuxi.mapper;
 
 
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Select;
 import src.main.java.com.zhuxi.pojo.VO.Admin.AdminProductVO;
+import src.main.java.com.zhuxi.pojo.VO.Product.ProductDetailVO;
 import src.main.java.com.zhuxi.pojo.VO.Product.ProductOverviewVO;
 
 import java.util.List;
@@ -15,6 +17,9 @@ public interface ProductMapper {
     List<AdminProductVO>  getListAdminProductsDESC(Long lastId , Integer pageSize);
 
     List<AdminProductVO>  getListAdminProductsASC(Long lastId , Integer pageSize);
+
+    @Select("select name, price, cover_url, images, description, stock, origin from product where id = #{id}")
+    ProductDetailVO getProductDetail(Long id);
 
 
 }

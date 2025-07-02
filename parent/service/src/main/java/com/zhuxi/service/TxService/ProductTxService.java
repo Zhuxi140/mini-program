@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import src.main.java.com.zhuxi.pojo.VO.Admin.AdminProductVO;
+import src.main.java.com.zhuxi.pojo.VO.Product.ProductDetailVO;
 import src.main.java.com.zhuxi.pojo.VO.Product.ProductOverviewVO;
 
 import java.util.List;
@@ -23,6 +24,15 @@ public class ProductTxService {
     }
 
 
+    @Transactional(readOnly = true,propagation = Propagation.REQUIRES_NEW)
+    public ProductDetailVO getProductDetail(Long id){
+
+        ProductDetailVO productDetail = productMapper.getProductDetail(id);
+        if(productDetail == null)
+            throw new transactionalException(Message.SELECT_ERROR);
+
+        return productDetail;
+    }
 
     @Transactional(readOnly = true,propagation = Propagation.REQUIRES_NEW)
     public List<ProductOverviewVO> getListProducts(Long lastId,Integer pageSize){

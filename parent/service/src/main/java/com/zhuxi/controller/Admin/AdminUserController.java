@@ -1,4 +1,4 @@
-package com.zhuxi.controller;
+package com.zhuxi.controller.Admin;
 
 
 import com.zhuxi.Result.PageResult;
