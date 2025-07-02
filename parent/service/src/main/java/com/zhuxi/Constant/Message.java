@@ -31,5 +31,7 @@ public class Message {
     public static final String NO_USER_ADDRESS = "暂无用户地址";
     public static final String ARTICLE_IS_NOT_EXIST = "文章不存在";
     public static final String ARTICLE_ID_IS_NULL = "文章id为空";
-
+    public static final String FILE_TYPE_ERROR = "文件类型错误";
+    public static final String NO_CATEGORY = "暂无此分类";
+    public static final String CATEGORY_FIT_ERROR = "文件目录匹配失败";
 }

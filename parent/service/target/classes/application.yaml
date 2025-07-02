@@ -27,7 +27,7 @@ jwt:
   expiration-time: 604800
 
 
-# jwt拦截器放行路径
+# jwt拦截器放行接口
 jwt-properties:
   exclude-paths:
     - /login/user
@@ -36,7 +36,7 @@ jwt-properties:
 
 # aliyun oss配置
 oss:
-  access-key-id: ${OSS_ACCESS_KEY_ID}
+  access-key-id: ${OSS_ACCESS_KEY_ID} # 从环境变量中获取
   access-key-secret: PqDDxxnGypD9El4NEyDXRZe6sRigAk
   bucket-name: mini-programm
   callback-url: /oss/upload    #回调地址
@@ -47,11 +47,12 @@ oss:
 bcrypt:
   strength: 10 # 密码加密强度
 
-
+# 日志配置
 logging:
   level:
     root: info
 
+# swagger配置
 springdoc:
   swagger-ui:
     csrf:
