@@ -7,6 +7,9 @@ import com.zhuxi.mapper.ProductMapper;
 import com.zhuxi.service.ProductService;
 import com.zhuxi.service.TxService.ProductTxService;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import src.main.java.com.zhuxi.pojo.DTO.product.ProductAddDTO;
+import src.main.java.com.zhuxi.pojo.DTO.product.ProductUpdateDTO;
 import src.main.java.com.zhuxi.pojo.VO.Product.ProductDetailVO;
 import src.main.java.com.zhuxi.pojo.VO.Product.ProductOverviewVO;
 
@@ -61,4 +64,6 @@ public class ProductServiceImpl implements ProductService {
         ProductDetailVO productDetail = productTxService.getProductDetail(id);
         return Result.success(Message.OPERATION_SUCCESS, productDetail);
     }
+
+
 }

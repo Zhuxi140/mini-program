@@ -44,4 +44,35 @@
         ORDER BY id ASC
     </select>
 
+    <update id="updateProduct" parameterType="src.main.java.com.zhuxi.pojo.DTO.product.ProductUpdateDTO">
+        UPDATE product
+        <set>
+            <if test="productUpdateDTO.name != null">
+                name = #{productUpdateDTO.name},
+            </if>
+            <if test="productUpdateDTO.price != null">
+                price = #{productUpdateDTO.price},
+            </if>
+            <if test="productUpdateDTO.coverUrl != null">
+                cover_url = #{productUpdateDTO.coverUrl},
+            </if>
+            <if test="productUpdateDTO.images != null">
+                images = #{productUpdateDTO.images,typeHandler=com.zhuxi.handler.TypeHandler},
+            </if>
+            <if test="productUpdateDTO.description != null">
+                description = #{productUpdateDTO.description},
+            </if>
+            <if test="productUpdateDTO.stock != null">
+                stock = #{productUpdateDTO.stock},
+            </if>
+            <if test="productUpdateDTO.origin != null">
+                origin = #{productUpdateDTO.origin},
+            </if>
+            <if test="productUpdateDTO.status != null">
+                status = #{productUpdateDTO.status},
+            </if>
+        </set>
+        WHERE id = #{id}
+    </update>
+
 </mapper>

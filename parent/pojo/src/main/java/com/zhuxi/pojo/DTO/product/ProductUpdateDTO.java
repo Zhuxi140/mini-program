@@ -1,10 +1,9 @@
-package src.main.java.com.zhuxi.pojo.entity;
+package src.main.java.com.zhuxi.pojo.DTO.product;
 
 import java.math.BigDecimal;
 import java.util.List;
 
-public class Product {
-    private Integer id;
+public class ProductUpdateDTO {
     private String name;
     private BigDecimal price;
     private String coverUrl;
@@ -14,9 +13,7 @@ public class Product {
     private String origin;
     private Integer status;
 
-    public Product(Integer id, String name, BigDecimal price,String coverUrl, List<String> images, String description, Integer stock, String origin, Integer status) {
-
-        this.id = id;
+    public ProductUpdateDTO(String name, BigDecimal price, String coverUrl, List<String> images, String description, Integer stock, String origin, Integer status) {
         this.name = name;
         this.price = price;
         this.coverUrl = coverUrl;
@@ -27,15 +24,7 @@ public class Product {
         this.status = status;
     }
 
-    public Product() {
-    }
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
+    public ProductUpdateDTO() {
     }
 
     public String getName() {

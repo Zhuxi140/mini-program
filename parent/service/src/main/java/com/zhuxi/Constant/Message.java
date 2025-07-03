@@ -36,4 +36,6 @@ public class Message {
     public static final String CATEGORY_FIT_ERROR = "文件目录匹配失败";
     public static final String INVALID_PUBLIC_KEY_URL = "公钥URL错误";
     public static final String CALLBACK_IS_NULL = "回调为空";
+    public static final String PRODUCT_ID_IS_NULL = "商品id为空";
+
 }

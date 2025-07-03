@@ -6,6 +6,8 @@ import com.zhuxi.mapper.ProductMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import src.main.java.com.zhuxi.pojo.DTO.product.ProductAddDTO;
+import src.main.java.com.zhuxi.pojo.DTO.product.ProductUpdateDTO;
 import src.main.java.com.zhuxi.pojo.VO.Admin.AdminProductVO;
 import src.main.java.com.zhuxi.pojo.VO.Product.ProductDetailVO;
 import src.main.java.com.zhuxi.pojo.VO.Product.ProductOverviewVO;
@@ -22,6 +24,7 @@ public class ProductTxService {
     {
         this.productMapper = productMapper;
     }
+
 
 
     @Transactional(readOnly = true,propagation = Propagation.REQUIRES_NEW)
@@ -60,5 +63,17 @@ public class ProductTxService {
             throw new transactionalException(Message.SELECT_ERROR);
 
         return listAdminProductsASC;
+    }
+
+    @Transactional(rollbackFor = transactionalException.class)
+    public void update(ProductUpdateDTO productUpdateDTO,Long id){
+        if(productMapper.updateProduct(productUpdateDTO,id) <= 0)
+            throw new transactionalException(Message.UPDATE_ERROR);
+    }
+
+    @Transactional(rollbackFor = transactionalException.class)
+    public void add(ProductAddDTO productAddDTO){
+        if(!productMapper.add(productAddDTO))
+            throw new transactionalException(Message.INSERT_ERROR);
     }
 }

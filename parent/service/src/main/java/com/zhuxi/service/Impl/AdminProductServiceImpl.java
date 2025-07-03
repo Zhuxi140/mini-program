@@ -7,6 +7,9 @@ import com.zhuxi.mapper.ProductMapper;
 import com.zhuxi.service.AdminProductService;
 import com.zhuxi.service.TxService.ProductTxService;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import src.main.java.com.zhuxi.pojo.DTO.product.ProductAddDTO;
+import src.main.java.com.zhuxi.pojo.DTO.product.ProductUpdateDTO;
 import src.main.java.com.zhuxi.pojo.VO.Admin.AdminProductVO;
 
 import java.util.List;
@@ -38,6 +41,41 @@ public class AdminProductServiceImpl implements AdminProductService {
 
         return Result.success(Message.OPERATION_SUCCESS, adminProductVO);
 
+    }
+
+
+    /**
+     * 添加商品
+     */
+    @Override
+    @Transactional
+    public Result<Void> add(ProductAddDTO productAddDTO) {
+        if (productAddDTO == null || productAddDTO.getName() == null || productAddDTO.getPrice() == null)
+            return Result.error(Message.BODY_NO_MAIN_OR_IS_NULL);
+
+        productTxService.add(productAddDTO);
+        return Result.success(Message.OPERATION_SUCCESS);
+    }
+
+    /**
+     * 修改商品
+     */
+    @Override
+    @Transactional
+    public Result<Void> update(ProductUpdateDTO productUpdateDTO, Long id) {
+        if (productUpdateDTO == null || id == null)
+            return Result.error(Message.PRODUCT_ID_IS_NULL + "或" + Message.BODY_NO_MAIN_OR_IS_NULL);
+
+        if (productUpdateDTO.getDescription() == null && productUpdateDTO.getName() == null
+                && productUpdateDTO.getPrice() == null && productUpdateDTO.getStock() == null
+                && productUpdateDTO.getCoverUrl() == null && productUpdateDTO.getImages() == null
+                && productUpdateDTO.getOrigin() == null && productUpdateDTO.getStatus() == null
+        )
+            return Result.error(Message.AT_LEAST_ONE_FIELD);
+
+        productTxService.update(productUpdateDTO,id);
+
+        return Result.success(Message.OPERATION_SUCCESS);
     }
 
 
@@ -94,5 +132,9 @@ public class AdminProductServiceImpl implements AdminProductService {
 
         return new PageResult<>(items, nextCursor, hasPrevious, hasMore);
     }
+
+
+
+
 
 }

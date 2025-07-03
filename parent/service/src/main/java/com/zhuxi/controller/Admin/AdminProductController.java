@@ -8,10 +8,9 @@ import com.zhuxi.service.AdminProductService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import src.main.java.com.zhuxi.pojo.DTO.product.ProductAddDTO;
+import src.main.java.com.zhuxi.pojo.DTO.product.ProductUpdateDTO;
 import src.main.java.com.zhuxi.pojo.VO.Admin.AdminProductVO;
 import src.main.java.com.zhuxi.pojo.entity.Role;
 
@@ -42,5 +41,37 @@ public class AdminProductController {
     )
     {
         return adminProductService.getListAdminProducts(lastId, pageSize,DESC);
+    }
+
+    @PostMapping
+    @RequireRole(Role.ADMIN)
+    @Operation(
+            summary = "添加商品",
+            description = "添加商品"
+    )
+    public Result<Void> add(
+            @Parameter(description = "商品信息", required = true)
+            @RequestBody
+            ProductAddDTO productAddDTO
+    ){
+        return adminProductService.add(productAddDTO);
+    }
+
+
+    @PutMapping("/{id}")
+    @RequireRole(Role.ADMIN)
+    @Operation(
+            summary = "修改商品",
+            description = "修改商品"
+    )
+    public Result<Void> update(
+            @Parameter(description = "商品信息", required = true)
+            @RequestBody
+            ProductUpdateDTO productUpdateDTO,
+            @Parameter(description = "商品id", required = true)
+            @PathVariable
+            Long id
+    ){
+        return adminProductService.update(productUpdateDTO,id);
     }
 }

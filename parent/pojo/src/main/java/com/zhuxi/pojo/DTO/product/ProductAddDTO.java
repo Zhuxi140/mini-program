@@ -1,22 +1,28 @@
-package src.main.java.com.zhuxi.pojo.entity;
+package src.main.java.com.zhuxi.pojo.DTO.product;
+
+import io.swagger.v3.oas.annotations.media.Schema;
 
 import java.math.BigDecimal;
 import java.util.List;
 
-public class Product {
-    private Integer id;
+public class ProductAddDTO {
+
+    @Schema(description = "商品名称",requiredMode = Schema.RequiredMode.REQUIRED)
     private String name;
+    @Schema(description = "商品价格",requiredMode = Schema.RequiredMode.REQUIRED)
     private BigDecimal price;
+    @Schema(description = "封面图",requiredMode = Schema.RequiredMode.NOT_REQUIRED)
     private String coverUrl;
+    @Schema(description = "商品图片",requiredMode = Schema.RequiredMode.NOT_REQUIRED)
     private List<String> images;
+    @Schema(description = "商品描述",requiredMode = Schema.RequiredMode.NOT_REQUIRED)
     private String description;
-    private Integer stock;
-    private String origin;
-    private Integer status;
+    @Schema(description = "商品库存(默认为1)",requiredMode = Schema.RequiredMode.NOT_REQUIRED)
+    private Integer stock = 1;
+    @Schema(description = "商品产地(默认为河南省新乡市封丘县)",requiredMode = Schema.RequiredMode.NOT_REQUIRED)
+    private String origin = "河南省新乡市封丘县";
 
-    public Product(Integer id, String name, BigDecimal price,String coverUrl, List<String> images, String description, Integer stock, String origin, Integer status) {
-
-        this.id = id;
+    public ProductAddDTO(String name, BigDecimal price, String coverUrl, List<String> images, String description, Integer stock, String origin) {
         this.name = name;
         this.price = price;
         this.coverUrl = coverUrl;
@@ -24,18 +30,9 @@ public class Product {
         this.description = description;
         this.stock = stock;
         this.origin = origin;
-        this.status = status;
     }
 
-    public Product() {
-    }
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
+    public ProductAddDTO() {
     }
 
     public String getName() {
@@ -92,13 +89,5 @@ public class Product {
 
     public void setOrigin(String origin) {
         this.origin = origin;
-    }
-
-    public Integer getStatus() {
-        return status;
-    }
-
-    public void setStatus(Integer status) {
-        this.status = status;
     }
 }

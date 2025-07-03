@@ -102,7 +102,7 @@ public class OSSController {
 
 
     @PostMapping("/oss/upload")
-    @Operation(summary = "上传回调（供OSS专用 可忽略）")
+    @Operation(summary = "上传回调（供阿里云OSS后台使用用 可忽略）")
     public Result uploadCallback(
             @Parameter(description = "请求头组",hidden = true)
             @RequestHeader
