@@ -4,16 +4,16 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="372da862-f7c4-4fa2-93c3-bf2ac1fe9e6e" name="更改" comment="refactor(service): 重构服务模块并更新数据库 schema&#10;&#10;- 优化现有结构&#10;- 更新数据库 schema，包括添加新字段和修改现有字段&#10;- 重命名 Admin 相关的控制器类，使其更具模块化&#10;- 删除未使用的 AdminMapper.xml 文件&#10;- 更新应用配置，添加静态资源路径和调整 OSS 配置">
+    <list default="true" id="372da862-f7c4-4fa2-93c3-bf2ac1fe9e6e" name="更改" comment="&#10;&#10;添加OSS上传凭证获取接口">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/parent/pojo/src/main/java/com/zhuxi/pojo/DTO/OssTokenDTO.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/parent/service/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/pom.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/Constant/Message.java" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/Constant/Message.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/controller/OSSController.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/parent/service/src/main/resources/application.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/src/main/resources/application.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/controller/OSSController.java" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/controller/OSSController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/parent/service/src/main/resources/application.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/src/main/resources/application-dev.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/parent/service/src/test/java/com/zhuxi/service/ServiceApplicationTests.java" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/src/test/java/com/zhuxi/service/ServiceApplicationTests.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/parent/service/target/classes/application.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/target/classes/application.yaml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/Constant/Message.class" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/Constant/Message.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/controller/OSSController.class" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/controller/OSSController.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/controller/User/ArticleController.class" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -73,38 +73,38 @@
     <option name="showLibraryContents" value="true" />
     <option name="showScratchesAndConsoles" value="false" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "JUnit.service中的com.zhuxi.Interceptor.executor": "Run",
-    "RequestMappingsPanelOrder0": "0",
-    "RequestMappingsPanelOrder1": "1",
-    "RequestMappingsPanelWidth0": "75",
-    "RequestMappingsPanelWidth1": "75",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
-    "Spring Boot.ParentApplication.executor": "Run",
-    "Spring Boot.ServiceApplication.executor": "Debug",
-    "git-widget-placeholder": "main",
-    "jdk.selected.JAVA_MODULE": "17",
-    "last_opened_file_path": "C:/Users/zhuxi/Desktop/vibe-music-server-main",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "project.structure.last.edited": "模块",
-    "project.structure.proportion": "0.15527344",
-    "project.structure.side.proportion": "0.2",
-    "run.configurations.included.in.services": "true",
-    "settings.editor.selected.configurable": "editor.preferences.completion",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;JUnit.service中的com.zhuxi.Interceptor.executor&quot;: &quot;Run&quot;,
+    &quot;RequestMappingsPanelOrder0&quot;: &quot;0&quot;,
+    &quot;RequestMappingsPanelOrder1&quot;: &quot;1&quot;,
+    &quot;RequestMappingsPanelWidth0&quot;: &quot;75&quot;,
+    &quot;RequestMappingsPanelWidth1&quot;: &quot;75&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
+    &quot;Spring Boot.ParentApplication.executor&quot;: &quot;Run&quot;,
+    &quot;Spring Boot.ServiceApplication.executor&quot;: &quot;Run&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
+    &quot;jdk.selected.JAVA_MODULE&quot;: &quot;17&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/zhuxi/Desktop/vibe-music-server-main&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;project.structure.last.edited&quot;: &quot;模块&quot;,
+    &quot;project.structure.proportion&quot;: &quot;0.15527344&quot;,
+    &quot;project.structure.side.proportion&quot;: &quot;0.2&quot;,
+    &quot;run.configurations.included.in.services&quot;: &quot;true&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;editor.preferences.completion&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   },
-  "keyToStringList": {
-    "com.intellij.ide.scratch.LRUPopupBuilder$1/SQL 方言": [
-      "MySQL"
+  &quot;keyToStringList&quot;: {
+    &quot;com.intellij.ide.scratch.LRUPopupBuilder$1/SQL 方言&quot;: [
+      &quot;MySQL&quot;
     ]
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
       <recent name="D:\IDEA\mini-program\parent\service\src\main\resources" />
@@ -171,7 +171,8 @@
       <workItem from="1750909443108" duration="10003000" />
       <workItem from="1751177756288" duration="5622000" />
       <workItem from="1751183486234" duration="9945000" />
-      <workItem from="1751420021979" duration="12184000" />
+      <workItem from="1751420021979" duration="21522000" />
+      <workItem from="1751508851461" duration="11984000" />
     </task>
     <task id="LOCAL-00001" summary="d">
       <option name="closed" value="true" />
@@ -229,7 +230,15 @@
       <option name="project" value="LOCAL" />
       <updated>1751423236498</updated>
     </task>
-    <option name="localTasksCounter" value="8" />
+    <task id="LOCAL-00008" summary="&#10;&#10;添加OSS上传凭证获取接口">
+      <option name="closed" value="true" />
+      <created>1751432720419</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1751432720419</updated>
+    </task>
+    <option name="localTasksCounter" value="9" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -243,6 +252,7 @@
     <MESSAGE value="feat(database): 更新数据库模型&#10;&#10;- 新增 article、order、order_item、user_address 表&#10;- 更新 admin、cart、product、user表的结构&#10;- 添加新的视图 cart_view、product_stock_status、user_summary&#10;- 调整表和字段的注释&#10;- 更新字段类型和约束&#10;- 完善各个模块&#10;- 添加用户地址模块" />
     <MESSAGE value="refactor(service): 重构服务层逻辑&#10;&#10;- 优化事务管理，提高数据一致性&#10;- 优化代码结构，提高可维护性- 改进错误处理，提升用户体验&#10;- 新增功能： - 购物车清空功能&#10;  - 用户地址相关接口&#10;  - 文章相关错误提示&#10;  -构建文章模块基础骨架" />
     <MESSAGE value="refactor(service): 重构服务模块并更新数据库 schema&#10;&#10;- 优化现有结构&#10;- 更新数据库 schema，包括添加新字段和修改现有字段&#10;- 重命名 Admin 相关的控制器类，使其更具模块化&#10;- 删除未使用的 AdminMapper.xml 文件&#10;- 更新应用配置，添加静态资源路径和调整 OSS 配置" />
-    <option name="LAST_COMMIT_MESSAGE" value="refactor(service): 重构服务模块并更新数据库 schema&#10;&#10;- 优化现有结构&#10;- 更新数据库 schema，包括添加新字段和修改现有字段&#10;- 重命名 Admin 相关的控制器类，使其更具模块化&#10;- 删除未使用的 AdminMapper.xml 文件&#10;- 更新应用配置，添加静态资源路径和调整 OSS 配置" />
+    <MESSAGE value="&#10;&#10;添加OSS上传凭证获取接口" />
+    <option name="LAST_COMMIT_MESSAGE" value="&#10;&#10;添加OSS上传凭证获取接口" />
   </component>
 </project>

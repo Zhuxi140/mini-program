@@ -1,26 +1,40 @@
 package com.zhuxi.controller;
 
 
+import ch.qos.logback.core.util.StringUtil;
 import com.aliyun.oss.HttpMethod;
 import com.aliyun.oss.OSS;
 import com.aliyun.oss.OSSClientBuilder;
 import com.aliyun.oss.model.GeneratePresignedUrlRequest;
 import com.zhuxi.Constant.Message;
+import com.zhuxi.Result.Result;
+import com.zhuxi.service.ArticleService;
+import com.zhuxi.service.ProductService;
+import com.zhuxi.service.UserService;
 import com.zhuxi.utils.JwtUtils;
 import io.jsonwebtoken.Claims;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
+import org.bouncycastle.asn1.x509.SubjectPublicKeyInfo;
+import org.bouncycastle.openssl.PEMParser;
+import org.bouncycastle.openssl.jcajce.JcaPEMKeyConverter;
+import org.codehaus.jettison.json.JSONException;
+import org.codehaus.jettison.json.JSONObject;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import src.main.java.com.zhuxi.pojo.DTO.OssRecord;
 
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.Map;
-import java.util.UUID;
+import java.net.URLConnection;
+import java.nio.charset.StandardCharsets;
+import java.security.PublicKey;
+import java.security.Signature;
+import java.util.*;
 
 @Slf4j
 @RestController
@@ -28,6 +42,10 @@ import java.util.UUID;
 public class OSSController {
 
     private final JwtUtils jwtUtils;
+    private final UserService userService;
+    private final ProductService productService;
+    private final ArticleService articleService;
+    private final Map<String, PublicKey> publicKeyCache = new java.util.HashMap<>();
 
     @Value("${oss.access-key-id}")
     private String accessKeyId;
@@ -44,9 +62,16 @@ public class OSSController {
     @Value("${oss.expire-time}")
     private long expireTime;
 
-    public OSSController(JwtUtils jwtUtils) {
+    @Value("${oss.callback-url}")
+    private String callbackUrl;
+
+    public OSSController(JwtUtils jwtUtils, UserService userService, ProductService productService, ArticleService articleService) {
         this.jwtUtils = jwtUtils;
+        this.userService = userService;
+        this.productService = productService;
+        this.articleService = articleService;
     }
+
 
     @GetMapping("/oss/token")
     @Operation(summary = "获取OSS上传token")
@@ -75,21 +100,181 @@ public class OSSController {
 
     }
 
+
+    @PostMapping("/oss/upload")
+    @Operation(summary = "上传回调（供OSS专用 可忽略）")
+    public Result uploadCallback(
+            @Parameter(description = "请求头组",hidden = true)
+            @RequestHeader
+            Map<String,String> mapHeaders,
+            @Parameter(description = "请求体组",hidden = true)
+            @RequestBody
+            Map<String,String> mapBody
+    ){
+        for(String headers : mapHeaders.keySet()){  // 遍历所有请求头
+            log.info("Header: {}  Data : {}", headers, mapHeaders.get(headers));
+        }
+        log.warn("_____________________________________________________________________");
+        for(String body : mapBody.keySet()){  // 遍历所有请求体
+            log.info("Body: {}  Data : {}", body, mapBody.get(body));
+        }
+
+        // 验证签名
+        if(!checkCallback(mapHeaders, mapBody))
+            return Result.error(Message.PARAM_ERROR);
+
+        // 解析回调数据
+        CallbackData callbackData = parseCallback(mapHeaders, mapBody);
+
+        // 业务处理
+        callbackDataDeal(callbackData);
+
+        return Result.success(Message.OPERATION_SUCCESS);
+    }
+
+    //业务 处理
+    private void callbackDataDeal(CallbackData callbackData){
+        if(callbackData == null){
+            log.error(Message.CALLBACK_IS_NULL);
+            return;
+        }
+
+        OssRecord record = new OssRecord();
+        record.setId(Long.valueOf(callbackData.Id));
+
+        record.setObjectName(callbackData.objectName);
+        record.setBucketName(callbackData.bucket);
+        record.setSize(callbackData.size);
+        record.setMimeType(callbackData.mimeType);
+        record.setCategoryType(callbackData.categoryType);
+
+
+        switch (callbackData.categoryType){
+            case "avatar_avatar": log.info("avatar_avatar________________执行中");
+                break;
+            case "product_cover": log.info("product_cover________________执行中");
+                break;
+            case "product_images": log.info("product_images________________执行中");
+                break;
+            case "article_cover": log.info("article_cover________________执行中");
+                break;
+            case "article_contentImages": log.info("article_contentImages________________执行中");
+                break;
+            case "article_content": log.info("article_content________________执行中");
+                break;
+            default: log.info("未定义的callbackData");
+        }
+    }
+
+    // 解析回调数据
+    private CallbackData parseCallback(Map<String,String> mapHeaders, Map<String,String> mapBody){
+        CallbackData callbackData = new CallbackData();
+        callbackData.bucket = mapBody.get("bucket");
+        callbackData.size = Long.parseLong(mapBody.get("size"));
+        callbackData.mimeType = mapBody.get("mimeType");
+        callbackData.objectName = mapBody.get("object");
+        callbackData.Id = mapHeaders.get("x-oss-var-x-id");
+        callbackData.categoryType = mapHeaders.get("x-oss-var-x-categorytype");
+
+        return callbackData;
+    }
+
+    // 检查回调
+    private boolean checkCallback(Map<String,String> headers, Map<String,String> mapBody){
+        String Auth = headers.get("Authorization");
+        String publicKey = headers.get("x-oss-pub-key");
+
+        String id = headers.get("x-oss-var-x-id");
+        String categoryType = headers.get("x-oss-var-x-categorytype");
+
+        if(StringUtil.isNullOrEmpty( Auth) || StringUtil.isNullOrEmpty(publicKey))
+            return false;
+
+    try {
+        PublicKey publicKey1 = getPublicKey(publicKey);
+        String path = callbackUrl;
+
+        Map<String,String> allParams = new HashMap<>(mapBody);
+        allParams.put("id", id);
+        allParams.put("categoryType", categoryType);
+
+        String query = buildQueryString(allParams);
+        String signString = path + "\n" + query;
+
+        byte[] decode = Base64.getDecoder().decode(Auth);
+
+        Signature SHA1 = Signature.getInstance("SHA1withRSA");
+        SHA1.initVerify(publicKey1); // 初始化签名验证器
+        SHA1.update(signString.getBytes(StandardCharsets.UTF_8));
+
+        return SHA1.verify(decode);
+    }catch (Exception e){
+        log.warn("Public key error: {}", e.getMessage());
+        return false;
+    }
+
+    }
+
+    // 构建查询字符串
+    private String buildQueryString(Map<String,String>  mapBody){
+        return mapBody.entrySet().stream() // 获取所有参数项 转换为 Stream
+                .filter(entry -> !"callback".equals(entry.getKey()))  // 排除callback参数
+                .sorted(Map.Entry.comparingByKey()) // 按key排序
+                .map(entry -> entry.getKey() + "=" + entry.getValue()) // 构建参数字符串
+                .reduce((s1, s2) -> s1 + "&" + s2) // 将参数字符串连接起来
+                .orElse(""); // 如果没有参数，返回空字符串
+    }
+
+    // 获取公钥并缓存
+    private PublicKey getPublicKey(String publicKey) throws Exception{
+        if(publicKeyCache.containsKey(publicKey)){
+            return publicKeyCache.get(publicKey);
+        }
+
+        if(!publicKey.startsWith("https://gosspublic.alicdn.com/")){
+            throw new RuntimeException(Message.INVALID_PUBLIC_KEY_URL);
+        }
+
+        URL url = new URL(publicKey);
+        URLConnection conn = url.openConnection();
+
+        try(InputStream inputStream = conn.getInputStream()) {
+            InputStreamReader inputStreamReader = new InputStreamReader(inputStream, StandardCharsets.UTF_8);
+            // 解析公钥
+            PEMParser pemParser = new PEMParser(inputStreamReader);
+            Object o = pemParser.readObject();
+
+            if(o instanceof SubjectPublicKeyInfo subjectPublicKeyInfo){
+                JcaPEMKeyConverter jcaPEMKeyConverter = new JcaPEMKeyConverter();
+                PublicKey publicKey1 = jcaPEMKeyConverter.getPublicKey(subjectPublicKeyInfo);
+
+                publicKeyCache.put(publicKey, publicKey1);
+
+                return publicKey1;
+            }
+        } catch (MalformedURLException e) {
+            throw new RuntimeException(e.getMessage());
+        }
+
+        return null;
+    }
+
     // 分类处理
     private Map<String,String> categoryDeal(String category,String type,String fileType,Claims  claims) {
+        Long id = claims.get("id", Long.class);
         String s = claims.get("role", String.class);
         checkType(fileType);
         switch (category.toLowerCase()){
             case "avatar":{
                 if(!(s).equalsIgnoreCase("user"))
                     throw new RuntimeException(Message.ROLE_ERROR);
-                String s1 = generateObjectName(claims, type, category, fileType);
-                return generateUrl(s1, fileType);
+                String s1 = generateObjectName(claims, type, category, fileType,id);
+                return generateUrl(s1, fileType, category, type,id);
             }
             case "product", "article":{
                 checkRole(s);
-                String s1 = generateObjectName(claims, type, category, fileType);
-                return generateUrl(s1, fileType);
+                String s1 = generateObjectName(claims, type, category, fileType,id);
+                return generateUrl(s1, fileType, category, type,id);
             }
             default:
                 throw new RuntimeException(Message.NO_CATEGORY);
@@ -98,8 +283,7 @@ public class OSSController {
     }
 
     // 生成objectName
-    private String generateObjectName(Claims  claims,String type,String category,String fileType){
-        Long id = claims.get("id", Long.class);
+    private String generateObjectName(Claims  claims,String type,String category,String fileType,Long id){
         String Path = switch ( category + "_" + type){
             case "product_cover" -> "product/" + id + "/cover/";
             case "product_images" -> "product/" + id + "/images/";
@@ -133,17 +317,48 @@ public class OSSController {
     }
 
     // 生成带签名的url
-    private Map<String,String> generateUrl(String objectName, String fileType) {
+    private Map<String,String> generateUrl(String objectName, String fileType,String category,String type,Long id) {
         OSS build = new OSSClientBuilder().build(endpoint, accessKeyId, accessKeySecret);
 
     try{
 
         GeneratePresignedUrlRequest request = new GeneratePresignedUrlRequest(bucketName, objectName);
         request.setMethod(HttpMethod.PUT);
-        request.setExpiration(new java.util.Date(System.currentTimeMillis() + expireTime));
+        request.setExpiration(new Date(System.currentTimeMillis() + expireTime));
         String mimeType = getMimeType(fileType);
         request.setContentType(mimeType);
         log.info(" mimeType : {}", mimeType );
+
+       /* Callback callback = new Callback();
+        callback.setCallbackUrl(callbackUrl);
+        callback.setCalbackBodyType(Callback.CalbackBodyType.URL); // 设置回调类型为URL
+        callback.addCallbackVar("x:id", id.toString());
+        callback.addCallbackVar("x:categoryType", category + "_" + type);
+
+        String callbackBody = """
+                bucket=${bucket}&object=${object}&size=${size}&mimeType=${mimeType}&id=${x:id}&categoryType=${x:categoryType}
+                """;
+        callback.setCallbackBody(callbackBody);
+
+        Map<String, String> callbackParams = new HashMap<>();
+        callbackParams.put("callback", callback.buildCallbackJSONString());
+        request.setCallback(callbackParams);*/
+
+        Map<String,String> callbackMap = new HashMap<>();
+        callbackMap.put("callback", callbackUrl);
+        callbackMap.put("callbackBody", """
+                bucket=${bucket}&object=${object}&size=${size}&mimeType=${mimeType}&id=${x:id}&categoryType=${x:categoryType}
+                """);
+        callbackMap.put("callbackBodyType", " application/x-www-form-urlencoded");
+        callbackMap.put("x:id", id.toString());
+        callbackMap.put("x:categoryType", category + "_" + type);
+
+
+        // 构建JSON对象
+        String callbackJson = new JSONObject(callbackMap).toString();
+        String base64Callback = Base64.getEncoder().encodeToString(callbackJson.getBytes());
+        request.addQueryParameter("callback",base64Callback);
+
         URL url = build.generatePresignedUrl(request);
 
         return Map.of(
@@ -151,11 +366,12 @@ public class OSSController {
                 "objectName", objectName
                 );
 
-    }finally {
+    } catch (JSONException e) {
+        throw new RuntimeException(e);
+    } finally {
         build.shutdown();
     }
     }
-
 
     // 获取文件类型
     private String getMimeType(String suffix) {
@@ -171,6 +387,15 @@ public class OSSController {
 
     }
 
+    // 回调数据类
+    private static class CallbackData {
+        String bucket;
+        String objectName;
+        long size;
+        String mimeType;
+        String Id;
+        String categoryType;
+    }
 }
 
 

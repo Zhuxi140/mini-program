@@ -14,6 +14,9 @@ spring:
     resources:
       static-locations:
         - classpath:/META-INF/resources/
+  # 环境配置
+  profiles:
+    active: dev
 
 # mybatis配置
 mybatis:
@@ -32,14 +35,15 @@ jwt-properties:
   exclude-paths:
     - /login/user
     - /login/admin
+    - /oss/upload
 
 
 # aliyun oss配置
 oss:
   access-key-id: ${OSS_ACCESS_KEY_ID} # 从环境变量中获取
-  access-key-secret: PqDDxxnGypD9El4NEyDXRZe6sRigAk
+  access-key-secret: ${OSS_ACCESS_KEY_SECRET}
   bucket-name: mini-programm
-  callback-url: /oss/upload    #回调地址
+  callback-url: http://localhost:8080/oss/upload   #回调地址
   endpoint: mini-programm.oss-cn-beijing.aliyuncs.com  # 存储空间
   expire-time: 3600 # 签名过期时间 默认1小时
 
