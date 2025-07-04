@@ -11,7 +11,10 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.web.bind.annotation.*;
 import src.main.java.com.zhuxi.pojo.VO.Product.ProductDetailVO;
 import src.main.java.com.zhuxi.pojo.VO.Product.ProductOverviewVO;
+import src.main.java.com.zhuxi.pojo.VO.Product.ProductSpecVO;
 import src.main.java.com.zhuxi.pojo.entity.Role;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/products")
@@ -49,5 +52,18 @@ public class ProductController {
             @PathVariable
             Long id){
         return productService.getProductDetail(id);
+    }
+
+    @GetMapping("/spec/{id}")
+    @RequireRole(Role.USER)
+    @Operation(
+            summary = "获取商品规格接口",
+            description = "商品规格"
+    )
+    public Result<List<ProductSpecVO>> getProductSpec(
+            @Parameter(description = "商品id", required = true)
+            @PathVariable
+            Long id){
+        return productService.getProductSpec(id);
     }
 }

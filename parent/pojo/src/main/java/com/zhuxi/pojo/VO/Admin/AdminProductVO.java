@@ -1,20 +1,19 @@
 package src.main.java.com.zhuxi.pojo.VO.Admin;
 
-import java.math.BigDecimal;
 
 public class AdminProductVO {
     private Long id;
     private String name;
-    private BigDecimal price;
     private Integer stock;
+    private String specNames;
     private String stockStatus;
 
-    public AdminProductVO(Long id, String name, BigDecimal price, Integer stock, String stockStatus) {
+    public AdminProductVO(Long id, String name, Integer stock,String specNames, String stockStatus) {
 
         this.id = id;
         this.name = name;
-        this.price = price;
         this.stock = stock;
+        this.specNames = specNames;
         this.stockStatus = stockStatus;
     }
 
@@ -34,14 +33,6 @@ public class AdminProductVO {
         this.name = name;
     }
 
-    public BigDecimal getPrice() {
-        return price;
-    }
-
-    public void setPrice(BigDecimal price) {
-        this.price = price;
-    }
-
     public Integer getStock() {
         return stock;
     }
@@ -56,5 +47,13 @@ public class AdminProductVO {
 
     public void setStockStatus(String stockStatus) {
         this.stockStatus = stockStatus;
+    }
+
+    public String getSpecNames() {
+        return specNames;
+    }
+
+    public void setSpecNames(String specNames) {
+        this.specNames = specNames;
     }
 }

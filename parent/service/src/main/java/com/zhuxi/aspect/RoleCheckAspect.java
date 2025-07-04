@@ -71,6 +71,7 @@ public class RoleCheckAspect {
     }
 
 
+
     private HttpServletRequest getRequest(){
         ServletRequestAttributes rA = (ServletRequestAttributes )RequestContextHolder.getRequestAttributes();
         return rA == null ? null : (HttpServletRequest) rA.getRequest();

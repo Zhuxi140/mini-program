@@ -1,13 +1,13 @@
 package com.zhuxi.handler;
 
 
-import com.zhuxi.Constant.Message;
 import com.zhuxi.Result.Result;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import com.zhuxi.Exception.transactionalException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-@ControllerAdvice
+@RestControllerAdvice
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(transactionalException.class)

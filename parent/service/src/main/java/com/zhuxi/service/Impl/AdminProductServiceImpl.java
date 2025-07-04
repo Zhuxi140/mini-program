@@ -3,14 +3,13 @@ package com.zhuxi.service.Impl;
 import com.zhuxi.Constant.Message;
 import com.zhuxi.Result.PageResult;
 import com.zhuxi.Result.Result;
-import com.zhuxi.mapper.ProductMapper;
 import com.zhuxi.service.AdminProductService;
 import com.zhuxi.service.TxService.ProductTxService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import src.main.java.com.zhuxi.pojo.DTO.product.ProductAddDTO;
 import src.main.java.com.zhuxi.pojo.DTO.product.ProductUpdateDTO;
 import src.main.java.com.zhuxi.pojo.VO.Admin.AdminProductVO;
+import src.main.java.com.zhuxi.pojo.VO.Product.ProductSpecVO;
 
 import java.util.List;
 
@@ -49,11 +48,30 @@ public class AdminProductServiceImpl implements AdminProductService {
      */
     @Override
     @Transactional
-    public Result<Void> add(ProductAddDTO productAddDTO) {
-        if (productAddDTO == null || productAddDTO.getName() == null || productAddDTO.getPrice() == null)
+    public Result<Void> add(ProductUpdateDTO productAddDTO) {
+        if (productAddDTO == null || productAddDTO.getBase() == null || productAddDTO.getSpec() == null)
             return Result.error(Message.BODY_NO_MAIN_OR_IS_NULL);
 
-        productTxService.add(productAddDTO);
+        productTxService.addBase(productAddDTO.getBase());
+        Long id = productAddDTO.getBase().getId();
+
+        productTxService.addSpec(productAddDTO.getSpec(), id);
+
+
+        return Result.success(Message.OPERATION_SUCCESS);
+    }
+
+    /**
+     * 删除商品
+     */
+    @Override
+    @Transactional
+    public Result<Void> delete(Long id) {
+        if (id == null)
+            return Result.error(Message.PRODUCT_ID_IS_NULL);
+
+        productTxService.delete(id);
+
         return Result.success(Message.OPERATION_SUCCESS);
     }
 
@@ -63,17 +81,13 @@ public class AdminProductServiceImpl implements AdminProductService {
     @Override
     @Transactional
     public Result<Void> update(ProductUpdateDTO productUpdateDTO, Long id) {
-        if (productUpdateDTO == null || id == null)
+        if (productUpdateDTO == null || productUpdateDTO.getBase() == null || productUpdateDTO.getSpec() == null || id == null)
             return Result.error(Message.PRODUCT_ID_IS_NULL + "或" + Message.BODY_NO_MAIN_OR_IS_NULL);
 
-        if (productUpdateDTO.getDescription() == null && productUpdateDTO.getName() == null
-                && productUpdateDTO.getPrice() == null && productUpdateDTO.getStock() == null
-                && productUpdateDTO.getCoverUrl() == null && productUpdateDTO.getImages() == null
-                && productUpdateDTO.getOrigin() == null && productUpdateDTO.getStatus() == null
-        )
-            return Result.error(Message.AT_LEAST_ONE_FIELD);
 
-        productTxService.update(productUpdateDTO,id);
+        productUpdateDTO.getBase().setId(id);
+        productTxService.updateBase(productUpdateDTO.getBase());
+        productTxService.updateSpec(productUpdateDTO.getSpec(),id);
 
         return Result.success(Message.OPERATION_SUCCESS);
     }

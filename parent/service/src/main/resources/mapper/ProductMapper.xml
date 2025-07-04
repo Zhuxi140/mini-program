@@ -8,9 +8,12 @@
         SELECT
             id,
             name,
-            price,
+            mini_price.price,
             cover_url
         FROM product
+        JOIN
+            (SELECT product_id,MIN(price) AS price FROM spec GROUP BY product_id) mini_price
+        ON product.id = mini_price.product_id
         WHERE id < #{lastId} AND status = 1
         ORDER BY id DESC,created_at DESC
         LIMIT #{pageSize}
@@ -20,59 +23,101 @@
     <select id="getListAdminProductsDESC" resultType="src.main.java.com.zhuxi.pojo.VO.Admin.AdminProductVO">
      <![CDATA[
         SELECT
-            id,
+            product.id,
             name,
-            price,
-            stock,
-            stock_status
-        FROM product_stock_status
-        WHERE id < #{lastId}
-        ORDER BY id DESC
+            SUM(spec.stock) AS  stock,
+            GROUP_CONCAT(DISTINCT spec.spec SEPARATOR'|') AS spec_names,
+            CASE
+                WHEN stock > 0 THEN '有货'
+                WHEN stock = 0 THEN '无货'
+                ELSE '库存不足'
+            END AS stock_status
+        FROM product JOIN spec ON product.id = spec.product_id
+        WHERE product.id < #{lastId}
+        GROUP BY product.id, product.name,stock_status
+        ORDER BY product.id DESC
+        LIMIT #{pageSize}
         ]]>
     </select>
 
 
     <select id="getListAdminProductsASC" resultType="src.main.java.com.zhuxi.pojo.VO.Admin.AdminProductVO">
         SELECT
-            id,
+            product.id,
             name,
-            price,
-            stock,
-            stock_status
-        FROM product_stock_status
-        WHERE id > #{lastId}
-        ORDER BY id ASC
+            SUM(spec.stock) AS  stock,
+            GROUP_CONCAT(DISTINCT spec.spec SEPARATOR'|') AS spec_names,
+            CASE
+                WHEN stock > 0 THEN '有货'
+                WHEN stock = 0 THEN '无货'
+                ELSE '库存不足'
+                END AS stock_status
+        FROM product JOIN spec ON product.id = spec.product_id
+        WHERE product.id > #{lastId}
+        GROUP BY product.id, product.name,stock_status
+        ORDER BY product.id ASC
+        LIMIT #{pageSize}
     </select>
 
-    <update id="updateProduct" parameterType="src.main.java.com.zhuxi.pojo.DTO.product.ProductUpdateDTO">
+    <insert id="addSpec">
+    INSERT INTO spec(product_id,spec,price,cover_url,stock)
+    VALUES
+        <foreach collection='list' item='spec' separator=','>
+        (
+            #{product_id},
+            #{spec.spec},
+            #{spec.price},
+            #{spec.coverUrl},
+            #{spec.stock}
+            )
+        </foreach>
+    </insert>
+
+    <update id="updateProductBase">
         UPDATE product
         <set>
             <if test="productUpdateDTO.name != null">
-                name = #{productUpdateDTO.name},
-            </if>
-            <if test="productUpdateDTO.price != null">
-                price = #{productUpdateDTO.price},
+                name = #{base.name},
             </if>
             <if test="productUpdateDTO.coverUrl != null">
-                cover_url = #{productUpdateDTO.coverUrl},
+                cover_url = #{base.coverUrl},
             </if>
             <if test="productUpdateDTO.images != null">
-                images = #{productUpdateDTO.images,typeHandler=com.zhuxi.handler.TypeHandler},
+                images = #{base.images},
             </if>
             <if test="productUpdateDTO.description != null">
-                description = #{productUpdateDTO.description},
-            </if>
-            <if test="productUpdateDTO.stock != null">
-                stock = #{productUpdateDTO.stock},
+                description = #{base.description},
             </if>
             <if test="productUpdateDTO.origin != null">
-                origin = #{productUpdateDTO.origin},
+                origin = #{base.origin},
             </if>
             <if test="productUpdateDTO.status != null">
-                status = #{productUpdateDTO.status},
+                status = #{base.status},
             </if>
         </set>
-        WHERE id = #{id}
+        WHERE id = #{base.id}
+    </update>
+
+    <update id="updateProductSpec">
+        UPDATE spec
+        <foreach collection="list" item="spec" >
+            <set>
+                <if test="list.name != null">
+                    spec = #{spec.spec},
+                </if>
+                <if test="list.coverUrl != null">
+                    cover_url = #{spec.coverUrl},
+                </if>
+                <if test="list.price != null">
+                    price = #{spec.price},
+                </if>
+                <if test="list.stock != null">
+                    stock = #{spec.stock},
+                </if>
+            </set>
+        WHERE product_id = #{product_id}
+        </foreach>
+
     </update>
 
 </mapper>

@@ -7,24 +7,24 @@ import java.math.BigDecimal;
 public class CarVO {
 
     @Schema(description = "购物车id")
-    private Long cartId;
+    private Long id;
     @Schema(description = "商品id")
     private Long productId;
     @Schema(description = "数量")
     private Integer quantity;
     @Schema(description = "商品名")
-    private String productName;
+    private String name;
     @Schema(description = "商品单价")
     private BigDecimal price;
     @Schema(description = "商品主图url")
     private String coverUrl;
 
 
-    public CarVO(Long carId,Long productId, Integer quantity, String productName, BigDecimal price, String coverUrl) {
-        this.cartId = cartId;
+    public CarVO(Long id,Long productId, Integer quantity, String name, BigDecimal price, String coverUrl) {
+        this.id = id;
         this.productId = productId;
         this.quantity = quantity;
-        this.productName = productName;
+        this.name = name;
         this.price = price;
         this.coverUrl = coverUrl;
     }
@@ -32,12 +32,12 @@ public class CarVO {
     public CarVO() {
     }
 
-    public Long getCarId() {
-        return cartId;
+    public Long getId() {
+        return id;
     }
 
-    public void setCarId(Long carId) {
-        this.cartId = carId;
+    public void setId(Long carId) {
+        this.id = carId;
     }
 
     public Long getProductId() {
@@ -56,12 +56,12 @@ public class CarVO {
         this.quantity = quantity;
     }
 
-    public String getProductName() {
-        return productName;
+    public String getName() {
+        return name;
     }
 
-    public void setProductName(String productName) {
-        this.productName = productName;
+    public void setName(String productName) {
+        this.name = productName;
     }
 
     public BigDecimal getPrice() {

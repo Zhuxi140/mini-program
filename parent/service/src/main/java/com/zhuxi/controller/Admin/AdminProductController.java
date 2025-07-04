@@ -9,7 +9,6 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.web.bind.annotation.*;
-import src.main.java.com.zhuxi.pojo.DTO.product.ProductAddDTO;
 import src.main.java.com.zhuxi.pojo.DTO.product.ProductUpdateDTO;
 import src.main.java.com.zhuxi.pojo.VO.Admin.AdminProductVO;
 import src.main.java.com.zhuxi.pojo.entity.Role;
@@ -32,7 +31,7 @@ public class AdminProductController {
             description = "分页获取所有商品信息列表"
     )
     public Result<PageResult<AdminProductVO> > getListProducts(
-            @Parameter(description = "商品id", required = true)
+            @Parameter(description = "商品id(第一次请求无需给值)", required = true)
             Long lastId,
             @Parameter(description = "分页大小(后端默认为10)", required = false)
             @RequestParam(defaultValue = "10") Integer pageSize,
@@ -52,7 +51,7 @@ public class AdminProductController {
     public Result<Void> add(
             @Parameter(description = "商品信息", required = true)
             @RequestBody
-            ProductAddDTO productAddDTO
+            ProductUpdateDTO productAddDTO
     ){
         return adminProductService.add(productAddDTO);
     }
@@ -62,7 +61,7 @@ public class AdminProductController {
     @RequireRole(Role.ADMIN)
     @Operation(
             summary = "修改商品",
-            description = "修改商品"
+            description = "至少修改一个字段"
     )
     public Result<Void> update(
             @Parameter(description = "商品信息", required = true)
@@ -73,5 +72,20 @@ public class AdminProductController {
             Long id
     ){
         return adminProductService.update(productUpdateDTO,id);
+    }
+
+
+    @DeleteMapping("/{id}")
+    @RequireRole(Role.ADMIN)
+    @Operation(
+            summary = "删除商品",
+            description = "删除商品"
+    )
+    public Result<Void> delete(
+            @Parameter(description = "商品id", required = true)
+            @PathVariable
+            Long id
+    ){
+        return adminProductService.delete(id);
     }
 }

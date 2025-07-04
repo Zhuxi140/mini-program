@@ -71,7 +71,7 @@ public class CartServiceImpl implements CartService {
 
         cartTxService.insert(carUpdateDTO,userId);
 
-        return Result.error(Message.OPERATION_ERROR);
+        return Result.error(Message.OPERATION_SUCCESS);
     }
 
 

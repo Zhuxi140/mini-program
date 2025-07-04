@@ -3,20 +3,19 @@ package com.zhuxi.service.Impl;
 import com.zhuxi.Constant.Message;
 import com.zhuxi.Result.PageResult;
 import com.zhuxi.Result.Result;
-import com.zhuxi.mapper.ProductMapper;
 import com.zhuxi.service.ProductService;
 import com.zhuxi.service.TxService.ProductTxService;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import src.main.java.com.zhuxi.pojo.DTO.product.ProductAddDTO;
-import src.main.java.com.zhuxi.pojo.DTO.product.ProductUpdateDTO;
 import src.main.java.com.zhuxi.pojo.VO.Product.ProductDetailVO;
 import src.main.java.com.zhuxi.pojo.VO.Product.ProductOverviewVO;
+import src.main.java.com.zhuxi.pojo.VO.Product.ProductSpecVO;
 
-import java.util.List;
+import java.util.*;
 
 
 @Service
+@Log4j2
 public class ProductServiceImpl implements ProductService {
 
     private final ProductTxService productTxService;
@@ -64,6 +63,17 @@ public class ProductServiceImpl implements ProductService {
         ProductDetailVO productDetail = productTxService.getProductDetail(id);
         return Result.success(Message.OPERATION_SUCCESS, productDetail);
     }
+
+    @Override
+    public Result<List<ProductSpecVO>> getProductSpec(Long productId) {
+        if (productId == null)
+            return Result.error(Message.PRODUCT_ID_IS_NULL);
+
+        List<ProductSpecVO> productSpec = productTxService.getProductSpec(productId);
+        return Result.success(Message.OPERATION_SUCCESS, productSpec);
+    }
+
+
 
 
 }

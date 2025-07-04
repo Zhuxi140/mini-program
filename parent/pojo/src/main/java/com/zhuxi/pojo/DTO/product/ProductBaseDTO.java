@@ -1,42 +1,43 @@
-package src.main.java.com.zhuxi.pojo.entity;
+package src.main.java.com.zhuxi.pojo.DTO.product;
 
-import java.math.BigDecimal;
+import io.swagger.v3.oas.annotations.media.Schema;
+
 import java.util.List;
 
-public class Product {
-    private Integer id;
+public class ProductBaseDTO {
+
+    @Schema(description = "商品id(在更新信息中需要给予id，添加中不需要给予)",requiredMode = Schema.RequiredMode.NOT_REQUIRED)
+    private Long id;
+    @Schema(description = "商品名称",requiredMode = Schema.RequiredMode.REQUIRED)
     private String name;
-    private BigDecimal price;
-    private String spec;
+    @Schema(description = "商品封面图",requiredMode = Schema.RequiredMode.NOT_REQUIRED)
     private String coverUrl;
+    @Schema(description = "商品图片",requiredMode = Schema.RequiredMode.NOT_REQUIRED)
     private List<String> images;
+    @Schema(description = "商品描述",requiredMode = Schema.RequiredMode.NOT_REQUIRED)
     private String description;
-    private Integer stock;
-    private String origin;
-    private Integer status;
+    @Schema(description = "商品产地(默认为河南省新乡市封丘县)",requiredMode = Schema.RequiredMode.NOT_REQUIRED)
+    private String origin = "河南省新乡市封丘县";
+    @Schema(description = "商品状态(0下架,1上架)",requiredMode = Schema.RequiredMode.NOT_REQUIRED)
+    private Integer status = 1;
 
-    public Product(Integer id, String name, BigDecimal price,String spec,String coverUrl, List<String> images, String description, Integer stock, String origin, Integer status) {
-
-        this.id = id;
+    public ProductBaseDTO(Long id,String name, String coverUrl, List<String> images, String description, String origin,Integer status ) {
         this.name = name;
-        this.price = price;
-        this.spec = spec;
         this.coverUrl = coverUrl;
         this.images = images;
         this.description = description;
-        this.stock = stock;
         this.origin = origin;
         this.status = status;
     }
 
-    public Product() {
+    public ProductBaseDTO() {
     }
 
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -46,22 +47,6 @@ public class Product {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public BigDecimal getPrice() {
-        return price;
-    }
-
-    public void setPrice(BigDecimal price) {
-        this.price = price;
-    }
-
-    public String getSpec() {
-        return spec;
-    }
-
-    public void setSpec(String spec) {
-        this.spec = spec;
     }
 
     public String getCoverUrl() {
@@ -86,14 +71,6 @@ public class Product {
 
     public void setDescription(String description) {
         this.description = description;
-    }
-
-    public Integer getStock() {
-        return stock;
-    }
-
-    public void setStock(Integer stock) {
-        this.stock = stock;
     }
 
     public String getOrigin() {
