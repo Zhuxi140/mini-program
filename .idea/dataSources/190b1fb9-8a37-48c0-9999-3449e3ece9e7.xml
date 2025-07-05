@@ -1025,7 +1025,7 @@ sys|schema||mysql.sys|localhost|TRIGGER|G</Grants>
     </schema>
     <schema id="290" parent="1" name="mini_program">
       <Current>1</Current>
-      <LastIntrospectionLocalTimestamp>2025-07-04.09:32:58</LastIntrospectionLocalTimestamp>
+      <LastIntrospectionLocalTimestamp>2025-07-05.06:29:46</LastIntrospectionLocalTimestamp>
       <CollationName>latin1_swedish_ci</CollationName>
     </schema>
     <schema id="291" parent="1" name="mysql">
@@ -1196,7 +1196,6 @@ sys|schema||mysql.sys|localhost|TRIGGER|G</Grants>
     </column>
     <column id="327" parent="301" name="content_oss_key">
       <Comment>含HTML的文本文件的OSS路径</Comment>
-      <NotNull>1</NotNull>
       <Position>3</Position>
       <StoredType>varchar(255)|0s</StoredType>
     </column>
@@ -1645,7 +1644,7 @@ product_id</ColNames>
       <UnderlyingIndexName>PRIMARY</UnderlyingIndexName>
     </key>
     <column id="412" parent="308" name="id">
-      <AutoIncrement>1</AutoIncrement>
+      <AutoIncrement>58</AutoIncrement>
       <NotNull>1</NotNull>
       <Position>1</Position>
       <StoredType>bigint unsigned|0s</StoredType>

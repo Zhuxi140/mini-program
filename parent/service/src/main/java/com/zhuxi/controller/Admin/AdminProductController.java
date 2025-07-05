@@ -9,6 +9,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.web.bind.annotation.*;
+import src.main.java.com.zhuxi.pojo.DTO.product.ProductAddDTO;
 import src.main.java.com.zhuxi.pojo.DTO.product.ProductUpdateDTO;
 import src.main.java.com.zhuxi.pojo.VO.Admin.AdminProductVO;
 import src.main.java.com.zhuxi.pojo.entity.Role;
@@ -51,7 +52,7 @@ public class AdminProductController {
     public Result<Void> add(
             @Parameter(description = "商品信息", required = true)
             @RequestBody
-            ProductUpdateDTO productAddDTO
+            ProductAddDTO productAddDTO
     ){
         return adminProductService.add(productAddDTO);
     }

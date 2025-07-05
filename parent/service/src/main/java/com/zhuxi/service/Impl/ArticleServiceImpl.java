@@ -65,10 +65,7 @@ public class ArticleServiceImpl implements ArticleService {
             return Result.error(Message.NO_DATA);
 
         if((articleInsertOrUpdateDTO.getTitle() == null || articleInsertOrUpdateDTO.getTitle().isEmpty())
-            || (articleInsertOrUpdateDTO.getContentOssKey() == null || articleInsertOrUpdateDTO.getContentOssKey().isEmpty())
-            || (articleInsertOrUpdateDTO.getType() == null)
-            || (articleInsertOrUpdateDTO.getCoverOss() == null || articleInsertOrUpdateDTO.getCoverOss().isEmpty())
-          )
+            || (articleInsertOrUpdateDTO.getType() == null))
             return Result.error(Message.PARAM_ERROR);
 
         articleTxService.insertArticle(articleInsertOrUpdateDTO);
@@ -90,10 +87,7 @@ public class ArticleServiceImpl implements ArticleService {
             return Result.error(Message.ARTICLE_ID_IS_NULL);
 
         if ((articleInsertOrUpdateDTO.getTitle() == null || articleInsertOrUpdateDTO.getTitle().isEmpty())
-                && (articleInsertOrUpdateDTO.getContentOssKey() == null || articleInsertOrUpdateDTO.getContentOssKey().isEmpty())
                 && (articleInsertOrUpdateDTO.getType() == null)
-                && (articleInsertOrUpdateDTO.getCoverOss() == null || articleInsertOrUpdateDTO.getCoverOss().isEmpty())
-                && (articleInsertOrUpdateDTO.getContentImages() == null || articleInsertOrUpdateDTO.getContentImages().isEmpty())
                 && (articleInsertOrUpdateDTO.getStatus() == null)
         )
             return Result.error(Message.AT_LEAST_ONE_FIELD);

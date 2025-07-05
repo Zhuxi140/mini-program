@@ -8,13 +8,16 @@ import com.aliyun.oss.OSSClientBuilder;
 import com.aliyun.oss.model.GeneratePresignedUrlRequest;
 import com.zhuxi.Constant.Message;
 import com.zhuxi.Result.Result;
-import com.zhuxi.service.ArticleService;
-import com.zhuxi.service.ProductService;
-import com.zhuxi.service.UserService;
+import com.zhuxi.service.TxService.ArticleTxService;
+import com.zhuxi.service.TxService.ProductTxService;
+import com.zhuxi.service.TxService.UserTxService;
 import com.zhuxi.utils.JwtUtils;
 import io.jsonwebtoken.Claims;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.bouncycastle.asn1.x509.SubjectPublicKeyInfo;
@@ -24,7 +27,9 @@ import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
+import src.main.java.com.zhuxi.pojo.DTO.OSSConfigDTO;
 import src.main.java.com.zhuxi.pojo.DTO.OssRecord;
+import src.main.java.com.zhuxi.pojo.DTO.OssTokenDTO;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -42,10 +47,10 @@ import java.util.*;
 public class OSSController {
 
     private final JwtUtils jwtUtils;
-    private final UserService userService;
-    private final ProductService productService;
-    private final ArticleService articleService;
-    private final Map<String, PublicKey> publicKeyCache = new java.util.HashMap<>();
+    private final ProductTxService productTxService;
+    private final UserTxService userTxService;
+    private final ArticleTxService articleTxService;
+    private final Map<String, PublicKey> publicKeyCache = new HashMap<>();
 
     @Value("${oss.access-key-id}")
     private String accessKeyId;
@@ -65,45 +70,37 @@ public class OSSController {
     @Value("${oss.callback-url}")
     private String callbackUrl;
 
-    public OSSController(JwtUtils jwtUtils, UserService userService, ProductService productService, ArticleService articleService) {
+    public OSSController(JwtUtils jwtUtils,UserTxService userTxService, ProductTxService productTxService, ArticleTxService articleTxService) {
         this.jwtUtils = jwtUtils;
-        this.userService = userService;
-        this.productService = productService;
-        this.articleService = articleService;
+        this.userTxService = userTxService;
+        this.productTxService = productTxService;
+        this.articleTxService = articleTxService;
     }
 
 
-    @GetMapping("/oss/token")
-    @Operation(summary = "获取OSS上传token")
-    public Map<String, String> getOssToken(
+    @PostMapping("/oss/token")
+    @Operation(summary = "获取OSS上传token", description = "严格遵守规定值传输")
+    public List<OssTokenDTO> getOssToken(
             @Parameter(description = "JWT", hidden = true)
             @RequestHeader("Authorization") String token,
-            @Parameter(description = "上传文件分类(product、article、avatar)", required = true)
-            String category,
-                @Parameter(description = "上传文件类型(product(封面图(cover)或详细图(images))、article(文章内容(content),文章封面(cover),文章图片(contentImages))、avatar(头像传avatar)", required = true)
-            String type,
-            @Parameter(description = "上传文件后缀名", required = true)
-            String fileType
+            @Parameter(description = "上传文件", required = true)
+            @RequestBody List<OSSConfigDTO> configs
     ){
 
         Claims claims = jwtUtils.parseToken(token);
         if (claims == null)
-            return Map.of("url", Message.JWT_IS_NULL);
+            throw new RuntimeException(Message.JWT_IS_NULL);
 
-        Map<String, String> stringStringMap = categoryDeal(category, type, fileType, claims);
 
-        return Map.of(
-                "objectName", stringStringMap.get("objectName"),
-                "url", stringStringMap.get("url")
-
-        );
+        //返回
+        return categoryDeal( claims,configs);
 
     }
 
 
     @PostMapping("/oss/upload")
     @Operation(summary = "上传回调（供阿里云OSS后台使用用 可忽略）")
-    public Result uploadCallback(
+    public Result<Void> uploadCallback(
             @Parameter(description = "请求头组",hidden = true)
             @RequestHeader
             Map<String,String> mapHeaders,
@@ -140,7 +137,7 @@ public class OSSController {
         }
 
         OssRecord record = new OssRecord();
-        record.setId(Long.valueOf(callbackData.Id));
+        record.setId(callbackData.Id);
 
         record.setObjectName(callbackData.objectName);
         record.setBucketName(callbackData.bucket);
@@ -150,17 +147,31 @@ public class OSSController {
 
 
         switch (callbackData.categoryType){
-            case "avatar_avatar": log.info("avatar_avatar________________执行中");
+            case "avatar_avatar":{
+                log.info("avatar_avatar________________执行中");
+
+            }
                 break;
-            case "product_cover": log.info("product_cover________________执行中");
+            case "product_cover": {
+                log.info("product_cover________________执行中");
+                /*productTxService.addBasePics(callbackData.objectName, callbackData.images, callbackData.productId);*/
+            }
                 break;
-            case "product_images": log.info("product_images________________执行中");
+            case "product_images": {
+                log.info("product_images________________执行中");
+            }
                 break;
-            case "article_cover": log.info("article_cover________________执行中");
+            case "article_cover": {
+                log.info("article_cover________________执行中");
+            }
                 break;
-            case "article_contentImages": log.info("article_contentImages________________执行中");
+            case "article_contentImages":{
+                log.info("article_contentImages________________执行中");
+            }
                 break;
-            case "article_content": log.info("article_content________________执行中");
+            case "article_content":{
+                log.info("article_content________________执行中");
+            }
                 break;
             default: log.info("未定义的callbackData");
         }
@@ -173,7 +184,10 @@ public class OSSController {
         callbackData.size = Long.parseLong(mapBody.get("size"));
         callbackData.mimeType = mapBody.get("mimeType");
         callbackData.objectName = mapBody.get("object");
-        callbackData.Id = mapHeaders.get("x-oss-var-x-id");
+        callbackData.Id = Long.valueOf(mapHeaders.get("x-oss-var-x-id"));
+        callbackData.productId = Long.parseLong(mapHeaders.get("x-oss-var-x-productid"));
+        callbackData.articleId = Long.parseLong(mapHeaders.get("x-oss-var-x-articleid"));
+        callbackData.specId = Long.parseLong(mapHeaders.get("x-oss-var-x-specid"));
         callbackData.categoryType = mapHeaders.get("x-oss-var-x-categorytype");
 
         return callbackData;
@@ -260,37 +274,50 @@ public class OSSController {
     }
 
     // 分类处理
-    private Map<String,String> categoryDeal(String category,String type,String fileType,Claims  claims) {
+    private List<OssTokenDTO> categoryDeal(Claims  claims, List<OSSConfigDTO> configs) {
         Long id = claims.get("id", Long.class);
         String s = claims.get("role", String.class);
-        checkType(fileType);
-        switch (category.toLowerCase()){
-            case "avatar":{
-                if(!(s).equalsIgnoreCase("user"))
-                    throw new RuntimeException(Message.ROLE_ERROR);
-                String s1 = generateObjectName(claims, type, category, fileType,id);
-                return generateUrl(s1, fileType, category, type,id);
+        Map<String,String> map = new HashMap<>();
+        OssTokenDTO ossTokenDTO = new OssTokenDTO();
+        List<OssTokenDTO> ossTokenDTOS = new ArrayList<>();
+        for(OSSConfigDTO config : configs) {
+            checkType(config.getFileType());
+            switch (config.getCategory().toLowerCase()) {
+                case "avatar": {
+                    if (!(s).equalsIgnoreCase("user"))
+                        throw new RuntimeException(Message.ROLE_ERROR);
+                    String s1 = generateObjectName(config.getType(), config.getCategory(), config.getFileType(), id, config.getProductId(), config.getArticleId(), config.getSpecId());
+                    map = generateUrl(s1, config.getFileType(), config.getCategory(), config.getType(), id, config.getProductId(), config.getArticleId(), config.getSpecId());
+                    ossTokenDTO.setUrl(map.get("url"));
+                    ossTokenDTO.setObjectName(map.get("objectName"));
+                    ossTokenDTOS.add(ossTokenDTO);
+                } break;
+                case "product", "article": {
+                    checkRole(s);
+                    String s1 = generateObjectName(config.getType(), config.getCategory(), config.getFileType(), id, config.getProductId(), config.getArticleId(), config.getSpecId());
+                    map = generateUrl(s1, config.getFileType(), config.getCategory(), config.getType(), id, config.getProductId(), config.getArticleId(), config.getSpecId());
+                    ossTokenDTO.setUrl(map.get("url"));
+                    ossTokenDTO.setObjectName(map.get("objectName"));
+                    ossTokenDTOS.add(ossTokenDTO);
+                } break;
+                default:
+                    throw new RuntimeException(Message.NO_CATEGORY);
             }
-            case "product", "article":{
-                checkRole(s);
-                String s1 = generateObjectName(claims, type, category, fileType,id);
-                return generateUrl(s1, fileType, category, type,id);
-            }
-            default:
-                throw new RuntimeException(Message.NO_CATEGORY);
         }
 
+        return ossTokenDTOS;
     }
 
     // 生成objectName
-    private String generateObjectName(Claims  claims,String type,String category,String fileType,Long id){
+    private String generateObjectName(String type,String category,String fileType,Long id,Long productId,Long articleId,Long specId){
         String Path = switch ( category + "_" + type){
-            case "product_cover" -> "product/" + id + "/cover/";
-            case "product_images" -> "product/" + id + "/images/";
-            case "article_cover" -> "article/" + id + "/cover/";
-            case "article_content" -> "article/" + id + "/content/";
-            case "article_contentImages" -> "article/" + id + "/contentImages/";
-            case "avatar_avatar" -> "avatar/" + id + "/";
+            case "product_cover" -> "product/Id" +  productId + "/admin" + id + "/cover/";
+            case "product_images" -> "productId/Id" +  productId + "/admin" + id + "/images/";
+            case "product_spec" ->   "product/Id" +  productId + "/admin" + id + "/spec" + specId + "/";
+            case "article_cover" -> "article/Id" + articleId + "/admin" + id + "/cover/";
+            case "article_content" -> "article/Id" + articleId + "/admin" + id + "/content/";
+            case "article_contentImages" -> "article/Id" +articleId + "/admin" + id + "/contentImages/";
+            case "avatar_avatar" -> "avatar/user" + id + "/";
             default -> throw new RuntimeException(Message.CATEGORY_FIT_ERROR);
         };
 
@@ -317,7 +344,7 @@ public class OSSController {
     }
 
     // 生成带签名的url
-    private Map<String,String> generateUrl(String objectName, String fileType,String category,String type,Long id) {
+    private Map<String,String> generateUrl(String objectName, String fileType,String category,String type,Long id,Long productId,Long articleId,Long specId) {
         OSS build = new OSSClientBuilder().build(endpoint, accessKeyId, accessKeySecret);
 
     try{
@@ -351,7 +378,11 @@ public class OSSController {
                 """);
         callbackMap.put("callbackBodyType", " application/x-www-form-urlencoded");
         callbackMap.put("x:id", id.toString());
+        callbackMap.put("x:productId", productId.toString());
+        callbackMap.put("x:articleId", articleId.toString());
+        callbackMap.put("x:specId", specId.toString());
         callbackMap.put("x:categoryType", category + "_" + type);
+
 
 
         // 构建JSON对象
@@ -388,14 +419,19 @@ public class OSSController {
     }
 
     // 回调数据类
-    private static class CallbackData {
+    public static class CallbackData {
         String bucket;
         String objectName;
         long size;
         String mimeType;
-        String Id;
+        Long Id;
+        Long productId;
+        Long articleId;
+        Long specId;
         String categoryType;
     }
+
+
 }
 
 

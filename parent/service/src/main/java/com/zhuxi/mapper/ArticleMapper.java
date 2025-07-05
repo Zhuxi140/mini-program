@@ -2,6 +2,7 @@ package com.zhuxi.mapper;
 
 import org.apache.ibatis.annotations.*;
 import src.main.java.com.zhuxi.pojo.DTO.article.ArticleInsertOrUpdateDTO;
+import src.main.java.com.zhuxi.pojo.DTO.article.ArticleOssUpdateDTO;
 import src.main.java.com.zhuxi.pojo.VO.Article.ArticleDetailVO;
 import src.main.java.com.zhuxi.pojo.VO.Article.ArticleVO;
 
@@ -20,8 +21,8 @@ public interface ArticleMapper {
     List<ArticleVO> getListArticleDESC(Long lastId, Integer pageSize, Integer type);
 
     @Insert("""
-        INSERT INTO article(title, content_oss_key,status, type, cover_oss, content_images)
-        VALUE (#{title},#{contentOssKey},#{status},#{type},#{coverOss},#{contentImages,typeHandler=com.zhuxi.handler.TypeHandler})
+        INSERT INTO article(title,status, type)
+        VALUE (#{title},#{status},#{type})
         """)
         Boolean insertArticle(ArticleInsertOrUpdateDTO articleInsertOrUpdateDTO);
 
@@ -30,4 +31,12 @@ public interface ArticleMapper {
 
     @Delete("DELETE article FROM article WHERE id =  #{id}")
     Boolean deleteArticle(Long id);
+
+    @Update("""
+    UPDATE article SET content_oss_key = #{contentOssKey},
+                   cover_oss = #{contentOss},
+               content_images=#{contentImages,typeHandler=com.zhuxi.handler.TypeHandler}
+    WHERE id = #{aritcleId}
+    """)
+    int updateArticleOss(ArticleOssUpdateDTO articleOssUpdateDTO);
 }

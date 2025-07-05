@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import src.main.java.com.zhuxi.pojo.DTO.article.ArticleInsertOrUpdateDTO;
+import src.main.java.com.zhuxi.pojo.DTO.article.ArticleOssUpdateDTO;
 import src.main.java.com.zhuxi.pojo.VO.Article.ArticleDetailVO;
 import src.main.java.com.zhuxi.pojo.VO.Article.ArticleVO;
 
@@ -65,5 +66,12 @@ public class ArticleTxService {
         Boolean b = articleMapper.deleteArticle(id);
         if(!b)
             throw new transactionalException(Message.DELETE_ERROR);
+    }
+
+    @Transactional(rollbackFor = transactionalException.class)
+    public void updateArticleOss(ArticleOssUpdateDTO articleOssUpdateDTO) {
+        int i = articleMapper.updateArticleOss(articleOssUpdateDTO);
+        if(i <= 0)
+            throw new transactionalException(Message.UPDATE_ERROR);
     }
 }

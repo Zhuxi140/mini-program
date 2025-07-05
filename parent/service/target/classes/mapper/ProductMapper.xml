@@ -60,14 +60,13 @@
     </select>
 
     <insert id="addSpec">
-    INSERT INTO spec(product_id,spec,price,cover_url,stock)
+    INSERT INTO spec(product_id,spec,price,stock)
     VALUES
         <foreach collection='list' item='spec' separator=','>
         (
             #{product_id},
             #{spec.spec},
             #{spec.price},
-            #{spec.coverUrl},
             #{spec.stock}
             )
         </foreach>
@@ -78,12 +77,6 @@
         <set>
             <if test="productUpdateDTO.name != null">
                 name = #{base.name},
-            </if>
-            <if test="productUpdateDTO.coverUrl != null">
-                cover_url = #{base.coverUrl},
-            </if>
-            <if test="productUpdateDTO.images != null">
-                images = #{base.images},
             </if>
             <if test="productUpdateDTO.description != null">
                 description = #{base.description},
@@ -118,6 +111,19 @@
         WHERE product_id = #{product_id}
         </foreach>
 
+    </update>
+
+    <update id="addBasePics">
+        UPDATE product
+        <set>
+            <if test="coverUrl != null">
+                cover_url = #{coverUrl},
+            </if>
+                <if test="images != null">
+                    images = #{images},
+                </if>
+        </set>
+        WHERE id = #{productId}
     </update>
 
 </mapper>

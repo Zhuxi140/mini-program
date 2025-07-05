@@ -29,7 +29,7 @@ public class AdminArticleController {
 
     @PutMapping("/{id}")
     @RequireRole(Role.ADMIN)
-    @Operation(summary = "修改文章接口")
+    @Operation(summary = "修改文章接口(修改基础参数)")
     public Result<Void> modifyArticle(
             @RequestBody ArticleInsertOrUpdateDTO articleInsertOrUpdateDTO,
             @Parameter(description = "文章id",required = true)

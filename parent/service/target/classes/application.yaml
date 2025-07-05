@@ -57,6 +57,7 @@ logging:
   level:
     root: debug
 
+    
 # swagger配置
 springdoc:
   swagger-ui:

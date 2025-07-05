@@ -38,5 +38,5 @@ public class Message {
     public static final String CALLBACK_IS_NULL = "回调为空";
     public static final String PRODUCT_ID_IS_NULL = "商品id为空";
     public static final String MIN_PRICE_ERROR = "最小价格错误";
-
+    public static final String URL_IS_NULL = "URL为空";
 }

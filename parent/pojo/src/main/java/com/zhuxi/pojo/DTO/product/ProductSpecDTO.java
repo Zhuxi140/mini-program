@@ -10,15 +10,12 @@ public class ProductSpecDTO {
     private String spec;
     @Schema(description = "商品价格",requiredMode = Schema.RequiredMode.REQUIRED)
     private BigDecimal price;
-    @Schema(description = "规格展示图",requiredMode = Schema.RequiredMode.NOT_REQUIRED)
-    private String coverUrl = null;
     @Schema(description = "商品库存(默认为1)",requiredMode = Schema.RequiredMode.NOT_REQUIRED)
     private Integer stock = 1;
 
-    public ProductSpecDTO(String spec, BigDecimal price, String coverUrl, Integer stock) {
+    public ProductSpecDTO(String spec, BigDecimal price, Integer stock) {
         this.spec = spec;
         this.price = price;
-        this.coverUrl = coverUrl;
         this.stock = stock;
     }
 
@@ -40,14 +37,6 @@ public class ProductSpecDTO {
 
     public void setPrice(BigDecimal price) {
         this.price = price;
-    }
-
-    public String getCoverUrl() {
-        return coverUrl;
-    }
-
-    public void setCoverUrl(String coverUrl) {
-        this.coverUrl = coverUrl;
     }
 
     public Integer getStock() {

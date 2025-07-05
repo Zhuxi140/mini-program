@@ -64,6 +64,9 @@ public class ProductServiceImpl implements ProductService {
         return Result.success(Message.OPERATION_SUCCESS, productDetail);
     }
 
+    /**
+     * 获取商品规格
+     */
     @Override
     public Result<List<ProductSpecVO>> getProductSpec(Long productId) {
         if (productId == null)

@@ -65,4 +65,13 @@ public interface ProductMapper {
     // 删除商品规格信息
     @Delete("DELETE FROM spec WHERE product_id = #{id}")
     int deleteProductSpec(Long id);
+
+    // 添加规格图
+    @Insert("""
+    UPDATE spec SET cover_url = #{coverUrl} WHERE product_id = #{productID} AND id = #{id}
+    """)
+    int addSpecCoverUrl(String coverUrl, Long productID, Long id);
+
+    //添加商品 封面图、详细图
+    int addBasePics(String coverUrl,@Param("image") List<String> images, Long productId);
 }

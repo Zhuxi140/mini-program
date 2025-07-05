@@ -22,9 +22,6 @@ public interface CartMapper {
     Boolean delete(Long userId, Long productId);
 
 
-    /*  SELECT cart_id,product_id,quantity,product_name,price,cover_url
-        FROM cart_view
-        WHERE user_id = #{userId}*/
     // 查询
     @Select("""
   

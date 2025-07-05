@@ -7,6 +7,7 @@ import com.zhuxi.service.AdminProductService;
 import com.zhuxi.service.TxService.ProductTxService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import src.main.java.com.zhuxi.pojo.DTO.product.ProductAddDTO;
 import src.main.java.com.zhuxi.pojo.DTO.product.ProductUpdateDTO;
 import src.main.java.com.zhuxi.pojo.VO.Admin.AdminProductVO;
 import src.main.java.com.zhuxi.pojo.VO.Product.ProductSpecVO;
@@ -48,7 +49,7 @@ public class AdminProductServiceImpl implements AdminProductService {
      */
     @Override
     @Transactional
-    public Result<Void> add(ProductUpdateDTO productAddDTO) {
+    public Result<Void> add(ProductAddDTO productAddDTO) {
         if (productAddDTO == null || productAddDTO.getBase() == null || productAddDTO.getSpec() == null)
             return Result.error(Message.BODY_NO_MAIN_OR_IS_NULL);
 

@@ -78,6 +78,18 @@ public class ProductTxService {
     }
 
     @Transactional(rollbackFor = transactionalException.class)
+    public void addBasePics(String coverUrl,List<String> images,Long productId){
+        if(productMapper.addBasePics(coverUrl,images,productId) < 0)
+            throw new transactionalException(Message.INSERT_ERROR);
+    }
+
+    @Transactional(rollbackFor = transactionalException.class)
+    public void addSpecCoverUrl(String coverUrl,Long productID,Long id){
+        if(productMapper.addSpecCoverUrl(coverUrl,productID,id) < 0)
+            throw new transactionalException(Message.INSERT_ERROR);
+    }
+
+    @Transactional(rollbackFor = transactionalException.class)
     public void updateBase(ProductBaseDTO productBaseDTO){
         if(productMapper.updateProductBase(productBaseDTO) <= 0)
             throw new transactionalException(Message.UPDATE_ERROR);

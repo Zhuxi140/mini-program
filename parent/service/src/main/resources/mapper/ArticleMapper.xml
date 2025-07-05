@@ -56,12 +56,6 @@
                 <if test="aIOUDto.type != null">
                     type = #{aIOUDto.type},
                 </if>
-                <if test="aIOUDto.coverOss != null">
-                    cover_oss = #{aIOUDto.coverOss},
-                </if>
-                <if test="aIOUDto.contentImages != null">
-                    content_images = #{aIOUDto.contentImages,typeHandler=com.zhuxi.handler.TypeHandler},
-                </if>
             </set>
             WHERE id = #{id}
     </update>
