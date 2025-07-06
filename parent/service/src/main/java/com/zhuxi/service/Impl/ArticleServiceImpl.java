@@ -57,6 +57,9 @@ public class ArticleServiceImpl implements ArticleService {
         return Result.success(Message.OPERATION_SUCCESS,listArticleDESC);
     }
 
+    /**
+     * 添加文章
+     */
     @Override
     @Transactional
     public Result<Void> insertArticle(ArticleInsertOrUpdateDTO articleInsertOrUpdateDTO) {
@@ -92,6 +95,8 @@ public class ArticleServiceImpl implements ArticleService {
         )
             return Result.error(Message.AT_LEAST_ONE_FIELD);
 
+        articleTxService.isExist(id);
+
         articleTxService.updateArticle(articleInsertOrUpdateDTO,id);
 
         return Result.success(Message.OPERATION_SUCCESS);
@@ -107,9 +112,11 @@ public class ArticleServiceImpl implements ArticleService {
 
         if (id == null)
             return Result.error(Message.ARTICLE_ID_IS_NULL);
+        articleTxService.isExist(id);
 
         articleTxService.deleteArticle(id);
 
         return Result.success(Message.OPERATION_SUCCESS);
     }
+
 }

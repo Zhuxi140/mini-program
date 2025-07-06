@@ -111,6 +111,7 @@ public class AdminServiceImpl implements AdminService {
     public Result<Void> deleteAdmin(Integer id) {
         if(id == null)
             return Result.error(Message.PARAM_ERROR);
+        adminTxService.isExistsById(id);
        adminTxService.deleteAdmin( id);
 
        return Result.success(Message.OPERATION_SUCCESS);
@@ -131,7 +132,7 @@ public class AdminServiceImpl implements AdminService {
                 StringUtils.isBlank(admin.getRealName())) {
             return Result.error(Message.AT_LEAST_ONE_FIELD);
         }
-
+        adminTxService.isExistsById(admin.getId());
         adminTxService.updateAdmin( admin);
 
         return Result.success(Message.OPERATION_SUCCESS);
@@ -145,7 +146,7 @@ public class AdminServiceImpl implements AdminService {
 
         if(id == null)
             return Result.error(Message.PARAM_ERROR);
-
+        adminTxService.isExistsById( id);
         AdminVO adminById = adminTxService.getAdminById(id);
         return Result.success(Message.OPERATION_SUCCESS,adminById);
     }

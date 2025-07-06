@@ -1,31 +1,26 @@
-package src.main.java.com.zhuxi.pojo.VO.Product;
+package src.main.java.com.zhuxi.pojo.VO.Car;
+
+import io.swagger.v3.oas.annotations.media.Schema;
 
 import java.math.BigDecimal;
 
-public class ProductSpecVO {
-    private Long specId;
+@Schema(description = "购物车局部更新商品信息")
+public class CartNewVO {
+
+    @Schema(description = "商品规格")
     private String spec;
+    @Schema(description = "商品价格")
     private BigDecimal price;
-    private String coverUrl;
+    @Schema(description = "商品库存")
     private Integer stock;
 
-    public ProductSpecVO() {
+    public CartNewVO() {
     }
 
-    public ProductSpecVO(Long specId, String spec, BigDecimal price, String coverUrl, Integer stock) {
-        this.specId = specId;
+    public CartNewVO(String spec, BigDecimal price,Integer stock) {
         this.spec = spec;
         this.price = price;
-        this.coverUrl = coverUrl;
         this.stock = stock;
-    }
-
-    public Long getSpecId() {
-        return specId;
-    }
-
-    public void setSpecId(Long specId) {
-        this.specId = specId;
     }
 
     public String getSpec() {
@@ -42,14 +37,6 @@ public class ProductSpecVO {
 
     public void setPrice(BigDecimal price) {
         this.price = price;
-    }
-
-    public String getCoverUrl() {
-        return coverUrl;
-    }
-
-    public void setCoverUrl(String coverUrl) {
-        this.coverUrl = coverUrl;
     }
 
     public Integer getStock() {

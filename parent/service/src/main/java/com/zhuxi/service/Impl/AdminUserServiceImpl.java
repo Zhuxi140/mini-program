@@ -53,6 +53,8 @@ public class AdminUserServiceImpl implements AdminUserService {
         if(id == null || id <= 0)
             return Result.error(Message.PARAM_ERROR);
 
+        adminUserTxService.isUserExist( id);
+
         adminUserTxService.updateUserStatus(status, id);
         return Result.success(Message.OPERATION_SUCCESS);
     }

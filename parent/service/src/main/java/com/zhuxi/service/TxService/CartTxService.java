@@ -3,13 +3,13 @@ package com.zhuxi.service.TxService;
 
 import com.zhuxi.Constant.Message;
 import com.zhuxi.Exception.transactionalException;
-import com.zhuxi.Result.Result;
 import com.zhuxi.mapper.CartMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import src.main.java.com.zhuxi.pojo.DTO.Car.CarUpdateDTO;
-import src.main.java.com.zhuxi.pojo.VO.Car.CarVO;
+import src.main.java.com.zhuxi.pojo.VO.Car.CartNewVO;
+import src.main.java.com.zhuxi.pojo.VO.Car.CartVO;
 
 import java.util.List;
 
@@ -23,13 +23,30 @@ public class CartTxService {
     }
 
 
-    @Transactional(readOnly = true,propagation = Propagation.REQUIRES_NEW)
-    public List<CarVO> getListCart(Long userId){
-        List<CarVO> listCar = cartMapper.getListCar(userId);
+    @Transactional(readOnly = true)
+    public List<CartVO> getListCart(Long userId){
+        List<CartVO> listCar = cartMapper.getListCar(userId);
         if(listCar == null)
             throw new transactionalException(Message.SELECT_ERROR);
 
         return  listCar;
+    }
+
+    @Transactional(readOnly = true)
+    public Integer getStock(Long productId, Long specId){
+        Integer stock = cartMapper.getStock(productId, specId);
+        if(stock == null)
+            throw new transactionalException(Message.SELECT_ERROR);
+
+        return stock;
+    }
+
+    @Transactional(readOnly = true)
+    public CartNewVO getNewCar(Long productId, Long specId){
+        CartNewVO newCar = cartMapper.getNewCar(productId, specId);
+        if(newCar == null)
+            throw new transactionalException(Message.SELECT_ERROR);
+        return newCar;
     }
 
     @Transactional(rollbackFor = transactionalException.class)
@@ -41,14 +58,15 @@ public class CartTxService {
 
     @Transactional(rollbackFor = transactionalException.class)
     public void insert(CarUpdateDTO carUpdateDTO, Long userId){
+
         if(!cartMapper.insert(carUpdateDTO, userId))
             throw new transactionalException(Message.INSERT_ERROR);
     }
 
     @Transactional(rollbackFor = transactionalException.class)
-    public void delete(Long userId, Long productId){
+    public void delete(Long userId, Long productId, Long specId){
         if(productId != null){
-            Boolean delete = cartMapper.delete(userId, productId);
+            Boolean delete = cartMapper.delete(userId, productId,specId);
             if ( !delete)
                throw new transactionalException(Message.DELETE_ERROR);
         }

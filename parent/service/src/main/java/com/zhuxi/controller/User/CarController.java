@@ -9,7 +9,8 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.web.bind.annotation.*;
 import src.main.java.com.zhuxi.pojo.DTO.Car.CarUpdateDTO;
-import src.main.java.com.zhuxi.pojo.VO.Car.CarVO;
+import src.main.java.com.zhuxi.pojo.VO.Car.CartNewVO;
+import src.main.java.com.zhuxi.pojo.VO.Car.CartVO;
 import src.main.java.com.zhuxi.pojo.entity.Role;
 
 import java.util.List;
@@ -30,13 +31,13 @@ public class CarController {
 
     /**
      * 修改购物车
-     * 添加/减少购物车商品数量
+     * 添加/减少购物车商品数量和更换规格
      */
     @PutMapping
     @RequireRole(Role.USER)
     @Operation(
             summary = "修改购物车",
-            description = "增加/减少购物车商品数量 (仅能操作数量，即只能操作已经加入购物车的商品)"
+            description = "增加/减少购物车商品数量 (仅能操作数量和商品规格，即只能操作已经加入购物车的商品)"
     )
     public Result<Void> updateCart(
 
@@ -78,11 +79,13 @@ public class CarController {
     public Result<Void> deleteCart(
             @Parameter(description = "商品id", required = true)
             @PathVariable Long productId,
+            @Parameter(description = "商品规格id", required = true)
+            Long specId,
             @Parameter(description = "用户token",hidden = true)
             @RequestHeader("Authorization") String token
     ){
 
-        return cartService.delete(productId, token);
+        return cartService.delete(productId, token,specId);
     }
 
 
@@ -95,7 +98,7 @@ public class CarController {
             summary = "获取购物车列表",
             description = "获取购物车列表"
     )
-    public Result<List<CarVO>> getCartList(
+    public Result<List<CartVO>> getCartList(
             @Parameter(description = "用户token",hidden = true)
             @RequestHeader("Authorization") String token
     ){
@@ -118,4 +121,20 @@ public class CarController {
     ){
         return cartService.deleteAll(token);
     }
+
+    @GetMapping("/newProductInfo")
+    @RequireRole(Role.USER)
+    @Operation(
+            summary = "获取购物车商品最新信息",
+            description = "用于购物车商品更改规格后，局部获取最新信息"
+    )
+    public Result<CartNewVO> getNewProductInfo(
+            @Parameter(description = "商品id", required = true)
+            Long productId,
+            @Parameter(description = "商品规格id", required = true)
+            Long specId
+    ){
+        return cartService.getNewCar(productId, specId);
+    }
+
 }

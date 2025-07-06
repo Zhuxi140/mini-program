@@ -43,15 +43,12 @@ public class UserAddressServiceImpl implements UserAddressService {
             return Result.error(Message.USER_ADDRESS_MAX);
         else if(exist == 0){
             userAddressDTO.setIsDefault(1);
-        }
-
-        if(userAddressDTO.getIsDefault() == 1){
-
             Long defaultAddressId = userAddressTxService.getDefaultAddressId(userId);
 
             if(defaultAddressId != null)
                 userAddressTxService.cancelDefault(defaultAddressId);
         }
+
 
         userAddressTxService.insertAndUpdateUserAddressId(userAddressDTO,userId);
 

@@ -19,7 +19,14 @@ public class AdminUserTxService {
         this.userMapper = userMapper;
     }
 
-    @Transactional(readOnly = true,propagation = Propagation.REQUIRES_NEW)
+    @Transactional(readOnly = true)
+    public void isUserExist(Long id){
+        boolean userExist = userMapper.isUserExist(id);
+        if(!userExist)
+            throw new transactionalException(Message.USER_NOT_EXIST);
+    }
+
+    @Transactional(readOnly = true)
     public List<AdminUserVO> getListUserDESC(Long lastId, Integer pageSize){
         List<AdminUserVO> listUserDESC = userMapper.getListUserDESC(lastId, pageSize);
 
@@ -29,7 +36,7 @@ public class AdminUserTxService {
         return listUserDESC;
     }
 
-    @Transactional(readOnly = true,propagation = Propagation.REQUIRES_NEW)
+    @Transactional(readOnly = true)
     public List<AdminUserVO> getListUserASC(Long lastId, Integer pageSize){
         List<AdminUserVO> listUserASC = userMapper.getListUserASC(lastId, pageSize);
 

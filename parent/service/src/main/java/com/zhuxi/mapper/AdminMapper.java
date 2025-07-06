@@ -23,6 +23,9 @@ public interface AdminMapper {
     @Select("SELECT COUNT(*) > 0 FROM admin WHERE username = #{username}")
     boolean isExists(String username);
 
+    @Select("SELECT COUNT(*) FROM admin WHERE id = #{id}")
+    boolean isExistsById(Integer id);
+
     // 更新用户最后登录时间
     @Update("UPDATE admin SET last_login = #{lastLogin} WHERE id = #{id}")
     int updateLastLogin(Integer id, LocalDateTime lastLogin);

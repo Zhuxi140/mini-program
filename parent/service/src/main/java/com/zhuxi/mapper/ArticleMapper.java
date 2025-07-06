@@ -29,6 +29,10 @@ public interface ArticleMapper {
 
     int updateArticle(ArticleInsertOrUpdateDTO aIOUDto,Long id);
 
+    // 判断文章是否存在
+    @Select("SELECT COUNT(*) FROM article WHERE id = #{id}")
+    int isExist(Long id);
+
     @Delete("DELETE article FROM article WHERE id =  #{id}")
     Boolean deleteArticle(Long id);
 

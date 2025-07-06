@@ -38,7 +38,7 @@ public interface ProductMapper {
     """)
     ProductDetailVO getProductDetail(Long id);
 
-    @Select("SELECT spec,price,cover_url,stock FROM spec WHERE product_id = #{id}")
+    @Select("SELECT id AS specId,spec,price,cover_url,stock FROM spec WHERE product_id = #{id}")
     List<ProductSpecVO> getProductSpec(Long id);
 
     // 添加商品基础信息

@@ -22,7 +22,14 @@ public class ArticleTxService {
         this.articleMapper = articleMapper;
     }
 
-    @Transactional(readOnly = true,propagation = Propagation.REQUIRES_NEW)
+    @Transactional(readOnly = true)
+    public Boolean isExist(Long id) {
+        if(articleMapper.isExist(id) <= 0)
+            throw new transactionalException(Message.ARTICLE_IS_NOT_EXIST);
+
+    }
+
+    @Transactional(readOnly = true)
     public ArticleDetailVO getArticleDetailById(Long id) {
         ArticleDetailVO articleDetailById = articleMapper.getArticleDetailById(id);
         if(articleDetailById == null)
@@ -30,7 +37,7 @@ public class ArticleTxService {
         return articleDetailById;
     }
 
-    @Transactional(readOnly = true,propagation = Propagation.REQUIRES_NEW)
+    @Transactional(readOnly = true)
     public List<ArticleVO> getListArticle(Integer  type) {
         List<ArticleVO> listArticle = articleMapper.getListArticle(type);
         if(listArticle.isEmpty())
@@ -38,7 +45,7 @@ public class ArticleTxService {
         return listArticle;
     }
 
-    @Transactional(readOnly = true,propagation = Propagation.REQUIRES_NEW)
+    @Transactional(readOnly = true)
     public List<ArticleVO> getListArticleDESC(Long lastId, Integer pageSize,Integer type) {
         List<ArticleVO> listArticleDESC = articleMapper.getListArticleDESC(lastId, pageSize,type);
         if(listArticleDESC.isEmpty())

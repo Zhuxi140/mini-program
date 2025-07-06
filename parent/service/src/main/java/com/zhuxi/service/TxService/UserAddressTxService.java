@@ -22,23 +22,23 @@ public class UserAddressTxService {
     }
 
 
-    @Transactional(readOnly =  true,propagation = Propagation.REQUIRES_NEW)
+    @Transactional(readOnly =  true)
     public int  isExist(Long userId){
         return userAddressMapper.isExist(userId);
     }
 
-    @Transactional(readOnly =  true,propagation = Propagation.REQUIRES_NEW)
+    @Transactional(readOnly =  true)
     public List<UserAddressVO> getList(Long userId) {
         return userAddressMapper.getList(userId);
     }
 
-    @Transactional(readOnly =  true,propagation = Propagation.REQUIRES_NEW)
+    @Transactional(readOnly =  true)
     public Long getDefaultAddressId(Long userId) {
         return userAddressMapper.getDefaultAddressId(userId);
     }
 
 
-    @Transactional(readOnly =  true,propagation = Propagation.REQUIRES_NEW)
+    @Transactional(readOnly =  true)
     public Boolean isExistAddressId(Long addressId) {
         return !userAddressMapper.isExistAddressId(addressId);
     }

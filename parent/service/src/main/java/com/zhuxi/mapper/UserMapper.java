@@ -38,4 +38,8 @@ public interface UserMapper {
     @Select("SELECT id,openid,role FROM user WHERE openid = #{openid} ")
     UserLoginDTO isUserExist(String openid);
 
+    //用户是否存在
+    @Select("SELECT COUNT(*) > 0 FROM user WHERE id = #{id} ")
+    boolean isUserExist(Long id);
+
 }

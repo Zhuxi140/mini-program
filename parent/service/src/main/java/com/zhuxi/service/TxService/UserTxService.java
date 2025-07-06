@@ -19,7 +19,7 @@ public class UserTxService {
     }
 
 
-    @Transactional(readOnly = true,propagation = Propagation.REQUIRES_NEW)
+    @Transactional(readOnly = true)
     public UserLoginDTO isUserExist(String openid){
 
         UserLoginDTO userExist = userMapper.isUserExist(openid);

@@ -6,15 +6,18 @@ public class CarUpdateDTO {
 
     @Schema(description = "商品id",requiredMode = Schema.RequiredMode.REQUIRED)
     private Long productId ;
+    @Schema(description = "规格id",requiredMode = Schema.RequiredMode.REQUIRED)
+    private Long specId;
     @Schema(description = "数量（若为第一次加入购物车，不需填写）",requiredMode = Schema.RequiredMode.REQUIRED)
     private Integer quantity = 1;
 
-    public CarUpdateDTO(Long productId, Integer quantity) {
-        this.productId = productId;
-        this.quantity = quantity;
+    public CarUpdateDTO() {
     }
 
-    public CarUpdateDTO() {
+    public CarUpdateDTO(Long productId, Long specId, Integer quantity) {
+        this.productId = productId;
+        this.specId = specId;
+        this.quantity = quantity;
     }
 
     public Long getProductId() {
@@ -23,6 +26,14 @@ public class CarUpdateDTO {
 
     public void setProductId(Long productId) {
         this.productId = productId;
+    }
+
+    public Long getSpecId() {
+        return specId;
+    }
+
+    public void setSpecId(Long specId) {
+        this.specId = specId;
     }
 
     public Integer getQuantity() {
