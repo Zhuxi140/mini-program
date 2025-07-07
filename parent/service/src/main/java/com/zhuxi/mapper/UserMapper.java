@@ -40,6 +40,6 @@ public interface UserMapper {
 
     //用户是否存在
     @Select("SELECT COUNT(*) > 0 FROM user WHERE id = #{id} ")
-    boolean isUserExist(Long id);
+    boolean isUserExistById(Long id);
 
 }

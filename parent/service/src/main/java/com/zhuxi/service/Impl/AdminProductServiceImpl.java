@@ -5,17 +5,20 @@ import com.zhuxi.Result.PageResult;
 import com.zhuxi.Result.Result;
 import com.zhuxi.service.AdminProductService;
 import com.zhuxi.service.TxService.ProductTxService;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import src.main.java.com.zhuxi.pojo.DTO.product.ProductAddDTO;
-import src.main.java.com.zhuxi.pojo.DTO.product.ProductUpdateDTO;
+import src.main.java.com.zhuxi.pojo.DTO.RealStock.RealStockDTO;
+import src.main.java.com.zhuxi.pojo.DTO.product.*;
 import src.main.java.com.zhuxi.pojo.VO.Admin.AdminProductVO;
+import src.main.java.com.zhuxi.pojo.VO.Product.ProductSpecDetailVO;
 import src.main.java.com.zhuxi.pojo.VO.Product.ProductSpecVO;
 
 import java.util.List;
 
 
 @Service
+@Log4j2
 public class AdminProductServiceImpl implements AdminProductService {
     private ProductTxService productTxService;
 
@@ -59,6 +62,17 @@ public class AdminProductServiceImpl implements AdminProductService {
         productTxService.addSpec(productAddDTO.getSpec(), id);
 
 
+        List<RealStockDTO> realStockDTO = productAddDTO.getSpec().stream().map(productSpecDTO -> {
+            RealStockDTO realStockDTO1 = new RealStockDTO();
+            realStockDTO1.setProductId(id);
+            realStockDTO1.setSpecId(productSpecDTO.getId());
+            log.warn("sepcId : {}", productSpecDTO.getId());
+            return realStockDTO1;
+        }).toList();
+
+        productTxService.addRealStock(realStockDTO);
+
+
         return Result.success(Message.OPERATION_SUCCESS);
     }
 
@@ -77,18 +91,46 @@ public class AdminProductServiceImpl implements AdminProductService {
     }
 
     /**
+     * 获取商品规格详情
+     */
+    @Override
+    public Result<List<ProductSpecDetailVO>> getProductSpecDetail(Long productId) {
+        if (productId == null)
+            return Result.error(Message.PRODUCT_ID_IS_NULL);
+
+        List<ProductSpecDetailVO> productSpecDetail = productTxService.getProductSpecDetail(productId);
+        return Result.success(Message.OPERATION_SUCCESS, productSpecDetail);
+    }
+
+    /**
      * 修改商品
      */
     @Override
     @Transactional
-    public Result<Void> update(ProductUpdateDTO productUpdateDTO, Long id) {
-        if (productUpdateDTO == null || productUpdateDTO.getBase() == null || productUpdateDTO.getSpec() == null || id == null)
+    public Result<Void> update(ProductUpdateDTO productUpdateDTO) {
+        ProductBaseUpdateDTO base = productUpdateDTO.getBase();
+        if (base == null)
+            return Result.error(Message.BODY_NO_MAIN_OR_IS_NULL);
+
+        Long productId = base.getId();
+        if (productId == null)
             return Result.error(Message.PRODUCT_ID_IS_NULL + "或" + Message.BODY_NO_MAIN_OR_IS_NULL);
 
+        List<ProductSpecUpdateDTO> spec = productUpdateDTO.getSpec();
+        if (spec == null)
+            return Result.error(Message.BODY_NO_MAIN_OR_IS_NULL);
 
-        productUpdateDTO.getBase().setId(id);
-        productTxService.updateBase(productUpdateDTO.getBase());
-        productTxService.updateSpec(productUpdateDTO.getSpec(),id);
+        for (ProductSpecUpdateDTO productSpecUpdateDTO : spec){
+            if (productSpecUpdateDTO.getId() == null)
+                return Result.error(Message.PRODUCT_SPEC_ID_IS_NULL);
+            Integer realStock = productTxService.getRealStock(productId, productSpecUpdateDTO.getId());
+            if(productSpecUpdateDTO.getStock() > realStock)
+                return Result.error(Message.STOCK_NOT_ENOUGH);
+        }
+
+
+        productTxService.updateBase(base);
+        productTxService.updateSpec(spec,productId);
 
         return Result.success(Message.OPERATION_SUCCESS);
     }

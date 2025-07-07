@@ -2,30 +2,31 @@ package src.main.java.com.zhuxi.pojo.DTO.product;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
-public class ProductBaseDTO {
-
-    @Schema(description = "商品id(在更新信息中需要给予id，添加中不需要给予)",requiredMode = Schema.RequiredMode.NOT_REQUIRED)
+public class ProductBaseUpdateDTO {
+    @Schema(description = "商品id",requiredMode = Schema.RequiredMode.REQUIRED)
     private Long id;
-    @Schema(description = "商品名称",requiredMode = Schema.RequiredMode.REQUIRED)
+    @Schema(description = "供应商id")
+    private Integer supplierId;
+    @Schema(description = "商品名称")
     private String name;
-    @Schema(description = "商品描述",requiredMode = Schema.RequiredMode.NOT_REQUIRED)
+    @Schema(description = "商品描述")
     private String description;
-    @Schema(description = "商品产地(默认为河南省新乡市封丘县)",requiredMode = Schema.RequiredMode.NOT_REQUIRED)
-    private String origin = "河南省新乡市封丘县";
-    @Schema(description = "商品状态(0下架,1上架)",requiredMode = Schema.RequiredMode.NOT_REQUIRED)
-    private Integer status = 0;
+    @Schema(description = "商品产地")
+    private String origin;
+    @Schema(description = "商品状态")
+    private Integer status;
 
-    public ProductBaseDTO(Long id,String name, String description, String origin,Integer status ) {
+    public ProductBaseUpdateDTO() {
+    }
+
+    public ProductBaseUpdateDTO(Long id, Integer supplierId, String name, String description, String origin, Integer status) {
         this.id = id;
+        this.supplierId = supplierId;
         this.name = name;
         this.description = description;
         this.origin = origin;
         this.status = status;
     }
-
-    public ProductBaseDTO() {
-    }
-
 
     public Long getId() {
         return id;
@@ -35,6 +36,14 @@ public class ProductBaseDTO {
         this.id = id;
     }
 
+    public Integer getSupplierId() {
+        return supplierId;
+    }
+
+    public void setSupplierId(Integer supplierId) {
+        this.supplierId = supplierId;
+    }
+
     public String getName() {
         return name;
     }
@@ -42,7 +51,6 @@ public class ProductBaseDTO {
     public void setName(String name) {
         this.name = name;
     }
-
 
     public String getDescription() {
         return description;
@@ -67,4 +75,6 @@ public class ProductBaseDTO {
     public void setStatus(Integer status) {
         this.status = status;
     }
+
+
 }

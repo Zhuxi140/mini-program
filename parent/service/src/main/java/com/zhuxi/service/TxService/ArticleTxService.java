@@ -23,10 +23,9 @@ public class ArticleTxService {
     }
 
     @Transactional(readOnly = true)
-    public Boolean isExist(Long id) {
+    public void isExist(Long id) {
         if(articleMapper.isExist(id) <= 0)
             throw new transactionalException(Message.ARTICLE_IS_NOT_EXIST);
-
     }
 
     @Transactional(readOnly = true)

@@ -41,4 +41,5 @@ public class Message {
     public static final String MIN_PRICE_ERROR = "最小价格错误";
     public static final String URL_IS_NULL = "URL为空";
     public static final String STOCK_NOT_ENOUGH = "库存不足";
+    public static final String PRODUCT_SPEC_ID_IS_NULL = "商品规格id为空";
 }

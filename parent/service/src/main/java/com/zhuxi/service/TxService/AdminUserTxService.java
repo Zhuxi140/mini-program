@@ -21,7 +21,7 @@ public class AdminUserTxService {
 
     @Transactional(readOnly = true)
     public void isUserExist(Long id){
-        boolean userExist = userMapper.isUserExist(id);
+        boolean userExist = userMapper.isUserExistById(id);
         if(!userExist)
             throw new transactionalException(Message.USER_NOT_EXIST);
     }

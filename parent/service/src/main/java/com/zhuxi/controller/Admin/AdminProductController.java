@@ -12,7 +12,10 @@ import org.springframework.web.bind.annotation.*;
 import src.main.java.com.zhuxi.pojo.DTO.product.ProductAddDTO;
 import src.main.java.com.zhuxi.pojo.DTO.product.ProductUpdateDTO;
 import src.main.java.com.zhuxi.pojo.VO.Admin.AdminProductVO;
+import src.main.java.com.zhuxi.pojo.VO.Product.ProductSpecDetailVO;
 import src.main.java.com.zhuxi.pojo.entity.Role;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/adminProducts")
@@ -43,11 +46,28 @@ public class AdminProductController {
         return adminProductService.getListAdminProducts(lastId, pageSize,DESC);
     }
 
+
+    @GetMapping("/{id}")
+    @RequireRole(Role.ADMIN)
+    @Operation(
+            summary = "获取商品规格详细详情",
+            description = "用于管理端在点击规格详细后展示商品规格及库存 并做库存预警处理"
+    )
+    public Result<List<ProductSpecDetailVO>> getProductSpecDetail(
+            @Parameter(description = "商品id", required = true)
+            @PathVariable
+            Long id
+    )
+    {
+        return adminProductService.getProductSpecDetail(id);
+    }
+
+
     @PostMapping
     @RequireRole(Role.ADMIN)
     @Operation(
             summary = "添加商品",
-            description = "添加商品"
+            description = "添加商品时，为确保数据统一，可售库存强制为0"
     )
     public Result<Void> add(
             @Parameter(description = "商品信息", required = true)
@@ -58,7 +78,7 @@ public class AdminProductController {
     }
 
 
-    @PutMapping("/{id}")
+    @PutMapping
     @RequireRole(Role.ADMIN)
     @Operation(
             summary = "修改商品",
@@ -67,12 +87,9 @@ public class AdminProductController {
     public Result<Void> update(
             @Parameter(description = "商品信息", required = true)
             @RequestBody
-            ProductUpdateDTO productUpdateDTO,
-            @Parameter(description = "商品id", required = true)
-            @PathVariable
-            Long id
+            ProductUpdateDTO productUpdateDTO
     ){
-        return adminProductService.update(productUpdateDTO,id);
+        return adminProductService.update(productUpdateDTO);
     }
 
 

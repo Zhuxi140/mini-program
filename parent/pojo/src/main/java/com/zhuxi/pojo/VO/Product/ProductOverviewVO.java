@@ -1,12 +1,18 @@
 package src.main.java.com.zhuxi.pojo.VO.Product;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
 import java.math.BigDecimal;
 
 public class ProductOverviewVO {
 
+    @Schema(description = "商品id")
     private Long id;
+    @Schema(description = "商品名称")
     private String name;
+    @Schema(description = "商品价格")
     private BigDecimal price;
+    @Schema(description = "商品封面图片")
     private String coverUrl;
 
 

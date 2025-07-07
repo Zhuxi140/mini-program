@@ -5,6 +5,7 @@ import com.zhuxi.Result.Result;
 import src.main.java.com.zhuxi.pojo.DTO.product.ProductAddDTO;
 import src.main.java.com.zhuxi.pojo.DTO.product.ProductUpdateDTO;
 import src.main.java.com.zhuxi.pojo.VO.Admin.AdminProductVO;
+import src.main.java.com.zhuxi.pojo.VO.Product.ProductSpecDetailVO;
 import src.main.java.com.zhuxi.pojo.VO.Product.ProductSpecVO;
 
 import java.util.List;
@@ -13,11 +14,13 @@ public interface AdminProductService {
 
     Result<PageResult<AdminProductVO>> getListAdminProducts(Long lastId, Integer pageSize,Integer DESC);
 
-    Result<Void> update(ProductUpdateDTO productUpdateDTO, Long id);
+    Result<Void> update(ProductUpdateDTO productUpdateDTO);
 
     Result<Void> add(ProductAddDTO productAddDTO);
 
     Result<Void> delete(Long id);
+
+    Result<List<ProductSpecDetailVO> > getProductSpecDetail(Long productId);
 
 
 }

@@ -1,19 +1,42 @@
 package src.main.java.com.zhuxi.pojo.VO.Admin;
 
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
+import java.math.BigDecimal;
+
 public class AdminProductVO {
+    @Schema(description = "商品id")
     private Long id;
+    @Schema(description = "商品名称")
     private String name;
-    private Integer stock;
-    private String specNames;
+    @Schema(description = "商品封面图片")
+    private String coverUrl;
+    @Schema(description = "供应商名称")
+    private String supplierName;
+    @Schema(description = "商品规格数量")
+    private Long specCount;
+    @Schema(description = "最低价格")
+    private BigDecimal minPrice;
+    @Schema(description = "最高价格")
+    private BigDecimal maxPrice;
+    @Schema(description = "总库存")
+    private Long totalRealStock;
+    @Schema(description = "库存状态 1为紧张(即低于100) 0为充裕(大于100)")
     private String stockStatus;
 
-    public AdminProductVO(Long id, String name, Integer stock,String specNames, String stockStatus) {
+    public AdminProductVO() {
+    }
 
+    public AdminProductVO(Long id, String name,String coverUrl,String supplierName, Long specCount, BigDecimal minPrice, BigDecimal maxPrice, Long totalRealStock, String stockStatus) {
         this.id = id;
         this.name = name;
-        this.stock = stock;
-        this.specNames = specNames;
+        this.coverUrl = coverUrl;
+        this.supplierName = supplierName;
+        this.specCount = specCount;
+        this.minPrice = minPrice;
+        this.maxPrice = maxPrice;
+        this.totalRealStock = totalRealStock;
         this.stockStatus = stockStatus;
     }
 
@@ -33,12 +56,53 @@ public class AdminProductVO {
         this.name = name;
     }
 
-    public Integer getStock() {
-        return stock;
+
+    public String getCoverUrl() {
+        return coverUrl;
     }
 
-    public void setStock(Integer stock) {
-        this.stock = stock;
+    public void setCoverUrl(String coverUrl) {
+        this.coverUrl = coverUrl;
+    }
+
+    public String getSupplierName() {
+        return supplierName;
+    }
+
+    public void setSupplierName(String supplierName) {
+        this.supplierName = supplierName;
+    }
+
+    public Long getSpecCount() {
+        return specCount;
+    }
+
+    public void setSpecCount(Long specCount) {
+        this.specCount = specCount;
+    }
+
+    public BigDecimal getMinPrice() {
+        return minPrice;
+    }
+
+    public void setMinPrice(BigDecimal minPrice) {
+        this.minPrice = minPrice;
+    }
+
+    public BigDecimal getMaxPrice() {
+        return maxPrice;
+    }
+
+    public void setMaxPrice(BigDecimal maxPrice) {
+        this.maxPrice = maxPrice;
+    }
+
+    public Long getTotalRealStock() {
+        return totalRealStock;
+    }
+
+    public void setTotalRealStock(Long totalRealStock) {
+        this.totalRealStock = totalRealStock;
     }
 
     public String getStockStatus() {
@@ -47,13 +111,5 @@ public class AdminProductVO {
 
     public void setStockStatus(String stockStatus) {
         this.stockStatus = stockStatus;
-    }
-
-    public String getSpecNames() {
-        return specNames;
-    }
-
-    public void setSpecNames(String specNames) {
-        this.specNames = specNames;
     }
 }

@@ -21,20 +21,22 @@
     </select>
 
     <select id="getListAdminProductsDESC" resultType="src.main.java.com.zhuxi.pojo.VO.Admin.AdminProductVO">
-     <![CDATA[
+      <![CDATA[
         SELECT
             product.id,
-            name,
-            SUM(spec.stock) AS  stock,
-            GROUP_CONCAT(DISTINCT spec.spec SEPARATOR'|') AS spec_names,
-            CASE
-                WHEN stock > 0 THEN '有货'
-                WHEN stock = 0 THEN '无货'
-                ELSE '库存不足'
-            END AS stock_status
-        FROM product JOIN spec ON product.id = spec.product_id
+            product.name,
+            product.cover_url,
+            supplier.name AS supplier_name,
+            COALESCE(COUNT(spec.id),0) AS spec_count,
+            COALESCE(MIN(spec.price),0) AS min_price,
+            COALESCE(MAX(spec.price),0) AS max_price,
+            COALESCE(SUM(real_stock.stock),0) AS total_real_stock,
+            MAX(CASE WHEN real_stock.stock < 100 THEN 1 ELSE 0 END) AS stock_status
+        FROM product JOIN supplier ON product.supplier_id = supplier.id
+                     LEFT JOIN spec ON product.id = spec.product_id
+                     LEFT JOIN real_stock ON spec.id = real_stock.spec_id
         WHERE product.id < #{lastId}
-        GROUP BY product.id, product.name,stock_status
+        GROUP BY product.id, product.name,product.cover_url,supplier.name
         ORDER BY product.id DESC
         LIMIT #{pageSize}
         ]]>
@@ -42,32 +44,48 @@
 
 
     <select id="getListAdminProductsASC" resultType="src.main.java.com.zhuxi.pojo.VO.Admin.AdminProductVO">
+        <![CDATA[
         SELECT
             product.id,
-            name,
-            SUM(spec.stock) AS  stock,
-            GROUP_CONCAT(DISTINCT spec.spec SEPARATOR'|') AS spec_names,
-            CASE
-                WHEN stock > 0 THEN '有货'
-                WHEN stock = 0 THEN '无货'
-                ELSE '库存不足'
-                END AS stock_status
-        FROM product JOIN spec ON product.id = spec.product_id
+            product.name,
+            product.cover_url,
+            supplier.name AS supplier_name,
+            COALESCE(COUNT(spec.id),0) AS spec_count,
+            COALESCE(MIN(spec.price),0) AS min_price,
+            COALESCE(MAX(spec.price),0) AS max_price,
+            COALESCE(SUM(real_stock.stock),0) AS total_real_stock,
+            MAX(CASE WHEN real_stock.stock < 100 THEN 1 ELSE 0 END) AS stock_status
+        FROM product JOIN supplier ON product.supplier_id = supplier.id
+        LEFT JOIN spec ON product.id = spec.product_id
+        LEFT JOIN real_stock ON spec.id = real_stock.spec_id
         WHERE product.id > #{lastId}
-        GROUP BY product.id, product.name,stock_status
+        GROUP BY product.id, product.name,product.cover_url,supplier.name
         ORDER BY product.id ASC
         LIMIT #{pageSize}
+        ]]>
     </select>
 
-    <insert id="addSpec">
-    INSERT INTO spec(product_id,spec,price,stock)
-    VALUES
-        <foreach collection='list' item='spec' separator=','>
-        (
-            #{product_id},
-            #{spec.spec},
-            #{spec.price},
-            #{spec.stock}
+<!--    <insert id="addSpec">-->
+<!--    INSERT INTO spec(product_id,spec,price,stock)-->
+<!--    VALUES-->
+<!--        <foreach collection='list' item='spec' separator=','>-->
+<!--        (-->
+<!--            #{productId},-->
+<!--            #{spec.spec},-->
+<!--            #{spec.price},-->
+<!--            0-->
+<!--            )-->
+<!--        </foreach>-->
+<!--    </insert>-->
+
+    <insert id="addRealStock">
+        INSERT INTO real_stock(product_id, spec_id, stock)
+             VALUES
+        <foreach collection="list" item="rs" separator=",">
+            (
+            #{rs.productId},
+            #{rs.specId},
+            0
             )
         </foreach>
     </insert>
@@ -75,16 +93,19 @@
     <update id="updateProductBase">
         UPDATE product
         <set>
-            <if test="productUpdateDTO.name != null">
+            <if test="base.supplierId != null">
+                supplier_id = #{base.supplierId},
+            </if>
+            <if test="base.name != null">
                 name = #{base.name},
             </if>
-            <if test="productUpdateDTO.description != null">
+            <if test="base.description != null">
                 description = #{base.description},
             </if>
-            <if test="productUpdateDTO.origin != null">
+            <if test="base.origin != null">
                 origin = #{base.origin},
             </if>
-            <if test="productUpdateDTO.status != null">
+            <if test="base.status != null">
                 status = #{base.status},
             </if>
         </set>
@@ -93,23 +114,22 @@
 
     <update id="updateProductSpec">
         UPDATE spec
-        <foreach collection="list" item="spec" >
             <set>
-                <if test="list.name != null">
-                    spec = #{spec.spec},
+                <if test="specU.spec != null">
+                    spec = #{specU.spec},
                 </if>
-                <if test="list.coverUrl != null">
-                    cover_url = #{spec.coverUrl},
+                <if test="specU.purchasePrice != null">
+                    purchase_price = #{specU.purchasePrice},
                 </if>
-                <if test="list.price != null">
-                    price = #{spec.price},
+                <if test="specU.price != null">
+                    price = #{specU.price},
                 </if>
-                <if test="list.stock != null">
-                    stock = #{spec.stock},
+                <if test="specU.stock != null">
+                    stock = #{specU.stock},
                 </if>
+
             </set>
-        WHERE product_id = #{product_id}
-        </foreach>
+        WHERE product_id = #{productId} AND id = #{specU.id}
 
     </update>
 

@@ -6,31 +6,31 @@ import java.util.List;
 public class ProductUpdateDTO {
 
     @Schema(description = "商品基础信息",requiredMode = Schema.RequiredMode.REQUIRED)
-    private ProductBaseDTO base;
+    private ProductBaseUpdateDTO base;
     @Schema(description = "商品规格信息",requiredMode = Schema.RequiredMode.REQUIRED)
-    private List<ProductSpecDTO> specs;
+    private List<ProductSpecUpdateDTO> specs;
 
     public ProductUpdateDTO() {
     }
 
-    public ProductUpdateDTO(ProductBaseDTO base, List<ProductSpecDTO> spec) {
+    public ProductUpdateDTO(ProductBaseUpdateDTO base, List<ProductSpecUpdateDTO> spec) {
         this.base = base;
         this.specs = spec;
     }
 
-    public ProductBaseDTO getBase() {
+    public ProductBaseUpdateDTO getBase() {
         return base;
     }
 
-    public void setBase(ProductBaseDTO base) {
+    public void setBase(ProductBaseUpdateDTO base) {
         this.base = base;
     }
 
-    public List<ProductSpecDTO> getSpec() {
+    public List<ProductSpecUpdateDTO> getSpec() {
         return specs;
     }
 
-    public void setSpec(List<ProductSpecDTO> spec) {
+    public void setSpec(List<ProductSpecUpdateDTO> spec) {
         this.specs = spec;
     }
 }

@@ -2,12 +2,12 @@ package com.zhuxi.mapper;
 
 
 import org.apache.ibatis.annotations.*;
-import src.main.java.com.zhuxi.pojo.DTO.product.ProductUpdateDTO;
-import src.main.java.com.zhuxi.pojo.DTO.product.ProductBaseDTO;
-import src.main.java.com.zhuxi.pojo.DTO.product.ProductSpecDTO;
+import src.main.java.com.zhuxi.pojo.DTO.RealStock.RealStockDTO;
+import src.main.java.com.zhuxi.pojo.DTO.product.*;
 import src.main.java.com.zhuxi.pojo.VO.Admin.AdminProductVO;
 import src.main.java.com.zhuxi.pojo.VO.Product.ProductDetailVO;
 import src.main.java.com.zhuxi.pojo.VO.Product.ProductOverviewVO;
+import src.main.java.com.zhuxi.pojo.VO.Product.ProductSpecDetailVO;
 import src.main.java.com.zhuxi.pojo.VO.Product.ProductSpecVO;
 
 import java.util.List;
@@ -41,22 +41,45 @@ public interface ProductMapper {
     @Select("SELECT id AS specId,spec,price,cover_url,stock FROM spec WHERE product_id = #{id}")
     List<ProductSpecVO> getProductSpec(Long id);
 
+    @Select("""
+    SELECT spec.id AS specId,
+           spec.spec,
+           spec.price AS sale_price,
+           spec.purchase_price,
+           spec.stock,
+           real_stock.stock AS real_stock
+    FROM spec JOIN real_stock ON real_stock.product_id = #{productId}
+    """)
+    List<ProductSpecDetailVO> getProductSpecDetail(Long productId);
+
     // 添加商品基础信息
     @Insert("""
-    INSERT INTO product(name,cover_url,images,description,origin,status)
-    VALUES (#{name},#{coverUrl},#{images},#{description},#{origin},#{status})
+    INSERT INTO product(name,description,origin,status)
+    VALUES (#{name},#{description},#{origin},#{status})
     """)
     @Options(useGeneratedKeys = true, keyColumn = "id", keyProperty = "id")
     Boolean addBase(ProductBaseDTO productBaseDTO);
 
     //添加规格信息
-    Boolean addSpec(@Param("list") List<ProductSpecDTO> productSpecDTO,@Param("product_id")  Long id);
+    @Options(useGeneratedKeys = true,keyProperty = "pSDto.id",keyColumn = "id")
+    @Insert("""
+    INSERT INTO spec(product_id,spec,stock)
+    VALUE(#{productId},#{pSDto.spec},0)
+    """)
+    int addSpec(@Param("pSDto") ProductSpecDTO productSpecDTO,@Param("productId")  Long id);
+
+    //初始化真实库存记录
+    Boolean addRealStock(@Param("list") List<RealStockDTO> realStockDTO);
+
 
     // 修改商品基础信息
-    int updateProductBase(@Param("base") ProductBaseDTO productBaseDTO);
+    int updateProductBase(@Param("base") ProductBaseUpdateDTO productBaseUpdateDTO);
+
+    @Select("SELECT rs.stock  FROM real_stock AS rs WHERE rs.product_id = #{productId} AND rs.spec_id = #{specId}")
+    Integer getRealStock(@Param("productId") Long productId, @Param("specId") Long specId);
 
     // 修改商品规格信息
-    int updateProductSpec(@Param("list") List<ProductSpecDTO> productSpecDTO,@Param("product_id")  Long id);
+    int updateProductSpec(@Param("specU") ProductSpecUpdateDTO productSpecUpdateDTO, @Param("productId")  Long id);
 
     // 删除商品基础信息
     @Delete("DELETE FROM product WHERE id = #{id}")

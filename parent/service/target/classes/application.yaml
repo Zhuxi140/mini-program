@@ -7,7 +7,7 @@ spring:
   datasource:
     type: com.alibaba.druid.pool.DruidDataSource
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://cd-cdb-chi3okas.sql.tencentcdb.com:23033/mini_program
+    url: jdbc:mysql://cd-cdb-chi3okas.sql.tencentcdb.com:23033/mini_program?rewriteBatchedStatements=true
     username: zhu
     password: zhu123456
   web:
