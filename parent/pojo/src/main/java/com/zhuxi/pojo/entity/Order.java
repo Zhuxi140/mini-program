@@ -8,22 +8,27 @@ public class Order {
     private Long id;
     private String OrderSn; // 订单编号(日期+6位随机数)
     private Long userId;
+    private Long productId;
+    private Long specId;
     private Long addressId;
+    private Integer productQuantity;
     private BigDecimal totalAmount;
-    private Integer status;    // 0:待付款 1:已付款  2: 已取消
-    private LocalDateTime createdAt;
+    private Integer status;
 
-    public Order(Long id, String orderSn, Long userId, Long addressId, BigDecimal totalAmount, Integer status, LocalDateTime createdAt) {
+
+    public Order() {
+    }
+
+    public Order(Long id, String orderSn, Long userId, Long productId, Long specId, Long addressId, Integer productQuantity, BigDecimal totalAmount, Integer status) {
         this.id = id;
         OrderSn = orderSn;
         this.userId = userId;
+        this.productId = productId;
+        this.specId = specId;
         this.addressId = addressId;
+        this.productQuantity = productQuantity;
         this.totalAmount = totalAmount;
         this.status = status;
-        this.createdAt = createdAt;
-    }
-
-    public Order() {
     }
 
     public Long getId() {
@@ -50,12 +55,36 @@ public class Order {
         this.userId = userId;
     }
 
+    public Long getProductId() {
+        return productId;
+    }
+
+    public void setProductId(Long productId) {
+        this.productId = productId;
+    }
+
+    public Long getSpecId() {
+        return specId;
+    }
+
+    public void setSpecId(Long specId) {
+        this.specId = specId;
+    }
+
     public Long getAddressId() {
         return addressId;
     }
 
     public void setAddressId(Long addressId) {
         this.addressId = addressId;
+    }
+
+    public Integer getProductQuantity() {
+        return productQuantity;
+    }
+
+    public void setProductQuantity(Integer productQuantity) {
+        this.productQuantity = productQuantity;
     }
 
     public BigDecimal getTotalAmount() {
@@ -72,13 +101,5 @@ public class Order {
 
     public void setStatus(Integer status) {
         this.status = status;
-    }
-
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
     }
 }

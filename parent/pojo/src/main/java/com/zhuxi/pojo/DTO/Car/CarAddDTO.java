@@ -2,7 +2,7 @@ package src.main.java.com.zhuxi.pojo.DTO.Car;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
-public class CarUpdateDTO {
+public class CarAddDTO {
 
     @Schema(description = "商品id",requiredMode = Schema.RequiredMode.REQUIRED)
     private Long productId ;
@@ -11,10 +11,10 @@ public class CarUpdateDTO {
     @Schema(description = "数量（若为第一次加入购物车，不需填写）",requiredMode = Schema.RequiredMode.REQUIRED)
     private Integer quantity = 1;
 
-    public CarUpdateDTO() {
+    public CarAddDTO() {
     }
 
-    public CarUpdateDTO(Long productId, Long specId, Integer quantity) {
+    public CarAddDTO(Long productId, Long specId, Integer quantity) {
         this.productId = productId;
         this.specId = specId;
         this.quantity = quantity;

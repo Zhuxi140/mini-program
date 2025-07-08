@@ -8,7 +8,8 @@ import com.zhuxi.utils.JwtUtils;
 import io.jsonwebtoken.Claims;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import src.main.java.com.zhuxi.pojo.DTO.Car.CarUpdateDTO;
+import src.main.java.com.zhuxi.pojo.DTO.Car.CarAddDTO;
+import src.main.java.com.zhuxi.pojo.DTO.Car.CartUpdateDTO;
 import src.main.java.com.zhuxi.pojo.VO.Car.CartNewVO;
 import src.main.java.com.zhuxi.pojo.VO.Car.CartVO;
 
@@ -30,7 +31,7 @@ public class CartServiceImpl implements CartService {
      */
     @Override
     @Transactional
-    public Result<Void> update(CarUpdateDTO carUpdateDTO,String token) {
+    public Result<Void> update(CartUpdateDTO cartUpdateDTO, String token) {
 
         Result<Long> jwtResult = getUserId(token);
 
@@ -38,17 +39,13 @@ public class CartServiceImpl implements CartService {
             return Result.error(jwtResult.getMsg());
 
         Long userId = jwtResult.getData();
-        if(carUpdateDTO == null)
+        if(cartUpdateDTO == null || cartUpdateDTO.getCartId() == null)
+            return Result.error(Message.BODY_NO_MAIN_OR_IS_NULL + "/" + Message.CART_ID_IS_NULL);
+
+        if( cartUpdateDTO.getQuantity() == null && cartUpdateDTO.getSpecId() == null)
             return Result.error(Message.BODY_NO_MAIN_OR_IS_NULL);
 
-        if(carUpdateDTO.getProductId() == null || carUpdateDTO.getQuantity() == null)
-            return Result.error(Message.BODY_NO_MAIN_OR_IS_NULL);
-
-        Integer stock = cartTxService.getStock(carUpdateDTO.getProductId(), carUpdateDTO.getSpecId());
-        if(carUpdateDTO.getQuantity() > stock)
-            return Result.error(Message.STOCK_NOT_ENOUGH);
-
-        cartTxService.updateQuantity(carUpdateDTO,userId);
+        cartTxService.updateQuantityOrSpec(cartUpdateDTO,userId);
 
         return Result.success(Message.OPERATION_SUCCESS);
 
@@ -60,7 +57,7 @@ public class CartServiceImpl implements CartService {
      */
     @Override
     @Transactional
-    public Result<Void> add(CarUpdateDTO carUpdateDTO,String token) {
+    public Result<Void> add(CarAddDTO carAddDTO, String token) {
 
         Result<Long> jwtResult = getUserId(token);
 
@@ -68,37 +65,35 @@ public class CartServiceImpl implements CartService {
             return Result.error(jwtResult.getMsg());
 
         Long userId = jwtResult.getData();
-        if(carUpdateDTO == null)
+        if(carAddDTO == null)
             return Result.error(Message.BODY_NO_MAIN_OR_IS_NULL);
 
-        if(carUpdateDTO.getProductId() == null || carUpdateDTO.getSpecId() == null)
+        if(carAddDTO.getProductId() == null || carAddDTO.getSpecId() == null)
             return Result.error(Message.SPEC_ID_IS_NULL + "或" + Message.PRODUCT_ID_IS_NULL);
 
-        Integer stock = cartTxService.getStock(carUpdateDTO.getProductId(), carUpdateDTO.getSpecId());
-        if(carUpdateDTO.getQuantity() > stock)
+        Integer stock = cartTxService.getStock(carAddDTO.getProductId(), carAddDTO.getSpecId());
+        if(carAddDTO.getQuantity() > stock)
             return Result.error(Message.STOCK_NOT_ENOUGH);
 
-        cartTxService.insert(carUpdateDTO,userId);
+        cartTxService.insert(carAddDTO,userId);
 
         return Result.error(Message.OPERATION_SUCCESS);
     }
 
 
     /**
-     * 删除购物车商品
+     * 删除指定购物车商品
      */
     @Override
     @Transactional
-    public Result<Void> delete(Long productId, String token, Long specId) {
+    public Result<Void> delete(Long cartId) {
 
-        Result<Long> jwtResult = getUserId(token);
-        if(jwtResult.getCode() != 200)
-            return Result.error(jwtResult.getMsg());
+        if(cartId == null)
+            return Result.error(Message.CART_ID_IS_NULL);
 
-        Long userId = jwtResult.getData();
-        cartTxService.delete(userId,productId,specId);
+        cartTxService.delete(cartId);
 
-        return Result.error(Message.PARAM_ERROR);
+        return Result.success(Message.OPERATION_SUCCESS);
     }
 
 

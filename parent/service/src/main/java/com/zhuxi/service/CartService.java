@@ -1,7 +1,8 @@
 package com.zhuxi.service;
 
 import com.zhuxi.Result.Result;
-import src.main.java.com.zhuxi.pojo.DTO.Car.CarUpdateDTO;
+import src.main.java.com.zhuxi.pojo.DTO.Car.CarAddDTO;
+import src.main.java.com.zhuxi.pojo.DTO.Car.CartUpdateDTO;
 import src.main.java.com.zhuxi.pojo.VO.Car.CartNewVO;
 import src.main.java.com.zhuxi.pojo.VO.Car.CartVO;
 
@@ -11,13 +12,13 @@ public interface CartService {
 
 
     // 修改购物车商品
-    Result<Void> update(CarUpdateDTO carUpdateDTO,String token);
+    Result<Void> update(CartUpdateDTO cartUpdateDTO, String token);
 
     //加入新的购物车商品
-    Result<Void> add(CarUpdateDTO carUpdateDTO,String token);
+    Result<Void> add(CarAddDTO carAddDTO, String token);
 
     //删除购物车商品
-    Result<Void> delete(Long productId,String token,Long specId);
+    Result<Void> delete(Long cartId);
 
     //清空购物车商品
     Result<Void> deleteAll(String token);

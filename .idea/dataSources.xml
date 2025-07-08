@@ -9,13 +9,11 @@
       <jdbc-url>jdbc:mysql://cd-cdb-chi3okas.sql.tencentcdb.com:23033</jdbc-url>
       <working-dir>$ProjectFileDir$</working-dir>
     </data-source>
-    <data-source source="LOCAL" name="mini_program@cd-cdb-chi3okas.sql.tencentcdb.com" uuid="190b1fb9-8a37-48c0-9999-3449e3ece9e7">
+    <data-source source="LOCAL" name="@rm-bp1hc14ug996jtc22ko.mysql.rds.aliyuncs.com" uuid="cb0cf253-b8ed-44e1-b847-d170a50191d6">
       <driver-ref>mysql.8</driver-ref>
       <synchronize>true</synchronize>
-      <imported>true</imported>
-      <remarks>$PROJECT_DIR$/parent/service/src/main/resources/application.yaml</remarks>
       <jdbc-driver>com.mysql.cj.jdbc.Driver</jdbc-driver>
-      <jdbc-url>jdbc:mysql://cd-cdb-chi3okas.sql.tencentcdb.com:23033/mini_program</jdbc-url>
+      <jdbc-url>jdbc:mysql://rm-bp1hc14ug996jtc22ko.mysql.rds.aliyuncs.com:3306</jdbc-url>
       <working-dir>$ProjectFileDir$</working-dir>
     </data-source>
   </component>

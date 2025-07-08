@@ -1,7 +1,8 @@
 package com.zhuxi.mapper;
 
 import org.apache.ibatis.annotations.*;
-import src.main.java.com.zhuxi.pojo.DTO.Car.CarUpdateDTO;
+import src.main.java.com.zhuxi.pojo.DTO.Car.CarAddDTO;
+import src.main.java.com.zhuxi.pojo.DTO.Car.CartUpdateDTO;
 import src.main.java.com.zhuxi.pojo.VO.Car.CartNewVO;
 import src.main.java.com.zhuxi.pojo.VO.Car.CartVO;
 
@@ -10,12 +11,9 @@ import java.util.List;
 @Mapper
 public interface CartMapper {
 
-    // 修改
-    @Update("""
-    update cart set quantity = #{carUpdateDTO.quantity}
-            where user_id = #{userId} AND product_id = #{cUDto.productId} AND spec_id = #{cUDto.specId}
-    """)
-    int updateQuantity(@Param("cUDto")CarUpdateDTO carUpdateDTO, @Param("userId") Long userId);
+    // 修改购物车商品数量或规格
+    int updateQuantityOrSpec(@Param("cUDto") CartUpdateDTO cartUpdateDTO, @Param("userId") Long userId);
+
 
     @Select("""
     SELECT spec.stock FROM spec WHERE product_id = #{productId} AND id = #{specId}
@@ -26,11 +24,11 @@ public interface CartMapper {
     insert into cart(user_id,spec_id, product_id, quantity)
     values(#{userId},#{cUDto.specId},#{cUDto.productId}, #{cUDto.quantity})
     """)
-    Boolean insert(@Param("cUDto")CarUpdateDTO carUpdateDTO, @Param("userId")Long userId);
+    Boolean insert(@Param("cUDto") CarAddDTO carAddDTO, @Param("userId")Long userId);
 
     // 删除
-    @Delete("DELETE FROM cart WHERE user_id = #{userId} AND product_id = #{productId} AND spec_id = #{specId}")
-    Boolean delete(Long userId, Long productId, Long specId);
+    @Delete("DELETE FROM cart WHERE id = #{cartId}")
+    Boolean delete(Long cartId);
 
 
     // 查询

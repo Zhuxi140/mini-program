@@ -125,7 +125,7 @@ public class AdminProductServiceImpl implements AdminProductService {
                 return Result.error(Message.PRODUCT_SPEC_ID_IS_NULL);
             Integer realStock = productTxService.getRealStock(productId, productSpecUpdateDTO.getId());
             if(productSpecUpdateDTO.getStock() > realStock)
-                return Result.error(Message.STOCK_NOT_ENOUGH);
+                return Result.error(Message.QUANTITY_OVER_STOCK);
         }
 
 

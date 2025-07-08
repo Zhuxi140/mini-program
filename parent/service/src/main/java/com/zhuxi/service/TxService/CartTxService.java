@@ -5,9 +5,9 @@ import com.zhuxi.Constant.Message;
 import com.zhuxi.Exception.transactionalException;
 import com.zhuxi.mapper.CartMapper;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-import src.main.java.com.zhuxi.pojo.DTO.Car.CarUpdateDTO;
+import src.main.java.com.zhuxi.pojo.DTO.Car.CarAddDTO;
+import src.main.java.com.zhuxi.pojo.DTO.Car.CartUpdateDTO;
 import src.main.java.com.zhuxi.pojo.VO.Car.CartNewVO;
 import src.main.java.com.zhuxi.pojo.VO.Car.CartVO;
 
@@ -50,26 +50,24 @@ public class CartTxService {
     }
 
     @Transactional(rollbackFor = transactionalException.class)
-    public void updateQuantity(CarUpdateDTO carUpdateDTO, Long userId){
-        int i = cartMapper.updateQuantity(carUpdateDTO,userId);
+    public void updateQuantityOrSpec(CartUpdateDTO cartUpdateDTO, Long userId){
+        int i = cartMapper.updateQuantityOrSpec(cartUpdateDTO,userId);
         if(i < 1)
             throw new transactionalException(Message.UPDATE_ERROR);
     }
 
     @Transactional(rollbackFor = transactionalException.class)
-    public void insert(CarUpdateDTO carUpdateDTO, Long userId){
+    public void insert(CarAddDTO carAddDTO, Long userId){
 
-        if(!cartMapper.insert(carUpdateDTO, userId))
+        if(!cartMapper.insert(carAddDTO, userId))
             throw new transactionalException(Message.INSERT_ERROR);
     }
 
     @Transactional(rollbackFor = transactionalException.class)
-    public void delete(Long userId, Long productId, Long specId){
-        if(productId != null){
-            Boolean delete = cartMapper.delete(userId, productId,specId);
+    public void delete(Long cartId){
+            Boolean delete = cartMapper.delete(cartId);
             if ( !delete)
                throw new transactionalException(Message.DELETE_ERROR);
-        }
     }
 
     @Transactional(rollbackFor = transactionalException.class)

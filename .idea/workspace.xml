@@ -4,56 +4,30 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="372da862-f7c4-4fa2-93c3-bf2ac1fe9e6e" name="更改" comment="优化事务处理&#10;优化商品、规格等交互逻辑&#10;构建供应商、进货记录等模块&#10;去除一些冗余字段，逻辑更清晰。">
-      <change beforePath="$PROJECT_DIR$/.idea/dataSources/190b1fb9-8a37-48c0-9999-3449e3ece9e7.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources/190b1fb9-8a37-48c0-9999-3449e3ece9e7.xml" afterDir="false" />
+    <list default="true" id="372da862-f7c4-4fa2-93c3-bf2ac1fe9e6e" name="更改" comment="优化事务逻辑&#10;优化sql语句性能&#10;重构商品业务逻辑，完善逻辑。&#10;增加更完整的数据效验&#10;完善了整体业务完整思路">
+      <change beforePath="$PROJECT_DIR$/.idea/dataSources.local.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources.local.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/dataSources.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/parent/src/main/java/com/zhuxi/pojo/DTO/product/ProductBaseDTO.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/parent/src/main/java/com/zhuxi/pojo/DTO/product/ProductBaseDTO.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/parent/src/main/java/com/zhuxi/pojo/DTO/product/ProductSpecDTO.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/parent/src/main/java/com/zhuxi/pojo/DTO/product/ProductSpecDTO.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/parent/src/main/java/com/zhuxi/pojo/DTO/product/ProductUpdateDTO.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/parent/src/main/java/com/zhuxi/pojo/DTO/product/ProductUpdateDTO.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/parent/src/main/java/com/zhuxi/pojo/VO/Admin/AdminProductVO.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/parent/src/main/java/com/zhuxi/pojo/VO/Admin/AdminProductVO.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/parent/src/main/java/com/zhuxi/pojo/VO/Product/ProductOverviewVO.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/parent/src/main/java/com/zhuxi/pojo/VO/Product/ProductOverviewVO.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/parent/src/main/java/com/zhuxi/pojo/entity/Product.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/parent/src/main/java/com/zhuxi/pojo/entity/Product.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/parent/src/main/java/com/zhuxi/pojo/entity/ProfitSummary.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/parent/src/main/java/com/zhuxi/pojo/entity/ProfitType.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/parent/pojo/src/main/java/com/zhuxi/pojo/DTO/product/ProductBaseDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/parent/pojo/src/main/java/com/zhuxi/pojo/DTO/product/ProductBaseDTO.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/parent/pojo/src/main/java/com/zhuxi/pojo/DTO/product/ProductSpecDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/parent/pojo/src/main/java/com/zhuxi/pojo/DTO/product/ProductSpecDTO.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/parent/pojo/src/main/java/com/zhuxi/pojo/DTO/product/ProductUpdateDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/parent/pojo/src/main/java/com/zhuxi/pojo/DTO/product/ProductUpdateDTO.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/parent/pojo/src/main/java/com/zhuxi/pojo/VO/Admin/AdminProductVO.java" beforeDir="false" afterPath="$PROJECT_DIR$/parent/pojo/src/main/java/com/zhuxi/pojo/VO/Admin/AdminProductVO.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/parent/pojo/src/main/java/com/zhuxi/pojo/VO/Product/ProductOverviewVO.java" beforeDir="false" afterPath="$PROJECT_DIR$/parent/pojo/src/main/java/com/zhuxi/pojo/VO/Product/ProductOverviewVO.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/parent/src/main/java/com/zhuxi/pojo/DTO/Car/CarUpdateDTO.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/parent/pojo/src/main/java/com/zhuxi/pojo/DTO/Car/CarUpdateDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/parent/pojo/src/main/java/com/zhuxi/pojo/DTO/Car/CarAddDTO.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/parent/pojo/src/main/java/com/zhuxi/pojo/entity/Order.java" beforeDir="false" afterPath="$PROJECT_DIR$/parent/pojo/src/main/java/com/zhuxi/pojo/entity/Order.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/parent/pojo/src/main/java/com/zhuxi/pojo/entity/OrderItem.java" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/Constant/Message.java" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/Constant/Message.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/controller/Admin/AdminProductController.java" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/controller/Admin/AdminProductController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/mapper/ProductMapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/mapper/ProductMapper.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/mapper/UserMapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/mapper/UserMapper.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/service/AdminProductService.java" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/service/AdminProductService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/controller/User/CarController.java" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/controller/User/CarController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/mapper/CartMapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/mapper/CartMapper.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/service/CartService.java" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/service/CartService.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/service/Impl/AdminProductServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/service/Impl/AdminProductServiceImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/service/TxService/AdminUserTxService.java" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/service/TxService/AdminUserTxService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/service/TxService/ArticleTxService.java" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/service/TxService/ArticleTxService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/service/TxService/ProductTxService.java" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/service/TxService/ProductTxService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/service/Impl/CartServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/service/Impl/CartServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/service/TxService/CartTxService.java" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/service/TxService/CartTxService.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/parent/service/src/main/resources/application.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/src/main/resources/application.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/parent/service/src/main/resources/mapper/ProductMapper.xml" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/src/main/resources/mapper/ProductMapper.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/parent/service/target/classes/application.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/target/classes/application.yaml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/Constant/Message.class" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/Constant/Message.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/controller/Admin/AdminProductController.class" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/controller/Admin/AdminProductController.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/controller/User/CarController.class" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/controller/User/CarController.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/mapper/AdminMapper.class" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/mapper/AdminMapper.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/mapper/ArticleMapper.class" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/mapper/ArticleMapper.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/mapper/ProductMapper.class" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/mapper/ProductMapper.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/mapper/UserMapper.class" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/mapper/UserMapper.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/service/AdminProductService.class" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/service/AdminProductService.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/mapper/CartMapper.class" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/mapper/CartMapper.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/service/CartService.class" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/service/CartService.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/service/Impl/AdminProductServiceImpl.class" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/service/Impl/AdminProductServiceImpl.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/service/Impl/AdminServiceImpl.class" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/service/Impl/AdminServiceImpl.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/service/Impl/AdminUserServiceImpl.class" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/service/Impl/AdminUserServiceImpl.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/service/Impl/ArticleServiceImpl.class" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/service/Impl/ArticleServiceImpl.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/service/Impl/CartServiceImpl.class" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/service/Impl/CartServiceImpl.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/service/Impl/UserAddressServiceImpl.class" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/service/Impl/UserAddressServiceImpl.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/service/TxService/AdminTxService.class" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/service/TxService/AdminTxService.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/service/TxService/AdminUserTxService.class" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/service/TxService/AdminUserTxService.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/service/TxService/ArticleTxService.class" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/service/TxService/ArticleTxService.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/service/TxService/CartTxService.class" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/service/TxService/CartTxService.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/service/TxService/ProductTxService.class" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/service/TxService/ProductTxService.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/service/TxService/UserAddressTxService.class" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/service/TxService/UserAddressTxService.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/service/TxService/UserTxService.class" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/service/TxService/UserTxService.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/parent/service/target/classes/mapper/ProductMapper.xml" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/target/classes/mapper/ProductMapper.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -65,8 +39,8 @@
       <list>
         <option value="AnnotationType" />
         <option value="Exception" />
-        <option value="Interface" />
         <option value="Enum" />
+        <option value="Interface" />
         <option value="Class" />
       </list>
     </option>
@@ -79,6 +53,7 @@
       </GitPushTagMode>
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+    <option name="UPDATE_TYPE" value="REBASE" />
   </component>
   <component name="GitHubPullRequestSearchHistory">{
   &quot;lastFilter&quot;: {
@@ -140,6 +115,9 @@
     "vue.rearranger.settings.migration": "true"
   },
   "keyToStringList": {
+    "DatabaseDriversLRU": [
+      "mysql"
+    ],
     "com.intellij.ide.scratch.LRUPopupBuilder$1/SQL 方言": [
       "MySQL"
     ]
@@ -218,6 +196,8 @@
       <workItem from="1751681884823" duration="12237000" />
       <workItem from="1751765615119" duration="10717000" />
       <workItem from="1751855224151" duration="18199000" />
+      <workItem from="1751877686061" duration="633000" />
+      <workItem from="1751943524355" duration="17190000" />
     </task>
     <task id="LOCAL-00001" summary="d">
       <option name="closed" value="true" />
@@ -323,11 +303,30 @@
       <option name="project" value="LOCAL" />
       <updated>1751786497519</updated>
     </task>
-    <option name="localTasksCounter" value="14" />
+    <task id="LOCAL-00014" summary="优化事务逻辑&#10;优化sql语句性能&#10;重构商品业务逻辑，完善逻辑。&#10;增加更完整的数据效验&#10;完善了整体业务完整思路">
+      <option name="closed" value="true" />
+      <created>1751877927541</created>
+      <option name="number" value="00014" />
+      <option name="presentableId" value="LOCAL-00014" />
+      <option name="project" value="LOCAL" />
+      <updated>1751877927541</updated>
+    </task>
+    <option name="localTasksCounter" value="15" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="d" />
@@ -344,6 +343,8 @@
     <MESSAGE value="refactor(oss): 重构 OSS 文件上传逻辑&#10;&#10;- 优化了 OSS token 获取流程，支持批量获取 token&#10;- 调整了文件上传后的处理逻辑，增加了对不同业务场景的支持&#10;- 重构了 CallbackData 类，增加了 productId、articleId、specId 等字段&#10;- 优化了 generateObjectName 和 generateUrl 方法，支持更多参数&#10;- 调整了数据库相关操作，增加了 addBasePics 和 addSpecCoverUrl 方法" />
     <MESSAGE value="refactor(oss): 重构 OSS 文件上传流程&#10;&#10;- 新增 OSSConfigDTO 和 OssTokenDTO 类，优化参数传输&#10;- 修改文件上传逻辑，支持多文件同时上传&#10;- 更新 Article 和 Product 相关 mapper 和 service 接口- 优化回调处理逻辑，增加对不同上传类型的支持" />
     <MESSAGE value="优化事务处理&#10;优化商品、规格等交互逻辑&#10;构建供应商、进货记录等模块&#10;去除一些冗余字段，逻辑更清晰。" />
-    <option name="LAST_COMMIT_MESSAGE" value="优化事务处理&#10;优化商品、规格等交互逻辑&#10;构建供应商、进货记录等模块&#10;去除一些冗余字段，逻辑更清晰。" />
+    <MESSAGE value="fix: 修改文件名大小写" />
+    <MESSAGE value="优化事务逻辑&#10;优化sql语句性能&#10;重构商品业务逻辑，完善逻辑。&#10;增加更完整的数据效验&#10;完善了整体业务完整思路" />
+    <option name="LAST_COMMIT_MESSAGE" value="优化事务逻辑&#10;优化sql语句性能&#10;重构商品业务逻辑，完善逻辑。&#10;增加更完整的数据效验&#10;完善了整体业务完整思路" />
   </component>
 </project>

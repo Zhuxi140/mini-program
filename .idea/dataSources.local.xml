@@ -18,18 +18,21 @@
         </introspection-scope>
       </schema-mapping>
     </data-source>
-    <data-source name="mini_program@cd-cdb-chi3okas.sql.tencentcdb.com" uuid="190b1fb9-8a37-48c0-9999-3449e3ece9e7">
-      <database-info product="MySQL" version="8.0.30-txsql" jdbc-version="4.2" driver-name="MySQL Connector/J" driver-version="mysql-connector-j-8.2.0 (Revision: 06a1f724497fd81c6a659131fda822c9e5085b6c)" dbms="MYSQL" exact-version="8.0.30" exact-driver-version="8.2">
+    <data-source name="@rm-bp1hc14ug996jtc22ko.mysql.rds.aliyuncs.com" uuid="cb0cf253-b8ed-44e1-b847-d170a50191d6">
+      <database-info product="MySQL" version="8.0.36" jdbc-version="4.2" driver-name="MySQL Connector/J" driver-version="mysql-connector-j-8.2.0 (Revision: 06a1f724497fd81c6a659131fda822c9e5085b6c)" dbms="MYSQL" exact-version="8.0.36" exact-driver-version="8.2">
         <extra-name-characters>#@</extra-name-characters>
         <identifier-quote-string>`</identifier-quote-string>
         <jdbc-catalog-is-schema>true</jdbc-catalog-is-schema>
       </database-info>
       <case-sensitivity plain-identifiers="lower" quoted-identifiers="lower" />
       <secret-storage>master_key</secret-storage>
-      <user-name>zhu</user-name>
+      <user-name>zhuxi140</user-name>
       <schema-mapping>
         <introspection-scope>
-          <node kind="schema" qname="@" />
+          <node kind="schema">
+            <name qname="@" />
+            <name qname="mini_program" />
+          </node>
         </introspection-scope>
       </schema-mapping>
     </data-source>

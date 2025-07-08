@@ -8,7 +8,8 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.web.bind.annotation.*;
-import src.main.java.com.zhuxi.pojo.DTO.Car.CarUpdateDTO;
+import src.main.java.com.zhuxi.pojo.DTO.Car.CarAddDTO;
+import src.main.java.com.zhuxi.pojo.DTO.Car.CartUpdateDTO;
 import src.main.java.com.zhuxi.pojo.VO.Car.CartNewVO;
 import src.main.java.com.zhuxi.pojo.VO.Car.CartVO;
 import src.main.java.com.zhuxi.pojo.entity.Role;
@@ -41,12 +42,12 @@ public class CarController {
     )
     public Result<Void> updateCart(
 
-            @RequestBody CarUpdateDTO carUpdateDTO,
+            @RequestBody CartUpdateDTO cartUpdateDTO,
             @Parameter(description = "用户token",hidden = true)
             @RequestHeader("Authorization") String token
     ){
 
-        return cartService.update(carUpdateDTO,token);
+        return cartService.update(cartUpdateDTO,token);
     }
 
     /**
@@ -59,11 +60,11 @@ public class CarController {
             description = "添加购物车商品，即从第一次加入购物车的商品"
     )
     public Result<Void> addCart(
-            @RequestBody CarUpdateDTO carUpdateDTO,
+            @RequestBody CarAddDTO carAddDTO,
             @Parameter(description = "用户token",hidden = true)
             @RequestHeader("Authorization") String token
     ){
-        return cartService.add(carUpdateDTO, token);
+        return cartService.add(carAddDTO, token);
     }
 
 
@@ -77,15 +78,11 @@ public class CarController {
             description = "从购物车中移除的商品,即购物车商品数量从1——>0 "
     )
     public Result<Void> deleteCart(
-            @Parameter(description = "商品id", required = true)
-            @PathVariable Long productId,
-            @Parameter(description = "商品规格id", required = true)
-            Long specId,
-            @Parameter(description = "用户token",hidden = true)
-            @RequestHeader("Authorization") String token
+            @Parameter(description = "购物车id", required = true)
+            Long cartId
     ){
 
-        return cartService.delete(productId, token,specId);
+        return cartService.delete(cartId);
     }
 
 
