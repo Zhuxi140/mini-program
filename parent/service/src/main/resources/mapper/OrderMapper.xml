@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhuxi.mapper.OrderMapper">
+
+    <insert id="insert" useGeneratedKeys="true" keyColumn="id" keyProperty="id">
+        INSERT INTO `order`(order_sn,user_id, product_id, spec_id, address_id,product_quantity, total_amount,status)
+        VALUES (
+                #{orderSn},
+                #{userId},
+                #{productId},
+                #{specId},
+                #{addressId},
+                #{productQuantity},
+                #{totalAmount},
+                #{status}
+               )
+    </insert>
+</mapper>
