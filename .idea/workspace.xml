@@ -4,30 +4,27 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="372da862-f7c4-4fa2-93c3-bf2ac1fe9e6e" name="更改" comment="优化事务逻辑&#10;优化sql语句性能&#10;重构商品业务逻辑，完善逻辑。&#10;增加更完整的数据效验&#10;完善了整体业务完整思路">
-      <change beforePath="$PROJECT_DIR$/.idea/dataSources.local.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources.local.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/dataSources.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources.xml" afterDir="false" />
+    <list default="true" id="372da862-f7c4-4fa2-93c3-bf2ac1fe9e6e" name="更改" comment="feat(order): 添加订单相关功能- 新增订单添加接口和相关服务&#10;- 实现订单创建、支付记录添加等功能&#10;- 添加购物车数量和规格更新逻辑&#10;- 新增订单相关的数据传输对象和实体类">
+      <change beforePath="$PROJECT_DIR$/.idea/dataSources/190b1fb9-8a37-48c0-9999-3449e3ece9e7.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/dataSources/190b1fb9-8a37-48c0-9999-3449e3ece9e7/storage_v2/_src_/schema/mini_program.nKIvmg.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/dataSources/190b1fb9-8a37-48c0-9999-3449e3ece9e7/storage_v2/_src_/schema/mini_program.nKIvmg.zip" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/dataSources/cb0cf253-b8ed-44e1-b847-d170a50191d6.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources/cb0cf253-b8ed-44e1-b847-d170a50191d6.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/parent/src/main/java/com/zhuxi/pojo/DTO/Car/CarUpdateDTO.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/parent/pojo/src/main/java/com/zhuxi/pojo/DTO/Car/CarUpdateDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/parent/pojo/src/main/java/com/zhuxi/pojo/DTO/Car/CarAddDTO.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/parent/src/main/java/com/zhuxi/pojo/entity/Order.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/parent/src/main/java/com/zhuxi/pojo/entity/Order.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/parent/src/main/java/com/zhuxi/pojo/entity/OrderItem.class" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/parent/pojo/src/main/java/com/zhuxi/pojo/entity/Order.java" beforeDir="false" afterPath="$PROJECT_DIR$/parent/pojo/src/main/java/com/zhuxi/pojo/entity/Order.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/parent/pojo/src/main/java/com/zhuxi/pojo/entity/OrderItem.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/parent/service/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/pom.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/Constant/Message.java" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/Constant/Message.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/controller/User/CarController.java" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/controller/User/CarController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/mapper/CartMapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/mapper/CartMapper.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/service/CartService.java" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/service/CartService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/service/Impl/AdminProductServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/service/Impl/AdminProductServiceImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/service/Impl/CartServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/service/Impl/CartServiceImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/service/TxService/CartTxService.java" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/service/TxService/CartTxService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/parent/service/src/main/resources/application.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/src/main/resources/application.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/parent/service/target/classes/application.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/target/classes/application.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/controller/User/OrderController.java" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/controller/User/OrderController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/handler/GlobalExceptionHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/handler/GlobalExceptionHandler.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/mapper/OrderMapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/mapper/OrderMapper.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/service/Impl/OrderServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/service/Impl/OrderServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/service/OrderService.java" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/service/OrderService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/service/TxService/OrderTxService.java" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/service/TxService/OrderTxService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/parent/service/src/main/resources/mapper/OrderMapper.xml" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/src/main/resources/mapper/OrderMapper.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/parent/service/src/test/java/com/zhuxi/service/ServiceApplicationTests.java" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/src/test/java/com/zhuxi/service/ServiceApplicationTests.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/Constant/Message.class" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/Constant/Message.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/controller/User/CarController.class" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/controller/User/CarController.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/mapper/CartMapper.class" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/mapper/CartMapper.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/service/CartService.class" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/service/CartService.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/service/Impl/AdminProductServiceImpl.class" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/service/Impl/AdminProductServiceImpl.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/service/Impl/CartServiceImpl.class" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/service/Impl/CartServiceImpl.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/service/TxService/CartTxService.class" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/service/TxService/CartTxService.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/handler/GlobalExceptionHandler.class" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/handler/GlobalExceptionHandler.class" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -90,7 +87,10 @@
   </component>
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
+    "JUnit.ServiceApplicationTests.contextLoads.executor": "Run",
     "JUnit.service中的com.zhuxi.Interceptor.executor": "Run",
+    "Notification.DisplayName-DoNotAsk-Database detector": "数据库检测器",
+    "Notification.DoNotAsk-Database detector": "true",
     "RequestMappingsPanelOrder0": "0",
     "RequestMappingsPanelOrder1": "1",
     "RequestMappingsPanelWidth0": "75",
@@ -197,7 +197,8 @@
       <workItem from="1751765615119" duration="10717000" />
       <workItem from="1751855224151" duration="18199000" />
       <workItem from="1751877686061" duration="633000" />
-      <workItem from="1751943524355" duration="17190000" />
+      <workItem from="1751943524355" duration="17347000" />
+      <workItem from="1752023501040" duration="28690000" />
     </task>
     <task id="LOCAL-00001" summary="d">
       <option name="closed" value="true" />
@@ -311,7 +312,23 @@
       <option name="project" value="LOCAL" />
       <updated>1751877927541</updated>
     </task>
-    <option name="localTasksCounter" value="15" />
+    <task id="LOCAL-00015" summary="refactor(cart): 重构购物车相关接口和实体类&#10;&#10;- 修改了购物车更新逻辑，支持更新商品数量或规格&#10;- 重命名了相关DTO和方法名称，使其更加清晰&#10;- 更新了数据库连接信息&#10;- 优化了错误消息常量&#10;- 调整了订单相关实体类结构">
+      <option name="closed" value="true" />
+      <created>1751968269575</created>
+      <option name="number" value="00015" />
+      <option name="presentableId" value="LOCAL-00015" />
+      <option name="project" value="LOCAL" />
+      <updated>1751968269575</updated>
+    </task>
+    <task id="LOCAL-00016" summary="feat(order): 添加订单相关功能- 新增订单添加接口和相关服务&#10;- 实现订单创建、支付记录添加等功能&#10;- 添加购物车数量和规格更新逻辑&#10;- 新增订单相关的数据传输对象和实体类">
+      <option name="closed" value="true" />
+      <created>1751968303255</created>
+      <option name="number" value="00016" />
+      <option name="presentableId" value="LOCAL-00016" />
+      <option name="project" value="LOCAL" />
+      <updated>1751968303255</updated>
+    </task>
+    <option name="localTasksCounter" value="17" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -345,6 +362,18 @@
     <MESSAGE value="优化事务处理&#10;优化商品、规格等交互逻辑&#10;构建供应商、进货记录等模块&#10;去除一些冗余字段，逻辑更清晰。" />
     <MESSAGE value="fix: 修改文件名大小写" />
     <MESSAGE value="优化事务逻辑&#10;优化sql语句性能&#10;重构商品业务逻辑，完善逻辑。&#10;增加更完整的数据效验&#10;完善了整体业务完整思路" />
-    <option name="LAST_COMMIT_MESSAGE" value="优化事务逻辑&#10;优化sql语句性能&#10;重构商品业务逻辑，完善逻辑。&#10;增加更完整的数据效验&#10;完善了整体业务完整思路" />
+    <MESSAGE value="refactor(cart): 重构购物车相关接口和实体类&#10;&#10;- 修改了购物车更新逻辑，支持更新商品数量或规格&#10;- 重命名了相关DTO和方法名称，使其更加清晰&#10;- 更新了数据库连接信息&#10;- 优化了错误消息常量&#10;- 调整了订单相关实体类结构" />
+    <MESSAGE value="feat(order): 添加订单相关功能- 新增订单添加接口和相关服务&#10;- 实现订单创建、支付记录添加等功能&#10;- 添加购物车数量和规格更新逻辑&#10;- 新增订单相关的数据传输对象和实体类" />
+    <option name="LAST_COMMIT_MESSAGE" value="feat(order): 添加订单相关功能- 新增订单添加接口和相关服务&#10;- 实现订单创建、支付记录添加等功能&#10;- 添加购物车数量和规格更新逻辑&#10;- 新增订单相关的数据传输对象和实体类" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <breakpoint enabled="true" type="java-exception">
+          <properties class="java.lang.IndexOutOfBoundsException" package="java.lang" />
+          <option name="timeStamp" value="4" />
+        </breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
   </component>
 </project>

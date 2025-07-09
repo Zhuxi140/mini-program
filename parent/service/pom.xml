@@ -135,6 +135,13 @@
             <version>20231013</version>
         </dependency>
 
+        <!--hutool - 雪花算法-->
+        <dependency>
+            <groupId>cn.hutool</groupId>
+            <artifactId>hutool-all</artifactId>
+            <version>4.6.4</version>
+        </dependency>
+
 
 
     </dependencies>

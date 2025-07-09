@@ -1184,7 +1184,7 @@ test|schema||aurora||grant option|G</Grants>
       <CollationName>utf8mb3_general_ci</CollationName>
     </schema>
     <schema id="291" parent="1" name="mini_program">
-      <LastIntrospectionLocalTimestamp>2025-07-08.09:12:16</LastIntrospectionLocalTimestamp>
+      <LastIntrospectionLocalTimestamp>2025-07-09.01:12:16</LastIntrospectionLocalTimestamp>
       <CollationName>latin1_swedish_ci</CollationName>
     </schema>
     <schema id="292" parent="1" name="mysql">
@@ -1620,7 +1620,7 @@ product_id</ColNames>
       <UnderlyingIndexName>PRIMARY</UnderlyingIndexName>
     </key>
     <column id="377" parent="308" name="id">
-      <AutoIncrement>1</AutoIncrement>
+      <AutoIncrement>7</AutoIncrement>
       <Comment>订单ID</Comment>
       <NotNull>1</NotNull>
       <Position>1</Position>
@@ -1630,8 +1630,8 @@ product_id</ColNames>
       <Comment>订单编号（日期+6位随机）</Comment>
       <NotNull>1</NotNull>
       <Position>2</Position>
-      <StoredType>varchar(20)|0s</StoredType>
-      <CollationName>latin1_swedish_ci</CollationName>
+      <StoredType>varchar(50)|0s</StoredType>
+      <CollationName>utf8mb4_bin</CollationName>
     </column>
     <column id="379" parent="308" name="group_id">
       <Comment>订单组id</Comment>
@@ -1818,7 +1818,8 @@ product_id</ColNames>
       <Comment>支付流水号</Comment>
       <NotNull>1</NotNull>
       <Position>2</Position>
-      <StoredType>varchar(32)|0s</StoredType>
+      <StoredType>varchar(50)|0s</StoredType>
+      <CollationName>utf8mb4_bin</CollationName>
     </column>
     <column id="415" parent="310" name="user_id">
       <Comment>用户ID</Comment>
@@ -1916,7 +1917,8 @@ product_id</ColNames>
       <Comment>退款流水号</Comment>
       <NotNull>1</NotNull>
       <Position>2</Position>
-      <StoredType>varchar(32)|0s</StoredType>
+      <StoredType>varchar(50)|0s</StoredType>
+      <CollationName>utf8mb4_bin</CollationName>
     </column>
     <column id="434" parent="311" name="payment_id">
       <Comment>支付ID</Comment>

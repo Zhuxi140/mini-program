@@ -7,13 +7,14 @@ public class Message {
     public static final String JWT_ERROR = "jwt错误";
     public static final String JWT_IS_NULL = "jwt为null";
     public static final String JWT_DATA_ERROR = "jwt字段错误";
-    public static final String ID_OVER_POWER = "";
+    public static final String ID_GENERATE_ERROR = "编号生成出错";
     public static final String JWT_NO_ROLE = "没有角色字段";
     public static final String ROLE_ERROR = "无权限";
     public static final String LOGIN_SUCCESS = "登录成功";
     public static final String OPERATION_SUCCESS = "操作成功";
     public static final String PARAM_ERROR = "参数错误";
     public static final String BODY_NO_MAIN_OR_IS_NULL = "请求体中缺少必要字段或DTO/VO为空";
+    public static final String FIELDS_IS_NULL = "字段为空";
     public static final String USERNAME_OR_PASSWORD_ERROR = "用户名或密码错误";
     public static final String USER_EXIST = "用户已存在";
     public static final String USER_NOT_EXIST = "用户不存在";
@@ -29,6 +30,7 @@ public class Message {
     public static final String DELETE_ERROR = "删除错误";
     public static final String SELECT_ERROR = "查询错误";
     public static final String NO_USER_ADDRESS = "暂无用户地址";
+    public static final String ADDRESS_ID_IS_NULL_OR_LESS_THAN_ONE = "用户地址id为空或小于1";
     public static final String ARTICLE_IS_NOT_EXIST = "文章不存在";
     public static final String ARTICLE_ID_IS_NULL = "文章id为空";
     public static final String FILE_TYPE_ERROR = "文件类型错误";
@@ -46,6 +48,12 @@ public class Message {
     public static final String PRODUCT_SPEC_ID_IS_NULL = "商品规格id为空";
     public static final String PRODUCT_ID_NOT_EXIST = "商品不存在";
     public static final String SPEC_NOT_EXIST = "商品规格暂不存在";
+    public static final String REAL_STOCK_NOT_EXIST = "商品真实库存不存在";
     public static final String PRICE_IS_DIFFERENCE = "价格不一致";
     public static final String PRICE_IS_NULL = "价格不能为空";
+    public static final String QUANTITY_OVER_SALE_STOCK = "购买数量超出商品可售库存";
+    public static final String QUANTITY_IS_NULL_OR_LESS_THAN_ONE = "数量不能为空或小于1";
+    public static final String SPECID_IS_NO_REAL_STOCK = "商品规格id无真实库存";
+    public static final String SPECID_IS_NO_SALE_STOCK = "商品规格id无可售库存";
+    public static final String SPECID_IS_NO_PRE_STOCK = "商品规格id无预占库存";
 }

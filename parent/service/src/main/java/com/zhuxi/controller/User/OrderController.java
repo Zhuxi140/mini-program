@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.*;
 import src.main.java.com.zhuxi.pojo.DTO.Order.OrderAddDTO;
 import src.main.java.com.zhuxi.pojo.entity.Role;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/Order")
 @Tag(name = "用户端接口")
@@ -34,5 +36,19 @@ public class OrderController {
             @RequestHeader("Authorization") String token
     ){
         return orderService.add(orderAddDTO,token);
+    }
+
+    @PostMapping("/group")
+    @RequireRole(Role.USER)
+    @Operation(
+            summary = "创建多个商品订单",
+            description = "创建订单"
+    )
+    public Result<Void> addGroup(
+            @RequestBody List<OrderAddDTO> orderAddDTO,
+            @Parameter(description = "用户token",hidden = true)
+            @RequestHeader("Authorization") String token
+    ){
+        return orderService.addGroup(orderAddDTO,token);
     }
 }
