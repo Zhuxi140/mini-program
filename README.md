@@ -32,9 +32,11 @@
 | SpringBoot3.5               | 核心框架       |
 | SpringMVC                   | Web层          |
 | SpringSecurity + JWT        | 安全认证       |
+| Spring task| 自定义自动任务|
 | Swagger                     | 接口文档       |
 | 阿里云OSS/腾讯云OSS         | 存储商品图片等 |
 | 华为云Flexus应用服务器L实例 | 部署服务器     |
+
 
 ### 数据层技术
 
