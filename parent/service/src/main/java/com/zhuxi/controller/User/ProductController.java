@@ -34,7 +34,7 @@ public class ProductController {
             description = "商品展示"
     )
     public Result<PageResult<ProductOverviewVO>> getListProducts(
-            @Parameter(description = "商品id", required = true)
+            @Parameter(description = "商品id(第一次不用给，后续根据json给值)", required = true)
             Long lastId,
             @Parameter(description = "分页大小(后端默认为10)", required = false)
             @RequestParam(defaultValue = "10") Integer pageSize){

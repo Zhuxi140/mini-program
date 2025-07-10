@@ -41,7 +41,7 @@ jwt-properties:
 
 # aliyun oss配置
 oss:
-  access-key-id: ${OSS_ACCESS_KEY_ID} # 从环境变量中获取
+  access-key-id: ${OSS_ACCESS_KEY_ID}    # 从环境变量中获取
   access-key-secret: ${OSS_ACCESS_KEY_SECRET}
   bucket-name: mini-programm
   callback-url: http://localhost:8080/oss/upload   #回调地址

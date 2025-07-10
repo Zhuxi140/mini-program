@@ -1,33 +1,33 @@
-
-spring:
-  #数据源配置
-  datasource:
-    type: com.alibaba.druid.pool.DruidDataSource
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://cd-cdb-chi3okas.sql.tencentcdb.com:23033/mini_program
-    username: zhu
-    password: zhu123456
-
-#jwt配置
-jwt:
-  secret-key: ODIyNjA4Njc3NTIyODE2NjYxMDE3NDIyMjUwMDgxMjgwMjU0MDM2Mzc0MzU4NDc1Nzg2MzM0ODA1MDgxMjM2Mg==
-  expiration-time: 604800
-
-
-# jwt拦截器放行接口
-jwt-properties:
-  exclude-paths:
-    - /login/user
-    - /login/admin
-    - /oss/upload
-
-
-# aliyun oss配置
-oss:
-  access-key-id: ${OSS_ACCESS_KEY_ID} # 从环境变量中获取
-  access-key-secret: ${OSS_ACCESS_KEY_SECRET}
-  bucket-name: mini-programm
-  callback-url: http://xxxxxxxx/oss/upload   #回调地址
-  endpoint: mini-programm.oss-cn-beijing.aliyuncs.com  # 存储空间
-  expire-time: 3600 # 签名过期时间 默认1小时
-
+#
+##spring:
+##  #数据源配置
+##  datasource:
+##    type: com.alibaba.druid.pool.DruidDataSource
+##    driver-class-name: com.mysql.cj.jdbc.Driver
+##    url: jdbc:mysql://cd-cdb-chi3okas.sql.tencentcdb.com:23033/mini_program
+##    username: zhu
+##    password: zhu123456
+#
+##jwt配置
+#jwt:
+#  secret-key: ODIyNjA4Njc3NTIyODE2NjYxMDE3NDIyMjUwMDgxMjgwMjU0MDM2Mzc0MzU4NDc1Nzg2MzM0ODA1MDgxMjM2Mg==
+#  expiration-time: 604800
+#
+#
+## jwt拦截器放行接口
+#jwt-properties:
+#  exclude-paths:
+#    - /login/user
+#    - /login/admin
+#    - /oss/upload
+#
+#
+## aliyun oss配置
+#oss:
+#  access-key-id: ${OSS_ACCESS_KEY_ID} # 从环境变量中获取
+#  access-key-secret: ${OSS_ACCESS_KEY_SECRET}
+#  bucket-name: mini-programm
+#  callback-url: http://xxxxxxxx/oss/upload   #回调地址
+#  endpoint: mini-programm.oss-cn-beijing.aliyuncs.com  # 存储空间
+#  expire-time: 3600 # 签名过期时间 默认1小时
+#
