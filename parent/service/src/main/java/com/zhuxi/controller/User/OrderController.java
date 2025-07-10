@@ -51,4 +51,33 @@ public class OrderController {
     ){
         return orderService.addGroup(orderAddDTO,token);
     }
+
+
+    @PutMapping("/{orderId}")
+    @RequireRole(Role.USER)
+    @Operation(
+            summary = "取消订单",
+            description = "取消订单"
+    )
+    public Result<Void> cancelOrder(
+            @PathVariable Long orderId,
+            @Parameter(description = "用户token",hidden = true)
+            @RequestHeader("Authorization") String token
+    ){
+        return orderService.cancelOrder(orderId,token);
+    }
+
+    @PutMapping("/group")
+    @RequireRole(Role.USER)
+    @Operation(
+            summary = "取消订单组",
+            description = "取消订单组"
+    )
+    public Result<Void> cancelOrderGroup(
+            @RequestParam Long groupId,
+            @Parameter(description = "用户token",hidden = true)
+            @RequestHeader("Authorization") String token
+    ){
+        return orderService.cancelOrderGroup(groupId,token);
+    }
 }

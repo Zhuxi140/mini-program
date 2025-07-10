@@ -22,13 +22,15 @@ public class AdminProductVO {
     private BigDecimal maxPrice;
     @Schema(description = "总库存")
     private Long totalRealStock;
+    @Schema(description = "在售数量")
+    private Long onSaleStock;
     @Schema(description = "库存状态 1为紧张(即低于100) 0为充裕(大于100)")
     private String stockStatus;
 
     public AdminProductVO() {
     }
 
-    public AdminProductVO(Long id, String name,String coverUrl,String supplierName, Long specCount, BigDecimal minPrice, BigDecimal maxPrice, Long totalRealStock, String stockStatus) {
+    public AdminProductVO(Long id, String name, String coverUrl, String supplierName, Long specCount, BigDecimal minPrice, BigDecimal maxPrice, Long totalRealStock, Long onSaleStock, String stockStatus) {
         this.id = id;
         this.name = name;
         this.coverUrl = coverUrl;
@@ -37,7 +39,16 @@ public class AdminProductVO {
         this.minPrice = minPrice;
         this.maxPrice = maxPrice;
         this.totalRealStock = totalRealStock;
+        this.onSaleStock = onSaleStock;
         this.stockStatus = stockStatus;
+    }
+
+    public Long getOnSaleStock() {
+        return onSaleStock;
+    }
+
+    public void setOnSaleStock(Long onSaleStock) {
+        this.onSaleStock = onSaleStock;
     }
 
     public Long getId() {

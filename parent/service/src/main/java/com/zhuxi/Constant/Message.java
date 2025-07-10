@@ -55,5 +55,15 @@ public class Message {
     public static final String QUANTITY_IS_NULL_OR_LESS_THAN_ONE = "数量不能为空或小于1";
     public static final String SPECID_IS_NO_REAL_STOCK = "商品规格id无真实库存";
     public static final String SPECID_IS_NO_SALE_STOCK = "商品规格id无可售库存";
+    public static final String NO_THIS_PRODUCT = "无此商品";
     public static final String SPECID_IS_NO_PRE_STOCK = "商品规格id无预占库存";
+    public static final String ORDER_ID_IS_NULL = "订单id为空";
+    public static final String GROUP_ID_IS_NULL = "订单组id为空";
+    public static final String ORDER_CONCEAL_ERROR = "订单取消失败";
+    public static final String PAY_CONCEAL_ERROR = "支付取消失败";
+    public static final String LOCK_CONCEAL_ERROR = "预占取消失败";
+    public static final String REDUCE_SALE_STOCK_ERROR = "可售库存减少失败(锁定库存失败)";
+    public static final String NO_NEED_RECOVERY_STOCK = "无需要恢复的库存";
+    public static final String NO_SELECT_SPEC_ID = "未查询到对应商品规格id";
+    public static final String RELEASE_SALE_STOCK_ERROR = "可售库存释放失败";
 }

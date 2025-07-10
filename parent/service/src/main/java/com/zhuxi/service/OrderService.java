@@ -12,4 +12,10 @@ public interface OrderService {
 
     // 创建多个商品订单(订单组)
     Result<Void> addGroup(List<OrderAddDTO> orderAddDTO, String token);
+
+    //取消订单
+    Result<Void> cancelOrder(Long orderId, String token);
+
+    //取消订单组订单
+    Result<Void> cancelOrderGroup(Long groupId, String token);
 }

@@ -85,7 +85,7 @@ public class OrderTxService {
     public List<Integer> getProductSaleStockList(List<Long> specIds) {
         List<Integer> productSaleStockList = orderMapper.getProductSaleStockList(specIds);
         if(productSaleStockList.size() != specIds.size())
-            throw new transactionalException(Message.SPECID_IS_NO_SALE_STOCK);
+            throw new transactionalException(Message.SPECID_IS_NO_SALE_STOCK + "或" + Message.NO_THIS_PRODUCT);
         for (Integer productSaleStock : productSaleStockList) {
             if(productSaleStock < 0)
                 throw new transactionalException(Message.SPEC_NOT_EXIST +"/" + Message.SELECT_ERROR);
@@ -135,9 +135,7 @@ public class OrderTxService {
             throw new transactionalException(Message.INSERT_ERROR);
 
         Long fistId = orderMapper.getLastInsertId();
-        log.warn("firstId : ---{}---", fistId);
         for (int j = 0; j < orderAddDTO.size(); j++) {
-            log.warn("firstId + j: ---{}---", fistId + j);
             orderAddDTO.get(j).setId(fistId + j);
         }
 
@@ -157,4 +155,82 @@ public class OrderTxService {
             throw new transactionalException(Message.INSERT_ERROR);
     }
 
+    @Transactional(rollbackFor = transactionalException.class)
+    public void concealOrder(Long orderId){
+        int i = orderMapper.cancelOrder(orderId);
+        log.warn("concealOrder: ---{}---", i);
+        if(i !=  1)
+            throw new transactionalException(Message.ORDER_CONCEAL_ERROR);
+        i = orderMapper.cancelPayment(orderId);
+        if(i !=  1)
+            throw new transactionalException(Message.PAY_CONCEAL_ERROR);
+        i = orderMapper.releaseInventoryLock(orderId);
+        if(i !=  1)
+            throw new transactionalException(Message.LOCK_CONCEAL_ERROR);
+    }
+
+    @Transactional(readOnly = true)
+    public List<Long> getOrderIdList(Long groupId){
+        List<Long> orderIdList = orderMapper.getOrderIdList(groupId);
+        if(orderIdList == null || orderIdList.isEmpty())
+            throw new transactionalException(Message.SELECT_ERROR);
+
+        return orderIdList;
+    }
+
+    @Transactional(rollbackFor = transactionalException.class)
+    public void concealOrderList(List<Long> orderIds){
+        int i = orderMapper.cancelOrderList(orderIds);
+        if(i !=  orderIds.size())
+            throw new transactionalException(Message.ORDER_CONCEAL_ERROR);
+        i = orderMapper.cancelPaymentList(orderIds);
+        if(i !=  orderIds.size())
+            throw new transactionalException(Message.PAY_CONCEAL_ERROR);
+        i = orderMapper.releaseInventoryLockList(orderIds);
+        if(i !=  orderIds.size())
+            throw new transactionalException(Message.LOCK_CONCEAL_ERROR);
+
+    }
+
+    @Transactional(rollbackFor = transactionalException.class)
+    public void reduceProductSaleStock(Long specId, Integer quantity) {
+        int i = orderMapper.reduceProductSaleStock(specId, quantity);
+        if(i !=  1)
+            throw new transactionalException(Message.REDUCE_SALE_STOCK_ERROR);
+    }
+
+    @Transactional(rollbackFor = transactionalException.class)
+    public void releaseLockStock(Long orderId){
+        int i = orderMapper.getInventoryLockQuantity(orderId);
+        if(i <= 0)
+            throw new transactionalException(Message.NO_NEED_RECOVERY_STOCK);
+        Long specId = orderMapper.getSpecId(orderId);
+        if (specId == null)
+            throw new transactionalException(Message.NO_SELECT_SPEC_ID);
+
+        int i1 = orderMapper.releaseProductSaleStock(specId, i);
+        if(i1 !=  1)
+            throw new transactionalException(Message.RELEASE_SALE_STOCK_ERROR);
+    }
+
+    @Transactional(rollbackFor = transactionalException.class)
+    public void releaseLockStockList(List<Long> specIds, List<Integer> quantityList){
+        int i = orderMapper.reduceProductSaleStockList(specIds, quantityList);
+        if(i !=  specIds.size())
+            throw new transactionalException(Message.REDUCE_SALE_STOCK_ERROR);
+
+    }
+
+    @Transactional(rollbackFor = transactionalException.class)
+    public void releaseLockStockList(List<Long> orderIds){
+        List<Long> specIdList = orderMapper.getSpecIdList(orderIds);
+        if (specIdList == null || specIdList.isEmpty())
+            throw new transactionalException(Message.NO_SELECT_SPEC_ID);
+        List<Integer> quantityList = orderMapper.getInventoryLockQuantityList(orderIds);
+        if (quantityList == null || quantityList.isEmpty())
+            throw new transactionalException(Message.NO_NEED_RECOVERY_STOCK);
+        int i = orderMapper.releaseProductSaleStockList(specIdList, quantityList);
+        if(i !=  specIdList.size())
+            throw new transactionalException(Message.RELEASE_SALE_STOCK_ERROR);
+    }
 }

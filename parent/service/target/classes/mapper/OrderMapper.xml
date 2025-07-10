@@ -100,7 +100,92 @@
                  #{specId}
              </foreach>
         )
-
-
     </select>
+
+
+    <update id="cancelOrderList">
+        UPDATE `order`SET status = 4 WHERE id IN
+        <foreach item="item" collection="orderIds" separator="," open="(" close=")">
+            #{item}
+        </foreach>
+    </update>
+
+    <update id="cancelPaymentList">
+        UPDATE payment SET status = 4 WHERE order_id IN
+        <foreach item="item" collection="orderIds" separator="," open="(" close=")">
+            #{item}
+        </foreach>
+    </update>
+
+
+    <update id="releaseInventoryLockList">
+        UPDATE inventory_lock SET status = 2 WHERE order_id IN 
+        <foreach collection="orderIds" item="orderId" separator="," open="(" close=")">
+            #{orderId}
+        </foreach>
+    </update>
+
+    <update id="reduceProductSaleStockList">
+        UPDATE spec
+        SET stock =
+        CASE id
+        <foreach collection="specIds" item="specId" index="index">
+            WHEN #{specId} THEN stock - #{quantity[${index}]}
+        </foreach>
+        END
+        WHERE id IN
+        <foreach collection="specIds" item="specId" open="("  close=")"  separator=",">
+            #{specId}
+        </foreach>
+
+    </update>
+
+
+    <select id="getInventoryLockQuantityList" resultType="Integer">
+        SELECT quantity
+        FROM inventory_lock
+        WHERE order_id IN
+        <foreach item="orderId" collection="orderIds" separator="," open="(" close=")">
+            #{orderId}
+        </foreach>
+        ORDER BY
+        FIELD(order_id,
+        <foreach collection="orderIds" item="orderId" separator="," >
+            #{orderId}
+        </foreach>
+        )
+    </select>
+
+    <select id="getSpecIdList" resultType="java.lang.Long">
+        SELECT  inventory_lock.spec_id
+        FROM inventory_lock
+        WHERE order_id IN 
+        <foreach collection="orderIds" item="orderId" separator="," open="(" close=")">
+            #{orderId}
+        </foreach>
+        ORDER BY FIELD(order_id,
+        <foreach collection="orderIds" item="orderId" separator=",">
+            #{orderId}
+        </foreach>
+         )
+
+        </select>
+
+    <update id="releaseProductSaleStockList">
+     UPDATE spec
+     SET stock =
+     CASE id
+     <foreach collection="specIds" item="specId" index="index">
+         WHEN #{specId} THEN stock + #{quantityList[${index}]}
+     </foreach>
+    END
+     WHERE id IN
+    <foreach collection="specIds" item="specId" open="("  close=")"  separator=",">
+        #{specId}
+    </foreach>
+    </update>
+
+
+
+
 </mapper>

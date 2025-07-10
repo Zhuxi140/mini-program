@@ -1,7 +1,5 @@
 package com.zhuxi.service.Impl;
 
-import cn.hutool.core.lang.Snowflake;
-import cn.hutool.core.util.IdUtil;
 import com.zhuxi.Constant.Message;
 import com.zhuxi.Exception.transactionalException;
 import com.zhuxi.Result.Result;
@@ -16,11 +14,9 @@ import src.main.java.com.zhuxi.pojo.DTO.Order.InventoryLockAddDTO;
 import src.main.java.com.zhuxi.pojo.DTO.Order.OrderAddDTO;
 import src.main.java.com.zhuxi.pojo.DTO.Order.OrderGroupDTO;
 import src.main.java.com.zhuxi.pojo.DTO.Order.PaymentAddDTO;
-
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Service
 public class OrderServiceImpl implements OrderService {
@@ -95,10 +91,11 @@ public class OrderServiceImpl implements OrderService {
 
         // 创建支付编号
         String pSn = generateSn(2);
-
         PaymentAddDTO paymentAddDTO = new PaymentAddDTO(pSn, userId,id , frontPrice, 0);
+
         orderTxService.insertPayment(paymentAddDTO);
         orderTxService.insertInventoryLock(productId,specId,id, productQuantity);
+        orderTxService.reduceProductSaleStock(specId,productQuantity);
 
         return Result.success(Message.OPERATION_SUCCESS);
     }
@@ -119,8 +116,6 @@ public class OrderServiceImpl implements OrderService {
         Long userId = jwtResult.getData();
 
         List<Long> specIds = new ArrayList<>();
-        Map<Long,Integer> saleStock = new HashMap<>();
-        Map<Long,Integer> preStock = new HashMap<>();
 
         for(int i = 0; i < orderAddDTO.size(); i++){
             OrderAddDTO order = orderAddDTO.get(i);
@@ -131,10 +126,11 @@ public class OrderServiceImpl implements OrderService {
 
         List<Integer> productSaleStockList = orderTxService.getProductSaleStockList(specIds);
         List<Integer> productPreStockList = orderTxService.getProductPreStockList(specIds);
-
         List<PaymentAddDTO> paymentAddDTOS = new ArrayList<>();
         List<InventoryLockAddDTO> inventoryLockAddDTOS = new ArrayList<>();
         List<OrderAddDTO> orderAddDTOS = new ArrayList<>();
+        List<Integer> quantityList = new ArrayList<>();
+
         BigDecimal amount = new BigDecimal("0.00");
         for(int i = 0; i < orderAddDTO.size(); i++){
             OrderAddDTO order = orderAddDTO.get(i);
@@ -150,6 +146,7 @@ public class OrderServiceImpl implements OrderService {
             //验证库存
             validateStock(order,i,productSaleStockList,productPreStockList);
 
+            quantityList.add(order.getProductQuantity());
             orderAddDTOS.add( order);
             InventoryLockAddDTO inventoryLockAddDTO = new InventoryLockAddDTO(order.getProductId(), order.getId(), order.getSpecId(), order.getProductQuantity());
             inventoryLockAddDTOS.add(inventoryLockAddDTO);
@@ -165,15 +162,54 @@ public class OrderServiceImpl implements OrderService {
             addDTO.setGroupId(orderGroupDTO1.getId());
         }
 
+        // 创建订单
         orderTxService.insertOrderList(orderAddDTOS);
             for(int i = 0; i < paymentAddDTOS.size(); i++){
                 Long id = orderAddDTOS.get(i).getId();
                 paymentAddDTOS.get(i).setOrderId(id);
                 inventoryLockAddDTOS.get(i).setOrderId(id);
             }
-
+        // 创建支付记录和锁库存
         orderTxService.insertPaymentList(paymentAddDTOS);
         orderTxService.insertInventoryLockList(inventoryLockAddDTOS);
+        orderTxService.releaseLockStockList(specIds, quantityList);
+
+        return Result.success(Message.OPERATION_SUCCESS);
+    }
+
+    /**
+     * 取消订单
+     */
+    @Override
+    @Transactional
+    public Result<Void> cancelOrder(Long orderId, String token) {
+        if (orderId == null)
+            return Result.error(Message.ORDER_ID_IS_NULL);
+
+        Result<Long> userId = getUserId(token);
+        if (userId.getCode() != 200)
+            return Result.error(userId.getMsg());
+
+        orderTxService.concealOrder(orderId);
+        orderTxService.releaseLockStock(orderId);
+
+        return Result.success(Message.OPERATION_SUCCESS);
+    }
+
+    /**
+     * 取消订单组
+     */
+    @Override
+    @Transactional
+    public Result<Void> cancelOrderGroup(Long groupId, String token) {
+        if (groupId == null)
+            return Result.error(Message.GROUP_ID_IS_NULL);
+        Result<Long> userId = getUserId(token);
+        if (userId.getCode() != 200)
+            return Result.error(userId.getMsg());
+        List<Long> orderIdList = orderTxService.getOrderIdList(groupId);
+        orderTxService.concealOrderList(orderIdList);
+        orderTxService.releaseLockStockList(orderIdList);
 
         return Result.success(Message.OPERATION_SUCCESS);
     }

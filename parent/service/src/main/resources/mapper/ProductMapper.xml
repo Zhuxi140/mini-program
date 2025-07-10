@@ -31,6 +31,7 @@
             COALESCE(MIN(spec.price),0) AS min_price,
             COALESCE(MAX(spec.price),0) AS max_price,
             COALESCE(SUM(real_stock.stock),0) AS total_real_stock,
+            COALESCE(SUM(spec.stock),0) AS onSale_stock,
             MAX(CASE WHEN real_stock.stock < 100 THEN 1 ELSE 0 END) AS stock_status
         FROM product JOIN supplier ON product.supplier_id = supplier.id
                      LEFT JOIN spec ON product.id = spec.product_id
@@ -54,6 +55,7 @@
             COALESCE(MIN(spec.price),0) AS min_price,
             COALESCE(MAX(spec.price),0) AS max_price,
             COALESCE(SUM(real_stock.stock),0) AS total_real_stock,
+            COALESCE(SUM(spec.stock),0) AS onSale_stock,
             MAX(CASE WHEN real_stock.stock < 100 THEN 1 ELSE 0 END) AS stock_status
         FROM product JOIN supplier ON product.supplier_id = supplier.id
         LEFT JOIN spec ON product.id = spec.product_id
