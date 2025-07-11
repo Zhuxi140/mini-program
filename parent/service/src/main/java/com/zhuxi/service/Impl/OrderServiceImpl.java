@@ -2,6 +2,7 @@ package com.zhuxi.service.Impl;
 
 import com.zhuxi.Constant.Message;
 import com.zhuxi.Exception.transactionalException;
+import com.zhuxi.Result.PageResult;
 import com.zhuxi.Result.Result;
 import com.zhuxi.service.OrderService;
 import com.zhuxi.service.TxService.OrderTxService;
@@ -14,6 +15,9 @@ import src.main.java.com.zhuxi.pojo.DTO.Order.InventoryLockAddDTO;
 import src.main.java.com.zhuxi.pojo.DTO.Order.OrderAddDTO;
 import src.main.java.com.zhuxi.pojo.DTO.Order.OrderGroupDTO;
 import src.main.java.com.zhuxi.pojo.DTO.Order.PaymentAddDTO;
+import src.main.java.com.zhuxi.pojo.VO.Order.OrderRealShowVO;
+import src.main.java.com.zhuxi.pojo.VO.Order.OrderShowVO;
+
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.*;
@@ -212,6 +216,61 @@ public class OrderServiceImpl implements OrderService {
         orderTxService.releaseLockStockList(orderIdList);
 
         return Result.success(Message.OPERATION_SUCCESS);
+    }
+
+    /**
+     * 获取订单列表
+     */
+    @Override
+    public PageResult<List<OrderRealShowVO>> getOrderList(String token, Long lastId, Integer pageSize) {
+        Result<Long> result = getUserId(token);
+        if (result.getCode() != 200)
+            throw new transactionalException(result.getMsg());
+        boolean first = ((lastId == null || lastId < 0));
+        if( first)
+            lastId = Long.MAX_VALUE;
+
+        boolean hasPrevious = !first;
+        boolean hasMore = false;
+        List<OrderShowVO> orderList = orderTxService.getOrderList(result.getData(), lastId, pageSize + 1);
+
+        if(orderList.size() == pageSize + 1){
+            hasMore = true;
+            orderList = orderList.subList(0, pageSize);
+        }
+
+        if(!orderList.isEmpty())
+            lastId = orderList.get(orderList.size() - 1).getId();
+
+        Map<Long, OrderRealShowVO> groupMap = new HashMap<>();
+        List<OrderRealShowVO> resultList = new ArrayList<>();
+
+        // 使用hashMap 将获取的订单列表进行分类展示
+        for (OrderShowVO order : orderList) {
+            Long groupId = order.getGroupId();
+            if (groupId != null) {
+                OrderRealShowVO groupVO = groupMap.get(groupId);
+                if (groupVO == null) {
+                    groupVO = new OrderRealShowVO();
+                    groupVO.setGroupId(groupId);
+                    groupVO.setOrderShowVO(new ArrayList<>());
+                    groupMap.put(groupId, groupVO);
+                }
+                groupVO.getOrderShowVO().add(order);
+            } else {
+                OrderRealShowVO singleVO = new OrderRealShowVO();
+                singleVO.setGroupId(null);
+                List<OrderShowVO> singleList = new ArrayList<>();
+                singleList.add(order);
+                singleVO.setOrderShowVO(singleList);
+                resultList.add(singleVO);
+            }
+        }
+
+        resultList.addAll(groupMap.values());
+        Collections.reverse(resultList);
+
+        return new PageResult(resultList, lastId, hasPrevious, hasMore);
     }
 
 

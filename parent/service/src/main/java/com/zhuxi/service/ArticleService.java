@@ -1,5 +1,6 @@
 package com.zhuxi.service;
 
+import com.zhuxi.Result.PageResult;
 import com.zhuxi.Result.Result;
 import src.main.java.com.zhuxi.pojo.DTO.article.ArticleInsertOrUpdateDTO;
 import src.main.java.com.zhuxi.pojo.VO.Article.ArticleDetailVO;
@@ -16,7 +17,7 @@ public interface ArticleService {
     Result<List<ArticleVO>> getListArticle(Integer  type);
 
     //获取文章列表分页倒序
-    Result<List<ArticleVO>> getListArticleDESC(Long lastId, Integer pageSize,Integer  type);
+    PageResult<List<ArticleVO>> getListArticleDESC(Long lastId, Integer pageSize, Integer  type);
 
     //添加文章
     Result<Void> insertArticle(ArticleInsertOrUpdateDTO articleInsertOrUpdateDTO);

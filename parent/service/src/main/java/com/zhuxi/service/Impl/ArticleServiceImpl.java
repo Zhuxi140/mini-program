@@ -1,6 +1,7 @@
 package com.zhuxi.service.Impl;
 
 import com.zhuxi.Constant.Message;
+import com.zhuxi.Result.PageResult;
 import com.zhuxi.Result.Result;
 import com.zhuxi.service.ArticleService;
 import com.zhuxi.service.TxService.ArticleTxService;
@@ -49,12 +50,25 @@ public class ArticleServiceImpl implements ArticleService {
      * 获取文章列表(分页+倒序)
      */
     @Override
-    public Result<List<ArticleVO>> getListArticleDESC(Long lastId, Integer pageSize,Integer type) {
-        if(lastId == null)
-            return Result.error(Message.ARTICLE_ID_IS_NULL);
+    public PageResult<List<ArticleVO>> getListArticleDESC(Long lastId, Integer pageSize, Integer type) {
+        boolean first = (lastId == null || lastId < 0);
+        boolean hasMore = false;
 
-        List<ArticleVO> listArticleDESC = articleTxService.getListArticleDESC(lastId,pageSize,type);
-        return Result.success(Message.OPERATION_SUCCESS,listArticleDESC);
+        if ( first)
+            lastId = 0L;
+
+        List<ArticleVO> listArticleDESC = articleTxService.getListArticleDESC(lastId,pageSize+1,type);
+
+        boolean hasPrevious = !first;
+        if(listArticleDESC.size() > pageSize){
+            hasMore = true;
+            listArticleDESC = listArticleDESC.subList(0,pageSize);
+        }
+
+        if (!listArticleDESC.isEmpty())
+             lastId = listArticleDESC.get(listArticleDESC.size() - 1).getId();
+
+        return new PageResult(listArticleDESC,lastId,hasPrevious,hasMore);
     }
 
     /**

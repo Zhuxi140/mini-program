@@ -31,10 +31,11 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public Result<PageResult<ProductOverviewVO>> getListProducts(Long lastId, Integer pageSize) {
 
-        boolean hasPrevious = false;
+        boolean first = (lastId == null || lastId < 0);
         boolean hasMore = false;
+        boolean hasPrevious = !first;
 
-        if(lastId == null || lastId < 0)
+        if(first)
             lastId = Long.MAX_VALUE;
 
         List<ProductOverviewVO> listProducts = productTxService.getListProducts(lastId, pageSize + 1);

@@ -4,13 +4,24 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="372da862-f7c4-4fa2-93c3-bf2ac1fe9e6e" name="更改" comment="feat(order): 添加订单取消功能- 新增订单取消相关接口和方法&#10;- 实现订单状态更新、预占库存释放等功能&#10;- 添加异常处理和日志记录&#10;- 优化数据库操作，提高性能">
+    <list default="true" id="372da862-f7c4-4fa2-93c3-bf2ac1fe9e6e" name="更改" comment="修正swagger-ui文档的错误标识描述">
       <change beforePath="$PROJECT_DIR$/.idea/dataSources.local.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources.local.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/dataSources/cb0cf253-b8ed-44e1-b847-d170a50191d6.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources/cb0cf253-b8ed-44e1-b847-d170a50191d6.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/ServiceApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/ServiceApplication.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/controller/User/ProductController.java" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/controller/User/ProductController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/parent/service/src/main/resources/application-prod.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/src/main/resources/application-prod.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/parent/service/src/main/resources/application.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/src/main/resources/application.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/Constant/Message.java" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/Constant/Message.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/controller/User/OrderController.java" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/controller/User/OrderController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/mapper/OrderMapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/mapper/OrderMapper.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/service/ArticleService.java" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/service/ArticleService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/service/Impl/AdminProductServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/service/Impl/AdminProductServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/service/Impl/AdminUserServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/service/Impl/AdminUserServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/service/Impl/ArticleServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/service/Impl/ArticleServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/service/Impl/OrderServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/service/Impl/OrderServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/service/Impl/ProductServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/service/Impl/ProductServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/service/OrderService.java" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/service/OrderService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/service/TxService/OrderTxService.java" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/service/TxService/OrderTxService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/task/OrderTask.java" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/task/OrderTask.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/parent/service/src/main/resources/mapper/ArticleMapper.xml" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/src/main/resources/mapper/ArticleMapper.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/parent/service/src/main/resources/mapper/OrderMapper.xml" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/src/main/resources/mapper/OrderMapper.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -85,7 +96,7 @@
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "SHARE_PROJECT_CONFIGURATION_FILES": "true",
     "Spring Boot.ParentApplication.executor": "Run",
-    "Spring Boot.ServiceApplication.executor": "Debug",
+    "Spring Boot.ServiceApplication.executor": "Run",
     "git-widget-placeholder": "main",
     "jdk.selected.JAVA_MODULE": "17",
     "last_opened_file_path": "C:/Users/zhuxi/Desktop/vibe-music-server-main",
@@ -187,7 +198,8 @@
       <workItem from="1751943524355" duration="17347000" />
       <workItem from="1752023501040" duration="29124000" />
       <workItem from="1752122074256" duration="11965000" />
-      <workItem from="1752134886316" duration="6323000" />
+      <workItem from="1752134886316" duration="7047000" />
+      <workItem from="1752199251199" duration="12461000" />
     </task>
     <task id="LOCAL-00001" summary="d">
       <option name="closed" value="true" />
@@ -333,7 +345,23 @@
       <option name="project" value="LOCAL" />
       <updated>1752132375620</updated>
     </task>
-    <option name="localTasksCounter" value="19" />
+    <task id="LOCAL-00019" summary="修正swagger-ui文档的错误标识描述">
+      <option name="closed" value="true" />
+      <created>1752143284361</created>
+      <option name="number" value="00019" />
+      <option name="presentableId" value="LOCAL-00019" />
+      <option name="project" value="LOCAL" />
+      <updated>1752143284361</updated>
+    </task>
+    <task id="LOCAL-00020" summary="修正swagger-ui文档的错误标识描述">
+      <option name="closed" value="true" />
+      <created>1752143308112</created>
+      <option name="number" value="00020" />
+      <option name="presentableId" value="LOCAL-00020" />
+      <option name="project" value="LOCAL" />
+      <updated>1752143308112</updated>
+    </task>
+    <option name="localTasksCounter" value="21" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -371,7 +399,8 @@
     <MESSAGE value="feat(order): 添加订单相关功能- 新增订单添加接口和相关服务&#10;- 实现订单创建、支付记录添加等功能&#10;- 添加购物车数量和规格更新逻辑&#10;- 新增订单相关的数据传输对象和实体类" />
     <MESSAGE value="feat(service): 实现订单组创建功能&#10;&#10;- 新增批量创建订单、支付记录和库存预占的功能&#10;- 优化订单编号生成逻辑，使用雪花算法&#10;-增加库存验证和地址处理逻辑&#10;- 更新数据库映射，支持批量插入操作&#10;- 引入hutool工具库，用于生成唯一ID" />
     <MESSAGE value="feat(order): 添加订单取消功能- 新增订单取消相关接口和方法&#10;- 实现订单状态更新、预占库存释放等功能&#10;- 添加异常处理和日志记录&#10;- 优化数据库操作，提高性能" />
-    <option name="LAST_COMMIT_MESSAGE" value="feat(order): 添加订单取消功能- 新增订单取消相关接口和方法&#10;- 实现订单状态更新、预占库存释放等功能&#10;- 添加异常处理和日志记录&#10;- 优化数据库操作，提高性能" />
+    <MESSAGE value="修正swagger-ui文档的错误标识描述" />
+    <option name="LAST_COMMIT_MESSAGE" value="修正swagger-ui文档的错误标识描述" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

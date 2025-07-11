@@ -6,6 +6,7 @@ import src.main.java.com.zhuxi.pojo.DTO.Order.InventoryLockAddDTO;
 import src.main.java.com.zhuxi.pojo.DTO.Order.OrderAddDTO;
 import src.main.java.com.zhuxi.pojo.DTO.Order.OrderGroupDTO;
 import src.main.java.com.zhuxi.pojo.DTO.Order.PaymentAddDTO;
+import src.main.java.com.zhuxi.pojo.VO.Order.OrderShowVO;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -145,4 +146,8 @@ public interface OrderMapper {
 
     //批量恢复被锁定的库存
     int releaseProductSaleStockList(List<Long> specIds, List<Integer> quantityList);
+
+
+    // 展示订单列表
+    List<OrderShowVO> getOrderList(Long userId,Long lastId, Integer pageSize);
 }

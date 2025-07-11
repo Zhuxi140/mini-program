@@ -4,16 +4,17 @@ import com.zhuxi.Constant.Message;
 import com.zhuxi.Exception.transactionalException;
 import com.zhuxi.mapper.OrderMapper;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.ibatis.executor.BatchResult;
-import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import src.main.java.com.zhuxi.pojo.DTO.Order.InventoryLockAddDTO;
 import src.main.java.com.zhuxi.pojo.DTO.Order.OrderAddDTO;
 import src.main.java.com.zhuxi.pojo.DTO.Order.OrderGroupDTO;
 import src.main.java.com.zhuxi.pojo.DTO.Order.PaymentAddDTO;
+import src.main.java.com.zhuxi.pojo.VO.Order.OrderRealShowVO;
+import src.main.java.com.zhuxi.pojo.VO.Order.OrderShowVO;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
@@ -21,11 +22,18 @@ import java.util.List;
 public class OrderTxService {
 
     private final OrderMapper orderMapper;
-    private final SqlSessionTemplate sqlSessionTemplate;
 
-    public OrderTxService(OrderMapper orderMapper, SqlSessionTemplate sqlSessionTemplate) {
+    public OrderTxService(OrderMapper orderMapper) {
         this.orderMapper = orderMapper;
-        this.sqlSessionTemplate = sqlSessionTemplate;
+    }
+
+    @Transactional(readOnly = true)
+    public List<OrderShowVO> getOrderList(Long userId,Long lastId, Integer pageSize) {
+        List<OrderShowVO> orderList = orderMapper.getOrderList(userId, lastId, pageSize);
+        if(orderList == null || orderList.size() <= 0)
+            throw new transactionalException(Message.NO_ORDER_RECORD);
+
+        return orderList;
     }
 
     @Transactional(readOnly = true)

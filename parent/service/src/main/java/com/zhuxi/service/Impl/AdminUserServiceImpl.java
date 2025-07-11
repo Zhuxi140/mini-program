@@ -65,26 +65,25 @@ public class AdminUserServiceImpl implements AdminUserService {
      */
     private PageResult<AdminUserVO> PageDesc(Long lastId, Integer pageSize){
         boolean hasMore = false;
-        Long nextCursor = null;
+        boolean first = (lastId == null || lastId <= 0);
 
-        if (lastId == null || lastId <= 0) {
+        if (first)
             lastId = Long.MAX_VALUE;
-        }
 
         List<AdminUserVO> items = adminUserTxService.getListUserDESC(lastId, pageSize + 1);
 
+        boolean hasPrevious = !first;
         if (items.size() == pageSize + 1) {
             hasMore = true;
             items = items.subList(0, pageSize);
         }
 
         if (!items.isEmpty()) {
-            nextCursor = items.get(items.size() - 1).getId();
+            lastId = items.get(items.size() - 1).getId();
         }
 
-        boolean hasPrevious = lastId != Integer.MAX_VALUE;
 
-        return new PageResult<>(items, nextCursor, hasPrevious, hasMore);
+        return new PageResult<>(items, lastId, hasPrevious, hasMore);
     }
 
     /**
@@ -92,25 +91,24 @@ public class AdminUserServiceImpl implements AdminUserService {
      */
     private PageResult<AdminUserVO> PageAsc(Long lastId, Integer pageSize){
         boolean hasMore = false;
-        Long nextCursor = null;
-
-        if(lastId == null)
+        boolean first = (lastId == null || lastId <= 0);
+        if(first)
             lastId = 0L;
 
         List<AdminUserVO> items = adminUserTxService.getListUserASC(lastId, pageSize + 1);
 
+        boolean hasPrevious = !first;
         if(items.size() == pageSize + 1){
             hasMore = true;
             items = items.subList(0, pageSize);
         }
 
         if(!items.isEmpty()){
-            nextCursor = items.get(items.size() - 1).getId();
+            lastId = items.get(items.size() - 1).getId();
         }
 
-        boolean hasPrevious = lastId != 0;
 
-        return new PageResult<>(items, nextCursor, hasPrevious, hasMore);
+        return new PageResult<>(items, lastId, hasPrevious, hasMore);
     }
 
 
