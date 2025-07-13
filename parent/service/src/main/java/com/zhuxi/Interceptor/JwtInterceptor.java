@@ -27,6 +27,7 @@ public class JwtInterceptor implements HandlerInterceptor {
     /**
      * 前置拦截器 验证JWT
      */
+    @Override
     public boolean preHandle(
             HttpServletRequest request,
             HttpServletResponse response,

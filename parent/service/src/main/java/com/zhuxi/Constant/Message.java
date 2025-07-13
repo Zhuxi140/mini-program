@@ -67,4 +67,5 @@ public class Message {
     public static final String NO_SELECT_SPEC_ID = "未查询到对应商品规格id";
     public static final String RELEASE_SALE_STOCK_ERROR = "可售库存释放失败";
     public static final String NO_ORDER_RECORD = "无此订单记录";
+    public static final String DELETE_ORDER_ERROR = "删除订单失败";
 }

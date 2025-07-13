@@ -150,4 +150,10 @@ public interface OrderMapper {
 
     // 展示订单列表
     List<OrderShowVO> getOrderList(Long userId,Long lastId, Integer pageSize);
+
+
+
+    //删除订单
+    @Update("UPDATE `order` SET status = 7 WHERE id = #{orderId} AND user_id = #{userId}")
+    int deleteOrder(Long orderId, Long userId);
 }

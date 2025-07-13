@@ -19,7 +19,8 @@ public class JwtProperties {
     }
 
     public SecretKey getSecretKey() {
-        return Keys.hmacShaKeyFor(Decoders.BASE64.decode(secretKey)); // 获取密钥
+        // 获取密钥
+        return Keys.hmacShaKeyFor(Decoders.BASE64.decode(secretKey));
     }
 
     public long getExpirationTime() {

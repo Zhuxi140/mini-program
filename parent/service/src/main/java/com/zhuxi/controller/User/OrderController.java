@@ -63,6 +63,7 @@ public class OrderController {
             description = "取消订单"
     )
     public Result<Void> cancelOrder(
+            @Parameter(description = "订单id",required = true)
             @PathVariable Long orderId,
             @Parameter(description = "用户token",hidden = true)
             @RequestHeader("Authorization") String token
@@ -77,6 +78,7 @@ public class OrderController {
             description = "取消订单组"
     )
     public Result<Void> cancelOrderGroup(
+            @Parameter(description = "订单组id",required = true)
             @RequestParam Long groupId,
             @Parameter(description = "用户token",hidden = true)
             @RequestHeader("Authorization") String token
@@ -100,5 +102,20 @@ public class OrderController {
             Integer pageSize
     ){
         return orderService.getOrderList(token,lastId,pageSize);
+    }
+
+    @PutMapping
+    @RequireRole(Role.USER)
+    @Operation(
+            summary = "删除订单",
+            description = "删除订单"
+    )
+    public Result<Void> deleteOrder(
+            @Parameter(description = "订单id",required = true)
+            @RequestParam Long orderId,
+            @Parameter(description = "用户token",hidden = true)
+            @RequestHeader("Authorization") String token
+    ){
+        return orderService.deleteOrder(orderId,token);
     }
 }

@@ -22,7 +22,6 @@
     </select>
 
     <select id="getListArticleDESC" resultType="src.main.java.com.zhuxi.pojo.VO.Article.ArticleVO">
-
         SELECT
             id,
             title,
@@ -31,7 +30,7 @@
             created_at
         FROM article
         <where>
-     <![CDATA[
+        <![CDATA[
          id < #{lastId} AND status = 2
 
            <if test="type != null">
@@ -39,9 +38,8 @@
            </if>
         ]]>
          </where>
-        ORDER BY id DESC
+        ORDER BY id,created_at DESC
         LIMIT #{pageSize}
-
     </select>
 
     <update id="updateArticle" parameterType="src.main.java.com.zhuxi.pojo.DTO.article.ArticleInsertOrUpdateDTO">

@@ -24,4 +24,7 @@ public interface OrderService {
 
     // 获取用户订单列表
     PageResult<List<OrderRealShowVO>> getOrderList(String token, Long lastId, Integer pageSize);
+
+    // 删除订单
+    Result<Void> deleteOrder(Long orderId, String token);
 }

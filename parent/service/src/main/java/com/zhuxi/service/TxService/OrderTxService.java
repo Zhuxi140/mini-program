@@ -241,4 +241,11 @@ public class OrderTxService {
         if(i !=  specIdList.size())
             throw new transactionalException(Message.RELEASE_SALE_STOCK_ERROR);
     }
+
+    @Transactional(rollbackFor = transactionalException.class)
+    public void deleteOrder(Long orderId,Long userId){
+        int i = orderMapper.deleteOrder(orderId,userId);
+        if(i !=  1)
+            throw new transactionalException(Message.DELETE_ORDER_ERROR);
+    }
 }

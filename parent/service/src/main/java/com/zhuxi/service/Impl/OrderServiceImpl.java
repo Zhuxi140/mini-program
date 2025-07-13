@@ -273,6 +273,23 @@ public class OrderServiceImpl implements OrderService {
         return new PageResult(resultList, lastId, hasPrevious, hasMore);
     }
 
+    /**
+     * 删除订单
+     */
+    @Override
+    @Transactional
+    public Result<Void> deleteOrder(Long orderId, String token) {
+        if (orderId == null)
+            return Result.error(Message.ORDER_ID_IS_NULL);
+        Result<Long> userId = getUserId(token);
+        if (userId.getCode() != 200)
+            return Result.error(userId.getMsg());
+
+        orderTxService.deleteOrder(orderId, userId.getData());
+
+        return Result.success(Message.OPERATION_SUCCESS);
+    }
+
 
     // 生成订单/支付编号(雪花算法）
     private String generateSn(Integer  type){

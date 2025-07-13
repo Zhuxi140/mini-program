@@ -171,6 +171,60 @@
 
         </select>
 
+    <select id="getOrderList" resultType="src.main.java.com.zhuxi.pojo.VO.Order.OrderShowVO">
+    <![CDATA[
+    SELECT * FROM
+     (
+        (
+        SELECT
+            o.id,
+            o.group_id,
+            p.name AS product_name,
+            spec.spec AS spec_name,
+            CASE
+                WHEN spec.cover_url IS NULL  THEN p.cover_url
+                ELSE spec.cover_url
+            END
+            AS cover_url,
+            o.total_amount,
+            o.status,
+            o.created_at
+        FROM `order` o
+        JOIN product p ON o.product_id = p.id
+        LEFT JOIN spec ON o.spec_id = spec.id
+        WHERE o.user_id = #{userId}
+          AND  o.status != 7
+          AND o.group_id IS NOT NULL
+          AND o.id < #{lastId}
+        ORDER BY o.created_at DESC
+        LIMIT #{pageSizeHalf}
+        )
+        UNION ALL
+        (SELECT o.id,
+                o.group_id,
+                p.name    AS product_name,
+                spec.spec AS spec_name,
+                p.cover_url,
+                o.total_amount,
+                o.status,
+                o.created_at
+         FROM `order` o
+         JOIN product p ON o.product_id = p.id
+         LEFT JOIN spec ON o.spec_id = spec.id
+         WHERE o.user_id = #{userId}
+           AND  o.status != 7
+           AND o.group_id IS NULL
+           AND o.id < #{lastId}
+         ORDER BY o.created_at DESC
+         LIMIT #{pageSizeHalf}
+         )
+    ) AS t
+        ORDER BY t.created_at DESC
+    LIMIT #{pageSize}
+    ]]>
+        <bind name="pageSizeHalf" value="pageSize / 2"/>
+    </select>
+
     <update id="releaseProductSaleStockList">
      UPDATE spec
      SET stock =
