@@ -6,14 +6,22 @@ import com.zhuxi.utils.JwtUtils;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
-import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
+import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
 public class WebMvcConfig implements WebMvcConfigurer {
 
+    private final JwtInterceptorProperties jwtInterceptorProperties;
+    private final JwtUtils jwtUtils;
+
+    public WebMvcConfig(JwtInterceptorProperties jwtInterceptorProperties, JwtUtils jwtUtils) {
+        this.jwtInterceptorProperties = jwtInterceptorProperties;
+        this.jwtUtils = jwtUtils;
+    }
+
     @Bean
-    public JwtInterceptor jwtInterceptor(JwtInterceptorProperties jwtInterceptorProperties, JwtUtils jwtUtils)
+    public JwtInterceptor jwtInterceptor()
     {
         return new JwtInterceptor(jwtInterceptorProperties,jwtUtils);
     }
@@ -26,5 +34,11 @@ public class WebMvcConfig implements WebMvcConfigurer {
                 .maxAge(3600);
     }
 
+    @Override
+    public void addInterceptors(InterceptorRegistry registry){
+        registry.addInterceptor(jwtInterceptor())
+                .addPathPatterns("/**")
+                .excludePathPatterns(jwtInterceptorProperties.getExcludePaths());
+    }
 }
 

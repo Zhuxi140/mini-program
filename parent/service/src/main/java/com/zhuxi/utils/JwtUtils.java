@@ -4,9 +4,12 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.zhuxi.utils.properties.JwtProperties;
 import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.JwtException;
+import com.zhuxi.Exception.JwtException;
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.MalformedJwtException;
+import io.jsonwebtoken.security.SignatureException;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import java.nio.charset.StandardCharsets;
@@ -16,6 +19,7 @@ import java.util.Map;
 
 
 
+@Slf4j
 @Component
 public class JwtUtils {
 
@@ -42,33 +46,33 @@ public class JwtUtils {
      * 解析token
      */
     public Claims parseToken(String token){
-        int dotCount = 0;
-        for(int i=0; i< token.length();i++){
-            if(token.charAt(i) == '.')
-                dotCount++;
-        }
-
-        if(dotCount != 2)
-            throw new MalformedJwtException("token格式有误");
-
-        String headerBase64 = token.split("\\.")[0];
-        String headerJson = new String(Base64.getDecoder().decode(headerBase64), StandardCharsets.UTF_8);
-
-        ObjectMapper objectMapper = new ObjectMapper();
-
         try {
-            objectMapper.readTree(headerJson);
-        } catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
-        }
+            int dotCount = 0;
+            for (int i = 0; i < token.length(); i++) {
+                if (token.charAt(i) == '.')
+                    dotCount++;
+            }
 
+            if (dotCount != 2)
+                throw new MalformedJwtException("token格式有误");
 
-        return Jwts.parser()
-                .verifyWith(jwtProperties.getSecretKey())
-                .build()
-                .parseSignedClaims(token)
-                .getPayload();
+            String headerBase64 = token.split("\\.")[0];
+            String headerJson = new String(Base64.getDecoder().decode(headerBase64), StandardCharsets.UTF_8);
+
+            ObjectMapper objectMapper = new ObjectMapper();
+
+                objectMapper.readTree(headerJson);
+
+            return Jwts.parser()
+                    .verifyWith(jwtProperties.getSecretKey())
+                    .build()
+                    .parseSignedClaims(token)
+                    .getPayload();
+    } catch (io.jsonwebtoken.JwtException | JsonProcessingException e) {
+        throw new JwtException(e.getMessage());
     }
+    }
+
 
     /**
      * 验证token合法性
@@ -81,5 +85,8 @@ public class JwtUtils {
             return false;
         }
     }
+
+
+
 
 }

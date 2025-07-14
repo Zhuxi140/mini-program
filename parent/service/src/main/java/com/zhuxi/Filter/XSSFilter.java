@@ -42,7 +42,7 @@ public class XSSFilter implements Filter {
         @Override
         public String[] getParameterValues(String values){
             String[] parameterValues = super.getParameterValues(values);
-            if(values == null){
+            if(parameterValues == null){
                 return null;
             }
             return Arrays.stream(parameterValues).map(this::cleanXSS).toArray(String[]::new);

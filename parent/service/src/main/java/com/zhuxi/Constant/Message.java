@@ -20,7 +20,7 @@ public class Message {
     public static final String USER_NOT_EXIST = "用户不存在";
     public static final String AT_LEAST_ONE_FIELD ="至少需要修改一个字段";
     public static final String NO_DATA = "无数据";
-
+    public static final String JWT_IS_OVER_TIME = "jwt已过期";
     public static final String DATABASE_UPDATE_ERROR = "数据库更新错误";
     public static final String REQUEST_ERROR = "请求错误";
     public static final String USER_ADDRESS_MAX="用户地址上限5个";

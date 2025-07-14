@@ -7,33 +7,15 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="372da862-f7c4-4fa2-93c3-bf2ac1fe9e6e" name="更改" comment="refactor(service): 重构分页查询逻辑&#10;&#10;- 优化了 AdminProductServiceImpl、AdminUserServiceImpl 和 ArticleServiceImpl 中的分页查询方法- 移除了不必要的 nextCursor变量，改用 lastId作为分页参数&#10;- 简化了分页逻辑，提高了代码可读性和维护性&#10;- 在 ArticleService 中更新了 getListArticleDESC 方法的返回类型，改为 PageResult&#10;- 调整了 ArticleMapper.xml 中的 SQL 查询，优化了排序条件">
-      <change beforePath="$PROJECT_DIR$/.idea/dataSources.local.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources.local.xml" afterDir="false" />
+    <list default="true" id="372da862-f7c4-4fa2-93c3-bf2ac1fe9e6e" name="更改" comment="feat(security): 添加 XSS防护过滤器&#10;&#10;- 在 pom.xml 中添加 jsoup 依赖- 新增 SecurityConfig 配置类，注册 XSSFilter&#10;- 实现 XSSFilter 类，对请求参数进行 XSS 清洗&#10;- 使用 Jsoup 进行 HTML 内容的安全清理">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/parent/service/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/pom.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/Constant/Message.java" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/Constant/Message.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/Filter/XSSFilter.java" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/Filter/XSSFilter.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/Interceptor/JwtInterceptor.java" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/Interceptor/JwtInterceptor.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/controller/User/OrderController.java" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/controller/User/OrderController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/mapper/OrderMapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/mapper/OrderMapper.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/service/Impl/OrderServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/service/Impl/OrderServiceImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/service/OrderService.java" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/service/OrderService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/service/TxService/OrderTxService.java" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/service/TxService/OrderTxService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/utils/properties/JwtProperties.java" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/utils/properties/JwtProperties.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/Constant/Message.class" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/Constant/Message.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/config/WebMvcConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/config/WebMvcConfig.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/handler/GlobalExceptionHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/handler/GlobalExceptionHandler.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/utils/JwtUtils.java" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/utils/JwtUtils.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/Interceptor/JwtInterceptor.class" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/Interceptor/JwtInterceptor.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/controller/User/OrderController.class" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/controller/User/OrderController.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/mapper/OrderMapper.class" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/mapper/OrderMapper.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/service/ArticleService.class" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/service/ArticleService.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/service/Impl/AdminProductServiceImpl.class" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/service/Impl/AdminProductServiceImpl.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/service/Impl/AdminUserServiceImpl.class" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/service/Impl/AdminUserServiceImpl.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/service/Impl/ArticleServiceImpl.class" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/service/Impl/ArticleServiceImpl.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/service/Impl/OrderServiceImpl.class" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/service/Impl/OrderServiceImpl.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/service/Impl/ProductServiceImpl.class" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/service/Impl/ProductServiceImpl.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/service/OrderService.class" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/service/OrderService.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/service/TxService/OrderTxService.class" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/service/TxService/OrderTxService.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/utils/properties/JwtProperties.class" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/utils/properties/JwtProperties.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/parent/service/target/classes/mapper/ArticleMapper.xml" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/target/classes/mapper/ArticleMapper.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/parent/service/target/classes/mapper/OrderMapper.xml" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/target/classes/mapper/OrderMapper.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -222,7 +204,8 @@
       <workItem from="1752227788403" duration="24000" />
       <workItem from="1752227819602" duration="100000" />
       <workItem from="1752287090349" duration="3544000" />
-      <workItem from="1752370606516" duration="6853000" />
+      <workItem from="1752370606516" duration="8618000" />
+      <workItem from="1752462549217" duration="4623000" />
     </task>
     <task id="LOCAL-00001" summary="d">
       <option name="closed" value="true" />
@@ -392,7 +375,23 @@
       <option name="project" value="LOCAL" />
       <updated>1752214235901</updated>
     </task>
-    <option name="localTasksCounter" value="22" />
+    <task id="LOCAL-00022" summary="refactor(service): 重构分页查询逻辑&#10;&#10;- 优化了 AdminProductServiceImpl、AdminUserServiceImpl 和 ArticleServiceImpl 中的分页查询方法- 移除了不必要的 nextCursor变量，改用 lastId作为分页参数&#10;- 简化了分页逻辑，提高了代码可读性和维护性&#10;- 在 ArticleService 中更新了 getListArticleDESC 方法的返回类型，改为 PageResult&#10;- 调整了 ArticleMapper.xml 中的 SQL 查询，优化了排序条件">
+      <option name="closed" value="true" />
+      <created>1752380497888</created>
+      <option name="number" value="00022" />
+      <option name="presentableId" value="LOCAL-00022" />
+      <option name="project" value="LOCAL" />
+      <updated>1752380497888</updated>
+    </task>
+    <task id="LOCAL-00023" summary="feat(security): 添加 XSS防护过滤器&#10;&#10;- 在 pom.xml 中添加 jsoup 依赖- 新增 SecurityConfig 配置类，注册 XSSFilter&#10;- 实现 XSSFilter 类，对请求参数进行 XSS 清洗&#10;- 使用 Jsoup 进行 HTML 内容的安全清理">
+      <option name="closed" value="true" />
+      <created>1752380584485</created>
+      <option name="number" value="00023" />
+      <option name="presentableId" value="LOCAL-00023" />
+      <option name="project" value="LOCAL" />
+      <updated>1752380584485</updated>
+    </task>
+    <option name="localTasksCounter" value="24" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -432,7 +431,9 @@
     <MESSAGE value="feat(order): 添加订单取消功能- 新增订单取消相关接口和方法&#10;- 实现订单状态更新、预占库存释放等功能&#10;- 添加异常处理和日志记录&#10;- 优化数据库操作，提高性能" />
     <MESSAGE value="修正swagger-ui文档的错误标识描述" />
     <MESSAGE value="refactor(service): 重构分页查询逻辑&#10;&#10;- 优化了 AdminProductServiceImpl、AdminUserServiceImpl 和 ArticleServiceImpl 中的分页查询方法- 移除了不必要的 nextCursor变量，改用 lastId作为分页参数&#10;-简化了分页逻辑，提高了代码可读性和维护性&#10;- 在 ArticleService 中更新了 getListArticleDESC 方法的返回类型，改为 PageResult&#10;- 调整了 ArticleMapper.xml 中的 SQL 查询，优化了排序条件" />
-    <option name="LAST_COMMIT_MESSAGE" value="refactor(service): 重构分页查询逻辑&#10;&#10;- 优化了 AdminProductServiceImpl、AdminUserServiceImpl 和 ArticleServiceImpl 中的分页查询方法- 移除了不必要的 nextCursor变量，改用 lastId作为分页参数&#10;-简化了分页逻辑，提高了代码可读性和维护性&#10;- 在 ArticleService 中更新了 getListArticleDESC 方法的返回类型，改为 PageResult&#10;- 调整了 ArticleMapper.xml 中的 SQL 查询，优化了排序条件" />
+    <MESSAGE value="refactor(service): 重构分页查询逻辑&#10;&#10;- 优化了 AdminProductServiceImpl、AdminUserServiceImpl 和 ArticleServiceImpl 中的分页查询方法- 移除了不必要的 nextCursor变量，改用 lastId作为分页参数&#10;- 简化了分页逻辑，提高了代码可读性和维护性&#10;- 在 ArticleService 中更新了 getListArticleDESC 方法的返回类型，改为 PageResult&#10;- 调整了 ArticleMapper.xml 中的 SQL 查询，优化了排序条件" />
+    <MESSAGE value="feat(security): 添加 XSS防护过滤器&#10;&#10;- 在 pom.xml 中添加 jsoup 依赖- 新增 SecurityConfig 配置类，注册 XSSFilter&#10;- 实现 XSSFilter 类，对请求参数进行 XSS 清洗&#10;- 使用 Jsoup 进行 HTML 内容的安全清理" />
+    <option name="LAST_COMMIT_MESSAGE" value="feat(security): 添加 XSS防护过滤器&#10;&#10;- 在 pom.xml 中添加 jsoup 依赖- 新增 SecurityConfig 配置类，注册 XSSFilter&#10;- 实现 XSSFilter 类，对请求参数进行 XSS 清洗&#10;- 使用 Jsoup 进行 HTML 内容的安全清理" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -440,6 +441,10 @@
         <breakpoint enabled="true" type="java-exception">
           <properties class="java.lang.IndexOutOfBoundsException" package="java.lang" />
           <option name="timeStamp" value="4" />
+        </breakpoint>
+        <breakpoint enabled="true" type="java-exception">
+          <properties class="io.jsonwebtoken.security.SignatureException" package="io.jsonwebtoken.security" />
+          <option name="timeStamp" value="5" />
         </breakpoint>
       </breakpoints>
     </breakpoint-manager>
