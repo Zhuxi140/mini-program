@@ -27,9 +27,10 @@ spring:
           max-wait: 1000
           max-active: 8
           min-idle: 0 # 最小空闲连接数
-      host: 127.0.0.1
+      host: r-bp1j86kgker8z46dxmpd.redis.rds.aliyuncs.com
       port: 6379
-      password: 123456
+      password: qwEr123456
+      username: r-bp1j86kgker8z46dxm
 
 
 # mybatis配置
@@ -53,6 +54,7 @@ jwt-properties:
     - /oss/upload
     - /
     - /error
+    - /swagger-ui.html/**
     - /swagger-ui/**
     - /v3/api-docs/**
 
