@@ -18,6 +18,20 @@ spring:
   profiles:
     active: dev
 
+# redis配置
+  data:
+    redis:
+      lettuce:
+        pool:
+          max-idle: 8 # 最大空闲连接数
+          max-wait: 1000
+          max-active: 8
+          min-idle: 0 # 最小空闲连接数
+      host: 127.0.0.1
+      port: 6379
+      password: 123456
+
+
 # mybatis配置
 mybatis:
   mapper-locations: classpath:mapper/*.xml
@@ -28,7 +42,7 @@ mybatis:
 #jwt配置
 jwt:
   secret-key: ODIyNjA4Njc3NTIyODE2NjYxMDE3NDIyMjUwMDgxMjgwMjU0MDM2Mzc0MzU4NDc1Nzg2MzM0ODA1MDgxMjM2Mg==
-  expiration-time: 604800
+  expiration-time: 604800 #
 
 
 # jwt拦截器放行接口
@@ -37,6 +51,10 @@ jwt-properties:
     - /login/user
     - /login/admin
     - /oss/upload
+    - /
+    - /error
+    - /swagger-ui/**
+    - /v3/api-docs/**
 
 
 # aliyun oss配置

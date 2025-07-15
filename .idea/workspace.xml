@@ -7,15 +7,17 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="372da862-f7c4-4fa2-93c3-bf2ac1fe9e6e" name="更改" comment="feat(security): 添加 XSS防护过滤器&#10;&#10;- 在 pom.xml 中添加 jsoup 依赖- 新增 SecurityConfig 配置类，注册 XSSFilter&#10;- 实现 XSSFilter 类，对请求参数进行 XSS 清洗&#10;- 使用 Jsoup 进行 HTML 内容的安全清理">
+    <list default="true" id="372da862-f7c4-4fa2-93c3-bf2ac1fe9e6e" name="更改" comment="feat(security): 增加 JWT 过期异常处理并优化拦截器逻辑&#10;&#10;- 在 GlobalExceptionHandler 中添加 JwtException 和 JsonProcessingException 的异常处理&#10;- 重构 JwtInterceptor 中的 token 解析逻辑，增加过期时间检查&#10;- 更新 JwtUtils 中的 parseToken 方法，捕获并抛出 JwtException- 在 Message 中添加 JWT 过期的错误信息&#10;-调整 WebMvcConfig，注册 JwtInterceptor 拦截器">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/parent/service/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/pom.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/Constant/Message.java" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/Constant/Message.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/Filter/XSSFilter.java" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/Filter/XSSFilter.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/Interceptor/JwtInterceptor.java" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/Interceptor/JwtInterceptor.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/config/WebMvcConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/config/WebMvcConfig.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/handler/GlobalExceptionHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/handler/GlobalExceptionHandler.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/utils/JwtUtils.java" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/utils/JwtUtils.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/Interceptor/JwtInterceptor.class" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/Interceptor/JwtInterceptor.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/parent/service/src/main/resources/application.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/src/main/resources/application.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/parent/service/target/classes/application.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/target/classes/application.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/Filter/XSSFilter.class" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/Filter/XSSFilter.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/Filter/XssSafeRequestWrapper.class" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/Filter/XssSafeRequestWrapper.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/config/WebMvcConfig.class" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/config/WebMvcConfig.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/handler/GlobalExceptionHandler.class" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/handler/GlobalExceptionHandler.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/utils/JwtUtils.class" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/utils/JwtUtils.class" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -29,6 +31,7 @@
         <option value="Exception" />
         <option value="Enum" />
         <option value="Interface" />
+        <option value="Mybatis Mapper" />
         <option value="Class" />
       </list>
     </option>
@@ -80,44 +83,45 @@
     <option name="showLibraryContents" value="true" />
     <option name="showScratchesAndConsoles" value="false" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;JUnit.ServiceApplicationTests.contextLoads.executor&quot;: &quot;Run&quot;,
-    &quot;JUnit.service中的com.zhuxi.Interceptor.executor&quot;: &quot;Run&quot;,
-    &quot;Notification.DisplayName-DoNotAsk-Database detector&quot;: &quot;数据库检测器&quot;,
-    &quot;Notification.DoNotAsk-Database detector&quot;: &quot;true&quot;,
-    &quot;RequestMappingsPanelOrder0&quot;: &quot;0&quot;,
-    &quot;RequestMappingsPanelOrder1&quot;: &quot;1&quot;,
-    &quot;RequestMappingsPanelWidth0&quot;: &quot;75&quot;,
-    &quot;RequestMappingsPanelWidth1&quot;: &quot;75&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
-    &quot;Spring Boot.ParentApplication.executor&quot;: &quot;Run&quot;,
-    &quot;Spring Boot.ServiceApplication.executor&quot;: &quot;Run&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
-    &quot;jdk.selected.JAVA_MODULE&quot;: &quot;17&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/Users/zhuxi/Desktop/vibe-music-server-main&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;project.structure.last.edited&quot;: &quot;模块&quot;,
-    &quot;project.structure.proportion&quot;: &quot;0.15527344&quot;,
-    &quot;project.structure.side.proportion&quot;: &quot;0.2&quot;,
-    &quot;run.configurations.included.in.services&quot;: &quot;true&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.pluginManager&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "JUnit.ServiceApplicationTests.contextLoads.executor": "Run",
+    "JUnit.service中的com.zhuxi.Interceptor.executor": "Run",
+    "Notification.DisplayName-DoNotAsk-Database detector": "数据库检测器",
+    "Notification.DoNotAsk-Database detector": "true",
+    "RequestMappingsPanelOrder0": "0",
+    "RequestMappingsPanelOrder1": "1",
+    "RequestMappingsPanelWidth0": "75",
+    "RequestMappingsPanelWidth1": "75",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "Spring Boot.ParentApplication.executor": "Run",
+    "Spring Boot.ServiceApplication.executor": "Run",
+    "git-widget-placeholder": "main",
+    "jdk.selected.JAVA_MODULE": "17",
+    "last_opened_file_path": "D:/IDEA/mini-program/parent/service/src/main/resources/mapper",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "project.structure.last.edited": "模块",
+    "project.structure.proportion": "0.15527344",
+    "project.structure.side.proportion": "0.2",
+    "run.configurations.included.in.services": "true",
+    "service.view.auto.scroll.to.source": "true",
+    "settings.editor.selected.configurable": "preferences.pluginManager",
+    "vue.rearranger.settings.migration": "true"
   },
-  &quot;keyToStringList&quot;: {
-    &quot;DatabaseDriversLRU&quot;: [
-      &quot;mysql&quot;
+  "keyToStringList": {
+    "DatabaseDriversLRU": [
+      "mysql"
     ],
-    &quot;com.intellij.ide.scratch.LRUPopupBuilder$1/SQL 方言&quot;: [
-      &quot;MySQL&quot;
+    "com.intellij.ide.scratch.LRUPopupBuilder$1/SQL 方言": [
+      "MySQL"
     ]
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
       <recent name="D:\IDEA\mini-program\parent\service\src\main\resources" />
@@ -205,7 +209,9 @@
       <workItem from="1752227819602" duration="100000" />
       <workItem from="1752287090349" duration="3544000" />
       <workItem from="1752370606516" duration="8618000" />
-      <workItem from="1752462549217" duration="4623000" />
+      <workItem from="1752462549217" duration="5317000" />
+      <workItem from="1752474392125" duration="16000" />
+      <workItem from="1752545389838" duration="4433000" />
     </task>
     <task id="LOCAL-00001" summary="d">
       <option name="closed" value="true" />
@@ -391,7 +397,15 @@
       <option name="project" value="LOCAL" />
       <updated>1752380584485</updated>
     </task>
-    <option name="localTasksCounter" value="24" />
+    <task id="LOCAL-00024" summary="feat(security): 增加 JWT 过期异常处理并优化拦截器逻辑&#10;&#10;- 在 GlobalExceptionHandler 中添加 JwtException 和 JsonProcessingException 的异常处理&#10;- 重构 JwtInterceptor 中的 token 解析逻辑，增加过期时间检查&#10;- 更新 JwtUtils 中的 parseToken 方法，捕获并抛出 JwtException- 在 Message 中添加 JWT 过期的错误信息&#10;-调整 WebMvcConfig，注册 JwtInterceptor 拦截器">
+      <option name="closed" value="true" />
+      <created>1752470006321</created>
+      <option name="number" value="00024" />
+      <option name="presentableId" value="LOCAL-00024" />
+      <option name="project" value="LOCAL" />
+      <updated>1752470006321</updated>
+    </task>
+    <option name="localTasksCounter" value="25" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -433,7 +447,8 @@
     <MESSAGE value="refactor(service): 重构分页查询逻辑&#10;&#10;- 优化了 AdminProductServiceImpl、AdminUserServiceImpl 和 ArticleServiceImpl 中的分页查询方法- 移除了不必要的 nextCursor变量，改用 lastId作为分页参数&#10;-简化了分页逻辑，提高了代码可读性和维护性&#10;- 在 ArticleService 中更新了 getListArticleDESC 方法的返回类型，改为 PageResult&#10;- 调整了 ArticleMapper.xml 中的 SQL 查询，优化了排序条件" />
     <MESSAGE value="refactor(service): 重构分页查询逻辑&#10;&#10;- 优化了 AdminProductServiceImpl、AdminUserServiceImpl 和 ArticleServiceImpl 中的分页查询方法- 移除了不必要的 nextCursor变量，改用 lastId作为分页参数&#10;- 简化了分页逻辑，提高了代码可读性和维护性&#10;- 在 ArticleService 中更新了 getListArticleDESC 方法的返回类型，改为 PageResult&#10;- 调整了 ArticleMapper.xml 中的 SQL 查询，优化了排序条件" />
     <MESSAGE value="feat(security): 添加 XSS防护过滤器&#10;&#10;- 在 pom.xml 中添加 jsoup 依赖- 新增 SecurityConfig 配置类，注册 XSSFilter&#10;- 实现 XSSFilter 类，对请求参数进行 XSS 清洗&#10;- 使用 Jsoup 进行 HTML 内容的安全清理" />
-    <option name="LAST_COMMIT_MESSAGE" value="feat(security): 添加 XSS防护过滤器&#10;&#10;- 在 pom.xml 中添加 jsoup 依赖- 新增 SecurityConfig 配置类，注册 XSSFilter&#10;- 实现 XSSFilter 类，对请求参数进行 XSS 清洗&#10;- 使用 Jsoup 进行 HTML 内容的安全清理" />
+    <MESSAGE value="feat(security): 增加 JWT 过期异常处理并优化拦截器逻辑&#10;&#10;- 在 GlobalExceptionHandler 中添加 JwtException 和 JsonProcessingException 的异常处理&#10;- 重构 JwtInterceptor 中的 token 解析逻辑，增加过期时间检查&#10;- 更新 JwtUtils 中的 parseToken 方法，捕获并抛出 JwtException- 在 Message 中添加 JWT 过期的错误信息&#10;-调整 WebMvcConfig，注册 JwtInterceptor 拦截器" />
+    <option name="LAST_COMMIT_MESSAGE" value="feat(security): 增加 JWT 过期异常处理并优化拦截器逻辑&#10;&#10;- 在 GlobalExceptionHandler 中添加 JwtException 和 JsonProcessingException 的异常处理&#10;- 重构 JwtInterceptor 中的 token 解析逻辑，增加过期时间检查&#10;- 更新 JwtUtils 中的 parseToken 方法，捕获并抛出 JwtException- 在 Message 中添加 JWT 过期的错误信息&#10;-调整 WebMvcConfig，注册 JwtInterceptor 拦截器" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
