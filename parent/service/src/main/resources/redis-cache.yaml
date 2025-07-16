@@ -1,0 +1,6 @@
+
+redis:
+  cache:
+    ProductCache:
+      KeyPrefix: product:list:lastId:{}:pageSize:{}
+      TTL: 30

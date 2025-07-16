@@ -1,10 +1,18 @@
 package com.zhuxi.service.Impl;
 
+import cn.hutool.core.util.StrUtil;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.zhuxi.Constant.Message;
+import com.zhuxi.Exception.JwtException;
 import com.zhuxi.Result.PageResult;
 import com.zhuxi.Result.Result;
 import com.zhuxi.service.ProductService;
+import com.zhuxi.service.RedisCache.ProductRedisCache;
 import com.zhuxi.service.TxService.ProductTxService;
+import com.zhuxi.utils.JsonUtils;
+import com.zhuxi.utils.PageUtils;
+import com.zhuxi.utils.RedisUntil;
+import com.zhuxi.utils.properties.RedisCacheProperties;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
 import src.main.java.com.zhuxi.pojo.VO.Product.ProductDetailVO;
@@ -19,10 +27,14 @@ import java.util.*;
 public class ProductServiceImpl implements ProductService {
 
     private final ProductTxService productTxService;
+    private final ProductRedisCache productRedisCache;
+    private final RedisUntil redisUntil;
 
-    public ProductServiceImpl(ProductTxService productTxService) {
 
+    public ProductServiceImpl(ProductTxService productTxService, ProductRedisCache productRedisCache, RedisUntil redisUntil) {
         this.productTxService = productTxService;
+        this.redisUntil = redisUntil;
+        this.productRedisCache = productRedisCache;
     }
 
     /**
@@ -32,24 +44,22 @@ public class ProductServiceImpl implements ProductService {
     public Result<PageResult<ProductOverviewVO>> getListProducts(Long lastId, Integer pageSize) {
 
         boolean first = (lastId == null || lastId < 0);
-        boolean hasMore = false;
-        boolean hasPrevious = !first;
-
-        if(first)
+        String CacheKey = productRedisCache.BuildKey(lastId, pageSize, first);
+        PageResult<ProductOverviewVO> listProductsCache = productRedisCache.getListProductsCache(CacheKey);
+        if (listProductsCache != null){
+            //命中
+            return Result.success(Message.OPERATION_SUCCESS, listProductsCache);
+        }
+        //未命中  查询数据库
+        if (first){
             lastId = Long.MAX_VALUE;
+        }
 
         List<ProductOverviewVO> listProducts = productTxService.getListProducts(lastId, pageSize + 1);
+        PageResult<ProductOverviewVO> objectPageResult = PageUtils.descPageSelect(listProducts, lastId, pageSize,first);
+        productRedisCache.setProductsToRedis(objectPageResult,CacheKey);
 
-        if(listProducts.size() == pageSize + 1){
-            hasMore = true;
-            listProducts = listProducts.subList(0, pageSize);
-        }
-
-        if(!listProducts.isEmpty()){
-            lastId = listProducts.get(listProducts.size() - 1).getId();
-        }
-
-        return Result.success(new PageResult<>(listProducts, lastId, hasPrevious, hasMore));
+        return Result.success(objectPageResult);
     }
 
     /**

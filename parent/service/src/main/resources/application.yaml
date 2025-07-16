@@ -75,8 +75,8 @@ bcrypt:
 # 日志配置
 logging:
   level:
-    root: info
-#    root: debug
+#    root: info
+    root: debug
 
 # swagger配置
 springdoc:

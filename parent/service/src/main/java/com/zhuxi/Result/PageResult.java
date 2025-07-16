@@ -1,5 +1,6 @@
 package com.zhuxi.Result;
 
+import com.zhuxi.utils.JsonUtils;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 import java.util.List;
@@ -51,5 +52,15 @@ public class PageResult<T> {
 
     public void setHasNext(boolean hasNext) {
         this.hasNext = hasNext;
+    }
+
+    @Override
+    public String toString() {
+        return "PageResult{" +
+                "items=" + JsonUtils.objectToJson(items) +
+                ", nextCursor=" + nextCursor +
+                ", hasPrevious=" + hasPrevious +
+                ", hasNext=" + hasNext +
+                '}';
     }
 }

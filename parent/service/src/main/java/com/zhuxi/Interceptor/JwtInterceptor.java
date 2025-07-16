@@ -44,22 +44,17 @@ public class JwtInterceptor implements HandlerInterceptor {
         if(token !=null && !token.isBlank()){
             token  = token.replaceFirst("(?i)Bearer\\s*", "");
             if(!jwtUtils.verifyToken( token)){
-                // 手动回复响应
-                response.setStatus(401);
-                response.getWriter().write(Message.JWT_ERROR);
-                return false;
+                throw new JwtException(Message.JWT_ERROR);
             }
 
         }else{
             log.warn("Token is null");
-            response.setStatus(401);
-            response.getWriter().write(Message.JWT_IS_NULL);
-            return false;
+            throw new JwtException(Message.JWT_IS_NULL);
         }
 
         Claims claims = jwtUtils.parseToken(token);
         // 获取时间戳
-        long timestamp = claims.getIssuedAt().getTime();
+        long timestamp = claims.getExpiration().getTime();
         long timeNow = System.currentTimeMillis();
         if( timeNow > timestamp){
             throw new JwtException(Message.JWT_IS_OVER_TIME);
@@ -68,7 +63,4 @@ public class JwtInterceptor implements HandlerInterceptor {
 
         return true;
     }
-
-
-
 }

@@ -7,12 +7,21 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="372da862-f7c4-4fa2-93c3-bf2ac1fe9e6e" name="更改" comment="feat(payment): 实现用户端支付功能并添加 Redis 配置- 新增 PayController、PayDTO、PayMapper、PayService等相关类和接口&#10;- 实现订单支付的业务逻辑，包括更新订单状态、库存锁定和支付信息&#10;- 添加 Redis 配置类和 RedisTemplate Bean&#10;-优化 JWT 验证和异常处理逻辑">
+    <list default="true" id="372da862-f7c4-4fa2-93c3-bf2ac1fe9e6e" name="更改" comment="优化拦截路径 &#10;构建redis基础模块">
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/config/RedisConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/config/RedisConfig.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/parent/service/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/Constant/Message.java" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/Constant/Message.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/Exception/JwtException.java" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/Exception/JwtException.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/Interceptor/JwtInterceptor.java" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/Interceptor/JwtInterceptor.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/Result/PageResult.java" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/Result/PageResult.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/handler/GlobalExceptionHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/handler/GlobalExceptionHandler.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/service/Impl/ProductServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/service/Impl/ProductServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/utils/JwtUtils.java" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/utils/JwtUtils.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/utils/RedisUntil.java" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/utils/RedisUntil.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/parent/service/src/main/resources/application.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/src/main/resources/application.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/parent/service/src/test/java/com/zhuxi/service/ServiceApplicationTests.java" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/src/test/java/com/zhuxi/service/ServiceApplicationTests.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/Constant/Message.class" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/Constant/Message.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/Exception/JwtException.class" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/Exception/JwtException.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/handler/GlobalExceptionHandler.class" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/handler/GlobalExceptionHandler.class" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -67,6 +76,7 @@
     <option name="selectedTabId" value="CurrentFile" />
   </component>
   <component name="ProjectColorInfo">{
+  &quot;customColor&quot;: &quot;9dfff3ff&quot;,
   &quot;associatedIndex&quot;: 7
 }</component>
   <component name="ProjectId" id="2yM1WdUyiYWajdGAp4RixDBgbQp" />
@@ -78,46 +88,49 @@
     <option name="showLibraryContents" value="true" />
     <option name="showScratchesAndConsoles" value="false" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "JUnit.ServiceApplicationTests.contextLoads.executor": "Run",
-    "JUnit.ServiceApplicationTests.executor": "Run",
-    "JUnit.service中的com.zhuxi.Interceptor.executor": "Run",
-    "Notification.DisplayName-DoNotAsk-Database detector": "数据库检测器",
-    "Notification.DoNotAsk-Database detector": "true",
-    "RequestMappingsPanelOrder0": "0",
-    "RequestMappingsPanelOrder1": "1",
-    "RequestMappingsPanelWidth0": "75",
-    "RequestMappingsPanelWidth1": "75",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
-    "Spring Boot.ParentApplication.executor": "Run",
-    "Spring Boot.ServiceApplication.executor": "Run",
-    "git-widget-placeholder": "main",
-    "jdk.selected.JAVA_MODULE": "17",
-    "last_opened_file_path": "D:/IDEA/mini-program/parent/service/src/main/resources/mapper",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "project.structure.last.edited": "模块",
-    "project.structure.proportion": "0.15527344",
-    "project.structure.side.proportion": "0.2",
-    "run.configurations.included.in.services": "true",
-    "service.view.auto.scroll.to.source": "true",
-    "settings.editor.selected.configurable": "preferences.pluginManager",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;JUnit.ServiceApplicationTests.contextLoads.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.ServiceApplicationTests.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.service中的com.zhuxi.Interceptor.executor&quot;: &quot;Run&quot;,
+    &quot;Notification.DisplayName-DoNotAsk-Database detector&quot;: &quot;数据库检测器&quot;,
+    &quot;Notification.DoNotAsk-Database detector&quot;: &quot;true&quot;,
+    &quot;RequestMappingsPanelOrder0&quot;: &quot;0&quot;,
+    &quot;RequestMappingsPanelOrder1&quot;: &quot;1&quot;,
+    &quot;RequestMappingsPanelWidth0&quot;: &quot;75&quot;,
+    &quot;RequestMappingsPanelWidth1&quot;: &quot;75&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
+    &quot;Spring Boot.ParentApplication.executor&quot;: &quot;Run&quot;,
+    &quot;Spring Boot.ServiceApplication.executor&quot;: &quot;Run&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
+    &quot;jdk.selected.JAVA_MODULE&quot;: &quot;17&quot;,
+    &quot;last_opened_file_path&quot;: &quot;D:/IDEA/mini-program/parent/service/src/main/resources/mapper&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;project.structure.last.edited&quot;: &quot;模块&quot;,
+    &quot;project.structure.proportion&quot;: &quot;0.15527344&quot;,
+    &quot;project.structure.side.proportion&quot;: &quot;0.2&quot;,
+    &quot;run.configurations.included.in.services&quot;: &quot;true&quot;,
+    &quot;service.view.auto.scroll.to.source&quot;: &quot;true&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.pluginManager&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   },
-  "keyToStringList": {
-    "DatabaseDriversLRU": [
-      "mysql"
+  &quot;keyToStringList&quot;: {
+    &quot;DatabaseDriversLRU&quot;: [
+      &quot;mysql&quot;
     ],
-    "com.intellij.ide.scratch.LRUPopupBuilder$1/SQL 方言": [
-      "MySQL"
+    &quot;com.intellij.ide.scratch.LRUPopupBuilder$1/SQL 方言&quot;: [
+      &quot;MySQL&quot;
     ]
   }
-}]]></component>
+}</component>
+  <component name="ReactorSettings">
+    <option name="notificationShown" value="true" />
+  </component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
       <recent name="D:\IDEA\mini-program\parent\service\src\main\resources" />
@@ -230,6 +243,9 @@
       <workItem from="1752545389838" duration="4652000" />
       <workItem from="1752565537037" duration="609000" />
       <workItem from="1752571134704" duration="605000" />
+      <workItem from="1752571748328" duration="85000" />
+      <workItem from="1752639141544" duration="3344000" />
+      <workItem from="1752642520154" duration="12968000" />
     </task>
     <task id="LOCAL-00001" summary="d">
       <option name="closed" value="true" />
@@ -431,7 +447,15 @@
       <option name="project" value="LOCAL" />
       <updated>1752551255672</updated>
     </task>
-    <option name="localTasksCounter" value="26" />
+    <task id="LOCAL-00026" summary="优化拦截路径 &#10;构建redis基础模块">
+      <option name="closed" value="true" />
+      <created>1752571797050</created>
+      <option name="number" value="00026" />
+      <option name="presentableId" value="LOCAL-00026" />
+      <option name="project" value="LOCAL" />
+      <updated>1752571797050</updated>
+    </task>
+    <option name="localTasksCounter" value="27" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -449,7 +473,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="添加管理模块&#10;添加jwt等工具类&#10;完善响应消息Message等" />
     <MESSAGE value="完善管理端模块&#10;添加权限限制模块&#10;添加完整的jwt&#10;添加客户端的框架" />
     <MESSAGE value="添加并完善购物车模块&#10;修正部分消息提示问题&#10;规整部分目录分类" />
     <MESSAGE value="feat(database): 更新数据库模型&#10;&#10;- 新增 article、order、order_item、user_address 表&#10;- 更新 admin、cart、product、user表的结构&#10;- 添加新的视图 cart_view、product_stock_status、user_summary&#10;- 调整表和字段的注释&#10;- 更新字段类型和约束&#10;- 完善各个模块&#10;- 添加用户地址模块" />
@@ -474,7 +497,8 @@
     <MESSAGE value="feat(security): 添加 XSS防护过滤器&#10;&#10;- 在 pom.xml 中添加 jsoup 依赖- 新增 SecurityConfig 配置类，注册 XSSFilter&#10;- 实现 XSSFilter 类，对请求参数进行 XSS 清洗&#10;- 使用 Jsoup 进行 HTML 内容的安全清理" />
     <MESSAGE value="feat(security): 增加 JWT 过期异常处理并优化拦截器逻辑&#10;&#10;- 在 GlobalExceptionHandler 中添加 JwtException 和 JsonProcessingException 的异常处理&#10;- 重构 JwtInterceptor 中的 token 解析逻辑，增加过期时间检查&#10;- 更新 JwtUtils 中的 parseToken 方法，捕获并抛出 JwtException- 在 Message 中添加 JWT 过期的错误信息&#10;-调整 WebMvcConfig，注册 JwtInterceptor 拦截器" />
     <MESSAGE value="feat(payment): 实现用户端支付功能并添加 Redis 配置- 新增 PayController、PayDTO、PayMapper、PayService等相关类和接口&#10;- 实现订单支付的业务逻辑，包括更新订单状态、库存锁定和支付信息&#10;- 添加 Redis 配置类和 RedisTemplate Bean&#10;-优化 JWT 验证和异常处理逻辑" />
-    <option name="LAST_COMMIT_MESSAGE" value="feat(payment): 实现用户端支付功能并添加 Redis 配置- 新增 PayController、PayDTO、PayMapper、PayService等相关类和接口&#10;- 实现订单支付的业务逻辑，包括更新订单状态、库存锁定和支付信息&#10;- 添加 Redis 配置类和 RedisTemplate Bean&#10;-优化 JWT 验证和异常处理逻辑" />
+    <MESSAGE value="优化拦截路径 &#10;构建redis基础模块" />
+    <option name="LAST_COMMIT_MESSAGE" value="优化拦截路径 &#10;构建redis基础模块" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

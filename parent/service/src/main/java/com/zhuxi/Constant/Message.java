@@ -4,7 +4,7 @@ public class Message {
 
     public static final String OPERATION_ERROR = "操作失败";
     public static final String USER_NOT_LOGIN = "未登录";
-    public static final String JWT_ERROR = "jwt错误";
+    public static final String JWT_ERROR = "jwt错误或不合法";
     public static final String JWT_IS_NULL = "jwt为null";
     public static final String JWT_DATA_ERROR = "jwt字段错误";
     public static final String ID_GENERATE_ERROR = "编号生成出错";

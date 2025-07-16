@@ -2,6 +2,7 @@ package com.zhuxi.handler;
 
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.zhuxi.Exception.JsonException;
 import com.zhuxi.Result.Result;
 import com.zhuxi.Exception.transactionalException;
 import com.zhuxi.Exception.JwtException;
@@ -20,8 +21,16 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler({JwtException.class, JsonProcessingException.class })
-    public String handleJwtException(JwtException e){
+    public Result<Void> handleJwtException(JwtException e){
         log.warn("---- Jwt error ----");
-        return "Jwt error :" + e.getMessage();
+        log.warn("{}",e.getMessage());
+        return Result.error("Jwt error :" + e.getMessage());
+    }
+
+    @ExceptionHandler(JsonException.class)
+    public Result<Void> handlerJsonException(JsonException e){
+        log.warn("---- Json error ----");
+        log.warn("{}",e.getMessage());
+        return Result.error("Json error :" + e.getMessage());
     }
 }
