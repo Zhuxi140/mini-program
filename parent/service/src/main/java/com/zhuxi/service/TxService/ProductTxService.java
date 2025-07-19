@@ -19,6 +19,8 @@ import src.main.java.com.zhuxi.pojo.VO.Product.ProductOverviewVO;
 import src.main.java.com.zhuxi.pojo.VO.Product.ProductSpecDetailVO;
 import src.main.java.com.zhuxi.pojo.VO.Product.ProductSpecVO;
 
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.List;
 
 
@@ -57,13 +59,38 @@ public class ProductTxService {
     }
 
     @Transactional(readOnly = true)
-    public List<ProductOverviewVO> getListProducts(Long lastId,Integer pageSize){
-        List<ProductOverviewVO> listProducts = productMapper.getListProducts(lastId, pageSize);
+    public List<ProductOverviewVO> getListProductsByCreate(LocalDateTime dateTime, Integer pageSize){
+        List<ProductOverviewVO> listProducts = productMapper.getListProductByCreate(dateTime, pageSize);
 
         if (listProducts == null)
             throw new transactionalException(Message.SELECT_ERROR);
 
         return listProducts;
+    }
+
+    @Transactional(readOnly = true)
+    public List<ProductOverviewVO> getListProductByPriceDESC(BigDecimal price, Integer pageSize){
+        List<ProductOverviewVO> listProducts = productMapper.getListProductByPriceDESC(price, pageSize);
+
+        if (listProducts == null)
+            throw new transactionalException(Message.SELECT_ERROR);
+
+        return listProducts;
+    }
+
+    @Transactional(readOnly = true)
+    public List<ProductOverviewVO> getListProductByPriceASC(BigDecimal price, Integer pageSize){
+        List<ProductOverviewVO> listProducts = productMapper.getListProductByPriceASC(price, pageSize);
+
+        if (listProducts == null)
+            throw new transactionalException(Message.SELECT_ERROR);
+
+        return listProducts;
+    }
+
+    @Transactional(readOnly = true)
+    public List<ProductOverviewVO> getListProduct(Long lastId,Integer pageSize){
+        return productMapper.getListProduct(lastId, pageSize);
     }
 
     @Transactional(readOnly = true)

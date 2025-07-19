@@ -67,7 +67,7 @@ public class XSSFilter implements Filter {
             cleaned = cleaned.replaceAll("[\u0000-\u001F]", "");
 
             if(value.equals(cleaned)){
-                log.warn("XSS is triggered: before-Value{}  after-Value{}", value, cleaned);
+                log.debug("XSS is triggered: before-Value{}  after-Value{}", value, cleaned);
             }
             return cleaned;
         }

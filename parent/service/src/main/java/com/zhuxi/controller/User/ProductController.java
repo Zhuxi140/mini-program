@@ -2,6 +2,7 @@ package com.zhuxi.controller.User;
 
 
 import com.zhuxi.Result.PageResult;
+import com.zhuxi.Result.ProductPageResult;
 import com.zhuxi.Result.Result;
 import com.zhuxi.annotation.RequireRole;
 import com.zhuxi.service.ProductService;
@@ -14,6 +15,8 @@ import src.main.java.com.zhuxi.pojo.VO.Product.ProductOverviewVO;
 import src.main.java.com.zhuxi.pojo.VO.Product.ProductSpecVO;
 import src.main.java.com.zhuxi.pojo.entity.Role;
 
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
@@ -33,12 +36,20 @@ public class ProductController {
             summary = "获取商品列表接口",
             description = "商品展示"
     )
-    public Result<PageResult<ProductOverviewVO>> getListProducts(
-            @Parameter(description = "商品id(第一次不用给，后续根据json给值)", required = true)
-            Long lastId,
-            @Parameter(description = "分页大小(后端默认为10)", required = false)
-            @RequestParam(defaultValue = "10") Integer pageSize){
-        return productService.getListProducts(lastId, pageSize);
+    public Result<ProductPageResult<ProductOverviewVO>> getListProducts(
+            @Parameter(description = "下一页的游标(第一次不用给，后续根据json给值)", required = true)
+            Double lastScore,
+            @Parameter(description = "分页大小(后端默认为10)", hidden = true)
+            @RequestParam(defaultValue = "10") Integer pageSize,
+            @Parameter(description = "商品类型(1:默认序列，2:按价格低到高排序  3:按价格高到低排序)  默认为1", required = true)
+            @RequestParam(defaultValue = "1")
+            Integer type,
+            @Parameter(description = "本页最后一条数据的id(第一次不用给，后续根据json给值)")
+            Long lastId
+
+    )
+    {
+        return productService.getListProducts(lastScore, pageSize,type,lastId);
     }
 
     @GetMapping("/{id}")

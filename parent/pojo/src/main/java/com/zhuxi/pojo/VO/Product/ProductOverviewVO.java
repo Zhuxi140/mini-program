@@ -1,8 +1,11 @@
 package src.main.java.com.zhuxi.pojo.VO.Product;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 
 public class ProductOverviewVO {
 
@@ -14,13 +17,17 @@ public class ProductOverviewVO {
     private BigDecimal price;
     @Schema(description = "商品封面图片")
     private String coverUrl;
+    @JsonIgnore
+    @Schema(description = "商品创建时间")
+    private LocalDateTime createdAt;
 
 
-    public ProductOverviewVO(Long id, String name, BigDecimal price, String coverUrl) {
+    public ProductOverviewVO(Long id, String name, BigDecimal price, String coverUrl, LocalDateTime createdAt) {
         this.id = id;
         this.name = name;
         this.price = price;
         this.coverUrl = coverUrl;
+        this.createdAt = createdAt;
     }
 
     public ProductOverviewVO() {
@@ -57,4 +64,14 @@ public class ProductOverviewVO {
     public void setCoverUrl(String coverUrl) {
         this.coverUrl = coverUrl;
     }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createAt) {
+        this.createdAt = createAt;
+    }
+
+
 }

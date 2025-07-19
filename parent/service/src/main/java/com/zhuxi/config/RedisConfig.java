@@ -1,5 +1,5 @@
-/*
 package com.zhuxi.config;
+
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -15,15 +15,16 @@ public class RedisConfig {
     public RedisTemplate<String,Object> redisTemplate(RedisConnectionFactory factory){
         RedisTemplate<String, Object> RedisTemplate = new RedisTemplate<>();
         RedisTemplate.setConnectionFactory( factory);
-        GenericJackson2JsonRedisSerializer genericJackson2JsonRedisSerializer = new GenericJackson2JsonRedisSerializer();
-
+        GenericJackson2JsonRedisSerializer json = new GenericJackson2JsonRedisSerializer();
         RedisTemplate.setKeySerializer(RedisSerializer.string());
         RedisTemplate.setHashKeySerializer(RedisSerializer.string());
 
-        RedisTemplate.setValueSerializer(genericJackson2JsonRedisSerializer);
-        RedisTemplate.setHashValueSerializer(genericJackson2JsonRedisSerializer);
+        RedisTemplate.setValueSerializer(json);
+        RedisTemplate.setHashValueSerializer(json);
 
+        RedisTemplate.afterPropertiesSet();
         return RedisTemplate;
     }
+
+
 }
-*/

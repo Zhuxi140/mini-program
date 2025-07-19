@@ -9,6 +9,8 @@ import jakarta.annotation.PostConstruct;
 import org.apache.catalina.connector.Response;
 import org.springframework.stereotype.Component;
 
+import java.util.Map;
+
 @Component
 public class JsonUtils {
 
@@ -24,6 +26,9 @@ public class JsonUtils {
     public void init(){
         objectMapper = springObjectMapper;
     }
+
+
+
 
 
     //将Json字符串转换成对象
@@ -52,4 +57,12 @@ public class JsonUtils {
             throw new JsonException(e.getMessage());
         }
     }
+
+    //将map转换为对象
+    public static <T> T mapToObject(Map<?,?> map, Class<T> clazz){
+        return objectMapper.convertValue(map, clazz);
+    }
+
+
+
 }

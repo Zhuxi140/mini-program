@@ -1,49 +1,144 @@
 package com.zhuxi.service.RedisCache;
 
-import cn.hutool.core.util.StrUtil;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.zhuxi.Result.PageResult;
-import com.zhuxi.utils.JsonUtils;
 import com.zhuxi.utils.RedisUntil;
 import com.zhuxi.utils.properties.RedisCacheProperties;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.redis.core.ZSetOperations;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 import src.main.java.com.zhuxi.pojo.VO.Product.ProductOverviewVO;
+import java.math.BigDecimal;
+import java.sql.Array;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.*;
+import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 
+@Slf4j
 @Service
 public class ProductRedisCache {
 
     private final RedisUntil redisUntil;
-    private final RedisCacheProperties redisCacheProperties;
+    private final RedisCacheProperties rCP;
 
-    public ProductRedisCache(RedisUntil redisUntil, RedisCacheProperties redisCacheProperties) {
+    public ProductRedisCache(RedisUntil redisUntil, RedisCacheProperties rCP) {
         this.redisUntil = redisUntil;
-        this.redisCacheProperties = redisCacheProperties;
+        this.rCP = rCP;
     }
 
-    // 获取商品列表缓存的key
-    public String BuildKey(Long lastId, Integer pageSize,boolean first){
-        if(first){
-            String firstRedisKey = "first";
-            return StrUtil.format(redisCacheProperties.getProductCache().getKeyPrefix(),firstRedisKey, pageSize);
-        }else{
-            return StrUtil.format(redisCacheProperties.getProductCache().getKeyPrefix(),lastId, pageSize);
+
+
+    public String getSortPriceKey(){
+        return rCP.getProductCache().getZSetPrefix() + ":price:asc";
+    }
+
+    public String getSortCreateDesc(){
+        return rCP.getProductCache().getZSetPrefix() + ":create:" + "desc";
+    }
+
+    public String getProductDetailKey(String productId){
+        return rCP.getProductCache().getHashPrefix() + ":" + productId;
+    }
+
+
+    public Set<ZSetOperations.TypedTuple<Object>> getListProductsIds(String key, Integer type, Double lastScore, Integer pageSize){
+
+            Set<ZSetOperations.TypedTuple<Object>> IdResults = null;
+            switch ( type){
+                case 1, 3:{
+                    IdResults = redisUntil.ZSetReverseRangeScore(key,lastScore ==  0D ? Double.POSITIVE_INFINITY : lastScore,pageSize);
+                }
+                    break;
+                case 2:{
+                    IdResults = redisUntil.ZSetRangeScore(key,lastScore == 0D ? Double.POSITIVE_INFINITY : lastScore,pageSize);
+                }
+                    break;
+            }
+
+            if (CollectionUtils.isEmpty(IdResults)){
+                log.error("获取的商品缓存id为null");
+                return null;
+            }
+        return IdResults;
+    }
+
+    public Double getLastScore(Set<ZSetOperations.TypedTuple<Object>>  Score){
+        if(CollectionUtils.isEmpty( Score)){
+            return null;
+        }
+        ArrayList<ZSetOperations.TypedTuple<Object>> list = new ArrayList<>(Score);
+        return list.get(list.size() - 1).getScore();
+    }
+
+    public List<ProductOverviewVO> getListProductsCache(Set<ZSetOperations.TypedTuple<Object>>  Score,Integer pageSize){
+        Set<String> productIds = Score.stream().limit(pageSize).map(t -> Objects.requireNonNull(t.getValue()).toString()).collect(Collectors.toCollection(LinkedHashSet::new));
+
+        List<String> collect = productIds.stream()
+                .map(this::getProductDetailKey)
+                .toList();
+        Collection<Object> fieldCollection = new ArrayList<>(Arrays.asList("id", "name", "price", "coverUrl","createAt"));
+
+        List<Object> results = redisUntil.executePipeline(pipe -> {
+            collect.forEach(key -> pipe.opsForHash().multiGet(key, fieldCollection));
+        });
+
+        if (CollectionUtils.isEmpty(results)){
+            return null;
         }
 
+        List<ProductOverviewVO> list1 = results.stream().map(map -> {
+            List<Object> list = (List<Object>) map;
+            ProductOverviewVO pOVO = new ProductOverviewVO();
+            pOVO.setId(Long.parseLong((String) list.get(0)));
+            pOVO.setName((String) list.get(1));
+            pOVO.setPrice(new BigDecimal((String) list.get(2)));
+            pOVO.setCoverUrl((String) list.get(3));
+            LocalDateTime localDateTime = Instant.ofEpochMilli((Long) list.get(4)).atZone(ZoneId.systemDefault()).toLocalDateTime();
+            pOVO.setCreatedAt(localDateTime);
+            return pOVO;
+        }).toList();
+
+        return list1;
+
     }
 
-    // 获取商品列表缓存
-    public PageResult<ProductOverviewVO> getListProductsCache(String format){
-        String stringValue = redisUntil.getStringValue(format);
-        if (stringValue != null){
-            return JsonUtils.jsonToObject(stringValue, new TypeReference<PageResult<ProductOverviewVO>>() {});
-        }
-        return null;
+    public void syncProduct(List<ProductOverviewVO> product){
+        log.warn("------syncProduct start------");
+        redisUntil.executePipeline(pipe-> {
+            product.forEach(p->{
+                long epochMilli = p.getCreatedAt().atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
+                Long id = p.getId();
+                String productId = id.toString();
+                double createMilli = epochMilli / 1000.0 + ((double) id / 10000000);
+                BigDecimal price = p.getPrice();
+                double priceMixTime = price.doubleValue() + (id % 10000 / 10000000000.0);
+                String priceStr = price.toPlainString();
+                String productDetailKey = getProductDetailKey(productId);
+                String sortPriceASC = getSortPriceKey();
+                String sortCreateDesc = getSortCreateDesc();
+
+
+                pipe.opsForHash().putAll(productDetailKey,Map.of(
+                        "id",productId,
+                        "name",p.getName(),
+                        "coverUrl",p.getCoverUrl(),
+                        "price",priceStr,
+                        "createAt",epochMilli
+                ));
+
+
+                pipe.opsForZSet().add(sortCreateDesc,productId,createMilli);
+                pipe.opsForZSet().add(sortPriceASC,productId,priceMixTime);
+
+                pipe.expire(productDetailKey,rCP.getProductCache().getDetailTTL(), TimeUnit.DAYS);
+                pipe.expire(sortCreateDesc,rCP.getProductCache().getCreateTTL(), TimeUnit.DAYS);
+                pipe.expire(sortPriceASC,rCP.getProductCache().getPriceTTL(), TimeUnit.HOURS);
+            });
+        });
     }
 
-    // 写入商品列表缓存
-    public void setProductsToRedis(PageResult<ProductOverviewVO> pageResult,String format){
-        String json = JsonUtils.objectToJson(pageResult);
-        redisUntil.setStringValue(format,json, redisCacheProperties.getProductCache().getTTL());
-    }
+
 }

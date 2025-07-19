@@ -10,6 +10,8 @@ spring:
     url: jdbc:mysql://rm-bp1hc14ug996jtc22ko.mysql.rds.aliyuncs.com:3306/mini_program?rewriteBatchedStatements=true
     username: Zhu
     password: Zhu123456
+
+
   web:
     resources:
       static-locations:
@@ -17,20 +19,23 @@ spring:
   # 环境配置
   profiles:
     active: dev
-
 # redis配置
   data:
     redis:
       lettuce:
         pool:
-          max-idle: 8 # 最大空闲连接数
-          max-wait: 1000
-          max-active: 8
-          min-idle: 0 # 最小空闲连接数
+          max-idle: 50 # 最大空闲连接数
+          max-wait: 50
+          max-active: 100
+          min-idle: 20 # 最小空闲连接数
+          time-between-eviction-runs: 30 # 连接空闲时间
+        shutdown-timeout: 100   # 关闭连接等待时间
       host: r-bp1j86kgker8z46dxmpd.redis.rds.aliyuncs.com
       port: 6379
       password: qwEr123456
       username: r-bp1j86kgker8z46dxm
+#      host: 192.168.186.128
+#      password: 123456
 
 
 # mybatis配置

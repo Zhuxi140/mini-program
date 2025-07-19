@@ -10,12 +10,20 @@ import src.main.java.com.zhuxi.pojo.VO.Product.ProductOverviewVO;
 import src.main.java.com.zhuxi.pojo.VO.Product.ProductSpecDetailVO;
 import src.main.java.com.zhuxi.pojo.VO.Product.ProductSpecVO;
 
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Mapper
 public interface ProductMapper {
 
-    List<ProductOverviewVO> getListProducts(Long lastId, Integer pageSize);
+    List<ProductOverviewVO> getListProductByCreate(LocalDateTime dateTime, Integer pageSize);
+
+    List<ProductOverviewVO> getListProductByPriceDESC(BigDecimal price, Integer pageSize);
+
+    List<ProductOverviewVO> getListProductByPriceASC(BigDecimal price, Integer pageSize);
+
+    List<ProductOverviewVO> getListProduct(Long lastId, Integer pageSize);
 
     List<AdminProductVO>  getListAdminProductsDESC(Long lastId , Integer pageSize);
 
