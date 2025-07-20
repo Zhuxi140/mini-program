@@ -4,10 +4,6 @@ public class JsonException extends RuntimeException{
 
     private final int code;
 
-    public JsonException(int code) {
-        this.code = code;
-    }
-
     public JsonException(String message) {
         super(message);
         this.code = 500;

@@ -7,27 +7,45 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="372da862-f7c4-4fa2-93c3-bf2ac1fe9e6e" name="更改" comment="perf(service): 优化 Redis 连接池配置&#10;&#10;- 修改 Redis连接池参数，提高最大空闲连接数和最大活跃连接数&#10;- 增加连接空闲时间和关闭连接等待时间配置- 调整日志级别为 info&#10;- 创建商品Redis模块&#10;- 为获取商品列表添加Redis缓存 并添加兜底逻辑&#10;- 构建冷启动模块 预加载数据到Redis">
-      <change beforePath="$PROJECT_DIR$/.idea/dataSources.local.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources.local.xml" afterDir="false" />
+    <list default="true" id="372da862-f7c4-4fa2-93c3-bf2ac1fe9e6e" name="更改" comment="refactor(product): 重构商品列表查询逻辑&#10;&#10;- 修改了 ProductController 中的参数接收方式，增加了 isLast 参数&#10;- 重构了 ProductService 接口，更新了 getListProducts 方法签名&#10;- 实现了 ProductServiceImpl 中的列表查询逻辑，包括缓存命中和兜底查询- 更新了 ProductMapper 接口和 XML 文件中的 SQL 查询&#10;- 优化了 RedisCache 相关操作，增加了 lastScore 和 type 参数">
+      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/parent/src/main/java/com/zhuxi/pojo/VO/Product/ProductOverviewVO.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/parent/src/main/java/com/zhuxi/pojo/VO/Product/ProductOverviewVO.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/ApplicationRunner/RedistPreheater.java" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/ApplicationRunner/RedistPreheater.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/Result/ProductPageResult.java" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/Result/ProductPageResult.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/parent/src/main/java/com/zhuxi/pojo/VO/Product/ProductDetailVO.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/parent/src/main/java/com/zhuxi/pojo/VO/Product/ProductDetailVO.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/parent/pojo/src/main/java/com/zhuxi/pojo/VO/Product/ProductDetailVO.java" beforeDir="false" afterPath="$PROJECT_DIR$/parent/pojo/src/main/java/com/zhuxi/pojo/VO/Product/ProductDetailVO.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/parent/service/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/ApplicationRunner/InitializationCoordinator.java" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/ApplicationRunner/InitializationCoordinator.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/ApplicationRunner/ProductDataLoader.java" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/ApplicationRunner/ProductDataLoader.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/Exception/JsonException.java" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/Exception/JsonException.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/config/RedisConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/config/RedisConfig.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/config/SecurityConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/config/SecurityConfig.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/controller/User/ProductController.java" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/controller/User/ProductController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/handler/GlobalExceptionHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/handler/GlobalExceptionHandler.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/mapper/OrderMapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/mapper/OrderMapper.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/mapper/ProductMapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/mapper/ProductMapper.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/mapper/UserMapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/mapper/UserMapper.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/service/Impl/ProductServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/service/Impl/ProductServiceImpl.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/service/ProductService.java" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/service/ProductService.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/service/RedisCache/ProductRedisCache.java" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/service/RedisCache/ProductRedisCache.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/service/TxService/OrderTxService.java" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/service/TxService/OrderTxService.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/service/TxService/ProductTxService.java" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/service/TxService/ProductTxService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/service/TxService/UserTxService.java" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/service/TxService/UserTxService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/utils/JsonUtils.java" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/utils/JsonUtils.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/utils/RedisUntil.java" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/utils/RedisUntil.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/utils/properties/RedisCacheProperties.java" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/utils/properties/RedisCacheProperties.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/parent/service/src/main/resources/application.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/src/main/resources/application.yaml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/parent/service/src/main/resources/mapper/ProductMapper.xml" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/src/main/resources/mapper/ProductMapper.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/Filter/XssSafeRequestWrapper.class" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/Filter/XssSafeRequestWrapper.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/parent/service/target/classes/application.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/target/classes/application.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/config/SecurityConfig.class" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/config/SecurityConfig.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/controller/User/ProductController.class" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/controller/User/ProductController.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/handler/GlobalExceptionHandler.class" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/handler/GlobalExceptionHandler.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/mapper/OrderMapper.class" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/mapper/OrderMapper.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/mapper/ProductMapper.class" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/mapper/ProductMapper.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/mapper/UserMapper.class" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/mapper/UserMapper.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/service/Impl/ProductServiceImpl.class" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/service/Impl/ProductServiceImpl.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/service/ProductService.class" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/service/ProductService.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/service/TxService/OrderTxService.class" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/service/TxService/OrderTxService.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/service/TxService/ProductTxService.class" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/service/TxService/ProductTxService.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/service/TxService/UserTxService.class" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/service/TxService/UserTxService.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/parent/service/target/classes/mapper/ProductMapper.xml" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/target/classes/mapper/ProductMapper.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -38,10 +56,10 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
-        <option value="AnnotationType" />
         <option value="Enum" />
         <option value="Interface" />
         <option value="Mybatis Mapper" />
+        <option value="AnnotationType" />
         <option value="Exception" />
         <option value="Class" />
       </list>
@@ -94,46 +112,46 @@
     <option name="showLibraryContents" value="true" />
     <option name="showScratchesAndConsoles" value="false" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;JUnit.ServiceApplicationTests.contextLoads.executor&quot;: &quot;Run&quot;,
-    &quot;JUnit.ServiceApplicationTests.executor&quot;: &quot;Run&quot;,
-    &quot;JUnit.service中的com.zhuxi.Interceptor.executor&quot;: &quot;Run&quot;,
-    &quot;Notification.DisplayName-DoNotAsk-Database detector&quot;: &quot;数据库检测器&quot;,
-    &quot;Notification.DoNotAsk-Database detector&quot;: &quot;true&quot;,
-    &quot;RequestMappingsPanelOrder0&quot;: &quot;0&quot;,
-    &quot;RequestMappingsPanelOrder1&quot;: &quot;1&quot;,
-    &quot;RequestMappingsPanelWidth0&quot;: &quot;75&quot;,
-    &quot;RequestMappingsPanelWidth1&quot;: &quot;75&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
-    &quot;Spring Boot.ParentApplication.executor&quot;: &quot;Run&quot;,
-    &quot;Spring Boot.ServiceApplication.executor&quot;: &quot;Run&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
-    &quot;jdk.selected.JAVA_MODULE&quot;: &quot;17&quot;,
-    &quot;last_opened_file_path&quot;: &quot;D:/IDEA/mini-program/parent/service/src/main/resources/mapper&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;project.structure.last.edited&quot;: &quot;模块&quot;,
-    &quot;project.structure.proportion&quot;: &quot;0.15527344&quot;,
-    &quot;project.structure.side.proportion&quot;: &quot;0.5173611&quot;,
-    &quot;run.configurations.included.in.services&quot;: &quot;true&quot;,
-    &quot;service.view.auto.scroll.to.source&quot;: &quot;true&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.pluginManager&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "JUnit.ServiceApplicationTests.contextLoads.executor": "Run",
+    "JUnit.ServiceApplicationTests.executor": "Run",
+    "JUnit.service中的com.zhuxi.Interceptor.executor": "Run",
+    "Notification.DisplayName-DoNotAsk-Database detector": "数据库检测器",
+    "Notification.DoNotAsk-Database detector": "true",
+    "RequestMappingsPanelOrder0": "0",
+    "RequestMappingsPanelOrder1": "1",
+    "RequestMappingsPanelWidth0": "75",
+    "RequestMappingsPanelWidth1": "75",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "Spring Boot.ParentApplication.executor": "Run",
+    "Spring Boot.ServiceApplication.executor": "Run",
+    "git-widget-placeholder": "main",
+    "jdk.selected.JAVA_MODULE": "17",
+    "last_opened_file_path": "D:/IDEA/mini-program/parent/service/src/main/resources/mapper",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "project.structure.last.edited": "模块",
+    "project.structure.proportion": "0.15527344",
+    "project.structure.side.proportion": "0.5173611",
+    "run.configurations.included.in.services": "true",
+    "service.view.auto.scroll.to.source": "true",
+    "settings.editor.selected.configurable": "preferences.pluginManager",
+    "vue.rearranger.settings.migration": "true"
   },
-  &quot;keyToStringList&quot;: {
-    &quot;DatabaseDriversLRU&quot;: [
-      &quot;mysql&quot;
+  "keyToStringList": {
+    "DatabaseDriversLRU": [
+      "mysql"
     ],
-    &quot;com.intellij.ide.scratch.LRUPopupBuilder$1/SQL 方言&quot;: [
-      &quot;MySQL&quot;
+    "com.intellij.ide.scratch.LRUPopupBuilder$1/SQL 方言": [
+      "MySQL"
     ]
   }
-}</component>
+}]]></component>
   <component name="ReactorSettings">
     <option name="notificationShown" value="true" />
   </component>
@@ -273,7 +291,8 @@
       <workItem from="1752805962195" duration="17828000" />
       <workItem from="1752829242458" duration="10805000" />
       <workItem from="1752886998876" duration="44592000" />
-      <workItem from="1752969707914" duration="13209000" />
+      <workItem from="1752969707914" duration="21266000" />
+      <workItem from="1752998548127" duration="14223000" />
     </task>
     <task id="LOCAL-00001" summary="d">
       <option name="closed" value="true" />
@@ -499,7 +518,15 @@
       <option name="project" value="LOCAL" />
       <updated>1752935646397</updated>
     </task>
-    <option name="localTasksCounter" value="29" />
+    <task id="LOCAL-00029" summary="refactor(product): 重构商品列表查询逻辑&#10;&#10;- 修改了 ProductController 中的参数接收方式，增加了 isLast 参数&#10;- 重构了 ProductService 接口，更新了 getListProducts 方法签名&#10;- 实现了 ProductServiceImpl 中的列表查询逻辑，包括缓存命中和兜底查询- 更新了 ProductMapper 接口和 XML 文件中的 SQL 查询&#10;- 优化了 RedisCache 相关操作，增加了 lastScore 和 type 参数">
+      <option name="closed" value="true" />
+      <created>1752985584664</created>
+      <option name="number" value="00029" />
+      <option name="presentableId" value="LOCAL-00029" />
+      <option name="project" value="LOCAL" />
+      <updated>1752985584664</updated>
+    </task>
+    <option name="localTasksCounter" value="30" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -517,7 +544,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="feat(database): 更新数据库模型&#10;&#10;- 新增 article、order、order_item、user_address 表&#10;- 更新 admin、cart、product、user表的结构&#10;- 添加新的视图 cart_view、product_stock_status、user_summary&#10;- 调整表和字段的注释&#10;- 更新字段类型和约束&#10;- 完善各个模块&#10;- 添加用户地址模块" />
     <MESSAGE value="refactor(service): 重构服务层逻辑&#10;&#10;- 优化事务管理，提高数据一致性&#10;- 优化代码结构，提高可维护性- 改进错误处理，提升用户体验&#10;- 新增功能： - 购物车清空功能&#10;  - 用户地址相关接口&#10;  - 文章相关错误提示&#10;  -构建文章模块基础骨架" />
     <MESSAGE value="refactor(service): 重构服务模块并更新数据库 schema&#10;&#10;- 优化现有结构&#10;- 更新数据库 schema，包括添加新字段和修改现有字段&#10;- 重命名 Admin 相关的控制器类，使其更具模块化&#10;- 删除未使用的 AdminMapper.xml 文件&#10;- 更新应用配置，添加静态资源路径和调整 OSS 配置" />
     <MESSAGE value="&#10;&#10;添加OSS上传凭证获取接口" />
@@ -542,7 +568,8 @@
     <MESSAGE value="优化拦截路径 &#10;构建redis基础模块" />
     <MESSAGE value="feat(service): 优化拦截路径并构建 Redis 基础模块- 修改日志级别为 debug- 完善 JwtException 类并添加 JsonException 类&#10;- 补增一些异常的全局异常处理&#10;- 重构 JwtInterceptor 中的 token 解析逻辑- 添加 Redis 配置和 RedisTemplate Bean&#10;- 实现商品列表的 Redis 缓存&#10;- 新增 PageUtils 和 JsonUtils 工具类" />
     <MESSAGE value="perf(service): 优化 Redis 连接池配置&#10;&#10;- 修改 Redis连接池参数，提高最大空闲连接数和最大活跃连接数&#10;- 增加连接空闲时间和关闭连接等待时间配置- 调整日志级别为 info&#10;- 创建商品Redis模块&#10;- 为获取商品列表添加Redis缓存 并添加兜底逻辑&#10;- 构建冷启动模块 预加载数据到Redis" />
-    <option name="LAST_COMMIT_MESSAGE" value="perf(service): 优化 Redis 连接池配置&#10;&#10;- 修改 Redis连接池参数，提高最大空闲连接数和最大活跃连接数&#10;- 增加连接空闲时间和关闭连接等待时间配置- 调整日志级别为 info&#10;- 创建商品Redis模块&#10;- 为获取商品列表添加Redis缓存 并添加兜底逻辑&#10;- 构建冷启动模块 预加载数据到Redis" />
+    <MESSAGE value="refactor(product): 重构商品列表查询逻辑&#10;&#10;- 修改了 ProductController 中的参数接收方式，增加了 isLast 参数&#10;- 重构了 ProductService 接口，更新了 getListProducts 方法签名&#10;- 实现了 ProductServiceImpl 中的列表查询逻辑，包括缓存命中和兜底查询- 更新了 ProductMapper 接口和 XML 文件中的 SQL 查询&#10;- 优化了 RedisCache 相关操作，增加了 lastScore 和 type 参数" />
+    <option name="LAST_COMMIT_MESSAGE" value="refactor(product): 重构商品列表查询逻辑&#10;&#10;- 修改了 ProductController 中的参数接收方式，增加了 isLast 参数&#10;- 重构了 ProductService 接口，更新了 getListProducts 方法签名&#10;- 实现了 ProductServiceImpl 中的列表查询逻辑，包括缓存命中和兜底查询- 更新了 ProductMapper 接口和 XML 文件中的 SQL 查询&#10;- 优化了 RedisCache 相关操作，增加了 lastScore 和 type 参数" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

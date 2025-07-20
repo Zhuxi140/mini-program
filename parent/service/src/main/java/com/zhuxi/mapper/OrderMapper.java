@@ -1,6 +1,5 @@
 package com.zhuxi.mapper;
 
-import cn.hutool.log.Log;
 import org.apache.ibatis.annotations.*;
 import src.main.java.com.zhuxi.pojo.DTO.Order.InventoryLockAddDTO;
 import src.main.java.com.zhuxi.pojo.DTO.Order.OrderAddDTO;
@@ -156,4 +155,9 @@ public interface OrderMapper {
     //删除订单
     @Update("UPDATE `order` SET status = 7 WHERE id = #{orderId} AND user_id = #{userId}")
     int deleteOrder(Long orderId, Long userId);
+
+
+    @Select("SELECT id FROM `order` WHERE id > #{lastId} ORDER BY id LIMIT #{pageSize}")
+    List<Long> getAllOrderId(Long lastId,int pageSize);
+
 }

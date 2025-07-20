@@ -10,6 +10,8 @@ import org.springframework.transaction.annotation.Transactional;
 import src.main.java.com.zhuxi.pojo.DTO.User.UserLoginDTO;
 import src.main.java.com.zhuxi.pojo.DTO.User.UserUpdateDTO;
 
+import java.util.List;
+
 @Service
 public class UserTxService {
     private final UserMapper userMapper;
@@ -27,6 +29,10 @@ public class UserTxService {
             throw new transactionalException(Message.USER_NOT_EXIST);
 
         return userExist;
+    }
+
+    public List<Long> getAllUserId(Long lastId,int pageSize){
+        return userMapper.getAllUserId(lastId,pageSize);
     }
 
     @Transactional(rollbackFor = transactionalException.class)

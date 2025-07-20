@@ -23,7 +23,7 @@ public interface ProductMapper {
 
     List<ProductOverviewVO> getListProductByPriceASC(BigDecimal price, Integer pageSize, Long lastId);
 
-    List<ProductOverviewVO> getListProduct(Long lastId, Integer pageSize);
+    List<ProductDetailVO> getListProduct(Long lastId, Integer pageSize);
 
     List<AdminProductVO>  getListAdminProductsDESC(Long lastId , Integer pageSize);
 
@@ -105,4 +105,9 @@ public interface ProductMapper {
 
     //添加商品 封面图、详细图
     int addBasePics(String coverUrl,@Param("image") List<String> images, Long productId);
+
+
+
+    @Select("SELECT id FROM product WHERE id > #{lastId} ORDER BY id LIMIT #{pageSize}")
+    List<Long> getAllProductId(Long lastId,int pageSize);
 }

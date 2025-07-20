@@ -4,10 +4,8 @@ import com.zhuxi.service.RedisCache.ProductRedisCache;
 import com.zhuxi.service.TxService.ProductTxService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
-import src.main.java.com.zhuxi.pojo.VO.Product.ProductOverviewVO;
-
+import src.main.java.com.zhuxi.pojo.VO.Product.ProductDetailVO;
 import java.util.List;
-import java.util.Objects;
 
 @Component
 @Slf4j
@@ -22,25 +20,23 @@ public class ProductDataLoader {
     }
 
     public void initializeData() {
-        long startTime = System.currentTimeMillis();
         Long lastId = 0L;
         int batchSize = 500;
 
         while(true){
 
-            List<ProductOverviewVO> listProducts = productTxService.getListProduct(lastId,batchSize);
+            List<ProductDetailVO> listProducts = productTxService.getListProduct(lastId,batchSize);
             if (listProducts == null || listProducts.isEmpty()){
                 break;
             }
 
             lastId = listProducts.get(listProducts.size() - 1).getId();
-            productRedisCache.syncProduct(listProducts);
+            productRedisCache.syncProductInit(listProducts);
 
             if (listProducts.size() < batchSize){
                 break;
             }
         }
 
-        log.info("加载完成，共耗时:{}ms",System.currentTimeMillis() -  startTime);
     }
 }

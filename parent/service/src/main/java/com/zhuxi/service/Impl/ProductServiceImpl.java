@@ -43,7 +43,7 @@ public class ProductServiceImpl implements ProductService {
          * 获取商品列表(默认序列)
          */
         @Override
-        public Result<ProductPageResult<ProductOverviewVO>> getListProducts(Double lastScore, Integer pageSize, Integer type,Long lastId,boolean isLast) {
+        public Result<ProductPageResult<ProductOverviewVO>> getListProducts(Double lastScore, Integer pageSize, Integer type,Long lastId,Boolean isLast) {
             // 如果为最后Redis最后一页的下一页 直接执行兜底
             if (isLast){
              return noHit(lastScore, pageSize, type, lastId);
@@ -71,7 +71,7 @@ public class ProductServiceImpl implements ProductService {
                     return Result.success(Message.OPERATION_SUCCESS, PageResult);
                 }
             }
-
+            log.info("未命中Redis");
             //未命中 启用兜底 查询数据库
             return noHit(lastScore, pageSize, type, lastId);
         }
@@ -84,6 +84,10 @@ public class ProductServiceImpl implements ProductService {
 
         if(id == null)
             return Result.error(Message.ARTICLE_ID_IS_NULL);
+        ProductDetailVO cacheDetails = productRedisCache.getCacheDetails(id);
+        if (cacheDetails != null){
+            return Result.success(Message.OPERATION_SUCCESS, cacheDetails);
+        }
 
         ProductDetailVO productDetail = productTxService.getProductDetail(id);
         return Result.success(Message.OPERATION_SUCCESS, productDetail);

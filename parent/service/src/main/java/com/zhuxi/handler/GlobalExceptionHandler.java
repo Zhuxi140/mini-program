@@ -2,6 +2,7 @@ package com.zhuxi.handler;
 
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.zhuxi.Exception.BloomFilterRejectException;
 import com.zhuxi.Exception.JsonException;
 import com.zhuxi.Result.Result;
 import com.zhuxi.Exception.transactionalException;
@@ -32,5 +33,12 @@ public class GlobalExceptionHandler {
         log.warn("---- Json error ----");
         log.warn("{}",e.getMessage());
         return Result.error("Json error :" + e.getMessage());
+    }
+
+    @ExceptionHandler(BloomFilterRejectException.class)
+    public Result<Void> handlerBloomFilterRejectException(BloomFilterRejectException e){
+        log.warn("---- BloomFilterReject Hinder ----");
+        log.warn("{}",e.getMessage());
+        return Result.error("BloomFilterReject error :" + e.getMessage());
     }
 }

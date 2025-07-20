@@ -6,9 +6,9 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.zhuxi.Exception.JsonException;
 import jakarta.annotation.PostConstruct;
-import org.apache.catalina.connector.Response;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
 import java.util.Map;
 
 @Component
@@ -63,6 +63,14 @@ public class JsonUtils {
         return objectMapper.convertValue(map, clazz);
     }
 
+    //将list转换为对象
+    public static  <T> T listToObject(List<?> list, Class<T> clazz){
+        return objectMapper.convertValue(list, clazz);
+    }
+
+    public static  <T> T objectToObject(Object object, TypeReference<T> clazz){
+        return objectMapper.convertValue(object, clazz);
+    }
 
 
 }

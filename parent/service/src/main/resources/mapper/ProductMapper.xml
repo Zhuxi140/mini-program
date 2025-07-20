@@ -59,13 +59,17 @@
         ]]>
     </select>
 
-    <select id="getListProduct" resultType="src.main.java.com.zhuxi.pojo.VO.Product.ProductOverviewVO">
+    <select id="getListProduct" resultType="src.main.java.com.zhuxi.pojo.VO.Product.ProductDetailVO">
         <![CDATA[
         SELECT
             id,
             name,
             mini_price.price,
             cover_url,
+            images,
+            description,
+            status,
+            origin,
             created_at
         FROM product
                  JOIN

@@ -18,7 +18,7 @@
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
       <module name="parent" options="" />
       <module name="pojo" options="-parameters" />
-      <module name="service" options="-parameters" />
+      <module name="service" options="-parameters -parameters" />
     </option>
   </component>
 </project>

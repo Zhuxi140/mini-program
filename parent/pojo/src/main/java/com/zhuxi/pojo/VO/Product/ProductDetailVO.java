@@ -1,10 +1,14 @@
 package src.main.java.com.zhuxi.pojo.VO.Product;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.List;
 
 public class ProductDetailVO {
 
+    @JsonIgnore
+    private Long id;
     private String name;
     private BigDecimal price;
     private String coverUrl;
@@ -12,8 +16,11 @@ public class ProductDetailVO {
     private String description;
     private Integer status;
     private String origin;
+    @JsonIgnore
+    private LocalDateTime createdAt;
 
-    public ProductDetailVO(String name, BigDecimal price,String coverUrl, List<String> images, String description,Integer status,  String origin) {
+    public ProductDetailVO(Long id,String name, BigDecimal price,String coverUrl, List<String> images, String description,Integer status,  String origin, LocalDateTime createdAt) {
+        this.id = id;
         this.name = name;
         this.price = price;
         this.images = images;
@@ -21,9 +28,18 @@ public class ProductDetailVO {
         this.status = status;
         this.description = description;
         this.origin = origin;
+        this.createdAt = createdAt;
     }
 
     public ProductDetailVO() {
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getName() {
@@ -81,4 +97,13 @@ public class ProductDetailVO {
     public void setOrigin(String origin) {
         this.origin = origin;
     }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
+
 }

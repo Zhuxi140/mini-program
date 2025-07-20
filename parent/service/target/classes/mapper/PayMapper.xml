@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zhuxi.mapper.PayMapper" >
+
+    <update id="updatepayment">
+        UPDATE payment
+        SET
+            status = 2,
+            paid_amount = #{payDTO.paidAmount},
+            payment_method = #{payDTO.paymentMethod}
+        WHERE
+            order_id = #{payDTO.orderId}
+        AND
+            user_id = #{payDTO.userId}
+    </update>
+</mapper>

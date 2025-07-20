@@ -42,4 +42,8 @@ public interface UserMapper {
     @Select("SELECT COUNT(*) > 0 FROM user WHERE id = #{id} ")
     boolean isUserExistById(Long id);
 
+
+    @Select("SELECT id FROM user WHERE id > #{lastId} ORDER BY id LIMIT #{pageSize}")
+    List<Long> getAllUserId(Long lastId,int pageSize);
+
 }

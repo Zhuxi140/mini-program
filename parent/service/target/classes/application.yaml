@@ -37,6 +37,16 @@ spring:
 #      host: 192.168.186.128
 #      password: 123456
 
+bloom-filter:
+  productConfig:
+    expectedElements: 1000000
+    fpp: 0.01
+  user-config:
+    expected-elements: 1000000
+    fpp: 0.01
+  order-config:
+    expected-elements: 1000000
+    fpp: 0.01
 
 # mybatis配置
 mybatis:
@@ -80,8 +90,8 @@ bcrypt:
 # 日志配置
 logging:
   level:
-#    root: info
-    root: debug
+    root: info
+#    root: debug
 
 # swagger配置
 springdoc:
@@ -90,5 +100,7 @@ springdoc:
       enabled: true
   api-docs:
     enabled: true
+
+
 
 

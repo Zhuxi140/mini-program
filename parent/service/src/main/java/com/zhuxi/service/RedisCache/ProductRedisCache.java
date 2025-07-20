@@ -1,11 +1,14 @@
 package com.zhuxi.service.RedisCache;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.zhuxi.utils.JsonUtils;
 import com.zhuxi.utils.RedisUntil;
 import com.zhuxi.utils.properties.RedisCacheProperties;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.ZSetOperations;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
+import src.main.java.com.zhuxi.pojo.VO.Product.ProductDetailVO;
 import src.main.java.com.zhuxi.pojo.VO.Product.ProductOverviewVO;
 import java.math.BigDecimal;
 import java.sql.Array;
@@ -29,8 +32,6 @@ public class ProductRedisCache {
         this.rCP = rCP;
     }
 
-
-
     public String getSortPriceKey(){
         return rCP.getProductCache().getZSetPrefix() + ":price:asc";
     }
@@ -42,7 +43,6 @@ public class ProductRedisCache {
     public String getProductDetailKey(String productId){
         return rCP.getProductCache().getHashPrefix() + ":" + productId;
     }
-
 
     public Set<ZSetOperations.TypedTuple<Object>> getListProductsIds(String key, Integer type, Double lastScore, Integer pageSize){
 
@@ -60,7 +60,7 @@ public class ProductRedisCache {
                 case 2:{
                     IdResults = redisUntil.ZSetRangeScore(
                             key,
-                            lastScore == 0D ? Double.POSITIVE_INFINITY : lastScore,
+                            lastScore == 0D ? Double.NEGATIVE_INFINITY : lastScore,
 //                            lastScore == 0D ?  0 : 1,
                             0,
                             pageSize);
@@ -117,7 +117,6 @@ public class ProductRedisCache {
     }
 
     public void syncProduct(List<ProductOverviewVO> product){
-        log.warn("------syncProduct start------");
         redisUntil.executePipeline(pipe-> {
             product.forEach(p->{
                 long epochMilli = p.getCreatedAt().atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
@@ -151,4 +150,78 @@ public class ProductRedisCache {
         });
     }
 
+    public void syncProductInit(List<ProductDetailVO> product){
+        redisUntil.executePipeline(pipe-> {
+            product.forEach(p->{
+                long epochMilli = p.getCreatedAt().atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
+                Long id = p.getId();
+                String productId = id.toString();
+                double createMilli = epochMilli / 1000.0 + ( id / 10000000.0);
+                BigDecimal price = p.getPrice();
+                double priceMixTime = price.doubleValue() + (id % 10000 / 10000000000.0);
+                String priceStr = price.toPlainString();
+                String productDetailKey = getProductDetailKey(productId);
+                String sortPriceASC = getSortPriceKey();
+                String sortCreateDesc = getSortCreateDesc();
+
+                HashMap<Object, Object> objectObjectHashMap = new HashMap<>();
+                objectObjectHashMap.put("id",productId);
+                objectObjectHashMap.put("name",p.getName());
+                objectObjectHashMap.put("coverUrl",p.getCoverUrl());
+                objectObjectHashMap.put("price",priceStr);
+                objectObjectHashMap.put("createAt",epochMilli);
+                objectObjectHashMap.put("description",p.getDescription());
+                objectObjectHashMap.put("status",p.getStatus());
+                objectObjectHashMap.put("origin",p.getOrigin());
+                objectObjectHashMap.put("images",p.getImages());
+                pipe.opsForHash().putAll(productDetailKey,objectObjectHashMap);
+
+/*                pipe.opsForHash().putAll(productDetailKey,Map.of(
+                        "id",productId,
+                        "name",p.getName(),
+                        "coverUrl",p.getCoverUrl(),
+                        "price",priceStr,
+                        "createAt",epochMilli,
+                        "description",p.getDescription(),
+                        "status",p.getStatus(),
+                        "origin",p.getOrigin(),
+                        "images",p.getImages()
+                ));*/
+
+
+                pipe.opsForZSet().add(sortCreateDesc,productId,createMilli);
+                pipe.opsForZSet().add(sortPriceASC,productId,priceMixTime);
+
+                pipe.expire(productDetailKey,rCP.getProductCache().getDetailTTL(), TimeUnit.DAYS);
+                pipe.expire(sortCreateDesc,rCP.getProductCache().getCreateTTL(), TimeUnit.DAYS);
+                pipe.expire(sortPriceASC,rCP.getProductCache().getPriceTTL(), TimeUnit.HOURS);
+            });
+        });
+    }
+
+    public ProductDetailVO getCacheDetails(Long id){
+        String productId = id.toString();
+        String productDetailKey = getProductDetailKey(productId);
+        ArrayList<Object> objects = new ArrayList<>(Arrays.asList("name","price","coverUrl","description","status","origin","images"));
+        List<Object> objects1 = redisUntil.hMultiGet(productDetailKey, objects);
+
+        if (objects1.get(0) == null){
+            return null;
+        }
+        //解析结果
+
+        ProductDetailVO pDVO = new ProductDetailVO();
+        pDVO.setName((String) objects1.get(0));
+        pDVO.setPrice(new BigDecimal((String) objects1.get(1)));
+        pDVO.setCoverUrl((String) objects1.get(2));
+        pDVO.setDescription((String) objects1.get(3));
+        pDVO.setStatus((Integer) objects1.get(4));
+        pDVO.setOrigin((String) objects1.get(5));
+        Object o = objects1.get(6);
+        List<String> list = JsonUtils.objectToObject(o, new TypeReference<>() {
+        });
+        pDVO.setImages(list);
+
+        return pDVO;
+    }
 }

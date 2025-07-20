@@ -1,6 +1,8 @@
 package com.zhuxi.config;
 
+import com.google.common.hash.BloomFilter;
 import com.zhuxi.Filter.XSSFilter;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -19,4 +21,6 @@ public class SecurityConfig {
 
         return xss;
     }
+
+
 }

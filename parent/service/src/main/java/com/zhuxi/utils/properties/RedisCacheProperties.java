@@ -24,7 +24,7 @@ public class RedisCacheProperties {
 
 
 
-    public class ProductCache{
+    public static class ProductCache{
         private String StringPrefix;
         private String HashPrefix;
         private String SetPrefix;
@@ -99,7 +99,7 @@ public class RedisCacheProperties {
         }
     }
 
-    public class AddressCache{
+    public static  class AddressCache{
         private String StringPrefix;
         private String HashPrefix;
         private String SetPrefix;

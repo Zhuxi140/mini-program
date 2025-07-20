@@ -49,10 +49,14 @@ public class ProductTxService {
         return productDetail;
     }
 
+    public List<Long> getAllProductId(Long lastId,int pageSize){
+        return productMapper.getAllProductId(lastId,pageSize);
+    }
+
     @Transactional(readOnly = true)
     public List<ProductSpecVO>getProductSpec(Long productId){
         List<ProductSpecVO> productSpec = productMapper.getProductSpec(productId);
-        if(productSpec == null)
+        if(productSpec.isEmpty())
             throw new transactionalException(Message.SELECT_ERROR);
 
         return productSpec;
@@ -62,7 +66,7 @@ public class ProductTxService {
     public List<ProductOverviewVO> getListProductsByCreate(Long lastId,LocalDateTime dateTime, Integer pageSize){
         List<ProductOverviewVO> listProducts = productMapper.getListProductByCreate(dateTime, pageSize,lastId);
 
-        if (listProducts == null)
+        if (listProducts.isEmpty())
             throw new transactionalException(Message.SELECT_ERROR);
 
         return listProducts;
@@ -72,7 +76,7 @@ public class ProductTxService {
     public List<ProductOverviewVO> getListProductByPriceDESC(Long lastId,BigDecimal price, Integer pageSize){
         List<ProductOverviewVO> listProducts = productMapper.getListProductByPriceDESC(price, pageSize,lastId);
 
-        if (listProducts == null)
+        if (listProducts.isEmpty())
             throw new transactionalException(Message.SELECT_ERROR);
 
         return listProducts;
@@ -82,21 +86,21 @@ public class ProductTxService {
     public List<ProductOverviewVO> getListProductByPriceASC(Long lastId,BigDecimal price, Integer pageSize){
         List<ProductOverviewVO> listProducts = productMapper.getListProductByPriceASC(price, pageSize,lastId);
 
-        if (listProducts == null)
+        if (listProducts.isEmpty())
             throw new transactionalException(Message.SELECT_ERROR);
 
         return listProducts;
     }
 
     @Transactional(readOnly = true)
-    public List<ProductOverviewVO> getListProduct(Long lastId,Integer pageSize){
+    public List<ProductDetailVO> getListProduct(Long lastId,Integer pageSize){
         return productMapper.getListProduct(lastId, pageSize);
     }
 
     @Transactional(readOnly = true)
     public List<AdminProductVO> getListAdminProductsDESC(Long lastId, Integer pageSize){
         List<AdminProductVO> listAdminProductsDESC = productMapper.getListAdminProductsDESC(lastId, pageSize);
-        if(listAdminProductsDESC == null)
+        if(listAdminProductsDESC.isEmpty())
             throw new transactionalException(Message.SELECT_ERROR);
 
         return listAdminProductsDESC;
@@ -105,7 +109,7 @@ public class ProductTxService {
     @Transactional(readOnly = true)
     public List<AdminProductVO> getListAdminProductsASC(Long lastId,Integer pageSize){
         List<AdminProductVO> listAdminProductsASC = productMapper.getListAdminProductsASC(lastId, pageSize);
-        if(listAdminProductsASC == null)
+        if(listAdminProductsASC.isEmpty())
             throw new transactionalException(Message.SELECT_ERROR);
 
         return listAdminProductsASC;
@@ -114,7 +118,7 @@ public class ProductTxService {
     @Transactional(readOnly = true)
     public List<ProductSpecDetailVO> getProductSpecDetail(Long productId){
         List<ProductSpecDetailVO> productSpecDetail = productMapper.getProductSpecDetail(productId);
-        if(productSpecDetail == null)
+        if(productSpecDetail.isEmpty())
             throw new transactionalException(Message.SELECT_ERROR);
 
         return productSpecDetail;

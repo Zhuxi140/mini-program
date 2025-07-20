@@ -36,6 +36,11 @@ public class OrderTxService {
         return orderList;
     }
 
+    public List<Long> getAllOrderId(Long lastId,int pageSize){
+        return orderMapper.getAllOrderId(lastId,pageSize);
+    }
+
+
     @Transactional(readOnly = true)
     public BigDecimal getProductSalePrice(Long productId) {
         BigDecimal productSalePrice = orderMapper.getProductSalePrice(productId);

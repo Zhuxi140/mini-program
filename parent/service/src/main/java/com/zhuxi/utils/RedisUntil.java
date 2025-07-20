@@ -5,7 +5,6 @@ import com.zhuxi.Exception.RedisException;
 import org.springframework.dao.DataAccessException;
 import org.springframework.data.redis.core.*;
 import org.springframework.stereotype.Component;
-import org.springframework.util.CollectionUtils;
 
 import java.util.*;
 import java.util.concurrent.TimeUnit;
@@ -42,9 +41,9 @@ public class RedisUntil {
     // redis List类型操作
 
     // redis Hash类型操作
-  /*  public <T> List<T> getHashValue(String key,List<T>  fields){
-
-    }*/
+    public List<Object> hMultiGet(String key, List<Object> hashKeys){
+       return redisTemplate.opsForHash().multiGet(key,hashKeys);
+    }
     // redis Set类型操作
 
     // redis SortedSet类型操作

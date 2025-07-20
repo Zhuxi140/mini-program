@@ -28,10 +28,11 @@ public class InitializationCoordinator implements ApplicationRunner {
     @Override
     public void run(ApplicationArguments args){
         try{
+            long startTime = System.currentTimeMillis();
             preConnectionPool();
             preRedisPool();
             execute();
-
+            log.info("数据预热加载完成，共耗时:{}ms",System.currentTimeMillis() -  startTime);
         }catch (Exception e){
             log.error("初始化数据源失败",e);
         }
@@ -47,17 +48,10 @@ public class InitializationCoordinator implements ApplicationRunner {
 
     private void execute(){
         initializers.sort(Comparator.comparingInt(DataInitializer::getOrder));
-
         for(DataInitializer initializer:initializers){
             String name = initializer.getClass().getName();
-            log.debug("开始执行初始化器: {}",name);
-            long startTime = System.currentTimeMillis();
-
             try{
                 initializer.initializeData();
-                long finishTime = System.currentTimeMillis();
-                log.debug("初始化器: {} 执行完成，耗时: {}ms",name,finishTime - startTime);
-
             }catch (Exception e){
                 log.error("初始化器: {} 执行失败",name,e);
             }

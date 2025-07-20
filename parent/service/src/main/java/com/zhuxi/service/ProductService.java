@@ -14,7 +14,7 @@ import java.util.List;
 public interface ProductService {
 
     // 获取商品列表
-    Result<ProductPageResult<ProductOverviewVO>> getListProducts(Double lastScore, Integer pageSize, Integer type,Long lastId,boolean isLast);
+    Result<ProductPageResult<ProductOverviewVO>> getListProducts(Double lastScore, Integer pageSize, Integer type,Long lastId,Boolean isLast);
 
     // 获取商品详情
     Result<ProductDetailVO> getProductDetail(Long id);
