@@ -48,12 +48,12 @@ public class RedisUntil {
     // redis Set类型操作
 
     // redis SortedSet类型操作
-    public Set<ZSetOperations.TypedTuple<Object>> ZSetReverseRangeScore(String key, Double lastScored, Integer pageSize){
-        return redisTemplate.opsForZSet().reverseRangeByScoreWithScores(key,Double.NEGATIVE_INFINITY,lastScored,0,pageSize);
+    public Set<ZSetOperations.TypedTuple<Object>> ZSetReverseRangeScore(String key, Double lastScored,Integer offset,Integer count){
+        return redisTemplate.opsForZSet().reverseRangeByScoreWithScores(key,Double.NEGATIVE_INFINITY,lastScored,offset,count);
     }
 
-    public Set<ZSetOperations.TypedTuple<Object>> ZSetRangeScore(String key, Double lastScored, Integer pageSize){
-        return redisTemplate.opsForZSet().rangeByScoreWithScores(key,Double.NEGATIVE_INFINITY,lastScored,0,pageSize);
+    public Set<ZSetOperations.TypedTuple<Object>> ZSetRangeScore(String key, Double lastScored,Integer offset, Integer count){
+        return redisTemplate.opsForZSet().rangeByScoreWithScores(key,lastScored,Double.POSITIVE_INFINITY,offset,count);
     }
 
 

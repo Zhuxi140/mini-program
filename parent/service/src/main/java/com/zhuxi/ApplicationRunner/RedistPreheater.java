@@ -4,7 +4,6 @@ import com.zhuxi.Exception.RedisException;
 import com.zhuxi.utils.properties.RedisCacheProperties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.data.redis.connection.RedisConnection;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.stereotype.Service;

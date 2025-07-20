@@ -12,17 +12,14 @@ public class ProductPageResult<T>{
     private List<T> items;
     @Schema(description = "下一页游标(redis缓存使用)")
     private Double nextCursor;
-    @Schema(description = "是否有上一页")
-    private boolean hasPrevious;
-    @Schema(description = "是否有下一页")
+    @Schema(description = "是否有下一页(当为数据库查询时，其为null,若正常显示则会查缓存)")
     private boolean hasNext;
     @Schema(description = "本页最后一条数据的id(用于未命中时兜底)",requiredMode = Schema.RequiredMode.REQUIRED)
     private Long lastId;
 
-    public ProductPageResult(List<T> items, Double nextCursor, boolean hasPrevious, boolean hasNext,Long lastId) {
+    public ProductPageResult(List<T> items, Double nextCursor, boolean hasNext,Long lastId) {
         this.items = items;
         this.nextCursor = nextCursor;
-        this.hasPrevious = hasPrevious;
         this.hasNext = hasNext;
         this.lastId = lastId;
     }
@@ -41,14 +38,6 @@ public class ProductPageResult<T>{
 
     public void setNextCursor(Double nextCursor) {
         this.nextCursor = nextCursor;
-    }
-
-    public boolean isHasPrevious() {
-        return hasPrevious;
-    }
-
-    public void setHasPrevious(boolean hasPrevious) {
-        this.hasPrevious = hasPrevious;
     }
 
     public boolean isHasNext() {
@@ -72,7 +61,6 @@ public class ProductPageResult<T>{
         return "PageResult{" +
                 "items=" + JsonUtils.objectToJson(items) +
                 ", nextCursor=" + nextCursor +
-                ", hasPrevious=" + hasPrevious +
                 ", hasNext=" + hasNext +
                 '}';
     }

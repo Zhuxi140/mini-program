@@ -15,8 +15,8 @@
         JOIN
             (SELECT product_id,MIN(price) AS price FROM spec GROUP BY product_id) mini_price
         ON product.id = mini_price.product_id
-        WHERE product.created_at < FROM_UNIXTIME(#{dateTime}) AND status = 1
-        ORDER BY id DESC,created_at DESC
+        WHERE product.created_at < #{dateTime} AND status = 1 AND id < #{lastId}
+        ORDER BY created_at DESC,id DESC
         LIMIT #{pageSize}
     ]]>
     </select>
@@ -34,8 +34,8 @@
                  JOIN
                  (SELECT product_id,MIN(price) AS price FROM spec GROUP BY product_id) mini_price
                  ON product.id = mini_price.product_id
-        WHERE mini_price.price > #{price} AND status = 1
-        ORDER BY id DESC,created_at DESC
+        WHERE  (mini_price.price > #{price} OR ( mini_price.price = #{price} AND id > #{lastId})) AND status = 1
+        ORDER BY mini_price.price ASC,id ASC
         LIMIT #{pageSize}
         ]]>
     </select>
@@ -53,8 +53,8 @@
                  JOIN
                  (SELECT product_id,MIN(price) AS price FROM spec GROUP BY product_id) mini_price
                  ON product.id = mini_price.product_id
-        WHERE mini_price.price < #{price} AND status = 1
-        ORDER BY id DESC,created_at DESC
+        WHERE (mini_price.price < #{price} OR mini_price.price = #{price} AND id < #{lastId}) AND status = 1
+        ORDER BY created_at DESC,id DESC
         LIMIT #{pageSize}
         ]]>
     </select>

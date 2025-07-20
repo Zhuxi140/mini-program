@@ -17,11 +17,11 @@ import java.util.List;
 @Mapper
 public interface ProductMapper {
 
-    List<ProductOverviewVO> getListProductByCreate(LocalDateTime dateTime, Integer pageSize);
+    List<ProductOverviewVO> getListProductByCreate(LocalDateTime dateTime, Integer pageSize, Long lastId);
 
-    List<ProductOverviewVO> getListProductByPriceDESC(BigDecimal price, Integer pageSize);
+    List<ProductOverviewVO> getListProductByPriceDESC(BigDecimal price, Integer pageSize, Long lastId);
 
-    List<ProductOverviewVO> getListProductByPriceASC(BigDecimal price, Integer pageSize);
+    List<ProductOverviewVO> getListProductByPriceASC(BigDecimal price, Integer pageSize, Long lastId);
 
     List<ProductOverviewVO> getListProduct(Long lastId, Integer pageSize);
 

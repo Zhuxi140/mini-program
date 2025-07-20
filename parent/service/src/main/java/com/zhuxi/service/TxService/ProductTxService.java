@@ -59,8 +59,8 @@ public class ProductTxService {
     }
 
     @Transactional(readOnly = true)
-    public List<ProductOverviewVO> getListProductsByCreate(LocalDateTime dateTime, Integer pageSize){
-        List<ProductOverviewVO> listProducts = productMapper.getListProductByCreate(dateTime, pageSize);
+    public List<ProductOverviewVO> getListProductsByCreate(Long lastId,LocalDateTime dateTime, Integer pageSize){
+        List<ProductOverviewVO> listProducts = productMapper.getListProductByCreate(dateTime, pageSize,lastId);
 
         if (listProducts == null)
             throw new transactionalException(Message.SELECT_ERROR);
@@ -69,8 +69,8 @@ public class ProductTxService {
     }
 
     @Transactional(readOnly = true)
-    public List<ProductOverviewVO> getListProductByPriceDESC(BigDecimal price, Integer pageSize){
-        List<ProductOverviewVO> listProducts = productMapper.getListProductByPriceDESC(price, pageSize);
+    public List<ProductOverviewVO> getListProductByPriceDESC(Long lastId,BigDecimal price, Integer pageSize){
+        List<ProductOverviewVO> listProducts = productMapper.getListProductByPriceDESC(price, pageSize,lastId);
 
         if (listProducts == null)
             throw new transactionalException(Message.SELECT_ERROR);
@@ -79,8 +79,8 @@ public class ProductTxService {
     }
 
     @Transactional(readOnly = true)
-    public List<ProductOverviewVO> getListProductByPriceASC(BigDecimal price, Integer pageSize){
-        List<ProductOverviewVO> listProducts = productMapper.getListProductByPriceASC(price, pageSize);
+    public List<ProductOverviewVO> getListProductByPriceASC(Long lastId,BigDecimal price, Integer pageSize){
+        List<ProductOverviewVO> listProducts = productMapper.getListProductByPriceASC(price, pageSize,lastId);
 
         if (listProducts == null)
             throw new transactionalException(Message.SELECT_ERROR);

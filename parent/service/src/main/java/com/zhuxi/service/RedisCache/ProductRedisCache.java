@@ -49,15 +49,24 @@ public class ProductRedisCache {
             Set<ZSetOperations.TypedTuple<Object>> IdResults = null;
             switch ( type){
                 case 1, 3:{
-                    IdResults = redisUntil.ZSetReverseRangeScore(key,lastScore ==  0D ? Double.POSITIVE_INFINITY : lastScore,pageSize);
+                    IdResults = redisUntil.ZSetReverseRangeScore(
+                            key,
+                            lastScore ==  0D ? Double.POSITIVE_INFINITY : lastScore,
+//                            lastScore == 0D ?  0 : 1,
+                            0,
+                            pageSize);
                 }
                     break;
                 case 2:{
-                    IdResults = redisUntil.ZSetRangeScore(key,lastScore == 0D ? Double.POSITIVE_INFINITY : lastScore,pageSize);
+                    IdResults = redisUntil.ZSetRangeScore(
+                            key,
+                            lastScore == 0D ? Double.POSITIVE_INFINITY : lastScore,
+//                            lastScore == 0D ?  0 : 1,
+                            0,
+                            pageSize);
                 }
                     break;
             }
-
             if (CollectionUtils.isEmpty(IdResults)){
                 log.error("获取的商品缓存id为null");
                 return null;
@@ -65,11 +74,13 @@ public class ProductRedisCache {
         return IdResults;
     }
 
-    public Double getLastScore(Set<ZSetOperations.TypedTuple<Object>>  Score){
+    public Double getLastScore(Set<ZSetOperations.TypedTuple<Object>>  Score,Double lastScore,Integer type){
         if(CollectionUtils.isEmpty( Score)){
             return null;
         }
         ArrayList<ZSetOperations.TypedTuple<Object>> list = new ArrayList<>(Score);
+
+
         return list.get(list.size() - 1).getScore();
     }
 
@@ -112,7 +123,7 @@ public class ProductRedisCache {
                 long epochMilli = p.getCreatedAt().atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
                 Long id = p.getId();
                 String productId = id.toString();
-                double createMilli = epochMilli / 1000.0 + ((double) id / 10000000);
+                double createMilli = epochMilli / 1000.0 + ( id / 10000000.0);
                 BigDecimal price = p.getPrice();
                 double priceMixTime = price.doubleValue() + (id % 10000 / 10000000000.0);
                 String priceStr = price.toPlainString();
@@ -139,6 +150,5 @@ public class ProductRedisCache {
             });
         });
     }
-
 
 }

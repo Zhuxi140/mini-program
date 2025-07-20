@@ -45,11 +45,12 @@ public class ProductController {
             @RequestParam(defaultValue = "1")
             Integer type,
             @Parameter(description = "本页最后一条数据的id(第一次不用给，后续根据json给值)")
-            Long lastId
-
+            Long lastId,
+            @Parameter(description = "是否redis已经查询完了(当redis中未命中(hasNext=false)，则其后一直给true)")
+            boolean isLast
     )
     {
-        return productService.getListProducts(lastScore, pageSize,type,lastId);
+        return productService.getListProducts(lastScore, pageSize,type,lastId,isLast);
     }
 
     @GetMapping("/{id}")
