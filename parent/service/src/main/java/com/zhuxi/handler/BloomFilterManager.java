@@ -26,7 +26,4 @@ public class BloomFilterManager {
             filter.put(value);
     }
 
-    public BloomFilter<Long> getFilter(String filterName){
-        return filters.get(filterName);
-    }
 }

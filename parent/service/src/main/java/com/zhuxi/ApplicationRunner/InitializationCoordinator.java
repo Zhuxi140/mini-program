@@ -2,12 +2,16 @@ package com.zhuxi.ApplicationRunner;
 
 import com.alibaba.druid.pool.DruidDataSource;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.stereotype.Component;
-
 import java.util.Comparator;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Executor;
+
+import static java.util.concurrent.CompletableFuture.runAsync;
 
 @Slf4j
 @Component
@@ -17,29 +21,45 @@ public class InitializationCoordinator implements ApplicationRunner {
     private final List<DataInitializer> initializers;
     private final DruidDataSource dataSource;
     private final RedistPreheater noSqlPreheater;
+    private final Executor asyncExecutor;
 
-    public InitializationCoordinator(ConnectionPoolPreheater SqlPreheater, List<DataInitializer> initializers, DruidDataSource dataSource, RedistPreheater noSqlPreheater) {
+    public InitializationCoordinator(
+            ConnectionPoolPreheater SqlPreheater,
+            List<DataInitializer> initializers,
+            DruidDataSource dataSource,
+            RedistPreheater noSqlPreheater,
+            @Qualifier("applicationTaskExecutor") Executor asyncExecutor
+    ) {
         this.SqlPreheater = SqlPreheater;
         this.initializers = initializers;
         this.dataSource = dataSource;
         this.noSqlPreheater = noSqlPreheater;
+        this.asyncExecutor = asyncExecutor;
     }
 
     @Override
     public void run(ApplicationArguments args){
         try{
             long startTime = System.currentTimeMillis();
-            preConnectionPool();
-            preRedisPool();
-            execute();
+            CompletableFuture.allOf(
+                     runAsync(this::preConnectionPool,asyncExecutor),
+                    runAsync(this::preRedisPool,asyncExecutor)
+            ).thenRun(this::execute)
+             .exceptionally(ex->{
+                 log.error("数据预热加载失败",ex);
+                 return null;
+             });
             log.info("数据预热加载完成，共耗时:{}ms",System.currentTimeMillis() -  startTime);
+
         }catch (Exception e){
             log.error("初始化数据源失败",e);
         }
     }
 
     private void preConnectionPool(){
+        long now = System.currentTimeMillis();
         SqlPreheater.preheatDruidPool(dataSource,dataSource.getMinIdle(),"SELECT 1");
+        log.info("数据源预热完成，耗时:{}ms",System.currentTimeMillis() - now);
     }
 
     private void preRedisPool(){

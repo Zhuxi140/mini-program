@@ -55,7 +55,7 @@ public class ProductController {
 
     @GetMapping("/{id}")
     @RequireRole(Role.USER)
-    @BloomFilterCheck(value = "productBloomFilter", key = "id")
+    @BloomFilterCheck(value = "product", key = "id")
     @Operation(
             summary = "获取商品详情接口",
             description = "商品详情"

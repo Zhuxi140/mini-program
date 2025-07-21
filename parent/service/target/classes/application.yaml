@@ -30,22 +30,22 @@ spring:
           min-idle: 20 # 最小空闲连接数
           time-between-eviction-runs: 30 # 连接空闲时间
         shutdown-timeout: 100   # 关闭连接等待时间
-      host: r-bp1j86kgker8z46dxmpd.redis.rds.aliyuncs.com
-      port: 6379
-      password: qwEr123456
-      username: r-bp1j86kgker8z46dxm
-#      host: 192.168.186.128
-#      password: 123456
+#      host: r-bp1j86kgker8z46dxmpd.redis.rds.aliyuncs.com
+#      port: 6379
+#      password: qwEr123456
+#      username: r-bp1j86kgker8z46dxm
+      host: 192.168.186.128
+      password: 123456
 
 bloom-filter:
   productConfig:
-    expectedElements: 1000000
+    expectedElements: 500
     fpp: 0.01
   user-config:
-    expected-elements: 1000000
+    expected-elements: 500
     fpp: 0.01
   order-config:
-    expected-elements: 1000000
+    expected-elements: 500
     fpp: 0.01
 
 # mybatis配置

@@ -1,9 +1,5 @@
 package com.zhuxi.ApplicationRunner;
 
-import com.zhuxi.service.TxService.OrderTxService;
-import com.zhuxi.service.TxService.ProductTxService;
-import com.zhuxi.service.TxService.UserTxService;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 @Component

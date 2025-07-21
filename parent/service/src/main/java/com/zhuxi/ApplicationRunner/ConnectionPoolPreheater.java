@@ -12,6 +12,8 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.*;
+import java.util.stream.IntStream;
 
 @Service
 public class ConnectionPoolPreheater {
@@ -22,9 +24,6 @@ public class ConnectionPoolPreheater {
         if (dataSource == null){
             throw new IllegalArgumentException("数据库预热失败:  dataSource cannot be null");
         }
-
-        List<Connection> connections = new ArrayList<>();
-
         try{
             if(!dataSource.isInited()){
                 log.debug("数据源未初始化，开始初始化");
@@ -32,17 +31,20 @@ public class ConnectionPoolPreheater {
             }
 
             log.debug("创建{}个物理连接并验证",minConnectCount);
-            for(int i = 0; i < minConnectCount; i++){
-                DruidPooledConnection connection = dataSource.getConnection();
+            IntStream.range(0,minConnectCount/2).parallel().forEach(i->{
+                try(DruidPooledConnection connection = dataSource.getConnection();)
+                {
+                    validateConnection(connection,validationQuery);
+                }catch (SQLException e){
+                    log.error("验证连接失败",e);
+                }
+            });
+            // 预热后检查连接池状态
+            log.info("当前活动连接数: {}", dataSource.getActiveCount());
+            log.info("当前空闲连接数: {}", dataSource.getPoolingCount());
 
-                validateConnection(connection,validationQuery);
-
-                connections.add(connection);
-            }
         }catch (SQLException e){
             throw new ConnectionPoolInitializationException("数据源初始化失败 :"  +  e.getMessage());
-        }finally {
-            connections.forEach(this::safeClose);
         }
     }
 
@@ -56,16 +58,8 @@ public class ConnectionPoolPreheater {
                 throw new SQLException("验证查询未返回结果");
             }
             log.debug("验证成功");
-        }
-    }
-
-    private void safeClose(Connection conn){
-        try{
-            if (conn != null && !conn.isClosed()){
-                conn.close();
-            }
         }catch (SQLException e){
-            log.warn("连接安全关闭失败: {}", e.getMessage());
+            throw new SQLException("验证失败: " + e.getMessage());
         }
     }
 }

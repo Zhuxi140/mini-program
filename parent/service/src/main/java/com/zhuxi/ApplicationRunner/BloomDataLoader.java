@@ -6,12 +6,11 @@ import com.zhuxi.service.TxService.OrderTxService;
 import com.zhuxi.service.TxService.ProductTxService;
 import com.zhuxi.service.TxService.UserTxService;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 @Slf4j
 @Component
@@ -45,10 +44,12 @@ public class BloomDataLoader {
     }
 
     public void loadData() {
+        long now = System.currentTimeMillis();
         loadProductData();
         loadOrderData();
         loadUserData();
         log.debug("所有布隆过滤器加载完成");
+        log.info("布隆加载完成，共耗时:{}ms",System.currentTimeMillis() - now);
     }
 
     private void loadProductData(){

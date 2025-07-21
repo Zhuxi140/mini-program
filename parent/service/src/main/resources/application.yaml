@@ -39,13 +39,13 @@ spring:
 
 bloom-filter:
   productConfig:
-    expectedElements: 1000000
+    expectedElements: 500
     fpp: 0.01
   user-config:
-    expected-elements: 1000000
+    expected-elements: 500
     fpp: 0.01
   order-config:
-    expected-elements: 1000000
+    expected-elements: 500
     fpp: 0.01
 
 # mybatis配置
