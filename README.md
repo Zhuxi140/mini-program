@@ -31,8 +31,9 @@
 | --------------------------- | -------------- |
 | SpringBoot3.5               | 核心框架       |
 | SpringMVC                   | Web层          |
-| SpringSecurity + JWT        | 安全认证       |
+| SpringSecurity思想 + JWT        | 认证,防注入等安全       |
 | Spring task| 自定义自动任务|
+| webSocket| 实时通信（聊天模块）|
 | Swagger                     | 接口文档       |
 | 阿里云OSS/腾讯云OSS         | 存储商品图片等 |
 | 华为云Flexus应用服务器L实例 | 部署服务器     |
@@ -47,11 +48,4 @@
 | Druid             | 数据库连接池      |
 | Mybatis           | 操作数据库        |
 | Spring Data Redis | 简化对Redis的操作 |
-
-### 工具
-
-| 技术   | 功能     |
-| ------ | -------- |
-| lombok | 简化POJO |
-|        |          |
 
