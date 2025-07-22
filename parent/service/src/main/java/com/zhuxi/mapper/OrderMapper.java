@@ -1,10 +1,7 @@
 package com.zhuxi.mapper;
 
 import org.apache.ibatis.annotations.*;
-import src.main.java.com.zhuxi.pojo.DTO.Order.InventoryLockAddDTO;
-import src.main.java.com.zhuxi.pojo.DTO.Order.OrderAddDTO;
-import src.main.java.com.zhuxi.pojo.DTO.Order.OrderGroupDTO;
-import src.main.java.com.zhuxi.pojo.DTO.Order.PaymentAddDTO;
+import src.main.java.com.zhuxi.pojo.DTO.Order.*;
 import src.main.java.com.zhuxi.pojo.VO.Order.OrderShowVO;
 
 import java.math.BigDecimal;
@@ -157,7 +154,7 @@ public interface OrderMapper {
     int deleteOrder(Long orderId, Long userId);
 
 
-    @Select("SELECT id FROM `order` WHERE id > #{lastId} ORDER BY id LIMIT #{pageSize}")
-    List<Long> getAllOrderId(Long lastId,int pageSize);
+    @Select("SELECT id,user_id FROM `order` WHERE id > #{lastId}  ORDER BY id LIMIT #{pageSize}")
+    List<BloomOrderDTO> getAllOrderId(Long lastId, int pageSize);
 
 }

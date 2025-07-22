@@ -3,6 +3,7 @@ package com.zhuxi.controller.Admin;
 
 import com.zhuxi.Result.PageResult;
 import com.zhuxi.Result.Result;
+import com.zhuxi.annotation.CurrentUserId;
 import com.zhuxi.annotation.RequireRole;
 import com.zhuxi.service.AdminProductService;
 import io.swagger.v3.oas.annotations.Operation;

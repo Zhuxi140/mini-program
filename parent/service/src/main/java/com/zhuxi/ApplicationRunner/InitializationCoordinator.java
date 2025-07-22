@@ -57,9 +57,7 @@ public class InitializationCoordinator implements ApplicationRunner {
     }
 
     private void preConnectionPool(){
-        long now = System.currentTimeMillis();
         SqlPreheater.preheatDruidPool(dataSource,dataSource.getMinIdle(),"SELECT 1");
-        log.info("数据源预热完成，耗时:{}ms",System.currentTimeMillis() - now);
     }
 
     private void preRedisPool(){

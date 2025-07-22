@@ -7,22 +7,54 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="372da862-f7c4-4fa2-93c3-bf2ac1fe9e6e" name="更改" comment="feat(service): 增加布隆过滤器支持&#10;&#10;- 在 application.yaml 中添加布隆过滤器配置&#10;- 新增布隆过滤器异常处理逻辑&#10;- 修改产品数据加载和缓存逻辑，支持布隆过滤器&#10;- 优化 Redis 缓存序列化方式&#10;- 调整安全配置，引入 Google Guava 库">
+    <list default="true" id="372da862-f7c4-4fa2-93c3-bf2ac1fe9e6e" name="更改" comment="- 修复因名称输入错误 导致布隆过滤器100%拦截&#10;- 优化自定义的ApplicationRunner逻辑 启用异步执行&#10;- 优化部分逻辑结构">
+      <change beforePath="$PROJECT_DIR$/.idea/shelf/_2025_7_14_13_13____.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/shelf/在进行更新之前于_2025_7_14_13_13_取消提交了更改_[更改]/GlobalExceptionHandler.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/shelf/在进行更新之前于_2025_7_14_13_13_取消提交了更改_[更改]/JwtUtils.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/shelf/在进行更新之前于_2025_7_14_13_13_取消提交了更改_[更改]/WebMvcConfig.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/shelf/在进行更新之前于_2025_7_14_13_13_取消提交了更改_[更改]/XSSFilter.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/shelf/在进行更新之前于_2025_7_14_13_13_取消提交了更改_[更改]/XssSafeRequestWrapper.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/shelf/在进行更新之前于_2025_7_14_13_13_取消提交了更改_[更改]/shelved.patch" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/ApplicationRunner/BloomDataInitializer.java" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/ApplicationRunner/BloomDataInitializer.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/ApplicationRunner/BloomDataLoader.java" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/ApplicationRunner/BloomDataLoader.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/ApplicationRunner/ConnectionPoolPreheater.java" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/ApplicationRunner/ConnectionPoolPreheater.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/ApplicationRunner/InitializationCoordinator.java" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/ApplicationRunner/InitializationCoordinator.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/Constant/Message.java" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/Constant/Message.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/Interceptor/JwtInterceptor.java" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/Interceptor/JwtInterceptor.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/annotation/BloomFilterCheck.java" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/annotation/BloomFilterCheck.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/aspect/BloomFilterAspect.java" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/aspect/BloomFilterAspect.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/config/BloomFilterConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/config/BloomFilterConfig.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/config/WebMvcConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/config/WebMvcConfig.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/controller/Admin/AdminProductController.java" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/controller/Admin/AdminProductController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/controller/User/CarController.java" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/controller/User/CarController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/controller/User/OrderController.java" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/controller/User/OrderController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/controller/User/PayController.java" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/controller/User/PayController.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/controller/User/ProductController.java" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/controller/User/ProductController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/controller/User/UserAddressController.java" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/controller/User/UserAddressController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/controller/User/UserController.java" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/controller/User/UserController.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/handler/BloomFilterManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/handler/BloomFilterManager.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/handler/GlobalExceptionHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/handler/GlobalExceptionHandler.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/mapper/OrderMapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/mapper/OrderMapper.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/service/CartService.java" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/service/CartService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/service/Impl/AdminProductServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/service/Impl/AdminProductServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/service/Impl/CartServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/service/Impl/CartServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/service/Impl/OrderServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/service/Impl/OrderServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/service/Impl/PayServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/service/Impl/PayServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/service/Impl/ProductServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/service/Impl/ProductServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/service/Impl/UserAddressServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/service/Impl/UserAddressServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/service/Impl/UserServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/service/Impl/UserServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/service/OrderService.java" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/service/OrderService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/service/PayService.java" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/service/PayService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/service/TxService/OrderTxService.java" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/service/TxService/OrderTxService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/service/UserAddressService.java" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/service/UserAddressService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/service/UserService.java" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/service/UserService.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/parent/service/src/main/resources/application.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/src/main/resources/application.yaml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/parent/service/target/classes/application.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/target/classes/application.yaml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/ApplicationRunner/BloomDataLoader.class" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/ApplicationRunner/BloomDataLoader.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/ApplicationRunner/ConnectionPoolPreheater.class" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/ApplicationRunner/ConnectionPoolPreheater.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/ApplicationRunner/InitializationCoordinator.class" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/ApplicationRunner/InitializationCoordinator.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/Interceptor/JwtInterceptor.class" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/Interceptor/JwtInterceptor.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/controller/User/ProductController.class" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/controller/User/ProductController.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/handler/BloomFilterManager.class" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/handler/BloomFilterManager.class" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -36,8 +68,8 @@
         <option value="Interface" />
         <option value="Mybatis Mapper" />
         <option value="AnnotationType" />
-        <option value="Exception" />
         <option value="Class" />
+        <option value="Exception" />
       </list>
     </option>
   </component>
@@ -269,7 +301,10 @@
       <workItem from="1752886998876" duration="44592000" />
       <workItem from="1752969707914" duration="21266000" />
       <workItem from="1752998548127" duration="14560000" />
-      <workItem from="1753060763161" duration="7071000" />
+      <workItem from="1753060763161" duration="8567000" />
+      <workItem from="1753074401548" duration="539000" />
+      <workItem from="1753075181016" duration="2033000" />
+      <workItem from="1753147780089" duration="15191000" />
     </task>
     <task id="LOCAL-00001" summary="d">
       <option name="closed" value="true" />
@@ -511,7 +546,15 @@
       <option name="project" value="LOCAL" />
       <updated>1753014665269</updated>
     </task>
-    <option name="localTasksCounter" value="31" />
+    <task id="LOCAL-00031" summary="- 修复因名称输入错误 导致布隆过滤器100%拦截&#10;- 优化自定义的ApplicationRunner逻辑 启用异步执行&#10;- 优化部分逻辑结构">
+      <option name="closed" value="true" />
+      <created>1753068101713</created>
+      <option name="number" value="00031" />
+      <option name="presentableId" value="LOCAL-00031" />
+      <option name="project" value="LOCAL" />
+      <updated>1753068101713</updated>
+    </task>
+    <option name="localTasksCounter" value="32" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -529,7 +572,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="refactor(service): 重构服务模块并更新数据库 schema&#10;&#10;- 优化现有结构&#10;- 更新数据库 schema，包括添加新字段和修改现有字段&#10;- 重命名 Admin 相关的控制器类，使其更具模块化&#10;- 删除未使用的 AdminMapper.xml 文件&#10;- 更新应用配置，添加静态资源路径和调整 OSS 配置" />
     <MESSAGE value="&#10;&#10;添加OSS上传凭证获取接口" />
     <MESSAGE value="feat(service): 添加OSS上传凭证获取接口&#10;&#10;- 新增OSS上传凭证获取接口&#10;- 实现OSS回调逻辑&#10;- 添加公钥获取和缓存功能&#10;- 优化OSS对象名称生成逻辑&#10;- 新增OssRecord数据传输对象" />
     <MESSAGE value="feat(service): 添加商品管理功能- 新增商品添加和更新接口&#10;- 实现商品信息的数据库操作&#10;- 添加商品相关错误提示&#10;- 优化代码结构，提高可维护性" />
@@ -554,7 +596,8 @@
     <MESSAGE value="perf(service): 优化 Redis 连接池配置&#10;&#10;- 修改 Redis连接池参数，提高最大空闲连接数和最大活跃连接数&#10;- 增加连接空闲时间和关闭连接等待时间配置- 调整日志级别为 info&#10;- 创建商品Redis模块&#10;- 为获取商品列表添加Redis缓存 并添加兜底逻辑&#10;- 构建冷启动模块 预加载数据到Redis" />
     <MESSAGE value="refactor(product): 重构商品列表查询逻辑&#10;&#10;- 修改了 ProductController 中的参数接收方式，增加了 isLast 参数&#10;- 重构了 ProductService 接口，更新了 getListProducts 方法签名&#10;- 实现了 ProductServiceImpl 中的列表查询逻辑，包括缓存命中和兜底查询- 更新了 ProductMapper 接口和 XML 文件中的 SQL 查询&#10;- 优化了 RedisCache 相关操作，增加了 lastScore 和 type 参数" />
     <MESSAGE value="feat(service): 增加布隆过滤器支持&#10;&#10;- 在 application.yaml 中添加布隆过滤器配置&#10;- 新增布隆过滤器异常处理逻辑&#10;- 修改产品数据加载和缓存逻辑，支持布隆过滤器&#10;- 优化 Redis 缓存序列化方式&#10;- 调整安全配置，引入 Google Guava 库" />
-    <option name="LAST_COMMIT_MESSAGE" value="feat(service): 增加布隆过滤器支持&#10;&#10;- 在 application.yaml 中添加布隆过滤器配置&#10;- 新增布隆过滤器异常处理逻辑&#10;- 修改产品数据加载和缓存逻辑，支持布隆过滤器&#10;- 优化 Redis 缓存序列化方式&#10;- 调整安全配置，引入 Google Guava 库" />
+    <MESSAGE value="- 修复因名称输入错误 导致布隆过滤器100%拦截&#10;- 优化自定义的ApplicationRunner逻辑 启用异步执行&#10;- 优化部分逻辑结构" />
+    <option name="LAST_COMMIT_MESSAGE" value="- 修复因名称输入错误 导致布隆过滤器100%拦截&#10;- 优化自定义的ApplicationRunner逻辑 启用异步执行&#10;- 优化部分逻辑结构" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

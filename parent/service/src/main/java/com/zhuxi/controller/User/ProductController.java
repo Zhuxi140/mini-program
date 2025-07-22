@@ -55,7 +55,7 @@ public class ProductController {
 
     @GetMapping("/{id}")
     @RequireRole(Role.USER)
-    @BloomFilterCheck(value = "product", key = "id")
+    @BloomFilterCheck(BloomFilterName = "product", key1 = "id")
     @Operation(
             summary = "获取商品详情接口",
             description = "商品详情"
@@ -69,6 +69,7 @@ public class ProductController {
 
     @GetMapping("/spec/{id}")
     @RequireRole(Role.USER)
+    @BloomFilterCheck(BloomFilterName = "product", key1 = "id")
     @Operation(
             summary = "获取商品规格接口",
             description = "商品规格"

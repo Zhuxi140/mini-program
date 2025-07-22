@@ -12,19 +12,19 @@ public interface CartService {
 
 
     // 修改购物车商品
-    Result<Void> update(CartUpdateDTO cartUpdateDTO, String token);
+    Result<Void> update(CartUpdateDTO cartUpdateDTO, Long userId);
 
     //加入新的购物车商品
-    Result<Void> add(CarAddDTO carAddDTO, String token);
+    Result<Void> add(CarAddDTO carAddDTO, Long userId);
 
     //删除购物车商品
     Result<Void> delete(Long cartId);
 
     //清空购物车商品
-    Result<Void> deleteAll(String token);
+    Result<Void> deleteAll(Long userId);
 
     //获取购物车商品列表
-    Result<List<CartVO>> getList(String token);
+    Result<List<CartVO>> getList(Long userId);
 
     //获得局部更新的商品信息
     Result<CartNewVO> getNewCar(Long productId, Long specId);

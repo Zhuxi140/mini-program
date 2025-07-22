@@ -19,6 +19,6 @@ public interface UserService {
     Result<UserLoginDTO> loginTest(UserLoginDTO userLoginDTO);
 
     //更新用户个人信息
-    Result<Void> updateUserInfo(String token,UserUpdateDTO userUpdateDTO);
+    Result<Void> updateUserInfo(Long userId,UserUpdateDTO userUpdateDTO);
 
 }

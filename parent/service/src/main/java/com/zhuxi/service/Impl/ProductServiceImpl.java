@@ -1,7 +1,6 @@
 package com.zhuxi.service.Impl;
 
 import com.zhuxi.Constant.Message;
-import com.zhuxi.Exception.RedisException;
 import com.zhuxi.Result.ProductPageResult;
 import com.zhuxi.Result.Result;
 import com.zhuxi.service.ProductService;
@@ -11,7 +10,6 @@ import com.zhuxi.utils.RedisUntil;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.data.redis.core.ZSetOperations;
 import org.springframework.stereotype.Service;
-import org.springframework.util.CollectionUtils;
 import src.main.java.com.zhuxi.pojo.VO.Product.ProductDetailVO;
 import src.main.java.com.zhuxi.pojo.VO.Product.ProductOverviewVO;
 import src.main.java.com.zhuxi.pojo.VO.Product.ProductSpecVO;
@@ -29,13 +27,11 @@ public class ProductServiceImpl implements ProductService {
 
     private final ProductTxService productTxService;
     private final ProductRedisCache productRedisCache;
-    private final RedisUntil redisUntil;
 
 
 
-    public ProductServiceImpl(ProductTxService productTxService, ProductRedisCache productRedisCache, RedisUntil redisUntil) {
+    public ProductServiceImpl(ProductTxService productTxService, ProductRedisCache productRedisCache) {
         this.productTxService = productTxService;
-        this.redisUntil = redisUntil;
         this.productRedisCache = productRedisCache;
     }
 

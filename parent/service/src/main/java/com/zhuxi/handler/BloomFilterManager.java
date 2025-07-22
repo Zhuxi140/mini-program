@@ -10,18 +10,34 @@ import java.util.concurrent.ConcurrentHashMap;
 @SuppressWarnings("UnstableApiUsage")
 public class BloomFilterManager {
     private final Map<String, BloomFilter<Long>> filters = new ConcurrentHashMap<>();
+    private final Map<String,BloomFilter<String>> stringFilters = new ConcurrentHashMap<>();
 
-    public void addFilter(String filterName, BloomFilter<Long> filter){
+    public void addFilterLong(String filterName, BloomFilter<Long> filter){
         filters.put(filterName, filter);
     }
 
-    public boolean mightContain(String filterName, Long value){  // 检测元素是否存在
+    public void addFilterString(String filterName, BloomFilter<String> filter){
+        stringFilters.put(filterName, filter);
+    }
+
+    public boolean mightContainLong(String filterName, Long value){
         BloomFilter<Long> filter = filters.get(filterName);
         return  filter !=null && filter.mightContain(value);
     }
 
-    public void put(String filterName, Long value){
+    public boolean mightContainString(String filterName, String value){
+        BloomFilter<String> filter = stringFilters.get(filterName);
+        return  filter !=null && filter.mightContain(value);
+    }
+
+    public void putLong(String filterName, Long value){
         BloomFilter<Long> filter = filters.get(filterName);
+        if (filter !=null)
+            filter.put(value);
+    }
+
+    public void putString(String filterName, String value){
+        BloomFilter<String> filter = stringFilters.get(filterName);
         if (filter !=null)
             filter.put(value);
     }

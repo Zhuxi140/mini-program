@@ -30,12 +30,12 @@ spring:
           min-idle: 20 # 最小空闲连接数
           time-between-eviction-runs: 30 # 连接空闲时间
         shutdown-timeout: 100   # 关闭连接等待时间
-#      host: r-bp1j86kgker8z46dxmpd.redis.rds.aliyuncs.com
-#      port: 6379
-#      password: qwEr123456
-#      username: r-bp1j86kgker8z46dxm
-      host: 192.168.186.128
-      password: 123456
+      host: r-bp1j86kgker8z46dxmpd.redis.rds.aliyuncs.com
+      port: 6379
+      password: qwEr123456
+      username: r-bp1j86kgker8z46dxm
+#      host: 192.168.186.128
+#      password: 123456
 
 bloom-filter:
   productConfig:
@@ -53,7 +53,7 @@ mybatis:
   mapper-locations: classpath:mapper/*.xml
   configuration:
     map-underscore-to-camel-case: true
-  type-handlers-package: com.zhuxi.handler
+#  type-handlers-package: com.zhuxi.handler
 
 #jwt配置
 jwt:

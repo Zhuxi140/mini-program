@@ -57,7 +57,7 @@ public class Message {
     public static final String SPECID_IS_NO_SALE_STOCK = "商品规格id无可售库存";
     public static final String NO_THIS_PRODUCT = "无此商品";
     public static final String SPECID_IS_NO_PRE_STOCK = "商品规格id无预占库存";
-    public static final String ORDER_ID_IS_NULL = "订单id为空";
+    public static final String ORDER_USER_ID_IS_NULL = "订单或用户id为空";
     public static final String GROUP_ID_IS_NULL = "订单组id为空";
     public static final String ORDER_CONCEAL_ERROR = "订单取消失败";
     public static final String PAY_CONCEAL_ERROR = "支付取消失败";

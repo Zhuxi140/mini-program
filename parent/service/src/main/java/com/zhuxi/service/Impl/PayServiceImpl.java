@@ -15,11 +15,9 @@ import src.main.java.com.zhuxi.pojo.DTO.Pay.PayDTO;
 public class PayServiceImpl implements PayService {
 
     private final PayTxService payTxService;
-    private final JwtUtils jwtUtils;
 
-    public PayServiceImpl(PayTxService payTxService, JwtUtils jwtUtils) {
+    public PayServiceImpl(PayTxService payTxService) {
         this.payTxService = payTxService;
-        this.jwtUtils = jwtUtils;
     }
 
     /**
@@ -27,37 +25,16 @@ public class PayServiceImpl implements PayService {
      */
     @Override
     @Transactional
-    public Result<Void> pay(PayDTO payDTO, String token) {
+    public Result<Void> pay(PayDTO payDTO, Long userId) {
         if (payDTO.getOrderId() ==  null || payDTO.getPaidAmount() == null)
             return Result.error(Message.BODY_NO_MAIN_OR_IS_NULL);
 
-        Result<Long> result = getUserId(token);
-        if (result.getCode() != 200)
-            return Result.error(result.getMsg());
-        payDTO.setUserId(result.getData());
-
+        payDTO.setUserId(userId);
         payTxService.pay(payDTO);
         return Result.success(Message.OPERATION_SUCCESS);
     }
 
 
 
-    private Result<Long> getUserId(String token){
-        if (token == null) {
-            return Result.error(Message.JWT_IS_NULL);
-        }
-
-        Claims claims = jwtUtils.parseToken(token);
-        if (claims == null) {
-            return Result.error(Message.JWT_ERROR);
-        }
-
-        Long userId = claims.get("id", Long.class);
-        if (userId == null) {
-            return Result.error(Message.JWT_DATA_ERROR);
-        }
-
-        return Result.success(userId);
-    }
 
 }

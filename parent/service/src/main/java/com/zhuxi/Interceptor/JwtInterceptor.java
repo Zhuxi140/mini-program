@@ -36,7 +36,7 @@ public class JwtInterceptor implements HandlerInterceptor {
     throws Exception {
         String requestURI = request.getRequestURI();
 
-        log.info("--------处理url:{}",requestURI);
+//        log.info("--------处理url:{}",requestURI);
 
       /*  List<String> excludePaths = jwtInterceptorProperties.getExcludePaths();*/
 

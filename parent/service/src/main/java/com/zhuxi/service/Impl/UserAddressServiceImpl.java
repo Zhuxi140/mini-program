@@ -17,11 +17,9 @@ import java.util.List;
 @Service
 public class UserAddressServiceImpl implements UserAddressService {
 
-    private final JwtUtils jwtUtils;
     private final UserAddressTxService userAddressTxService;
 
-    public UserAddressServiceImpl(JwtUtils jwtUtils, UserAddressTxService userAddressTxService) {
-        this.jwtUtils = jwtUtils;
+    public UserAddressServiceImpl(UserAddressTxService userAddressTxService) {
         this.userAddressTxService = userAddressTxService;
     }
 
@@ -30,13 +28,8 @@ public class UserAddressServiceImpl implements UserAddressService {
      */
     @Override
     @Transactional
-    public Result<Void> add(UserAddressDTO userAddressDTO, String token) {
+    public Result<Void> add(UserAddressDTO userAddressDTO, Long userId) {
 
-        Result<Long> result = getUserId(token);
-        if(result.getCode() != 200)
-            return Result.error(result.getMsg());
-
-        Long userId = result.getData();
         int exist = userAddressTxService.isExist(userId);
 
         if(exist == 5)
@@ -55,23 +48,15 @@ public class UserAddressServiceImpl implements UserAddressService {
         return Result.success(Message.OPERATION_SUCCESS);
     }
 
-    /**
-     * 设置用户地址为默认
+    /**Long userId地址为默认
      */
     @Override
     @Transactional
-    public Result<Void> setDefault(Long addressId, String token) {
+    public Result<Void> setDefault(Long addressId, Long userId) {
 
         if (addressId == null || userAddressTxService.isExistAddressId(addressId))
             return Result.error(Message.PARAM_ERROR + " 或 " + Message.USER_ADDRESS_NOT_EXIST);
 
-
-        Result<Long> result = getUserId(token);
-
-        if(result.getCode() != 200)
-            return Result.error(result.getMsg());
-
-        Long userId = result.getData();
         Long defaultAddressId = userAddressTxService.getDefaultAddressId(userId);
 
         if(defaultAddressId != null)
@@ -88,17 +73,10 @@ public class UserAddressServiceImpl implements UserAddressService {
      */
     @Override
     @Transactional
-    public Result<Void> cancelDefault(Long addressId,String token) {
+    public Result<Void> cancelDefault(Long addressId,Long userId) {
 
         if(addressId == null)
             return Result.error(Message.PARAM_ERROR);
-
-        Result<Long> result = getUserId(token);
-
-        if(result.getCode() != 200)
-            return Result.error(result.getMsg());
-
-        Long userId = result.getData();
 
         userAddressTxService.cancelDefaultAndUpdateUserAddressId(addressId,userId);
 
@@ -110,14 +88,7 @@ public class UserAddressServiceImpl implements UserAddressService {
      * 获取用户地址列表
      */
     @Override
-    public Result<List<UserAddressVO>> getList(String token) {
-
-        Result<Long> result = getUserId(token);
-
-        if(result.getCode() != 200)
-            return Result.error(result.getMsg());
-
-        Long userId = result.getData();
+    public Result<List<UserAddressVO>> getList(Long userId) {
 
         List<UserAddressVO> list = userAddressTxService.getList(userId);
         if(list != null)
@@ -131,17 +102,11 @@ public class UserAddressServiceImpl implements UserAddressService {
      */
     @Override
     @Transactional
-    public Result<Void> delete(Long addressId,String token) {
+    public Result<Void> delete(Long addressId,Long userId) {
 
         if(addressId == null)
             return Result.error(Message.PARAM_ERROR);
 
-        Result<Long> result = getUserId(token);
-
-        if(result.getCode() != 200)
-            return Result.error(result.getMsg());
-
-        Long userId = result.getData();
 
         userAddressTxService.isDefaultAndUpdateUserAddressId(addressId,userId);
         userAddressTxService.delete(addressId);
@@ -155,16 +120,10 @@ public class UserAddressServiceImpl implements UserAddressService {
      */
     @Override
     @Transactional
-    public Result<Void> update(UserAddressDTO userAddressDTO,Long addressId,String token) {
+    public Result<Void> update(UserAddressDTO userAddressDTO,Long addressId,Long userId) {
 
         if(addressId == null)
             return Result.error(Message.PARAM_ERROR);
-
-        Result<Long> result = getUserId(token);
-        if(result.getCode() != 200)
-            return Result.error(result.getMsg());
-
-        Long userId = result.getData();
 
         if(userAddressDTO.getIsDefault() == 1){
             Long defaultAddressId = userAddressTxService.getDefaultAddressId(userId);
@@ -174,28 +133,6 @@ public class UserAddressServiceImpl implements UserAddressService {
         userAddressTxService.update(userAddressDTO,addressId);
 
         return Result.success(Message.OPERATION_SUCCESS);
-    }
-
-
-    /**
-     * 通过jwt获取用户Id
-     */
-    private Result<Long> getUserId(String token){
-        if (token == null) {
-            return Result.error(Message.JWT_IS_NULL);
-        }
-
-        Claims claims = jwtUtils.parseToken(token);
-        if (claims == null) {
-            return Result.error(Message.JWT_ERROR);
-        }
-
-        Long userId = claims.get("id", Long.class);
-        if (userId == null) {
-            return Result.error(Message.JWT_DATA_ERROR);
-        }
-
-        return Result.success(userId);
     }
 
 

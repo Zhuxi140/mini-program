@@ -2,6 +2,7 @@ package com.zhuxi.controller.User;
 
 
 import com.zhuxi.Result.Result;
+import com.zhuxi.annotation.CurrentUserId;
 import com.zhuxi.annotation.RequireRole;
 import com.zhuxi.service.CartService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -43,11 +44,11 @@ public class CarController {
     public Result<Void> updateCart(
 
             @RequestBody CartUpdateDTO cartUpdateDTO,
-            @Parameter(description = "用户token",hidden = true)
-            @RequestHeader("Authorization") String token
+            @Parameter(description = "用户id",hidden = true)
+            @CurrentUserId Long userId
     ){
 
-        return cartService.update(cartUpdateDTO,token);
+        return cartService.update(cartUpdateDTO,userId);
     }
 
     /**
@@ -61,10 +62,10 @@ public class CarController {
     )
     public Result<Void> addCart(
             @RequestBody CarAddDTO carAddDTO,
-            @Parameter(description = "用户token",hidden = true)
-            @RequestHeader("Authorization") String token
+            @Parameter(description = "用户id",hidden = true)
+            @CurrentUserId Long userId
     ){
-        return cartService.add(carAddDTO, token);
+        return cartService.add(carAddDTO,userId );
     }
 
 
@@ -97,9 +98,9 @@ public class CarController {
     )
     public Result<List<CartVO>> getCartList(
             @Parameter(description = "用户token",hidden = true)
-            @RequestHeader("Authorization") String token
+            @CurrentUserId Long userId
     ){
-        return cartService.getList(token);
+        return cartService.getList(userId);
     }
 
 
@@ -114,9 +115,9 @@ public class CarController {
     )
     public Result<Void> deleteAllCart(
             @Parameter(description = "用户token",hidden = true)
-            @RequestHeader("Authorization") String token
+            @CurrentUserId Long userId
     ){
-        return cartService.deleteAll(token);
+        return cartService.deleteAll(userId);
     }
 
     @GetMapping("/newProductInfo")

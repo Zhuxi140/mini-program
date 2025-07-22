@@ -11,6 +11,8 @@ import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+
 @Slf4j
 @Component
 @Aspect
@@ -25,13 +27,16 @@ public class BloomFilterAspect {
 
     @Around("@annotation(bloomFilterCheck)")
     public Object checkBloomFilter(ProceedingJoinPoint joinPoint, BloomFilterCheck bloomFilterCheck) throws Throwable {
-        Long key = getKeyFromParams(joinPoint,bloomFilterCheck.key());
-        String value = bloomFilterCheck.value();
-        boolean b = BFM.mightContain(value, key);
-        if (!b && bloomFilterCheck.rejectIfMiss()){
-            throw new BloomFilterRejectException("请求的资源不存在或无权访问");
+        Long key1 = getKeyFromParams(joinPoint,bloomFilterCheck.key1());
+        String bloomFilterName = bloomFilterCheck.BloomFilterName();
+        if ("order".equals(bloomFilterName)){
+            Long key2 = getKeyFromParams(joinPoint,bloomFilterCheck.key2());
+            Long l = orderValidate(key2, key1);
+            checkKeys(bloomFilterName,l,bloomFilterCheck);
+            return joinPoint.proceed();
         }
 
+        checkKeys(bloomFilterName,key1,bloomFilterCheck);
         return joinPoint.proceed();
     }
 
@@ -59,5 +64,20 @@ public class BloomFilterAspect {
         }
 
         throw new IllegalArgumentException("No parameter named " + key);
+    }
+
+
+    private Long orderValidate(Long userId,Long orderId){
+        if (orderId == null || userId == null){
+            throw new BloomFilterRejectException("orderId/userId不能为空");
+        }
+        return userId + orderId;
+    }
+
+    private void checkKeys(String bloomFilterName, Long key,BloomFilterCheck bloomFilterCheck){
+        boolean b = BFM.mightContainLong(bloomFilterName, key);
+        if (!b && bloomFilterCheck.rejectIfMiss()){
+            throw new BloomFilterRejectException("请求的资源不存在或无权访问");
+        }
     }
 }

@@ -3,6 +3,8 @@ package com.zhuxi.controller.User;
 
 import com.zhuxi.Result.PageResult;
 import com.zhuxi.Result.Result;
+import com.zhuxi.annotation.BloomFilterCheck;
+import com.zhuxi.annotation.CurrentUserId;
 import com.zhuxi.annotation.RequireRole;
 import com.zhuxi.service.OrderService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -35,10 +37,10 @@ public class OrderController {
     )
     public Result<Void> add(
             @RequestBody OrderAddDTO orderAddDTO,
-            @Parameter(description = "用户token",hidden = true)
-            @RequestHeader("Authorization") String token
+            @Parameter(description = "用户id",hidden = true)
+            @CurrentUserId Long userId
     ){
-        return orderService.add(orderAddDTO,token);
+        return orderService.add(orderAddDTO,userId);
     }
 
     @PostMapping("/group")
@@ -49,15 +51,16 @@ public class OrderController {
     )
     public Result<Void> addGroup(
             @RequestBody List<OrderAddDTO> orderAddDTO,
-            @Parameter(description = "用户token",hidden = true)
-            @RequestHeader("Authorization") String token
+            @Parameter(description = "用户id",hidden = true)
+            @CurrentUserId Long userId
     ){
-        return orderService.addGroup(orderAddDTO,token);
+        return orderService.addGroup(orderAddDTO,userId);
     }
 
 
     @PutMapping("/{orderId}")
     @RequireRole(Role.USER)
+    @BloomFilterCheck(BloomFilterName = "order",key1 = "orderId",key2 = "userId")
     @Operation(
             summary = "取消订单",
             description = "取消订单"
@@ -65,10 +68,10 @@ public class OrderController {
     public Result<Void> cancelOrder(
             @Parameter(description = "订单id",required = true)
             @PathVariable Long orderId,
-            @Parameter(description = "用户token",hidden = true)
-            @RequestHeader("Authorization") String token
+            @Parameter(description = "用户id",hidden = true)
+            @CurrentUserId Long userId
     ){
-        return orderService.cancelOrder(orderId,token);
+        return orderService.cancelOrder(orderId,userId);
     }
 
     @PutMapping("/group")
@@ -80,10 +83,10 @@ public class OrderController {
     public Result<Void> cancelOrderGroup(
             @Parameter(description = "订单组id",required = true)
             @RequestParam Long groupId,
-            @Parameter(description = "用户token",hidden = true)
-            @RequestHeader("Authorization") String token
+            @Parameter(description = "用户id",hidden = true)
+            @CurrentUserId Long userId
     ){
-        return orderService.cancelOrderGroup(groupId,token);
+        return orderService.cancelOrderGroup(groupId,userId);
     }
 
     @GetMapping
@@ -93,19 +96,20 @@ public class OrderController {
             description = "按订单创建时间 由新到旧"
     )
     public PageResult<List<OrderRealShowVO>> getOrderList(
-            @Parameter(description = "用户token",hidden = true)
-            @RequestHeader("Authorization") String token,
+            @Parameter(description = "用户id",hidden = true)
+            @CurrentUserId Long userId,
             @Parameter(description = "订单id(第一次不用填)",required = true)
             Long lastId,
             @RequestParam(defaultValue = "10")
             @Parameter(description = "分页大小(默认为10)")
             Integer pageSize
     ){
-        return orderService.getOrderList(token,lastId,pageSize);
+        return orderService.getOrderList(userId,lastId,pageSize);
     }
 
     @PutMapping
     @RequireRole(Role.USER)
+    @BloomFilterCheck(BloomFilterName = "order",key1 = "orderId",key2 = "userId")
     @Operation(
             summary = "删除订单",
             description = "删除订单"
@@ -113,9 +117,9 @@ public class OrderController {
     public Result<Void> deleteOrder(
             @Parameter(description = "订单id",required = true)
             @RequestParam Long orderId,
-            @Parameter(description = "用户token",hidden = true)
-            @RequestHeader("Authorization") String token
+            @Parameter(description = "用户id",hidden = true)
+            @CurrentUserId Long userId
     ){
-        return orderService.deleteOrder(orderId,token);
+        return orderService.deleteOrder(orderId,userId);
     }
 }

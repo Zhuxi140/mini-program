@@ -2,6 +2,7 @@ package com.zhuxi.controller.User;
 
 
 import com.zhuxi.Result.Result;
+import com.zhuxi.annotation.CurrentUserId;
 import com.zhuxi.annotation.RequireRole;
 import com.zhuxi.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -34,9 +35,9 @@ public class UserController {
     )
     public Result<Void> updateUserInfo(@RequestBody UserUpdateDTO userUpdateDTO,
                                        @Parameter(description = "用户token",hidden = true)
-                                       @RequestHeader("Authorization") String token){
+                                       @CurrentUserId Long userId){
 
-        return userService.updateUserInfo(token,userUpdateDTO);
+        return userService.updateUserInfo(userId,userUpdateDTO);
     }
 
 

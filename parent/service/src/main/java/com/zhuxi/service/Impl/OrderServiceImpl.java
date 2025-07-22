@@ -8,7 +8,6 @@ import com.zhuxi.service.OrderService;
 import com.zhuxi.service.TxService.OrderTxService;
 import com.zhuxi.utils.IdSnowFLake;
 import com.zhuxi.utils.JwtUtils;
-import io.jsonwebtoken.Claims;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import src.main.java.com.zhuxi.pojo.DTO.Order.InventoryLockAddDTO;
@@ -17,7 +16,6 @@ import src.main.java.com.zhuxi.pojo.DTO.Order.OrderGroupDTO;
 import src.main.java.com.zhuxi.pojo.DTO.Order.PaymentAddDTO;
 import src.main.java.com.zhuxi.pojo.VO.Order.OrderRealShowVO;
 import src.main.java.com.zhuxi.pojo.VO.Order.OrderShowVO;
-
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.*;
@@ -25,12 +23,10 @@ import java.util.*;
 @Service
 public class OrderServiceImpl implements OrderService {
 
-    private final JwtUtils jwtUtils;
     private final OrderTxService orderTxService;
     private final IdSnowFLake idSnowFLake;
 
-    public OrderServiceImpl(JwtUtils jwtUtils, OrderTxService orderTxService, IdSnowFLake idSnowFLake) {
-        this.jwtUtils = jwtUtils;
+    public OrderServiceImpl( OrderTxService orderTxService, IdSnowFLake idSnowFLake) {
         this.orderTxService = orderTxService;
         this.idSnowFLake = idSnowFLake;
     }
@@ -40,15 +36,8 @@ public class OrderServiceImpl implements OrderService {
      */
     @Override
     @Transactional
-    public Result<Void> add(OrderAddDTO orderAddDTO,String token) {
-
+    public Result<Void> add(OrderAddDTO orderAddDTO,Long userId) {
         // 基础效验
-        Result<Long> jwtResult = getUserId(token);
-
-        if (jwtResult.getCode() != 200)
-            return Result.error(jwtResult.getMsg());
-
-        Long userId = jwtResult.getData();
         if (orderAddDTO == null)
             return Result.error(Message.BODY_NO_MAIN_OR_IS_NULL);
 
@@ -109,15 +98,9 @@ public class OrderServiceImpl implements OrderService {
      */
     @Override
     @Transactional(rollbackFor = {transactionalException.class,RuntimeException.class })
-    public Result<Void> addGroup(List<OrderAddDTO> orderAddDTO, String token) {
+    public Result<Void> addGroup(List<OrderAddDTO> orderAddDTO, Long userId) {
         if(orderAddDTO == null || orderAddDTO.isEmpty())
             return Result.error(Message.BODY_NO_MAIN_OR_IS_NULL);
-
-        // 解析userId
-        Result<Long> jwtResult = getUserId(token);
-        if (jwtResult.getCode() != 200)
-            return Result.error(jwtResult.getMsg());
-        Long userId = jwtResult.getData();
 
         List<Long> specIds = new ArrayList<>();
 
@@ -186,13 +169,9 @@ public class OrderServiceImpl implements OrderService {
      */
     @Override
     @Transactional
-    public Result<Void> cancelOrder(Long orderId, String token) {
-        if (orderId == null)
-            return Result.error(Message.ORDER_ID_IS_NULL);
-
-        Result<Long> userId = getUserId(token);
-        if (userId.getCode() != 200)
-            return Result.error(userId.getMsg());
+    public Result<Void> cancelOrder(Long orderId, Long userId) {
+        if (orderId == null || userId == null)
+            return Result.error(Message.ORDER_USER_ID_IS_NULL);
 
         orderTxService.concealOrder(orderId);
         orderTxService.releaseLockStock(orderId);
@@ -205,12 +184,9 @@ public class OrderServiceImpl implements OrderService {
      */
     @Override
     @Transactional
-    public Result<Void> cancelOrderGroup(Long groupId, String token) {
+    public Result<Void> cancelOrderGroup(Long groupId, Long userId) {
         if (groupId == null)
             return Result.error(Message.GROUP_ID_IS_NULL);
-        Result<Long> userId = getUserId(token);
-        if (userId.getCode() != 200)
-            return Result.error(userId.getMsg());
         List<Long> orderIdList = orderTxService.getOrderIdList(groupId);
         orderTxService.concealOrderList(orderIdList);
         orderTxService.releaseLockStockList(orderIdList);
@@ -222,17 +198,15 @@ public class OrderServiceImpl implements OrderService {
      * 获取订单列表
      */
     @Override
-    public PageResult<List<OrderRealShowVO>> getOrderList(String token, Long lastId, Integer pageSize) {
-        Result<Long> result = getUserId(token);
-        if (result.getCode() != 200)
-            throw new transactionalException(result.getMsg());
+    public PageResult<List<OrderRealShowVO>> getOrderList(Long userId, Long lastId, Integer pageSize) {
+
         boolean first = ((lastId == null || lastId < 0));
         if( first)
             lastId = Long.MAX_VALUE;
 
         boolean hasPrevious = !first;
         boolean hasMore = false;
-        List<OrderShowVO> orderList = orderTxService.getOrderList(result.getData(), lastId, pageSize + 1);
+        List<OrderShowVO> orderList = orderTxService.getOrderList(userId, lastId, pageSize + 1);
 
         if(orderList.size() == pageSize + 1){
             hasMore = true;
@@ -278,14 +252,11 @@ public class OrderServiceImpl implements OrderService {
      */
     @Override
     @Transactional
-    public Result<Void> deleteOrder(Long orderId, String token) {
-        if (orderId == null)
-            return Result.error(Message.ORDER_ID_IS_NULL);
-        Result<Long> userId = getUserId(token);
-        if (userId.getCode() != 200)
-            return Result.error(userId.getMsg());
+    public Result<Void> deleteOrder(Long orderId, Long userId) {
+        if (orderId == null || userId == null)
+            return Result.error(Message.ORDER_USER_ID_IS_NULL);
 
-        orderTxService.deleteOrder(orderId, userId.getData());
+        orderTxService.deleteOrder(orderId, userId);
 
         return Result.success(Message.OPERATION_SUCCESS);
     }
@@ -308,23 +279,6 @@ public class OrderServiceImpl implements OrderService {
         throw new RuntimeException(Message.ID_GENERATE_ERROR);
     }
 
-    private Result<Long> getUserId(String token){
-        if (token == null) {
-            return Result.error(Message.JWT_IS_NULL);
-        }
-
-        Claims claims = jwtUtils.parseToken(token);
-        if (claims == null) {
-            return Result.error(Message.JWT_ERROR);
-        }
-
-        Long userId = claims.get("id", Long.class);
-        if (userId == null) {
-            return Result.error(Message.JWT_DATA_ERROR);
-        }
-
-        return Result.success(userId);
-    }
 
     // 验证必填字段
     private void validateMustFields(OrderAddDTO orderAddDTO, int i){

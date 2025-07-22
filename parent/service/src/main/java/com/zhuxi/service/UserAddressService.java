@@ -8,15 +8,15 @@ import java.util.List;
 
 public interface UserAddressService {
 
-    Result<Void> add(UserAddressDTO userAddressDTO, String token);
+    Result<Void> add(UserAddressDTO userAddressDTO, Long userId);
 
-    Result<Void> setDefault(Long addressId , String token);
+    Result<Void> setDefault(Long addressId , Long userId);
 
-    Result<Void> cancelDefault(Long addressId,String token);
+    Result<Void> cancelDefault(Long addressId,Long userId);
 
-    Result<List<UserAddressVO>> getList(String token);
+    Result<List<UserAddressVO>> getList(Long userId);
 
-    Result<Void> delete(Long addressId,String token);
+    Result<Void> delete(Long addressId,Long userId);
 
-    Result<Void> update(UserAddressDTO userAddressDTO, Long addressId,String token);
+    Result<Void> update(UserAddressDTO userAddressDTO, Long addressId,Long userId);
 }

@@ -39,10 +39,6 @@ public class ConnectionPoolPreheater {
                     log.error("验证连接失败",e);
                 }
             });
-            // 预热后检查连接池状态
-            log.info("当前活动连接数: {}", dataSource.getActiveCount());
-            log.info("当前空闲连接数: {}", dataSource.getPoolingCount());
-
         }catch (SQLException e){
             throw new ConnectionPoolInitializationException("数据源初始化失败 :"  +  e.getMessage());
         }

@@ -2,6 +2,7 @@ package com.zhuxi.controller.User;
 
 
 import com.zhuxi.Result.Result;
+import com.zhuxi.annotation.CurrentUserId;
 import com.zhuxi.annotation.RequireRole;
 import com.zhuxi.service.UserAddressService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -36,10 +37,10 @@ public class UserAddressController {
     )
     public Result<Void> addUserAddress(
             @RequestBody UserAddressDTO userAddressDTO,
-            @Parameter(description = "用户token",hidden = true)
-            @RequestHeader("Authorization") String token
+            @Parameter(description = "用户id",hidden = true)
+            @CurrentUserId Long userId
     ){
-        return userAddressService.add(userAddressDTO,token);
+        return userAddressService.add(userAddressDTO,userId);
     }
 
 
@@ -56,10 +57,10 @@ public class UserAddressController {
     public Result<Void> setDefaultUserAddress(
             @Parameter(description = "用户地址id",required = true)
             Long addressId,
-            @Parameter(description = "用户token",hidden = true)
-            @RequestHeader("Authorization") String token
+            @Parameter(description = "用户id",hidden = true)
+            @CurrentUserId Long userId
     ){
-        return userAddressService.setDefault(addressId,token);
+        return userAddressService.setDefault(addressId,userId);
     }
 
 
@@ -76,10 +77,10 @@ public class UserAddressController {
     public Result<Void> cancelDefaultUserAddress(
             @Parameter(description = "用户地址id",required = true)
             @PathVariable Long addressId,
-            @Parameter(description = "用户token",hidden = true)
-            @RequestHeader("Authorization") String token
+            @Parameter(description = "用户id",hidden = true)
+            @CurrentUserId Long userId
     ){
-        return userAddressService.cancelDefault(addressId,token);
+        return userAddressService.cancelDefault(addressId,userId);
     }
 
 
@@ -93,10 +94,10 @@ public class UserAddressController {
             description = "获取用户地址列表"
     )
     public Result<List<UserAddressVO>> getUserAddressList(
-            @Parameter(description = "用户token",hidden = true)
-            @RequestHeader("Authorization") String token
+            @Parameter(description = "用户id",hidden = true)
+            @CurrentUserId Long userId
     ){
-        return userAddressService.getList(token);
+        return userAddressService.getList(userId);
     }
 
 
@@ -112,10 +113,10 @@ public class UserAddressController {
     public Result<Void> deleteUserAddress(
             @Parameter(description = "用户地址id",required = true)
             Long addressId,
-            @Parameter(description = "用户token",hidden = true)
-            @RequestHeader("Authorization") String token
+            @Parameter(description = "用户id",hidden = true)
+            @CurrentUserId Long userId
     ){
-        return userAddressService.delete(addressId, token);
+        return userAddressService.delete(addressId, userId);
     }
 
     /**
@@ -131,9 +132,9 @@ public class UserAddressController {
             @RequestBody UserAddressDTO userAddressDTO,
             @Parameter(description = "地址id",required = true)
             Long addressId,
-            @Parameter(description ="用户token",hidden = true )
-            @RequestHeader("Authorization") String  token
+            @Parameter(description ="用户id",hidden = true )
+            @CurrentUserId Long userId
     ){
-        return userAddressService.update(userAddressDTO,addressId,token);
+        return userAddressService.update(userAddressDTO,addressId,userId);
     }
 }

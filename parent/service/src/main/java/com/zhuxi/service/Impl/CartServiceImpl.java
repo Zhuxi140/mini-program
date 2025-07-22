@@ -18,11 +18,9 @@ import java.util.List;
 @Service
 public class CartServiceImpl implements CartService {
 
-    private final JwtUtils jwtUtils;
     private final CartTxService cartTxService;
 
-    public CartServiceImpl(CartTxService cartTxService, JwtUtils jwtUtils) {
-        this.jwtUtils = jwtUtils;
+    public CartServiceImpl(CartTxService cartTxService) {
         this.cartTxService = cartTxService;
     }
 
@@ -31,14 +29,8 @@ public class CartServiceImpl implements CartService {
      */
     @Override
     @Transactional
-    public Result<Void> update(CartUpdateDTO cartUpdateDTO, String token) {
+    public Result<Void> update(CartUpdateDTO cartUpdateDTO, Long userId) {
 
-        Result<Long> jwtResult = getUserId(token);
-
-        if(jwtResult.getCode() != 200)
-            return Result.error(jwtResult.getMsg());
-
-        Long userId = jwtResult.getData();
         if(cartUpdateDTO == null || cartUpdateDTO.getCartId() == null)
             return Result.error(Message.BODY_NO_MAIN_OR_IS_NULL + "/" + Message.CART_ID_IS_NULL);
 
@@ -57,14 +49,8 @@ public class CartServiceImpl implements CartService {
      */
     @Override
     @Transactional
-    public Result<Void> add(CarAddDTO carAddDTO, String token) {
+    public Result<Void> add(CarAddDTO carAddDTO, Long userId) {
 
-        Result<Long> jwtResult = getUserId(token);
-
-        if(jwtResult.getCode() != 200)
-            return Result.error(jwtResult.getMsg());
-
-        Long userId = jwtResult.getData();
         if(carAddDTO == null)
             return Result.error(Message.BODY_NO_MAIN_OR_IS_NULL);
 
@@ -102,13 +88,8 @@ public class CartServiceImpl implements CartService {
      */
     @Override
     @Transactional
-    public Result<Void> deleteAll(String token) {
+    public Result<Void> deleteAll(Long userId) {
 
-        Result<Long> jwtResult = getUserId(token);
-        if(jwtResult.getCode() != 200)
-            return Result.error(jwtResult.getMsg());
-
-        Long userId = jwtResult.getData();
         cartTxService.deleteAll(userId);
 
         return Result.success(Message.OPERATION_SUCCESS);
@@ -119,17 +100,8 @@ public class CartServiceImpl implements CartService {
      * 获取购物车商品列表
      */
     @Override
-    public Result<List<CartVO>> getList(String token) {
+    public Result<List<CartVO>> getList(Long userId) {
 
-        if(token == null)
-            return Result.error(Message.JWT_IS_NULL);
-
-        Result<Long> jwtResult = getUserId(token);
-
-        if(jwtResult.getCode() != 200)
-            return Result.error(jwtResult.getMsg());
-
-        Long userId = jwtResult.getData();
         List<CartVO> cartVO = cartTxService.getListCart(userId);
 
         return Result.success(Message.OPERATION_SUCCESS, cartVO);
@@ -146,23 +118,6 @@ public class CartServiceImpl implements CartService {
         return Result.success(Message.OPERATION_SUCCESS, cartVO);
     }
 
-    private Result<Long> getUserId(String token){
-        if (token == null) {
-            return Result.error(Message.JWT_IS_NULL);
-        }
-
-        Claims claims = jwtUtils.parseToken(token);
-        if (claims == null) {
-            return Result.error(Message.JWT_ERROR);
-        }
-
-        Long userId = claims.get("id", Long.class);
-        if (userId == null) {
-            return Result.error(Message.JWT_DATA_ERROR);
-        }
-
-        return Result.success(userId);
-    }
 
 
 }

@@ -8,6 +8,7 @@ import com.zhuxi.service.TxService.UserTxService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
+import src.main.java.com.zhuxi.pojo.DTO.Order.BloomOrderDTO;
 
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -44,16 +45,14 @@ public class BloomDataLoader {
     }
 
     public void loadData() {
-        long now = System.currentTimeMillis();
         loadProductData();
         loadOrderData();
         loadUserData();
         log.debug("所有布隆过滤器加载完成");
-        log.info("布隆加载完成，共耗时:{}ms",System.currentTimeMillis() - now);
     }
 
     private void loadProductData(){
-        bloomFilterManager.addFilter("product",productBloomFilter);
+        bloomFilterManager.addFilterLong("product",productBloomFilter);
         int pageSize = 1000;
         Long lastId = 0L;
         while(true){
@@ -63,19 +62,19 @@ public class BloomDataLoader {
                 lastId = allProductId.get(allProductId.size() - 1);
             }else{
                 allProductId.forEach( p-> {
-                    bloomFilterManager.put("product",p);
+                    bloomFilterManager.putLong("product",p);
                 });
                 break;
             }
             allProductId.forEach( p-> {
-                bloomFilterManager.put("product",p);
+                bloomFilterManager.putLong("product",p);
             });
         }
 
     }
 
     private void loadUserData(){
-        bloomFilterManager.addFilter("user",userBloomFilter);
+        bloomFilterManager.addFilterLong("user",userBloomFilter);
         int pageSize = 1000;
         Long lastId = 0L;
         while(true) {
@@ -85,36 +84,41 @@ public class BloomDataLoader {
                 lastId = allUserId.get(allUserId.size() - 1);
             }else{
                 allUserId.forEach( p-> {
-                    bloomFilterManager.put("user",p);
+                    bloomFilterManager.putLong("user",p);
                 });
                 break;
             }
             allUserId.forEach( p-> {
-                bloomFilterManager.put("user",p);
+                bloomFilterManager.putLong("user",p);
             });
         }
     }
 
 
     private void loadOrderData(){
-        bloomFilterManager.addFilter("order",orderBloomFilter);
+        bloomFilterManager.addFilterLong("order",orderBloomFilter);
         int pageSize = 1000;
         Long lastId = 0L;
         while(true){
-            List<Long> allOrderId = orderTxService.getAllOrderId(lastId, pageSize+1);
+            List<BloomOrderDTO> allOrderId = orderTxService.getAllOrderId(lastId, pageSize+1);
             if(allOrderId.size() == pageSize + 1){
                 allOrderId = allOrderId.subList(0, pageSize);
-                lastId = allOrderId.get(allOrderId.size() - 1);
+                lastId = allOrderId.get(allOrderId.size() - 1).getId();
             }else{
                 allOrderId.forEach( p-> {
-                    bloomFilterManager.put("order",p);
+                    Long orderId = p.getId();
+                    Long userId = p.getUserId();
+                    bloomFilterManager.putLong("order",userId + orderId);
                 });
                 break;
             }
             //添加到布隆过滤器
             allOrderId.forEach( p-> {
-                bloomFilterManager.put("order",p);
+                Long orderId = p.getId();
+                Long userId = p.getUserId();
+                bloomFilterManager.putLong("order",userId + orderId);
             });
         }
     }
+
 }

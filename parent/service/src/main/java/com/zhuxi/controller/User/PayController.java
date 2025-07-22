@@ -2,6 +2,7 @@ package com.zhuxi.controller.User;
 
 
 import com.zhuxi.Result.Result;
+import com.zhuxi.annotation.CurrentUserId;
 import com.zhuxi.annotation.RequireRole;
 import com.zhuxi.service.PayService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -29,8 +30,9 @@ public class PayController {
             @Parameter(description = "支付信息",required = true)
             PayDTO payDTO,
             @RequestHeader (name = "Authorization")
-            @Parameter(description = "用户token",hidden = true)
-            String token) {
-        return payService.pay(payDTO, token);
+            @Parameter(description = "用户id",hidden = true)
+            @CurrentUserId Long userId
+    ) {
+        return payService.pay(payDTO, userId);
     }
 }

@@ -6,10 +6,7 @@ import com.zhuxi.mapper.OrderMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import src.main.java.com.zhuxi.pojo.DTO.Order.InventoryLockAddDTO;
-import src.main.java.com.zhuxi.pojo.DTO.Order.OrderAddDTO;
-import src.main.java.com.zhuxi.pojo.DTO.Order.OrderGroupDTO;
-import src.main.java.com.zhuxi.pojo.DTO.Order.PaymentAddDTO;
+import src.main.java.com.zhuxi.pojo.DTO.Order.*;
 import src.main.java.com.zhuxi.pojo.VO.Order.OrderRealShowVO;
 import src.main.java.com.zhuxi.pojo.VO.Order.OrderShowVO;
 
@@ -36,7 +33,7 @@ public class OrderTxService {
         return orderList;
     }
 
-    public List<Long> getAllOrderId(Long lastId,int pageSize){
+    public List<BloomOrderDTO> getAllOrderId(Long lastId, int pageSize){
         return orderMapper.getAllOrderId(lastId,pageSize);
     }
 

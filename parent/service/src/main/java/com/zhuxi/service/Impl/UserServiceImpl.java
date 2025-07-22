@@ -22,10 +22,8 @@ import src.main.java.com.zhuxi.pojo.VO.User.UserLoginVO;
 public class UserServiceImpl implements UserService {
 
     private final UserTxService userTxService;
-    private final JwtUtils jwtUtils;
 
-    public UserServiceImpl(UserTxService userTxService, JwtUtils jwtUtils) {
-        this.jwtUtils = jwtUtils;
+    public UserServiceImpl(UserTxService userTxService) {
         this.userTxService = userTxService;
     }
 
@@ -58,13 +56,9 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     @Transactional
-    public Result<Void> updateUserInfo(String token,UserUpdateDTO userUpdateDTO) {
+    public Result<Void> updateUserInfo(Long userId,UserUpdateDTO userUpdateDTO) {
 
-
-        Claims claims = jwtUtils.parseToken(token);
-        if(claims == null)
-            return Result.error(Message.JWT_ERROR);
-        userUpdateDTO.setId(claims.get("id",Long.class));
+        userUpdateDTO.setId(userId);
 
         if(userUpdateDTO.getId() == null)
             return Result.error(Message.BODY_NO_MAIN_OR_IS_NULL);

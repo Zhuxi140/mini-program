@@ -46,6 +46,7 @@ public class BloomFilterConfig {
         );
     }
 
+
     public static class ProductConfig {
         private long expectedElements;
         private double fpp;

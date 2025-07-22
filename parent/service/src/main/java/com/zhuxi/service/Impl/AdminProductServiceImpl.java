@@ -66,7 +66,6 @@ public class AdminProductServiceImpl implements AdminProductService {
             RealStockDTO realStockDTO1 = new RealStockDTO();
             realStockDTO1.setProductId(id);
             realStockDTO1.setSpecId(productSpecDTO.getId());
-            log.warn("sepcId : {}", productSpecDTO.getId());
             return realStockDTO1;
         }).toList();
 
@@ -75,6 +74,7 @@ public class AdminProductServiceImpl implements AdminProductService {
 
         return Result.success(Message.OPERATION_SUCCESS);
     }
+
 
     /**
      * 删除商品
