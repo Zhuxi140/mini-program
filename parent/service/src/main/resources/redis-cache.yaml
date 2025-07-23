@@ -12,3 +12,6 @@ redis:
     AddressCache:
       KeyPrefix: user:address:userId:{}
       TTL: 1440
+    OrderCache:
+      OrderLockPrefix: order:lock
+

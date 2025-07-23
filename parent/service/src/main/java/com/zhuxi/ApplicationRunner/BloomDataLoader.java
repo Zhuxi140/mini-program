@@ -15,6 +15,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 @Slf4j
 @Component
+@SuppressWarnings("UnstableApiUsage")
 public class BloomDataLoader {
     private final ProductTxService productTxService;
     private final UserTxService userTxService;

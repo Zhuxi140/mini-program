@@ -11,7 +11,7 @@ import java.util.List;
 public interface OrderService {
 
     // 创建单个商品订单
-    Result<Void> add(OrderAddDTO orderAddDTO,Long userId);
+    Result<String> add(OrderAddDTO orderAddDTO,Long userId);
 
     // 创建多个商品订单(订单组)
     Result<Void> addGroup(List<OrderAddDTO> orderAddDTO, Long userId);

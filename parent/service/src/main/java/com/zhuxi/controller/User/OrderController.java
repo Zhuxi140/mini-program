@@ -35,7 +35,7 @@ public class OrderController {
             summary = "创建单个商品订单",
             description = "创建订单"
     )
-    public Result<Void> add(
+    public Result<String> add(
             @RequestBody OrderAddDTO orderAddDTO,
             @Parameter(description = "用户id",hidden = true)
             @CurrentUserId Long userId

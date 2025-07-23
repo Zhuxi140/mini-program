@@ -1,14 +1,18 @@
 package com.zhuxi.service.Impl;
 
 import com.zhuxi.Constant.Message;
+import com.zhuxi.Exception.SnycException;
 import com.zhuxi.Exception.transactionalException;
 import com.zhuxi.Result.PageResult;
 import com.zhuxi.Result.Result;
 import com.zhuxi.service.OrderService;
+import com.zhuxi.service.RedisCache.OrderRedisCache;
+import com.zhuxi.service.Sync.OrderSyncService;
 import com.zhuxi.service.TxService.OrderTxService;
 import com.zhuxi.utils.IdSnowFLake;
-import com.zhuxi.utils.JwtUtils;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import src.main.java.com.zhuxi.pojo.DTO.Order.InventoryLockAddDTO;
 import src.main.java.com.zhuxi.pojo.DTO.Order.OrderAddDTO;
@@ -25,72 +29,61 @@ public class OrderServiceImpl implements OrderService {
 
     private final OrderTxService orderTxService;
     private final IdSnowFLake idSnowFLake;
+    private final OrderRedisCache orderRedisCache;
+    private final OrderSyncService orderSyncService;
 
-    public OrderServiceImpl( OrderTxService orderTxService, IdSnowFLake idSnowFLake) {
+    public OrderServiceImpl(OrderTxService orderTxService, IdSnowFLake idSnowFLake, OrderRedisCache orderRedisCache, OrderSyncService orderSyncService) {
         this.orderTxService = orderTxService;
         this.idSnowFLake = idSnowFLake;
+        this.orderRedisCache = orderRedisCache;
+        this.orderSyncService = orderSyncService;
     }
 
     /**
      * 添加订单
      */
     @Override
-    @Transactional
-    public Result<Void> add(OrderAddDTO orderAddDTO,Long userId) {
+    public Result<String> add(OrderAddDTO orderAddDTO,Long userId) {
         // 基础效验
         if (orderAddDTO == null)
             return Result.error(Message.BODY_NO_MAIN_OR_IS_NULL);
 
         orderAddDTO.setUserId(userId);
-
         Long productId = orderAddDTO.getProductId();
         Long specId = orderAddDTO.getSpecId();
-
         if(productId == null || specId == null)
             return Result.error(Message.SPEC_ID_IS_NULL + "或" + Message.PRODUCT_ID_IS_NULL);
 
-        // 验证数量
         Integer productQuantity = orderAddDTO.getProductQuantity();
-        if(productQuantity == null || productQuantity < 1)
-            return Result.error(Message.QUANTITY_IS_NULL_OR_LESS_THAN_ONE);
-
-        // 验证够购买数量 是否超出可售库存
-        Integer productSaleStock = orderTxService.getProductSaleStock(specId);
-        Integer productPreStock = orderTxService.getProductPreStock(specId);
-        if(productQuantity > (productSaleStock - productPreStock))
-            return Result.error(Message.QUANTITY_OVER_SALE_STOCK);
-
-        //  生成订单编号
-        orderAddDTO.setOrderSn(generateSn(1));
-
-        // 验证价格
         BigDecimal totalAmount = orderAddDTO.getTotalAmount();
-        if(totalAmount == null)
-            return Result.error(Message.PRICE_IS_NULL);
+        if (totalAmount == null) {
+            throw new SnycException(Message.PRICE_IS_NULL);
+        }
         BigDecimal productSalePrice = orderTxService.getProductSalePrice(orderAddDTO.getSpecId());
         BigDecimal blackTotalPrice = productSalePrice.multiply(BigDecimal.valueOf(orderAddDTO.getProductQuantity())).setScale(2, RoundingMode.HALF_UP);
         BigDecimal frontPrice = totalAmount.setScale(2, RoundingMode.HALF_UP);
         BigDecimal abs = blackTotalPrice.subtract(frontPrice).abs();
         BigDecimal bigDecimal = new BigDecimal("0.01");
-        if(abs.compareTo(bigDecimal) > 0 )
-            return Result.error(Message.PRICE_IS_DIFFERENCE);
+        if (abs.compareTo(bigDecimal) > 0)
+            throw new SnycException(Message.PRICE_IS_DIFFERENCE);
 
-        // 验证地址
-        dealAddressId(orderAddDTO,userId,0);
+        // 预先减库存 （乐观锁）
+        Result<String> voidResult = deductStockWithLock( specId,productQuantity);
+        if (voidResult.getCode() == 500){
+            return voidResult;
+        }
 
-        // 创建订单
-        orderTxService.insert(orderAddDTO);
-        Long id = orderAddDTO.getId();  // 获取mybatis返回的订单id
-
-        // 创建支付编号
+        //生成个业务单号
         String pSn = generateSn(2);
-        PaymentAddDTO paymentAddDTO = new PaymentAddDTO(pSn, userId,id , frontPrice, 0);
+        String orderSn = generateSn(1);
+        String iSn = generateSn(4);
 
-        orderTxService.insertPayment(paymentAddDTO);
-        orderTxService.insertInventoryLock(productId,specId,id, productQuantity);
-        orderTxService.reduceProductSaleStock(specId,productQuantity);
+        // 将单号临时存储Redis
+        orderRedisCache.saveOrderLock(orderSn,productQuantity);
 
-        return Result.success(Message.OPERATION_SUCCESS);
+        orderSyncService.syncOrder(orderAddDTO,userId,pSn,iSn,productId,specId,productQuantity,orderSn,frontPrice);
+
+        return Result.success(Message.OPERATION_SUCCESS,orderSn);
     }
 
     /**
@@ -189,7 +182,6 @@ public class OrderServiceImpl implements OrderService {
             return Result.error(Message.GROUP_ID_IS_NULL);
         List<Long> orderIdList = orderTxService.getOrderIdList(groupId);
         orderTxService.concealOrderList(orderIdList);
-        orderTxService.releaseLockStockList(orderIdList);
 
         return Result.success(Message.OPERATION_SUCCESS);
     }
@@ -273,7 +265,9 @@ public class OrderServiceImpl implements OrderService {
         } else if (type.equals(3)) {
             long l = idSnowFLake.getIdInt();
             return String.format("%s%d","GROUP", l);
-
+        }else if(type.equals(4)){
+            long l = idSnowFLake.getIdInt();
+            return String.format("%s%d","ITY", l);
         }
 
         throw new RuntimeException(Message.ID_GENERATE_ERROR);
@@ -319,6 +313,30 @@ public class OrderServiceImpl implements OrderService {
         if(orderAddDTO.getProductQuantity() > (productSaleStock - productPreStock))
             throw new transactionalException("订单"+ i + ": " + Message.QUANTITY_OVER_SALE_STOCK);
     }
+
+
+    @Transactional
+    protected Result<String> deductStockWithLock(Long specId,Integer productQuantity){
+
+        // 验证数量
+        if(productQuantity == null || productQuantity < 1)
+            return Result.error(Message.QUANTITY_IS_NULL_OR_LESS_THAN_ONE);
+
+
+
+        boolean success = orderTxService.reduceProductSaleStock(specId, productQuantity);
+        if (!success){
+            // 验证够购买数量 是否超出可售库存
+            Integer productSaleStock = orderTxService.getProductSaleStock(specId);
+            if(productQuantity > productSaleStock){
+                return Result.error(Message.QUANTITY_OVER_SALE_STOCK);
+            }
+            return Result.error(Message.BUSY_TRY_AGAIN_LATER);
+        }
+
+        return Result.success(Message.OPERATION_SUCCESS);
+     }
+
 
 
 }

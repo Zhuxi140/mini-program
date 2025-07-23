@@ -7,11 +7,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import src.main.java.com.zhuxi.pojo.DTO.Order.*;
-import src.main.java.com.zhuxi.pojo.VO.Order.OrderRealShowVO;
 import src.main.java.com.zhuxi.pojo.VO.Order.OrderShowVO;
-
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
@@ -22,6 +19,15 @@ public class OrderTxService {
 
     public OrderTxService(OrderMapper orderMapper) {
         this.orderMapper = orderMapper;
+    }
+
+
+    @Transactional(readOnly = true)
+    public Long getOrderId(String orderSn) {
+        Long orderId = orderMapper.getOrderId(orderSn);
+        if(orderId == null || orderId < 0)
+            throw new transactionalException(Message.ORDER_NOT_EXIST);
+        return orderId;
     }
 
     @Transactional(readOnly = true)
@@ -126,8 +132,8 @@ public class OrderTxService {
             throw new transactionalException(Message.INSERT_ERROR);
     }
     @Transactional(rollbackFor = transactionalException.class)
-    public void insertInventoryLock(Long productId,Long specId, Long orderId, Integer quantity) {
-        if(orderMapper.insertInventoryLock(productId,specId, orderId, quantity) < 0 )
+    public void insertInventoryLock(Long productId,Long specId, Long orderId, Integer quantity,String lockSn) {
+        if(orderMapper.insertInventoryLock(productId,specId, orderId, quantity,lockSn) < 0 )
             throw new transactionalException(Message.INSERT_ERROR);
     }
 
@@ -203,10 +209,9 @@ public class OrderTxService {
     }
 
     @Transactional(rollbackFor = transactionalException.class)
-    public void reduceProductSaleStock(Long specId, Integer quantity) {
-        int i = orderMapper.reduceProductSaleStock(specId, quantity);
-        if(i !=  1)
-            throw new transactionalException(Message.REDUCE_SALE_STOCK_ERROR);
+    public boolean reduceProductSaleStock(Long specId, Integer quantity) {
+        return orderMapper.reduceProductSaleStock(specId, quantity);
+
     }
 
     @Transactional(rollbackFor = transactionalException.class)
@@ -220,6 +225,14 @@ public class OrderTxService {
 
         int i1 = orderMapper.releaseProductSaleStock(specId, i);
         if(i1 !=  1)
+            throw new transactionalException(Message.RELEASE_SALE_STOCK_ERROR);
+    }
+
+
+    @Transactional(rollbackFor = transactionalException.class)
+    public void releaseProductSaleStock(Long specId,Integer quantity){
+        int i = orderMapper.releaseProductSaleStock(specId,quantity);
+        if(i !=  1)
             throw new transactionalException(Message.RELEASE_SALE_STOCK_ERROR);
     }
 

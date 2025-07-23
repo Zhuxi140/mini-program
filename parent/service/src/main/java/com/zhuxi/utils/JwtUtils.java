@@ -5,11 +5,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.zhuxi.utils.properties.JwtProperties;
 import io.jsonwebtoken.Claims;
 import com.zhuxi.Exception.JwtException;
+import io.jsonwebtoken.JwtParser;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.MalformedJwtException;
+import io.jsonwebtoken.jackson.io.JacksonDeserializer;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
-
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.Date;
@@ -22,9 +23,14 @@ import java.util.Map;
 public class JwtUtils {
 
     private final JwtProperties jwtProperties;
+    private final JwtParser jwtParser;
 
     public JwtUtils(JwtProperties jwtProperties) {
         this.jwtProperties = jwtProperties;
+        jwtParser = Jwts.parser()
+                .json(new JacksonDeserializer<>())
+                .verifyWith(jwtProperties.getSecretKey())
+                .build();
     }
 
 
@@ -61,9 +67,7 @@ public class JwtUtils {
 
                 objectMapper.readTree(headerJson);
 
-            return Jwts.parser()
-                    .verifyWith(jwtProperties.getSecretKey())
-                    .build()
+            return jwtParser
                     .parseSignedClaims(token)
                     .getPayload();
     } catch (io.jsonwebtoken.JwtException | JsonProcessingException e) {

@@ -27,11 +27,10 @@ public interface OrderMapper {
     int insertPayment(PaymentAddDTO paymentAddDTO);
     // 创建预占记录
     @Insert("""
-    INSERT INTO inventory_lock(product_id,order_id,spec_id,  quantity, status, expire_time)
-    VALUES (#{productId},#{orderId}, #{specId}, #{quantity}, 0, DATE_ADD(now(),INTERVAL 30 MINUTE))
+    INSERT INTO inventory_lock(product_id,order_id,spec_id,lock_sn,quantity, status, expire_time)
+    VALUES (#{productId},#{orderId}, #{specId},#{lockSn}, #{quantity}, 0, DATE_ADD(now(),INTERVAL 30 MINUTE))
     """)
-
-    int insertInventoryLock(Long productId, Long specId, Long orderId, Integer quantity);
+    int insertInventoryLock(Long productId, Long specId, Long orderId, Integer quantity,String lockSn);
     //获取默认地址
     @Select("SELECT id FROM user_address WHERE user_id = #{userId} AND is_default = 1")
     Long getDefaultAddressId(Long userId);
@@ -43,6 +42,7 @@ public interface OrderMapper {
     // 获取商品可售库存
     @Select("SELECT spec.stock FROM spec WHERE id=#{specId}")
     Integer getProductSaleStock(Long specId);
+
     //获取商品预占库存
     @Select("""
      SELECT COALESCE(SUM(inventory_lock.quantity),0) FROM inventory_lock
@@ -55,9 +55,12 @@ public interface OrderMapper {
     // 可售库存减少(被锁定)
     @Update("""
     UPDATE spec SET stock = stock - #{quantity}
-    WHERE id = #{specId}
+    WHERE id = #{specId} AND stock >= #{quantity}
     """)
-    int reduceProductSaleStock(Long specId, Integer quantity);
+    boolean reduceProductSaleStock(Long specId, Integer quantity);
+
+    @Select("SELECT id FROM `order` WHERE order_sn = #{orderSn}")
+    Long getOrderId(String orderSn);
 
     //取消订单
     @Update("UPDATE `order` SET status = 4 WHERE id = #{orderId}")

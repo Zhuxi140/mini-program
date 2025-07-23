@@ -18,6 +18,7 @@ public class RedisCacheProperties {
 
     private ProductCache productCache = new ProductCache();
     private AddressCache addressCache = new AddressCache();
+    private OrderCache orderCache = new OrderCache();
 
     private int maxAttempts;
     private long baseWaitMs;
@@ -149,6 +150,18 @@ public class RedisCacheProperties {
 
     }
 
+    public static class  OrderCache{
+        private String OrderLockPrefix;
+
+        public String getOrderLockPrefix() {
+            return OrderLockPrefix;
+        }
+
+        public void setOrderLockPrefix(String orderLockPrefix) {
+            OrderLockPrefix = orderLockPrefix;
+        }
+    }
+
     public ProductCache getProductCache() {
         return productCache;
     }
@@ -179,5 +192,13 @@ public class RedisCacheProperties {
 
     public void setBaseWaitMs(long baseWaitMs) {
         this.baseWaitMs = baseWaitMs;
+    }
+
+    public OrderCache getOrderCache() {
+        return orderCache;
+    }
+
+    public void setOrderCache(OrderCache orderCache) {
+        this.orderCache = orderCache;
     }
 }

@@ -71,4 +71,6 @@ public class Message {
     public static final String UPDATE_ORDER_ERROR = "更新订单失败";
     public static final String INVENTORY_LOCK_UPDATE_ERROR = "库存锁定更新失败";
     public static final String PAYMENT_UPDATE_ERROR = "支付更新失败";
+    public static final String BUSY_TRY_AGAIN_LATER = "当前繁忙中请稍后再试";
+    public static final String ORDER_NOT_EXIST = "订单不存在";
 }
