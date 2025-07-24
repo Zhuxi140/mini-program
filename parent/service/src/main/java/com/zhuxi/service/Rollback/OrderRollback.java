@@ -30,8 +30,7 @@ public class OrderRollback {
             return;
         }
         orderTxService.releaseProductSaleStock(specId, quantity);
-        Long orderId = orderTxService.getOrderId(orderSn);
-        orderTxService.concealOrder(orderId);
+        Long orderId = orderTxService.concealOrder(orderSn);
         orderTxService.releaseLockStock(orderId);
         orderRedisCache.deleteLockKey(orderSn);
     }

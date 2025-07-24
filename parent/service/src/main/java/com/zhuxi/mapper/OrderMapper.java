@@ -153,8 +153,8 @@ public interface OrderMapper {
 
 
     //删除订单
-    @Update("UPDATE `order` SET status = 7 WHERE id = #{orderId} AND user_id = #{userId}")
-    int deleteOrder(Long orderId, Long userId);
+    @Update("UPDATE `order` SET status = 7 WHERE order_sn = #{orderSn} AND user_id = #{userId}")
+    int deleteOrder(String orderSn, Long userId);
 
 
     @Select("SELECT id,user_id FROM `order` WHERE id > #{lastId}  ORDER BY id LIMIT #{pageSize}")

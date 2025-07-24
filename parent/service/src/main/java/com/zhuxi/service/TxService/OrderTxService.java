@@ -2,6 +2,7 @@ package com.zhuxi.service.TxService;
 
 import com.zhuxi.Constant.Message;
 import com.zhuxi.Exception.transactionalException;
+import com.zhuxi.Result.Result;
 import com.zhuxi.mapper.OrderMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -172,17 +173,17 @@ public class OrderTxService {
     }
 
     @Transactional(rollbackFor = transactionalException.class)
-    public void concealOrder(Long orderId){
-        int i = orderMapper.cancelOrder(orderId);
-        log.warn("concealOrder: ---{}---", i);
-        if(i !=  1)
+    public Long concealOrder(String orderSn){
+        Long orderId = orderMapper.getOrderId(orderSn);
+        if(orderId == null||orderId <= 0)
             throw new transactionalException(Message.ORDER_CONCEAL_ERROR);
-        i = orderMapper.cancelPayment(orderId);
+        int i = orderMapper.cancelPayment(orderId);
         if(i !=  1)
             throw new transactionalException(Message.PAY_CONCEAL_ERROR);
         i = orderMapper.releaseInventoryLock(orderId);
         if(i !=  1)
             throw new transactionalException(Message.LOCK_CONCEAL_ERROR);
+        return orderId;
     }
 
     @Transactional(readOnly = true)
@@ -258,9 +259,12 @@ public class OrderTxService {
     }
 
     @Transactional(rollbackFor = transactionalException.class)
-    public void deleteOrder(Long orderId,Long userId){
-        int i = orderMapper.deleteOrder(orderId,userId);
+    public void deleteOrder(String orderSn,Long userId){
+        int i = orderMapper.deleteOrder(orderSn,userId);
         if(i !=  1)
             throw new transactionalException(Message.DELETE_ORDER_ERROR);
     }
+
+
+
 }

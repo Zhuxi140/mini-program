@@ -28,7 +28,7 @@ public class InitializationCoordinator implements ApplicationRunner {
             List<DataInitializer> initializers,
             DruidDataSource dataSource,
             RedistPreheater noSqlPreheater,
-            @Qualifier("applicationTaskExecutor") Executor asyncExecutor
+            @Qualifier("initAsyncExecutor") Executor asyncExecutor
     ) {
         this.SqlPreheater = SqlPreheater;
         this.initializers = initializers;

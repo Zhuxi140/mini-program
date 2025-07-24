@@ -8,101 +8,16 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="372da862-f7c4-4fa2-93c3-bf2ac1fe9e6e" name="更改" comment="refactor(service): 重构部分订单接口业务逻辑解决添加订单接口高并发问题&#10;- 添加乐观锁  重构添加订单接口 实现先改后查&#10;- 异步执行核心方法、添加兜底退回策略">
-      <change afterPath="$PROJECT_DIR$/.idea/shelf/_2025_7_22_15_57____.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/shelf/在进行更新之前于_2025_7_22_15_57_取消提交了更改_[更改]/BloomFilterCheck.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/shelf/在进行更新之前于_2025_7_22_15_57_取消提交了更改_[更改]/BloomFilterConfig$OrderConfig.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/shelf/在进行更新之前于_2025_7_22_15_57_取消提交了更改_[更改]/BloomFilterConfig$ProductConfig.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/shelf/在进行更新之前于_2025_7_22_15_57_取消提交了更改_[更改]/BloomFilterConfig$UserConfig.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/shelf/在进行更新之前于_2025_7_22_15_57_取消提交了更改_[更改]/BloomFilterConfig.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/shelf/在进行更新之前于_2025_7_22_15_57_取消提交了更改_[更改]/BloomFilterManager.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/shelf/在进行更新之前于_2025_7_22_15_57_取消提交了更改_[更改]/CarController.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/shelf/在进行更新之前于_2025_7_22_15_57_取消提交了更改_[更改]/CartService.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/shelf/在进行更新之前于_2025_7_22_15_57_取消提交了更改_[更改]/CartServiceImpl.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/shelf/在进行更新之前于_2025_7_22_15_57_取消提交了更改_[更改]/Message.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/shelf/在进行更新之前于_2025_7_22_15_57_取消提交了更改_[更改]/OrderController.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/shelf/在进行更新之前于_2025_7_22_15_57_取消提交了更改_[更改]/OrderMapper.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/shelf/在进行更新之前于_2025_7_22_15_57_取消提交了更改_[更改]/OrderService.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/shelf/在进行更新之前于_2025_7_22_15_57_取消提交了更改_[更改]/OrderServiceImpl.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/shelf/在进行更新之前于_2025_7_22_15_57_取消提交了更改_[更改]/OrderTxService.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/shelf/在进行更新之前于_2025_7_22_15_57_取消提交了更改_[更改]/PayController.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/shelf/在进行更新之前于_2025_7_22_15_57_取消提交了更改_[更改]/PayService.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/shelf/在进行更新之前于_2025_7_22_15_57_取消提交了更改_[更改]/PayServiceImpl.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/shelf/在进行更新之前于_2025_7_22_15_57_取消提交了更改_[更改]/ProductServiceImpl.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/shelf/在进行更新之前于_2025_7_22_15_57_取消提交了更改_[更改]/UserAddressController.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/shelf/在进行更新之前于_2025_7_22_15_57_取消提交了更改_[更改]/UserAddressService.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/shelf/在进行更新之前于_2025_7_22_15_57_取消提交了更改_[更改]/UserAddressServiceImpl.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/shelf/在进行更新之前于_2025_7_22_15_57_取消提交了更改_[更改]/UserController.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/shelf/在进行更新之前于_2025_7_22_15_57_取消提交了更改_[更改]/UserService.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/shelf/在进行更新之前于_2025_7_22_15_57_取消提交了更改_[更改]/UserServiceImpl.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/shelf/在进行更新之前于_2025_7_22_15_57_取消提交了更改_[更改]/WebMvcConfig.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/shelf/在进行更新之前于_2025_7_22_15_57_取消提交了更改_[更改]/shelved.patch" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/out/production/parent/src/main/java/com/zhuxi/pojo/DTO/Order/BloomOrderDTO.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/Exception/SnycException.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/service/RedisCache/OrderRedisCache.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/service/Rollback/OrderRollback.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/service/Sync/OrderSyncService.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/ApplicationRunner/BloomDataInitializer.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/Exception/DefenseException.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/Exception/SnycException.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/annotation/CurrentUserId.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/aspect/BloomFilterAspect.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/handler/UserIdArgumentResolver.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/service/RedisCache/OrderRedisCache.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/service/Rollback/OrderRollback.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/service/Sync/OrderSyncService.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/utils/properties/RedisCacheProperties$OrderCache.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/dataSources/cb0cf253-b8ed-44e1-b847-d170a50191d6.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources/cb0cf253-b8ed-44e1-b847-d170a50191d6.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/ApplicationRunner/BloomDataLoader.java" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/ApplicationRunner/BloomDataLoader.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/ApplicationRunner/InitializationCoordinator.java" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/ApplicationRunner/InitializationCoordinator.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/Constant/Message.java" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/Constant/Message.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/controller/User/OrderController.java" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/controller/User/OrderController.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/mapper/OrderMapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/mapper/OrderMapper.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/service/Impl/OrderServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/service/Impl/OrderServiceImpl.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/service/OrderService.java" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/service/OrderService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/service/Rollback/OrderRollback.java" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/service/Rollback/OrderRollback.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/service/Sync/OrderSyncService.java" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/service/Sync/OrderSyncService.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/service/TxService/OrderTxService.java" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/service/TxService/OrderTxService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/utils/JwtUtils.java" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/utils/JwtUtils.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/utils/RedisUntil.java" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/utils/RedisUntil.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/utils/properties/RedisCacheProperties.java" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/utils/properties/RedisCacheProperties.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/parent/service/src/main/resources/application.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/src/main/resources/application.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/parent/service/src/main/resources/redis-cache.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/src/main/resources/redis-cache.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/parent/service/target/classes/application.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/target/classes/application.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/ApplicationRunner/BloomDataLoader.class" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/ApplicationRunner/BloomDataLoader.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/Constant/Message.class" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/Constant/Message.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/annotation/BloomFilterCheck.class" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/annotation/BloomFilterCheck.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/config/BloomFilterConfig$OrderConfig.class" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/config/BloomFilterConfig$OrderConfig.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/config/BloomFilterConfig$ProductConfig.class" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/config/BloomFilterConfig$ProductConfig.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/config/BloomFilterConfig$UserConfig.class" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/config/BloomFilterConfig$UserConfig.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/config/BloomFilterConfig.class" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/config/BloomFilterConfig.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/config/WebMvcConfig.class" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/config/WebMvcConfig.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/controller/Admin/AdminProductController.class" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/controller/Admin/AdminProductController.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/controller/User/CarController.class" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/controller/User/CarController.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/controller/User/OrderController.class" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/controller/User/OrderController.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/controller/User/PayController.class" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/controller/User/PayController.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/controller/User/UserAddressController.class" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/controller/User/UserAddressController.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/controller/User/UserController.class" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/controller/User/UserController.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/handler/BloomFilterManager.class" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/handler/BloomFilterManager.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/handler/GlobalExceptionHandler.class" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/handler/GlobalExceptionHandler.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/mapper/OrderMapper.class" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/mapper/OrderMapper.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/service/CartService.class" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/service/CartService.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/service/Impl/AdminProductServiceImpl.class" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/service/Impl/AdminProductServiceImpl.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/service/Impl/CartServiceImpl.class" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/service/Impl/CartServiceImpl.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/service/Impl/OrderServiceImpl.class" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/service/Impl/OrderServiceImpl.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/service/Impl/PayServiceImpl.class" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/service/Impl/PayServiceImpl.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/service/Impl/ProductServiceImpl.class" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/service/Impl/ProductServiceImpl.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/service/Impl/UserAddressServiceImpl.class" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/service/Impl/UserAddressServiceImpl.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/service/Impl/UserServiceImpl.class" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/service/Impl/UserServiceImpl.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/service/OrderService.class" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/service/OrderService.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/service/PayService.class" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/service/PayService.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/service/TxService/OrderTxService.class" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/service/TxService/OrderTxService.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/service/UserAddressService.class" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/service/UserAddressService.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/service/UserService.class" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/service/UserService.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/utils/JwtUtils.class" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/utils/JwtUtils.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/utils/RedisUntil$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/utils/RedisUntil$1.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/utils/RedisUntil.class" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/utils/RedisUntil.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/utils/properties/RedisCacheProperties$AddressCache.class" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/utils/properties/RedisCacheProperties$AddressCache.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/utils/properties/RedisCacheProperties$ProductCache.class" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/utils/properties/RedisCacheProperties$ProductCache.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/utils/properties/RedisCacheProperties.class" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/utils/properties/RedisCacheProperties.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/parent/service/target/classes/redis-cache.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/target/classes/redis-cache.yaml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -356,7 +271,8 @@
       <workItem from="1753236608873" duration="5521000" />
       <workItem from="1753243208646" duration="7533000" />
       <workItem from="1753251300208" duration="8063000" />
-      <workItem from="1753270131667" duration="384000" />
+      <workItem from="1753270131667" duration="453000" />
+      <workItem from="1753339273561" duration="5083000" />
     </task>
     <task id="LOCAL-00001" summary="d">
       <option name="closed" value="true" />
@@ -614,7 +530,15 @@
       <option name="project" value="LOCAL" />
       <updated>1753171054791</updated>
     </task>
-    <option name="localTasksCounter" value="33" />
+    <task id="LOCAL-00033" summary="refactor(service): 重构部分订单接口业务逻辑解决添加订单接口高并发问题&#10;- 添加乐观锁  重构添加订单接口 实现先改后查&#10;- 异步执行核心方法、添加兜底退回策略">
+      <option name="closed" value="true" />
+      <created>1753270522672</created>
+      <option name="number" value="00033" />
+      <option name="presentableId" value="LOCAL-00033" />
+      <option name="project" value="LOCAL" />
+      <updated>1753270522672</updated>
+    </task>
+    <option name="localTasksCounter" value="34" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">

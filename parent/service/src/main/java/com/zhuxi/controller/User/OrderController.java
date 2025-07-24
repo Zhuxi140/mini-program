@@ -58,7 +58,7 @@ public class OrderController {
     }
 
 
-    @PutMapping("/{orderId}")
+    @PutMapping
     @RequireRole(Role.USER)
     @BloomFilterCheck(BloomFilterName = "order",key1 = "orderId",key2 = "userId")
     @Operation(
@@ -66,12 +66,12 @@ public class OrderController {
             description = "取消订单"
     )
     public Result<Void> cancelOrder(
-            @Parameter(description = "订单id",required = true)
-            @PathVariable Long orderId,
+            @Parameter(description = "订单号",required = true)
+            String orderSn,
             @Parameter(description = "用户id",hidden = true)
             @CurrentUserId Long userId
     ){
-        return orderService.cancelOrder(orderId,userId);
+        return orderService.cancelOrder(orderSn,userId);
     }
 
     @PutMapping("/group")
@@ -107,7 +107,7 @@ public class OrderController {
         return orderService.getOrderList(userId,lastId,pageSize);
     }
 
-    @PutMapping
+    @PutMapping("/delete")
     @RequireRole(Role.USER)
     @BloomFilterCheck(BloomFilterName = "order",key1 = "orderId",key2 = "userId")
     @Operation(
@@ -115,11 +115,11 @@ public class OrderController {
             description = "删除订单"
     )
     public Result<Void> deleteOrder(
-            @Parameter(description = "订单id",required = true)
-            @RequestParam Long orderId,
+            @Parameter(description = "订单号",required = true)
+            String orderSn,
             @Parameter(description = "用户id",hidden = true)
             @CurrentUserId Long userId
     ){
-        return orderService.deleteOrder(orderId,userId);
+        return orderService.deleteOrder(orderSn,userId);
     }
 }

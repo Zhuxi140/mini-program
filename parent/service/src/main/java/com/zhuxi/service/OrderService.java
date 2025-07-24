@@ -17,7 +17,7 @@ public interface OrderService {
     Result<Void> addGroup(List<OrderAddDTO> orderAddDTO, Long userId);
 
     //取消订单
-    Result<Void> cancelOrder(Long orderId, Long userId);
+    Result<Void> cancelOrder(String orderSn, Long userId);
 
     //取消订单组订单
     Result<Void> cancelOrderGroup(Long groupId, Long userId);
@@ -26,5 +26,5 @@ public interface OrderService {
     PageResult<List<OrderRealShowVO>> getOrderList(Long userId, Long lastId, Integer pageSize);
 
     // 删除订单
-    Result<Void> deleteOrder(Long orderId, Long userId);
+    Result<Void> deleteOrder(String orderSn, Long userId);
 }

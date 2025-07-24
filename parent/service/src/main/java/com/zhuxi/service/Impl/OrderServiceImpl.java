@@ -68,7 +68,7 @@ public class OrderServiceImpl implements OrderService {
             throw new SnycException(Message.PRICE_IS_DIFFERENCE);
 
         // 预先减库存 （乐观锁）
-        Result<String> voidResult = deductStockWithLock( specId,productQuantity);
+        Result<String> voidResult = orderSyncService.deductStockWithLock( specId,productQuantity);
         if (voidResult.getCode() == 500){
             return voidResult;
         }
@@ -162,11 +162,11 @@ public class OrderServiceImpl implements OrderService {
      */
     @Override
     @Transactional
-    public Result<Void> cancelOrder(Long orderId, Long userId) {
-        if (orderId == null || userId == null)
+    public Result<Void> cancelOrder(String orderSn, Long userId) {
+        if (orderSn == null || userId == null)
             return Result.error(Message.ORDER_USER_ID_IS_NULL);
 
-        orderTxService.concealOrder(orderId);
+        Long orderId = orderTxService.concealOrder(orderSn);
         orderTxService.releaseLockStock(orderId);
 
         return Result.success(Message.OPERATION_SUCCESS);
@@ -244,11 +244,11 @@ public class OrderServiceImpl implements OrderService {
      */
     @Override
     @Transactional
-    public Result<Void> deleteOrder(Long orderId, Long userId) {
-        if (orderId == null || userId == null)
+    public Result<Void> deleteOrder(String orderSn, Long userId) {
+        if (orderSn == null || userId == null)
             return Result.error(Message.ORDER_USER_ID_IS_NULL);
 
-        orderTxService.deleteOrder(orderId, userId);
+        orderTxService.deleteOrder(orderSn,userId);
 
         return Result.success(Message.OPERATION_SUCCESS);
     }
@@ -315,27 +315,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
 
-    @Transactional
-    protected Result<String> deductStockWithLock(Long specId,Integer productQuantity){
 
-        // 验证数量
-        if(productQuantity == null || productQuantity < 1)
-            return Result.error(Message.QUANTITY_IS_NULL_OR_LESS_THAN_ONE);
-
-
-
-        boolean success = orderTxService.reduceProductSaleStock(specId, productQuantity);
-        if (!success){
-            // 验证够购买数量 是否超出可售库存
-            Integer productSaleStock = orderTxService.getProductSaleStock(specId);
-            if(productQuantity > productSaleStock){
-                return Result.error(Message.QUANTITY_OVER_SALE_STOCK);
-            }
-            return Result.error(Message.BUSY_TRY_AGAIN_LATER);
-        }
-
-        return Result.success(Message.OPERATION_SUCCESS);
-     }
 
 
 
