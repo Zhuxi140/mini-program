@@ -1,6 +1,8 @@
 package com.zhuxi.config;
 
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
@@ -19,7 +21,10 @@ public class RedisConfig {
 //        GenericJackson2JsonRedisSerializer json = new GenericJackson2JsonRedisSerializer();
         RedisTemplate.setKeySerializer(RedisSerializer.string());
         RedisTemplate.setHashKeySerializer(RedisSerializer.string());
-        Jackson2JsonRedisSerializer<Object> jackson2JsonRedisSerializer = new Jackson2JsonRedisSerializer<>(Object.class);
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.registerModule(new JavaTimeModule());
+        Jackson2JsonRedisSerializer<Object> jackson2JsonRedisSerializer = new Jackson2JsonRedisSerializer<>(objectMapper,Object.class);
         RedisTemplate.setValueSerializer(jackson2JsonRedisSerializer);
         RedisTemplate.setHashValueSerializer(jackson2JsonRedisSerializer);
 

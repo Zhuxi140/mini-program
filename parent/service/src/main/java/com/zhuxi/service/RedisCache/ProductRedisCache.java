@@ -1,6 +1,8 @@
 package com.zhuxi.service.RedisCache;
 
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.zhuxi.Constant.Message;
+import com.zhuxi.Exception.RedisException;
 import com.zhuxi.utils.JsonUtils;
 import com.zhuxi.utils.RedisUntil;
 import com.zhuxi.utils.properties.RedisCacheProperties;
@@ -74,13 +76,11 @@ public class ProductRedisCache {
         return IdResults;
     }
 
-    public Double getLastScore(Set<ZSetOperations.TypedTuple<Object>>  Score,Double lastScore,Integer type){
+    public Double getLastScore(Set<ZSetOperations.TypedTuple<Object>>  Score){
         if(CollectionUtils.isEmpty( Score)){
             return null;
         }
         ArrayList<ZSetOperations.TypedTuple<Object>> list = new ArrayList<>(Score);
-
-
         return list.get(list.size() - 1).getScore();
     }
 
@@ -100,8 +100,10 @@ public class ProductRedisCache {
             return null;
         }
 
-        List<ProductOverviewVO> list1 = results.stream().map(map -> {
-            List<Object> list = (List<Object>) map;
+        return results.stream().map(map -> {
+            if (!(map instanceof List< ?> list)){
+                throw new RedisException(Message.TYPE_TURN_ERROR);
+            }
             ProductOverviewVO pOVO = new ProductOverviewVO();
             pOVO.setId(Long.parseLong((String) list.get(0)));
             pOVO.setName((String) list.get(1));
@@ -111,8 +113,6 @@ public class ProductRedisCache {
             pOVO.setCreatedAt(localDateTime);
             return pOVO;
         }).toList();
-
-        return list1;
 
     }
 
@@ -175,19 +175,6 @@ public class ProductRedisCache {
                 objectObjectHashMap.put("origin",p.getOrigin());
                 objectObjectHashMap.put("images",p.getImages());
                 pipe.opsForHash().putAll(productDetailKey,objectObjectHashMap);
-
-/*                pipe.opsForHash().putAll(productDetailKey,Map.of(
-                        "id",productId,
-                        "name",p.getName(),
-                        "coverUrl",p.getCoverUrl(),
-                        "price",priceStr,
-                        "createAt",epochMilli,
-                        "description",p.getDescription(),
-                        "status",p.getStatus(),
-                        "origin",p.getOrigin(),
-                        "images",p.getImages()
-                ));*/
-
 
                 pipe.opsForZSet().add(sortCreateDesc,productId,createMilli);
                 pipe.opsForZSet().add(sortPriceASC,productId,priceMixTime);

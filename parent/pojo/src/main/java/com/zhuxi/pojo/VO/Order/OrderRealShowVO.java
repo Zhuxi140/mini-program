@@ -34,4 +34,12 @@ public class OrderRealShowVO {
     public List<OrderShowVO> getOrderShowVO() {
         return orderShowVO;
     }
+
+    @Override
+    public String toString() {
+        return "OrderRealShowVO{" +
+                "groupId=" + groupId +
+                ", orderShowVO=" + orderShowVO.toString() +
+                '}';
+    }
 }

@@ -13,7 +13,6 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.web.bind.annotation.*;
 import src.main.java.com.zhuxi.pojo.DTO.Order.OrderAddDTO;
 import src.main.java.com.zhuxi.pojo.VO.Order.OrderRealShowVO;
-import src.main.java.com.zhuxi.pojo.VO.Order.OrderShowVO;
 import src.main.java.com.zhuxi.pojo.entity.Role;
 
 import java.util.List;
@@ -95,16 +94,19 @@ public class OrderController {
             summary = "获取用户订单列表",
             description = "按订单创建时间 由新到旧"
     )
-    public PageResult<List<OrderRealShowVO>> getOrderList(
+    public PageResult<List<OrderRealShowVO>,Double> getOrderList(
             @Parameter(description = "用户id",hidden = true)
             @CurrentUserId Long userId,
-            @Parameter(description = "订单id(第一次不用填)",required = true)
-            Long lastId,
+            @Parameter(description = "游标",required = true)
+            Long lastScore,
             @RequestParam(defaultValue = "10")
             @Parameter(description = "分页大小(默认为10)")
-            Integer pageSize
+            Integer pageSize,
+            @Parameter(description = "是否nextCursor为false")
+            @RequestParam(defaultValue = "false")
+            boolean isLast
     ){
-        return orderService.getOrderList(userId,lastId,pageSize);
+        return orderService.getOrderList(userId,lastScore,pageSize,isLast);
     }
 
     @PutMapping("/delete")

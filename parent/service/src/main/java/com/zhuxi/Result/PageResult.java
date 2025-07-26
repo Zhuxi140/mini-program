@@ -5,17 +5,17 @@ import io.swagger.v3.oas.annotations.media.Schema;
 
 import java.util.List;
 
-public class PageResult<T> {
+public class PageResult<T,C> {
     @Schema(description = "当前页数据")
     private List<T> items;
     @Schema(description = "下一页游标")
-    private Long nextCursor;
+    private C nextCursor;
     @Schema(description = "是否有上一页")
     private boolean hasPrevious;
     @Schema(description = "是否有下一页")
     private boolean hasNext;
 
-    public PageResult(List<T> items, Long nextCursor, boolean hasPrevious, boolean hasNext) {
+    public PageResult(List<T> items, C nextCursor, boolean hasPrevious, boolean hasNext) {
         this.items = items;
         this.nextCursor = nextCursor;
         this.hasPrevious = hasPrevious;
@@ -30,11 +30,11 @@ public class PageResult<T> {
         this.items = items;
     }
 
-    public Long getNextCursor() {
+    public C getNextCursor() {
         return nextCursor;
     }
 
-    public void setNextCursor(Long nextCursor) {
+    public void setNextCursor(C nextCursor) {
         this.nextCursor = nextCursor;
     }
 

@@ -50,7 +50,7 @@ public class ArticleServiceImpl implements ArticleService {
      * 获取文章列表(分页+倒序)
      */
     @Override
-    public PageResult<List<ArticleVO>> getListArticleDESC(Long lastId, Integer pageSize, Integer type) {
+    public PageResult<List<ArticleVO>,Long> getListArticleDESC(Long lastId, Integer pageSize, Integer type) {
         boolean first = (lastId == null || lastId < 0);
         boolean hasMore = false;
 

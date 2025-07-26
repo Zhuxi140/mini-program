@@ -9,7 +9,6 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.web.bind.annotation.*;
-import src.main.java.com.zhuxi.pojo.VO.Admin.AdminUserVO;
 import src.main.java.com.zhuxi.pojo.entity.Role;
 
 @RestController
@@ -32,7 +31,7 @@ public class AdminUserController {
             summary = "获取用户列表",
             description = "分页获取所有用户信息列表"
     )
-    public Result<PageResult<AdminUserVO>> getListUser(
+    public Result<PageResult> getListUser(
            @Parameter(description = "上一页最后一条数据的id(第一次查询时不需填写，后续需要根据响应数据来填写)")
            Long lastId,
            @Parameter(description = "每页数量(后端默认10)")

@@ -10,21 +10,22 @@ import com.zhuxi.service.RedisCache.OrderRedisCache;
 import com.zhuxi.service.Sync.OrderSyncService;
 import com.zhuxi.service.TxService.OrderTxService;
 import com.zhuxi.utils.IdSnowFLake;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.redis.core.ZSetOperations;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Isolation;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-import src.main.java.com.zhuxi.pojo.DTO.Order.InventoryLockAddDTO;
-import src.main.java.com.zhuxi.pojo.DTO.Order.OrderAddDTO;
-import src.main.java.com.zhuxi.pojo.DTO.Order.OrderGroupDTO;
-import src.main.java.com.zhuxi.pojo.DTO.Order.PaymentAddDTO;
+import src.main.java.com.zhuxi.pojo.DTO.Order.*;
 import src.main.java.com.zhuxi.pojo.VO.Order.OrderRealShowVO;
 import src.main.java.com.zhuxi.pojo.VO.Order.OrderShowVO;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.*;
 
 @Service
+@Slf4j
 public class OrderServiceImpl implements OrderService {
 
     private final OrderTxService orderTxService;
@@ -186,59 +187,42 @@ public class OrderServiceImpl implements OrderService {
         return Result.success(Message.OPERATION_SUCCESS);
     }
 
+
     /**
      * 获取订单列表
      */
     @Override
-    public PageResult<List<OrderRealShowVO>> getOrderList(Long userId, Long lastId, Integer pageSize) {
+    public PageResult<List<OrderRealShowVO>,Double> getOrderList(Long userId, Long lastScore, Integer pageSize,boolean isLast) {
+/*        if (isLast){
+            //若redis中已经查空 则直接进行兜底
+            return getOrdersBySql(userId, lastScore, pageSize);
+        }*/
 
-        boolean first = ((lastId == null || lastId < 0));
-        if( first)
-            lastId = Long.MAX_VALUE;
-
+        boolean first = lastScore == null || lastScore < 0;
+        if ( first){
+            lastScore = 0L;
+        }
         boolean hasPrevious = !first;
         boolean hasMore = false;
-        List<OrderShowVO> orderList = orderTxService.getOrderList(userId, lastId, pageSize + 1);
 
-        if(orderList.size() == pageSize + 1){
-            hasMore = true;
-            orderList = orderList.subList(0, pageSize);
-        }
-
-        if(!orderList.isEmpty())
-            lastId = orderList.get(orderList.size() - 1).getId();
-
-        Map<Long, OrderRealShowVO> groupMap = new HashMap<>();
-        List<OrderRealShowVO> resultList = new ArrayList<>();
-
-        // 使用hashMap 将获取的订单列表进行分类展示
-        for (OrderShowVO order : orderList) {
-            Long groupId = order.getGroupId();
-            if (groupId != null) {
-                OrderRealShowVO groupVO = groupMap.get(groupId);
-                if (groupVO == null) {
-                    groupVO = new OrderRealShowVO();
-                    groupVO.setGroupId(groupId);
-                    groupVO.setOrderShowVO(new ArrayList<>());
-                    groupMap.put(groupId, groupVO);
-                }
-                groupVO.getOrderShowVO().add(order);
-            } else {
-                OrderRealShowVO singleVO = new OrderRealShowVO();
-                singleVO.setGroupId(null);
-                List<OrderShowVO> singleList = new ArrayList<>();
-                singleList.add(order);
-                singleVO.setOrderShowVO(singleList);
-                resultList.add(singleVO);
+        Set<ZSetOperations.TypedTuple<Object>> orderSns = orderRedisCache.getOrderSns(userId, lastScore, pageSize + 1);
+        if (orderSns != null){
+            //命中redis
+            List<OrderRealShowVO> orderRealShowVos = orderRedisCache.getOrderRealShowVals(orderSns);
+            if (orderRealShowVos.size() == pageSize + 1){
+                hasMore = true;
+                lastScore = orderRedisCache.getLastScores(orderRealShowVos);
+                orderRealShowVos = orderRealShowVos.subList(0, pageSize);
+            }else{
+                lastScore = orderRedisCache.getLastScores(orderRealShowVos);
             }
+            return new PageResult(orderRealShowVos, lastScore, hasPrevious, hasMore);
         }
 
-        resultList.addAll(groupMap.values());
-        Collections.reverse(resultList);
-
-        return new PageResult(resultList, lastId, hasPrevious, hasMore);
+        //未命中 直接启动兜底
+        /*return getOrdersBySql(userId, lastScore, pageSize);*/
+        return null;
     }
-
     /**
      * 删除订单
      */
@@ -272,7 +256,6 @@ public class OrderServiceImpl implements OrderService {
 
         throw new RuntimeException(Message.ID_GENERATE_ERROR);
     }
-
 
     // 验证必填字段
     private void validateMustFields(OrderAddDTO orderAddDTO, int i){
@@ -313,6 +296,14 @@ public class OrderServiceImpl implements OrderService {
         if(orderAddDTO.getProductQuantity() > (productSaleStock - productPreStock))
             throw new transactionalException("订单"+ i + ": " + Message.QUANTITY_OVER_SALE_STOCK);
     }
+
+/*    private PageResult<List<OrderRealShowVO>,Double> getOrdersBySql(Long userId, Long lastScore, Integer pageSize){
+        Long orderId = lastScore% 1000000L ;
+         long epochMilli = (lastScore / 1000000L)*1000;
+        LocalDateTime localDateTime = LocalDateTime.ofInstant(Instant.ofEpochMilli(epochMilli), ZoneId.systemDefault());
+        List<OrderShowVO> orderList = orderTxService.getOrderList(userId,localDateTime, pageSize + 1);
+
+    }*/
 
 
 

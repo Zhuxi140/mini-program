@@ -17,7 +17,7 @@ public interface ArticleService {
     Result<List<ArticleVO>> getListArticle(Integer  type);
 
     //获取文章列表分页倒序
-    PageResult<List<ArticleVO>> getListArticleDESC(Long lastId, Integer pageSize, Integer  type);
+    PageResult<List<ArticleVO>,Long> getListArticleDESC(Long lastId, Integer pageSize, Integer  type);
 
     //添加文章
     Result<Void> insertArticle(ArticleInsertOrUpdateDTO articleInsertOrUpdateDTO);

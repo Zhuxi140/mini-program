@@ -15,10 +15,14 @@ public class RedisUntil {
 
     private StringRedisTemplate stringRedisTemplate;
     private final RedisTemplate<String,Object> redisTemplate;
+    private final ZSetOperations<String, Object> zSetOperations;
+    private final HashOperations<String, Object, Object> HashOperations;
 
     public RedisUntil(StringRedisTemplate stringRedisTemplate, RedisTemplate<String,Object>  redisTemplate) {
         this.stringRedisTemplate = stringRedisTemplate;
         this.redisTemplate = redisTemplate;
+        zSetOperations = redisTemplate.opsForZSet();
+        HashOperations = redisTemplate.opsForHash();
     }
 
 
@@ -49,21 +53,21 @@ public class RedisUntil {
     // redis List类型操作
 
     // redis Hash类型操作
-    public List<Object> hMultiGet(String key, List<Object> hashKeys){
-       return redisTemplate.opsForHash().multiGet(key,hashKeys);
+    public List<Object> hMultiGet(String key, Collection<Object> hashKeys){
+       return HashOperations.multiGet(key,hashKeys);
     }
 
     // 存
     public void hPutMap(String key,Map<?,?>  map){
-        redisTemplate.opsForHash().putAll(key, map);
+        HashOperations.putAll(key, map);
     }
 
     public void hPut(String key,String hashKey,Object value){
-        redisTemplate.opsForHash().put(key,hashKey,value);
+        HashOperations.put(key,hashKey,value);
     }
 
     public Object hGet(String key,String hashKey){
-        return redisTemplate.opsForHash().get(key, hashKey);
+        return HashOperations.get(key, hashKey);
     }
 
 
@@ -71,12 +75,17 @@ public class RedisUntil {
 
     // redis SortedSet类型操作
     public Set<ZSetOperations.TypedTuple<Object>> ZSetReverseRangeScore(String key, Double lastScored,Integer offset,Integer count){
-        return redisTemplate.opsForZSet().reverseRangeByScoreWithScores(key,Double.NEGATIVE_INFINITY,lastScored,offset,count);
+        return zSetOperations.reverseRangeByScoreWithScores(key,Double.NEGATIVE_INFINITY,lastScored,offset,count);
     }
 
     public Set<ZSetOperations.TypedTuple<Object>> ZSetRangeScore(String key, Double lastScored,Integer offset, Integer count){
-        return redisTemplate.opsForZSet().rangeByScoreWithScores(key,lastScored,Double.POSITIVE_INFINITY,offset,count);
+        return zSetOperations.rangeByScoreWithScores(key,lastScored,Double.POSITIVE_INFINITY,offset,count);
     }
+
+   public Set<Object> ZSetRangeFirstElement(String key){
+       return zSetOperations.range(key, 0, 0);
+   }
+
 
 
     // Pipeline批量操作

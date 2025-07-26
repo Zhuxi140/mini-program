@@ -3,7 +3,6 @@ package com.zhuxi.service.Impl;
 import com.zhuxi.Constant.Message;
 import com.zhuxi.Result.PageResult;
 import com.zhuxi.Result.Result;
-import com.zhuxi.mapper.UserMapper;
 import com.zhuxi.service.AdminUserService;
 import com.zhuxi.service.TxService.AdminUserTxService;
 import org.springframework.stereotype.Service;
@@ -25,12 +24,12 @@ public class AdminUserServiceImpl implements AdminUserService {
      * 分页获取所有用户信息列表
      */
     @Override
-    public Result<PageResult<AdminUserVO>> getListUser(Long lastId, Integer pageSize,Integer DESC) {
+    public Result<PageResult> getListUser(Long lastId, Integer pageSize, Integer DESC) {
 
         if(DESC == null)
             return Result.error(Message.PARAM_ERROR);
 
-        PageResult<AdminUserVO> adminUserVO;
+        PageResult<AdminUserVO,Long> adminUserVO;
         if(DESC.equals(1))
             adminUserVO = PageDesc(lastId, pageSize);
         else
@@ -63,7 +62,7 @@ public class AdminUserServiceImpl implements AdminUserService {
     /**
      * 降序分页获取所有用户信息列表
      */
-    private PageResult<AdminUserVO> PageDesc(Long lastId, Integer pageSize){
+    private PageResult<AdminUserVO,Long> PageDesc(Long lastId, Integer pageSize){
         boolean hasMore = false;
         boolean first = (lastId == null || lastId <= 0);
 
@@ -89,7 +88,7 @@ public class AdminUserServiceImpl implements AdminUserService {
     /**
      * 升序分页获取所有用户信息列表
      */
-    private PageResult<AdminUserVO> PageAsc(Long lastId, Integer pageSize){
+    private PageResult<AdminUserVO, Long> PageAsc(Long lastId, Integer pageSize){
         boolean hasMore = false;
         boolean first = (lastId == null || lastId <= 0);
         if(first)

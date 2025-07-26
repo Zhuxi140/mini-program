@@ -35,7 +35,7 @@ public class AdminProductController {
             summary = "获取商品状况列表",
             description = "分页获取所有商品信息列表"
     )
-    public Result<PageResult<AdminProductVO> > getListProducts(
+    public Result<PageResult> getListProducts(
             @Parameter(description = "商品id(第一次请求无需给值)", required = true)
             Long lastId,
             @Parameter(description = "分页大小(后端默认为10)", required = false)

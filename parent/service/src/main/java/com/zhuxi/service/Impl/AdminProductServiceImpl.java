@@ -12,7 +12,6 @@ import src.main.java.com.zhuxi.pojo.DTO.RealStock.RealStockDTO;
 import src.main.java.com.zhuxi.pojo.DTO.product.*;
 import src.main.java.com.zhuxi.pojo.VO.Admin.AdminProductVO;
 import src.main.java.com.zhuxi.pojo.VO.Product.ProductSpecDetailVO;
-import src.main.java.com.zhuxi.pojo.VO.Product.ProductSpecVO;
 
 import java.util.List;
 
@@ -30,12 +29,12 @@ public class AdminProductServiceImpl implements AdminProductService {
      * 获取所有商品状况列表
      */
     @Override
-    public Result<PageResult<AdminProductVO>> getListAdminProducts(Long lastId, Integer pageSize, Integer DESC) {
+    public Result<PageResult> getListAdminProducts(Long lastId, Integer pageSize, Integer DESC) {
 
         if(DESC == null)
             return Result.error(Message.PARAM_ERROR);
 
-        PageResult<AdminProductVO> adminProductVO;
+        PageResult<AdminProductVO,Long> adminProductVO;
         if(DESC.equals(1))
             adminProductVO = PageDesc(lastId, pageSize);
         else
@@ -139,7 +138,7 @@ public class AdminProductServiceImpl implements AdminProductService {
     /**
      * 降序分页获取所有商品状况列表
      */
-    private PageResult<AdminProductVO> PageDesc(Long lastId, Integer pageSize){
+    private PageResult<AdminProductVO,Long> PageDesc(Long lastId, Integer pageSize){
         boolean hasMore = false;
         boolean first = (lastId == null || lastId <= 0);
 
@@ -165,7 +164,7 @@ public class AdminProductServiceImpl implements AdminProductService {
     /**
      * 升序分页获取所有商品状况列表
      */
-    private PageResult<AdminProductVO> PageAsc(Long lastId, Integer pageSize){
+    private PageResult<AdminProductVO,Long> PageAsc(Long lastId, Integer pageSize){
         boolean hasMore = false;
         boolean first = (lastId == null || lastId <= 0);
         if(first)

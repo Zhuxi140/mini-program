@@ -73,4 +73,6 @@ public class Message {
     public static final String PAYMENT_UPDATE_ERROR = "支付更新失败";
     public static final String BUSY_TRY_AGAIN_LATER = "当前繁忙中请稍后再试";
     public static final String ORDER_NOT_EXIST = "订单不存在";
+    public static final String GET_USER_IDS_ERROR = "获取用户ids失败";
+    public static final String TYPE_TURN_ERROR = "类型转换错误";
 }

@@ -1,15 +1,18 @@
 package com.zhuxi.service.TxService;
 
 import com.zhuxi.Constant.Message;
+import com.zhuxi.Exception.DataInitException;
 import com.zhuxi.Exception.transactionalException;
-import com.zhuxi.Result.Result;
 import com.zhuxi.mapper.OrderMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import src.main.java.com.zhuxi.pojo.DTO.Order.*;
 import src.main.java.com.zhuxi.pojo.VO.Order.OrderShowVO;
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.List;
 
 @Slf4j
@@ -26,17 +29,36 @@ public class OrderTxService {
     @Transactional(readOnly = true)
     public Long getOrderId(String orderSn) {
         Long orderId = orderMapper.getOrderId(orderSn);
-        if(orderId == null || orderId < 0)
+        if(orderId == null || orderId < 0) {
             throw new transactionalException(Message.ORDER_NOT_EXIST);
+        }
         return orderId;
     }
 
-    @Transactional(readOnly = true)
-    public List<OrderShowVO> getOrderList(Long userId,Long lastId, Integer pageSize) {
-        List<OrderShowVO> orderList = orderMapper.getOrderList(userId, lastId, pageSize);
-        if(orderList == null || orderList.size() <= 0)
-            throw new transactionalException(Message.NO_ORDER_RECORD);
+    @Transactional(readOnly = true,propagation = Propagation.SUPPORTS)
+    public List<Long> getUserIds(Long lastId,int pageSize){
+        List<Long> userIds = orderMapper.getUserIds(lastId, pageSize);
+        if(userIds == null || userIds.size() <= 0) {
+            return Collections.emptyList();
+        }
+        return userIds;
+    }
 
+    @Transactional(readOnly = true,propagation = Propagation.SUPPORTS)
+    public List<OrderRedisDTO> getOrderRedisList(Long userId,Long lastId,int pageSize) {
+        List<OrderRedisDTO> orderRedisList = orderMapper.getOrderRedisList(userId,lastId,pageSize);
+        if(orderRedisList == null || orderRedisList.size() <= 0) {
+            return Collections.emptyList();
+        }
+        return orderRedisList;
+    }
+
+    @Transactional(readOnly = true,propagation = Propagation.SUPPORTS)
+    public List<OrderShowVO> getOrderList(Long userId, LocalDateTime createdAt, Integer pageSize) {
+        List<OrderShowVO> orderList = orderMapper.getOrderList(userId, createdAt, pageSize);
+        if(orderList == null || orderList.size() <= 0) {
+            throw new transactionalException(Message.NO_ORDER_RECORD);
+        }
         return orderList;
     }
 
@@ -48,51 +70,58 @@ public class OrderTxService {
     @Transactional(readOnly = true)
     public BigDecimal getProductSalePrice(Long productId) {
         BigDecimal productSalePrice = orderMapper.getProductSalePrice(productId);
-        if(productSalePrice.compareTo(BigDecimal.ZERO) <= 0)
-            throw new transactionalException(Message.SPEC_NOT_EXIST +"/" + Message.SELECT_ERROR);
+        if(productSalePrice.compareTo(BigDecimal.ZERO) <= 0) {
+            throw new transactionalException(Message.SPEC_NOT_EXIST + "/" + Message.SELECT_ERROR);
+        }
         return productSalePrice;
     }
 
     @Transactional(readOnly = true)
     public Long getDefaultAddressId(Long userId) {
         Long defaultAddressId = orderMapper.getDefaultAddressId(userId);
-        if(defaultAddressId == null || defaultAddressId < 0)
+        if(defaultAddressId == null || defaultAddressId < 0) {
             throw new transactionalException(Message.SELECT_ERROR);
+        }
         return defaultAddressId;
     }
 
     @Transactional(readOnly = true)
     public Integer getProductRealStock(Long specId) {
         Integer productRealStock = orderMapper.getProductRealStock(specId);
-        if(productRealStock == null || productRealStock <= 0)
-            throw new transactionalException(Message.REAL_STOCK_NOT_EXIST +"/" + Message.SELECT_ERROR);
+        if(productRealStock == null || productRealStock <= 0) {
+            throw new transactionalException(Message.REAL_STOCK_NOT_EXIST + "/" + Message.SELECT_ERROR);
+        }
         return productRealStock;
     }
 
     @Transactional(readOnly = true)
     public Integer getProductSaleStock(Long specId) {
         Integer productSaleStock = orderMapper.getProductSaleStock(specId);
-        if(productSaleStock == null || productSaleStock < 0)
-            throw new transactionalException(Message.SPEC_NOT_EXIST +"/" + Message.SELECT_ERROR);
+        if(productSaleStock == null || productSaleStock < 0) {
+            throw new transactionalException(Message.SPEC_NOT_EXIST + "/" + Message.SELECT_ERROR);
+        }
         return productSaleStock;
     }
 
     @Transactional(readOnly = true)
     public Integer getProductPreStock(Long specId) {
         Integer productPreStock = orderMapper.getProductPreStock(specId);
-        if(productPreStock < 0)
+        if(productPreStock < 0) {
             throw new transactionalException(Message.SELECT_ERROR);
+        }
         return productPreStock;
     }
 
     @Transactional(readOnly = true)
     public List<Integer> getProductRealStockList(List<Long> specIds) {
         List<Integer> productRealStockList = orderMapper.getProductRealStockList(specIds);
-        if(productRealStockList.size() != specIds.size())
+        if(productRealStockList.size() != specIds.size()) {
             throw new transactionalException(Message.SPECID_IS_NO_REAL_STOCK);
+        }
         for (Integer productRealStock : productRealStockList) {
-            if(productRealStock < 0)
-                throw new transactionalException(Message.REAL_STOCK_NOT_EXIST +"/" + Message.SELECT_ERROR);
+            if(productRealStock < 0) {
+                throw new transactionalException(Message.REAL_STOCK_NOT_EXIST + "/" + Message.SELECT_ERROR);
+            }
         }
 
         return productRealStockList;
@@ -101,11 +130,13 @@ public class OrderTxService {
     @Transactional(readOnly = true)
     public List<Integer> getProductSaleStockList(List<Long> specIds) {
         List<Integer> productSaleStockList = orderMapper.getProductSaleStockList(specIds);
-        if(productSaleStockList.size() != specIds.size())
+        if(productSaleStockList.size() != specIds.size()) {
             throw new transactionalException(Message.SPECID_IS_NO_SALE_STOCK + "或" + Message.NO_THIS_PRODUCT);
+        }
         for (Integer productSaleStock : productSaleStockList) {
-            if(productSaleStock < 0)
-                throw new transactionalException(Message.SPEC_NOT_EXIST +"/" + Message.SELECT_ERROR);
+            if(productSaleStock < 0) {
+                throw new transactionalException(Message.SPEC_NOT_EXIST + "/" + Message.SELECT_ERROR);
+            }
         }
         return productSaleStockList;
     }
@@ -114,8 +145,9 @@ public class OrderTxService {
     public List<Integer> getProductPreStockList(List<Long> specIds) {
         List<Integer> productPreStockList = orderMapper.getProductPreStockList(specIds);
         for (Integer productPreStock : productPreStockList) {
-            if(productPreStock < 0)
+            if(productPreStock < 0) {
                 throw new transactionalException(Message.SELECT_ERROR);
+            }
         }
         return productPreStockList;
     }
@@ -123,33 +155,38 @@ public class OrderTxService {
 
     @Transactional(rollbackFor = transactionalException.class)
     public void insert(OrderAddDTO orderAddDTO) {
-        if(orderMapper.insert(orderAddDTO) < 0 )
+        if(orderMapper.insert(orderAddDTO) < 0 ) {
             throw new transactionalException(Message.INSERT_ERROR);
+        }
     }
 
     @Transactional(rollbackFor = transactionalException.class)
     public void insertPayment(PaymentAddDTO paymentAddDTO) {
-        if(orderMapper.insertPayment(paymentAddDTO) < 0 )
+        if(orderMapper.insertPayment(paymentAddDTO) < 0 ) {
             throw new transactionalException(Message.INSERT_ERROR);
+        }
     }
     @Transactional(rollbackFor = transactionalException.class)
     public void insertInventoryLock(Long productId,Long specId, Long orderId, Integer quantity,String lockSn) {
-        if(orderMapper.insertInventoryLock(productId,specId, orderId, quantity,lockSn) < 0 )
+        if(orderMapper.insertInventoryLock(productId,specId, orderId, quantity,lockSn) < 0 ) {
             throw new transactionalException(Message.INSERT_ERROR);
+        }
     }
 
     @Transactional(rollbackFor = transactionalException.class)
     public void insertOrderGroupList(OrderGroupDTO orderGroupDTO) {
         int i = orderMapper.insertOrderGroup(orderGroupDTO);
-        if(i !=  1)
+        if(i !=  1) {
             throw new transactionalException(Message.INSERT_ERROR);
+        }
     }
 
     @Transactional(rollbackFor = transactionalException.class)
     public void insertOrderList(List<OrderAddDTO> orderAddDTO) {
         int i = orderMapper.insertOrderList(orderAddDTO);
-        if(i !=  orderAddDTO.size())
+        if(i !=  orderAddDTO.size()){
             throw new transactionalException(Message.INSERT_ERROR);
+        }
 
         Long fistId = orderMapper.getLastInsertId();
         for (int j = 0; j < orderAddDTO.size(); j++) {
@@ -161,36 +198,42 @@ public class OrderTxService {
     @Transactional(rollbackFor = transactionalException.class)
     public void insertPaymentList(List<PaymentAddDTO> paymentAddDTO) {
         int i = orderMapper.insertPaymentList(paymentAddDTO);
-        if(i !=  paymentAddDTO.size())
+        if(i !=  paymentAddDTO.size()) {
             throw new transactionalException(Message.INSERT_ERROR);
+        }
     }
 
     @Transactional(rollbackFor = transactionalException.class)
     public void insertInventoryLockList(List<InventoryLockAddDTO> inventoryLockAddDTOS) {
         int i = orderMapper.insertInventoryLockList(inventoryLockAddDTOS);
-        if(i !=  inventoryLockAddDTOS.size())
+        if(i !=  inventoryLockAddDTOS.size()) {
             throw new transactionalException(Message.INSERT_ERROR);
+        }
     }
 
     @Transactional(rollbackFor = transactionalException.class)
     public Long concealOrder(String orderSn){
         Long orderId = orderMapper.getOrderId(orderSn);
-        if(orderId == null||orderId <= 0)
+        if(orderId == null||orderId <= 0) {
             throw new transactionalException(Message.ORDER_CONCEAL_ERROR);
+        }
         int i = orderMapper.cancelPayment(orderId);
-        if(i !=  1)
+        if(i !=  1) {
             throw new transactionalException(Message.PAY_CONCEAL_ERROR);
+        }
         i = orderMapper.releaseInventoryLock(orderId);
-        if(i !=  1)
+        if(i !=  1) {
             throw new transactionalException(Message.LOCK_CONCEAL_ERROR);
+        }
         return orderId;
     }
 
     @Transactional(readOnly = true)
     public List<Long> getOrderIdList(Long groupId){
         List<Long> orderIdList = orderMapper.getOrderIdList(groupId);
-        if(orderIdList == null || orderIdList.isEmpty())
+        if(orderIdList == null || orderIdList.isEmpty()) {
             throw new transactionalException(Message.SELECT_ERROR);
+        }
 
         return orderIdList;
     }
@@ -198,14 +241,17 @@ public class OrderTxService {
     @Transactional(rollbackFor = transactionalException.class)
     public void concealOrderList(List<Long> orderIds){
         int i = orderMapper.cancelOrderList(orderIds);
-        if(i !=  orderIds.size())
+        if(i !=  orderIds.size()) {
             throw new transactionalException(Message.ORDER_CONCEAL_ERROR);
+        }
         i = orderMapper.cancelPaymentList(orderIds);
-        if(i !=  orderIds.size())
+        if(i !=  orderIds.size()) {
             throw new transactionalException(Message.PAY_CONCEAL_ERROR);
+        }
         i = orderMapper.releaseInventoryLockList(orderIds);
-        if(i !=  orderIds.size())
+        if(i !=  orderIds.size()) {
             throw new transactionalException(Message.LOCK_CONCEAL_ERROR);
+        }
 
     }
 
@@ -218,51 +264,60 @@ public class OrderTxService {
     @Transactional(rollbackFor = transactionalException.class)
     public void releaseLockStock(Long orderId){
         int i = orderMapper.getInventoryLockQuantity(orderId);
-        if(i <= 0)
+        if(i <= 0) {
             throw new transactionalException(Message.NO_NEED_RECOVERY_STOCK);
+        }
         Long specId = orderMapper.getSpecId(orderId);
-        if (specId == null)
+        if (specId == null) {
             throw new transactionalException(Message.NO_SELECT_SPEC_ID);
+        }
 
         int i1 = orderMapper.releaseProductSaleStock(specId, i);
-        if(i1 !=  1)
+        if(i1 !=  1) {
             throw new transactionalException(Message.RELEASE_SALE_STOCK_ERROR);
+        }
     }
 
 
     @Transactional(rollbackFor = transactionalException.class)
     public void releaseProductSaleStock(Long specId,Integer quantity){
         int i = orderMapper.releaseProductSaleStock(specId,quantity);
-        if(i !=  1)
+        if(i !=  1) {
             throw new transactionalException(Message.RELEASE_SALE_STOCK_ERROR);
+        }
     }
 
     @Transactional(rollbackFor = transactionalException.class)
     public void releaseLockStockList(List<Long> specIds, List<Integer> quantityList){
         int i = orderMapper.reduceProductSaleStockList(specIds, quantityList);
-        if(i !=  specIds.size())
+        if(i !=  specIds.size()) {
             throw new transactionalException(Message.REDUCE_SALE_STOCK_ERROR);
+        }
 
     }
 
     @Transactional(rollbackFor = transactionalException.class)
     public void releaseLockStockList(List<Long> orderIds){
         List<Long> specIdList = orderMapper.getSpecIdList(orderIds);
-        if (specIdList == null || specIdList.isEmpty())
+        if (specIdList == null || specIdList.isEmpty()) {
             throw new transactionalException(Message.NO_SELECT_SPEC_ID);
+        }
         List<Integer> quantityList = orderMapper.getInventoryLockQuantityList(orderIds);
-        if (quantityList == null || quantityList.isEmpty())
+        if (quantityList == null || quantityList.isEmpty()) {
             throw new transactionalException(Message.NO_NEED_RECOVERY_STOCK);
+        }
         int i = orderMapper.releaseProductSaleStockList(specIdList, quantityList);
-        if(i !=  specIdList.size())
+        if(i !=  specIdList.size()) {
             throw new transactionalException(Message.RELEASE_SALE_STOCK_ERROR);
+        }
     }
 
     @Transactional(rollbackFor = transactionalException.class)
     public void deleteOrder(String orderSn,Long userId){
         int i = orderMapper.deleteOrder(orderSn,userId);
-        if(i !=  1)
+        if(i !=  1) {
             throw new transactionalException(Message.DELETE_ORDER_ERROR);
+        }
     }
 
 

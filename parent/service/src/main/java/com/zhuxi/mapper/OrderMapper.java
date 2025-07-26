@@ -5,6 +5,7 @@ import src.main.java.com.zhuxi.pojo.DTO.Order.*;
 import src.main.java.com.zhuxi.pojo.VO.Order.OrderShowVO;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Mapper
@@ -148,7 +149,7 @@ public interface OrderMapper {
 
 
     // 展示订单列表
-    List<OrderShowVO> getOrderList(Long userId,Long lastId, Integer pageSize);
+    List<OrderShowVO> getOrderList(Long userId, LocalDateTime createdAt, Integer pageSize);
 
 
 
@@ -159,5 +160,11 @@ public interface OrderMapper {
 
     @Select("SELECT id,user_id FROM `order` WHERE id > #{lastId}  ORDER BY id LIMIT #{pageSize}")
     List<BloomOrderDTO> getAllOrderId(Long lastId, int pageSize);
+
+
+    List<OrderRedisDTO> getOrderRedisList(Long userId,Long lastId,int pageSize);
+
+    @Select("SELECT id FROM user WHERE id > #{lastId} ORDER BY id LIMIT #{pageSize}")
+    List<Long> getUserIds(Long lastId,int pageSize);
 
 }

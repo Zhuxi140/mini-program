@@ -14,4 +14,7 @@ redis:
       TTL: 1440
     OrderCache:
       OrderLockPrefix: order:lock
+      OrderSortSetPrefix: order:userId
+      OrderDetailHashPrefix: order:detail
+      OrderGroupPrefix: order:group
 

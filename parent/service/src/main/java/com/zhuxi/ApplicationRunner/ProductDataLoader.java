@@ -20,23 +20,26 @@ public class ProductDataLoader {
     }
 
     public void initializeData() {
+        long now = System.currentTimeMillis();
         Long lastId = 0L;
         int batchSize = 500;
 
         while(true){
 
-            List<ProductDetailVO> listProducts = productTxService.getListProduct(lastId,batchSize);
-            if (listProducts == null || listProducts.isEmpty()){
+            List<ProductDetailVO> listProducts = productTxService.getListProduct(lastId,batchSize + 1);
+            if (listProducts == null || listProducts.isEmpty()) {
                 break;
             }
 
-            lastId = listProducts.get(listProducts.size() - 1).getId();
-            productRedisCache.syncProductInit(listProducts);
-
-            if (listProducts.size() < batchSize){
+            if (listProducts.size() <= batchSize){
+                productRedisCache.syncProductInit(listProducts);
                 break;
+            }else {
+                lastId = listProducts.get(listProducts.size() - 1).getId();
+                listProducts = listProducts.subList(0, batchSize);
+                productRedisCache.syncProductInit(listProducts);
             }
         }
-
+        log.info("Product数据预加载成功,耗时:{}", System.currentTimeMillis() - now);
     }
 }

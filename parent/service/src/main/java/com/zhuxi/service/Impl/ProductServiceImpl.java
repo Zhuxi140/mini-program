@@ -56,7 +56,7 @@ public class ProductServiceImpl implements ProductService {
             }
 
             Set<ZSetOperations.TypedTuple<Object>> listIds = productRedisCache.getListProductsIds(CacheKey, type, lastScore, pageSize + 1);
-            Double lastScore1 = productRedisCache.getLastScore(listIds, lastScore, type);
+            Double lastScore1 = productRedisCache.getLastScore(listIds);
             if (listIds != null){
                 List<ProductOverviewVO> listProducts = productRedisCache.getListProductsCache(listIds,pageSize);
                 if (listProducts != null){

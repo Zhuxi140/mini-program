@@ -7,6 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.executor.BatchResult;
 import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import src.main.java.com.zhuxi.pojo.DTO.RealStock.RealStockDTO;
 import src.main.java.com.zhuxi.pojo.DTO.product.ProductBaseDTO;
@@ -92,7 +93,7 @@ public class ProductTxService {
         return listProducts;
     }
 
-    @Transactional(readOnly = true)
+    @Transactional(readOnly = true,propagation = Propagation.SUPPORTS)
     public List<ProductDetailVO> getListProduct(Long lastId,Integer pageSize){
         return productMapper.getListProduct(lastId, pageSize);
     }

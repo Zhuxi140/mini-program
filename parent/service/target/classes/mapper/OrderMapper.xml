@@ -173,34 +173,8 @@
 
     <select id="getOrderList" resultType="src.main.java.com.zhuxi.pojo.VO.Order.OrderShowVO">
     <![CDATA[
-    SELECT * FROM
-     (
-        (
-        SELECT
-            o.id,
-            o.group_id,
-            p.name AS product_name,
-            spec.spec AS spec_name,
-            CASE
-                WHEN spec.cover_url IS NULL  THEN p.cover_url
-                ELSE spec.cover_url
-            END
-            AS cover_url,
-            o.total_amount,
-            o.status,
-            o.created_at
-        FROM `order` o
-        JOIN product p ON o.product_id = p.id
-        LEFT JOIN spec ON o.spec_id = spec.id
-        WHERE o.user_id = #{userId}
-          AND  o.status != 7
-          AND o.group_id IS NOT NULL
-          AND o.id < #{lastId}
-        ORDER BY o.created_at DESC
-        LIMIT #{pageSizeHalf}
-        )
-        UNION ALL
-        (SELECT o.id,
+        SELECT o.id,
+                o.order_sn,
                 o.group_id,
                 p.name    AS product_name,
                 spec.spec AS spec_name,
@@ -210,19 +184,31 @@
                 o.created_at
          FROM `order` o
          JOIN product p ON o.product_id = p.id
-         LEFT JOIN spec ON o.spec_id = spec.id
+         INNER JOIN spec ON o.spec_id = spec.id
          WHERE o.user_id = #{userId}
            AND  o.status != 7
-           AND o.group_id IS NULL
-           AND o.id < #{lastId}
-         ORDER BY o.created_at DESC
-         LIMIT #{pageSizeHalf}
-         )
-    ) AS t
-        ORDER BY t.created_at DESC
-    LIMIT #{pageSize}
+           AND o.created_at < #{createdAt}
+         ORDER BY created_at DESC,o.id DESC
+         LIMIT #{pageSize}
     ]]>
-        <bind name="pageSizeHalf" value="pageSize / 2"/>
+    </select>
+    <select id="getOrderRedisList" resultType="src.main.java.com.zhuxi.pojo.DTO.Order.OrderRedisDTO">
+            SELECT
+            o.id,
+            o.order_sn,
+            o.group_id,
+            p.name AS product_name,
+            s.spec AS spec_name,
+            p.cover_url,
+            o.total_amount,
+            o.status,
+            o.created_at
+        FROM `order` o
+        JOIN product p ON o.product_id = p.id
+        INNER JOIN spec s ON o.spec_id = s.id
+        WHERE o.id > #{lastId} AND user_id = #{userId}
+        ORDER BY created_at DESC,o.id DESC
+        LIMIT #{pageSize}
     </select>
 
     <update id="releaseProductSaleStockList">

@@ -23,8 +23,9 @@ public interface OrderService {
     Result<Void> cancelOrderGroup(Long groupId, Long userId);
 
     // 获取用户订单列表
-    PageResult<List<OrderRealShowVO>> getOrderList(Long userId, Long lastId, Integer pageSize);
+    PageResult<List<OrderRealShowVO>,Double> getOrderList(Long userId, Long lastScore, Integer pageSize,boolean isLast);
 
     // 删除订单
     Result<Void> deleteOrder(String orderSn, Long userId);
+
 }

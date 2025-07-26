@@ -40,7 +40,6 @@ public class InitializationCoordinator implements ApplicationRunner {
     @Override
     public void run(ApplicationArguments args){
         try{
-            long startTime = System.currentTimeMillis();
             CompletableFuture.allOf(
                      runAsync(this::preConnectionPool,asyncExecutor),
                     runAsync(this::preRedisPool,asyncExecutor)
@@ -49,7 +48,6 @@ public class InitializationCoordinator implements ApplicationRunner {
                  log.error("数据预热加载失败",ex);
                  return null;
              });
-            log.info("数据预热加载完成，共耗时:{}ms",System.currentTimeMillis() -  startTime);
 
         }catch (Exception e){
             log.error("初始化数据源失败",e);
@@ -57,11 +55,15 @@ public class InitializationCoordinator implements ApplicationRunner {
     }
 
     private void preConnectionPool(){
+        long now = System.currentTimeMillis();
         SqlPreheater.preheatDruidPool(dataSource,dataSource.getMinIdle(),"SELECT 1");
+        log.info("数据库数据预热完成,耗时{}ms",System.currentTimeMillis()-now);
     }
 
     private void preRedisPool(){
+        long now = System.currentTimeMillis();
         noSqlPreheater.ensureRedisReady();
+        log.info("Redis数据预热完成,耗时{}ms",System.currentTimeMillis()-now);
     }
 
     private void execute(){

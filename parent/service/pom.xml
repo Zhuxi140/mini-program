@@ -104,9 +104,16 @@
             <version>0.4.3</version>
         </dependency>
 
+        <!--jackson-databind -->
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
+        </dependency>
+
+        <!-- jackson-datatype-jsr310 -->
+        <dependency>
+            <groupId>com.fasterxml.jackson.datatype</groupId>
+            <artifactId>jackson-datatype-jsr310</artifactId>
         </dependency>
 
 
@@ -147,7 +154,7 @@
             <version>20231013</version>
         </dependency>
 
-        <!--hutool - 雪花算法-->
+        <!--hutool -雪花算法-->
         <dependency>
             <groupId>cn.hutool</groupId>
             <artifactId>hutool-all</artifactId>
