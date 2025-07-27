@@ -26,7 +26,7 @@ public class AdminUserTxService {
             throw new transactionalException(Message.USER_NOT_EXIST);
     }
 
-    @Transactional(readOnly = true)
+    @Transactional(readOnly = true,propagation = Propagation.SUPPORTS)
     public List<AdminUserVO> getListUserDESC(Long lastId, Integer pageSize){
         List<AdminUserVO> listUserDESC = userMapper.getListUserDESC(lastId, pageSize);
 
@@ -36,7 +36,7 @@ public class AdminUserTxService {
         return listUserDESC;
     }
 
-    @Transactional(readOnly = true)
+    @Transactional(readOnly = true,propagation = Propagation.SUPPORTS)
     public List<AdminUserVO> getListUserASC(Long lastId, Integer pageSize){
         List<AdminUserVO> listUserASC = userMapper.getListUserASC(lastId, pageSize);
 

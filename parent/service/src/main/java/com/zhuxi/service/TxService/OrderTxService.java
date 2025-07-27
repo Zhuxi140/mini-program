@@ -54,8 +54,8 @@ public class OrderTxService {
     }
 
     @Transactional(readOnly = true,propagation = Propagation.SUPPORTS)
-    public List<OrderShowVO> getOrderList(Long userId, LocalDateTime createdAt, Integer pageSize) {
-        List<OrderShowVO> orderList = orderMapper.getOrderList(userId, createdAt, pageSize);
+    public List<OrderRedisDTO> getOrderList(Long userId, LocalDateTime createdAt, Integer pageSize) {
+        List<OrderRedisDTO> orderList = orderMapper.getOrderList(userId, createdAt, pageSize);
         if(orderList == null || orderList.size() <= 0) {
             throw new transactionalException(Message.NO_ORDER_RECORD);
         }

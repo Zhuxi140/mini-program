@@ -46,14 +46,14 @@ public class ProductRedisCache {
         return rCP.getProductCache().getHashPrefix() + ":" + productId;
     }
 
-    public Set<ZSetOperations.TypedTuple<Object>> getListProductsIds(String key, Integer type, Double lastScore, Integer pageSize){
+    public Set<ZSetOperations.TypedTuple<Object>> getListProductsIds(String key, Integer type, Long lastScore, Integer pageSize){
 
             Set<ZSetOperations.TypedTuple<Object>> IdResults = null;
             switch ( type){
                 case 1, 3:{
                     IdResults = redisUntil.ZSetReverseRangeScore(
                             key,
-                            lastScore ==  0D ? Double.POSITIVE_INFINITY : lastScore,
+                            lastScore ==  0L ? Double.POSITIVE_INFINITY : lastScore,
 //                            lastScore == 0D ?  0 : 1,
                             0,
                             pageSize);
@@ -62,7 +62,7 @@ public class ProductRedisCache {
                 case 2:{
                     IdResults = redisUntil.ZSetRangeScore(
                             key,
-                            lastScore == 0D ? Double.NEGATIVE_INFINITY : lastScore,
+                            lastScore == 0L ? Double.NEGATIVE_INFINITY : lastScore,
 //                            lastScore == 0D ?  0 : 1,
                             0,
                             pageSize);
@@ -76,12 +76,12 @@ public class ProductRedisCache {
         return IdResults;
     }
 
-    public Double getLastScore(Set<ZSetOperations.TypedTuple<Object>>  Score){
+    public Long getLastScore(Set<ZSetOperations.TypedTuple<Object>>  Score){
         if(CollectionUtils.isEmpty( Score)){
             return null;
         }
         ArrayList<ZSetOperations.TypedTuple<Object>> list = new ArrayList<>(Score);
-        return list.get(list.size() - 1).getScore();
+        return Objects.requireNonNull(list.get(list.size() - 1).getScore()).longValue();
     }
 
     public List<ProductOverviewVO> getListProductsCache(Set<ZSetOperations.TypedTuple<Object>>  Score,Integer pageSize){
@@ -122,9 +122,9 @@ public class ProductRedisCache {
                 long epochMilli = p.getCreatedAt().atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
                 Long id = p.getId();
                 String productId = id.toString();
-                double createMilli = epochMilli / 1000.0 + ( id / 10000000.0);
                 BigDecimal price = p.getPrice();
-                double priceMixTime = price.doubleValue() + (id % 10000 / 10000000000.0);
+                Long priceInt = price.multiply(BigDecimal.valueOf(100)).longValueExact();
+                Long priceId = generatePriceId(priceInt, id);
                 String priceStr = price.toPlainString();
                 String productDetailKey = getProductDetailKey(productId);
                 String sortPriceASC = getSortPriceKey();
@@ -140,8 +140,8 @@ public class ProductRedisCache {
                 ));
 
 
-                pipe.opsForZSet().add(sortCreateDesc,productId,createMilli);
-                pipe.opsForZSet().add(sortPriceASC,productId,priceMixTime);
+                pipe.opsForZSet().add(sortCreateDesc,productId,epochMilli);
+                pipe.opsForZSet().add(sortPriceASC,productId,priceId);
 
                 pipe.expire(productDetailKey,rCP.getProductCache().getDetailTTL(), TimeUnit.DAYS);
                 pipe.expire(sortCreateDesc,rCP.getProductCache().getCreateTTL(), TimeUnit.DAYS);
@@ -156,9 +156,9 @@ public class ProductRedisCache {
                 long epochMilli = p.getCreatedAt().atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
                 Long id = p.getId();
                 String productId = id.toString();
-                double createMilli = epochMilli / 1000.0 + ( id / 10000000.0);
                 BigDecimal price = p.getPrice();
-                double priceMixTime = price.doubleValue() + (id % 10000 / 10000000000.0);
+                Long priceInt = price.multiply(BigDecimal.valueOf(100)).longValueExact();
+                Long priceId = generatePriceId(priceInt, id);
                 String priceStr = price.toPlainString();
                 String productDetailKey = getProductDetailKey(productId);
                 String sortPriceASC = getSortPriceKey();
@@ -176,8 +176,8 @@ public class ProductRedisCache {
                 objectObjectHashMap.put("images",p.getImages());
                 pipe.opsForHash().putAll(productDetailKey,objectObjectHashMap);
 
-                pipe.opsForZSet().add(sortCreateDesc,productId,createMilli);
-                pipe.opsForZSet().add(sortPriceASC,productId,priceMixTime);
+                pipe.opsForZSet().add(sortCreateDesc,productId,epochMilli);
+                pipe.opsForZSet().add(sortPriceASC,productId,priceId);
 
                 pipe.expire(productDetailKey,rCP.getProductCache().getDetailTTL(), TimeUnit.DAYS);
                 pipe.expire(sortCreateDesc,rCP.getProductCache().getCreateTTL(), TimeUnit.DAYS);
@@ -210,5 +210,17 @@ public class ProductRedisCache {
         pDVO.setImages(list);
 
         return pDVO;
+    }
+
+
+    public Long generatePriceId(Long priceInt, Long id){
+        if (priceInt > (1L << 23)){
+            throw new IllegalArgumentException("价格超过34位上限");
+        }
+        if (id > (1L << 30)){
+            throw new IllegalArgumentException("id超过30位上限");
+        }
+
+        return (priceInt << 30) | id;
     }
 }

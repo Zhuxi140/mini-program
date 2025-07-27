@@ -1,10 +1,7 @@
 package com.zhuxi.service;
 
-import com.zhuxi.Result.PageResult;
 import com.zhuxi.Result.Result;
 import src.main.java.com.zhuxi.pojo.DTO.Order.OrderAddDTO;
-import src.main.java.com.zhuxi.pojo.VO.Order.OrderRealShowVO;
-import src.main.java.com.zhuxi.pojo.VO.Order.OrderShowVO;
 
 import java.util.List;
 
@@ -23,7 +20,7 @@ public interface OrderService {
     Result<Void> cancelOrderGroup(Long groupId, Long userId);
 
     // 获取用户订单列表
-    PageResult<List<OrderRealShowVO>,Double> getOrderList(Long userId, Long lastScore, Integer pageSize,boolean isLast);
+    Result getOrderList(Long userId, Long lastScore, Integer pageSize, boolean isLast);
 
     // 删除订单
     Result<Void> deleteOrder(String orderSn, Long userId);

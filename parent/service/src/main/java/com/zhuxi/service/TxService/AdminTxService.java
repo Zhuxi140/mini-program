@@ -49,7 +49,7 @@ public class AdminTxService {
         }
     }
 
-    @Transactional(readOnly = true)
+    @Transactional(readOnly = true,propagation = Propagation.SUPPORTS)
     public AdminVO getAdminById(Integer id) {
         AdminVO adminById = adminMapper.getAdminById(id);
         if(adminById != null)

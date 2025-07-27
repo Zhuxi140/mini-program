@@ -94,7 +94,7 @@ public class OrderController {
             summary = "获取用户订单列表",
             description = "按订单创建时间 由新到旧"
     )
-    public PageResult<List<OrderRealShowVO>,Double> getOrderList(
+    public Result getOrderList(
             @Parameter(description = "用户id",hidden = true)
             @CurrentUserId Long userId,
             @Parameter(description = "游标",required = true)

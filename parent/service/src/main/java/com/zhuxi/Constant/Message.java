@@ -75,4 +75,5 @@ public class Message {
     public static final String ORDER_NOT_EXIST = "订单不存在";
     public static final String GET_USER_IDS_ERROR = "获取用户ids失败";
     public static final String TYPE_TURN_ERROR = "类型转换错误";
+    public static final String ALREADY_NO_PRODUCT = "已无商品";
 }

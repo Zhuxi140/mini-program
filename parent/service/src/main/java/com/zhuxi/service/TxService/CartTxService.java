@@ -5,6 +5,7 @@ import com.zhuxi.Constant.Message;
 import com.zhuxi.Exception.transactionalException;
 import com.zhuxi.mapper.CartMapper;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import src.main.java.com.zhuxi.pojo.DTO.Car.CarAddDTO;
 import src.main.java.com.zhuxi.pojo.DTO.Car.CartUpdateDTO;
@@ -23,7 +24,7 @@ public class CartTxService {
     }
 
 
-    @Transactional(readOnly = true)
+    @Transactional(readOnly = true,propagation = Propagation.SUPPORTS)
     public List<CartVO> getListCart(Long userId){
         List<CartVO> listCar = cartMapper.getListCar(userId);
         if(listCar == null)
@@ -41,7 +42,7 @@ public class CartTxService {
         return stock;
     }
 
-    @Transactional(readOnly = true)
+    @Transactional(readOnly = true,propagation = Propagation.SUPPORTS)
     public CartNewVO getNewCar(Long productId, Long specId){
         CartNewVO newCar = cartMapper.getNewCar(productId, specId);
         if(newCar == null)

@@ -6,18 +6,19 @@ import com.zhuxi.Result.Result;
 import com.zhuxi.service.ProductService;
 import com.zhuxi.service.RedisCache.ProductRedisCache;
 import com.zhuxi.service.TxService.ProductTxService;
-import com.zhuxi.utils.RedisUntil;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.data.redis.core.ZSetOperations;
 import org.springframework.stereotype.Service;
 import src.main.java.com.zhuxi.pojo.VO.Product.ProductDetailVO;
 import src.main.java.com.zhuxi.pojo.VO.Product.ProductOverviewVO;
 import src.main.java.com.zhuxi.pojo.VO.Product.ProductSpecVO;
-
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 
@@ -39,7 +40,7 @@ public class ProductServiceImpl implements ProductService {
          * 获取商品列表(默认序列)
          */
         @Override
-        public Result<ProductPageResult<ProductOverviewVO>> getListProducts(Double lastScore, Integer pageSize, Integer type,Long lastId,Boolean isLast) {
+        public Result<ProductPageResult<ProductOverviewVO>> getListProducts(Long lastScore, Integer pageSize, Integer type,Long lastId,Boolean isLast) {
             // 如果为最后Redis最后一页的下一页 直接执行兜底
             if (isLast){
              return noHit(lastScore, pageSize, type, lastId);
@@ -52,11 +53,11 @@ public class ProductServiceImpl implements ProductService {
                 CacheKey= productRedisCache.getSortPriceKey();
             }
             if (first){
-                lastScore = 0D;
+                lastScore = 0L;
             }
 
             Set<ZSetOperations.TypedTuple<Object>> listIds = productRedisCache.getListProductsIds(CacheKey, type, lastScore, pageSize + 1);
-            Double lastScore1 = productRedisCache.getLastScore(listIds);
+            Long lastScore1 = productRedisCache.getLastScore(listIds);
             if (listIds != null){
                 List<ProductOverviewVO> listProducts = productRedisCache.getListProductsCache(listIds,pageSize);
                 if (listProducts != null){
@@ -101,12 +102,12 @@ public class ProductServiceImpl implements ProductService {
         return Result.success(Message.OPERATION_SUCCESS, productSpec);
     }
 
-    private Result<ProductPageResult<ProductOverviewVO>> noHit(Double lastScore, Integer pageSize, Integer type,Long lastId){
+    private Result<ProductPageResult<ProductOverviewVO>> noHit(Long lastScore, Integer pageSize, Integer type,Long lastId){
         ProductPageResult<ProductOverviewVO> objectProductPageResult = new ProductPageResult<>(null, null, false, null);
         switch ( type){
             case 1:{
-                LocalDateTime localDateTime = restoreTime(lastScore, lastId);
-                log.info("lastScore:"+localDateTime);
+                // 恢复时间戳
+                LocalDateTime localDateTime = Instant.ofEpochMilli(lastScore).atZone(ZoneId.systemDefault()).toLocalDateTime();
                 List<ProductOverviewVO> listProducts = productTxService.getListProductsByCreate(lastId,localDateTime, pageSize + 1);
                 if (listProducts == null || listProducts.isEmpty()){
                     return Result.error(Message.NO_DATA,null);
@@ -115,7 +116,7 @@ public class ProductServiceImpl implements ProductService {
             }
             break;
             case 2:{
-                BigDecimal price = restorePrice(lastScore, lastId);
+                BigDecimal price = restorePrice(lastScore);
                 List<ProductOverviewVO> listProducts = productTxService.getListProductByPriceDESC(lastId,price, pageSize + 1);
                 if (listProducts == null || listProducts.isEmpty()){
                     return Result.error(Message.NO_DATA,null);
@@ -124,7 +125,7 @@ public class ProductServiceImpl implements ProductService {
             }
             break;
             case 3:{
-                BigDecimal price = restorePrice(lastScore, lastId);
+                BigDecimal price = restorePrice(lastScore);
                 List<ProductOverviewVO> listProducts = productTxService.getListProductByPriceASC(lastId,price, pageSize + 1);
                 if (listProducts == null || listProducts.isEmpty()){
                     return Result.error(Message.NO_DATA,null);
@@ -148,29 +149,23 @@ public class ProductServiceImpl implements ProductService {
         objectProductPageResult.setLastId(id);
         LocalDateTime createdAt = productOverviewVO.getCreatedAt();
         BigDecimal price = productOverviewVO.getPrice();
-        Double processing = processing(type, price, createdAt, id);
+        Long processing = processing(type, price, createdAt,id);
         objectProductPageResult.setNextCursor(processing);
     }
 
-    private LocalDateTime restoreTime(double lastScore,Long lastId){
-        double epochMilli = lastScore * 1000.0 + lastId * 10000000.0;
-        long round = Math.round(epochMilli);
-        return Instant.ofEpochMilli(round).atZone(ZoneId.systemDefault()).toLocalDateTime();
+
+    private BigDecimal restorePrice(Long lastScore){
+        long priceInt = (lastScore >> 30) & 0x7FFFFF;
+        return BigDecimal.valueOf(priceInt).divide(BigDecimal.valueOf(100),2, RoundingMode.HALF_UP);
     }
 
-    private BigDecimal restorePrice(double lastScore,long id){
-        double offset = (id % 10000) / 10000000000.0;
-        double raw = lastScore - offset;
-        return new BigDecimal(String.valueOf(raw));
-    }
-
-    private Double processing(Integer type, BigDecimal price, LocalDateTime time,Long id){
+    private Long processing(Integer type, BigDecimal price, LocalDateTime time, Long id){
         return switch (type) {
-            case 1 -> {
-                long epochMilli = time.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
-                yield epochMilli / 1000.0 + (id / 10000000.0);
+            case 1 -> time.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
+            case 2, 3 -> {
+                Long priceInt = price.multiply(BigDecimal.valueOf(100)).longValueExact();
+                yield productRedisCache.generatePriceId(priceInt, id);
             }
-            case 2, 3 -> price.doubleValue() + (id % 10000 / 10000000000.0);
             default -> null;
         };
 

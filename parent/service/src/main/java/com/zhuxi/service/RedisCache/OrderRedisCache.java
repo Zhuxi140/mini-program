@@ -97,10 +97,8 @@ public class OrderRedisCache {
                 LocalDateTime createdAt = oRDto.getCreatedAt();
                 idSnowFLake.getIdInt();
                 long epochMilli = createdAt.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
-                long createMilli = (epochMilli / 1000) * 1000000L + id;
                 String orderSn = oRDto.getOrderSn();
                 String orderDetailKey = getOrderDetailKey(orderSn);
-
                 HashMap<Object, Object> objectObjectHashMap = new HashMap<>();
                 objectObjectHashMap.put("id", id);
                 objectObjectHashMap.put("orderSn", orderSn);
@@ -113,7 +111,7 @@ public class OrderRedisCache {
                 objectObjectHashMap.put("createdAt", epochMilli);
                 hash.putAll(orderDetailKey, objectObjectHashMap);
 
-                p.opsForZSet().add(orderListKey, orderSn, createMilli);
+                p.opsForZSet().add(orderListKey, orderSn, epochMilli);
             });
 
             if (!Data.isEmpty()) {
@@ -398,9 +396,8 @@ public class OrderRedisCache {
         List<OrderShowVO> orderShowVO = orderRealShowVOS.get(orderRealShowVOS.size() - 1).getOrderShowVO();
         OrderShowVO vo = orderShowVO.get(orderShowVO.size() - 1);
         LocalDateTime createdAt = vo.getCreatedAt();
-        Long id = vo.getId();
         long epochMilli = createdAt.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
-        return (epochMilli / 1000)*1000000L + id;
+        return epochMilli;
     }
 
 

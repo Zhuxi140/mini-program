@@ -1,7 +1,6 @@
 package src.main.java.com.zhuxi.pojo.VO.Product;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonInclude;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 import java.math.BigDecimal;
@@ -72,6 +71,5 @@ public class ProductOverviewVO {
     public void setCreatedAt(LocalDateTime createAt) {
         this.createdAt = createAt;
     }
-
 
 }

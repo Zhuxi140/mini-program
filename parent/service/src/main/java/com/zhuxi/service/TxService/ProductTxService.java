@@ -88,7 +88,7 @@ public class ProductTxService {
         List<ProductOverviewVO> listProducts = productMapper.getListProductByPriceASC(price, pageSize,lastId);
 
         if (listProducts.isEmpty())
-            throw new transactionalException(Message.SELECT_ERROR);
+            throw new transactionalException(Message.ALREADY_NO_PRODUCT);
 
         return listProducts;
     }

@@ -27,7 +27,7 @@ public class UserAddressTxService {
         return userAddressMapper.isExist(userId);
     }
 
-    @Transactional(readOnly =  true)
+    @Transactional(readOnly =  true,propagation = Propagation.SUPPORTS)
     public List<UserAddressVO> getList(Long userId) {
         return userAddressMapper.getList(userId);
     }

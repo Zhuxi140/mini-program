@@ -31,6 +31,7 @@ public class UserTxService {
         return userExist;
     }
 
+    @Transactional(readOnly = true,propagation = Propagation.SUPPORTS)
     public List<Long> getAllUserId(Long lastId,int pageSize){
         return userMapper.getAllUserId(lastId,pageSize);
     }

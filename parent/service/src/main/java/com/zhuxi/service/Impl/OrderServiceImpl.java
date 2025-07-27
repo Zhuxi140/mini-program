@@ -16,7 +16,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import src.main.java.com.zhuxi.pojo.DTO.Order.*;
 import src.main.java.com.zhuxi.pojo.VO.Order.OrderRealShowVO;
-import src.main.java.com.zhuxi.pojo.VO.Order.OrderShowVO;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.Instant;
@@ -192,11 +191,12 @@ public class OrderServiceImpl implements OrderService {
      * 获取订单列表
      */
     @Override
-    public PageResult<List<OrderRealShowVO>,Double> getOrderList(Long userId, Long lastScore, Integer pageSize,boolean isLast) {
-/*        if (isLast){
+    public Result getOrderList(Long userId, Long lastScore, Integer pageSize, boolean isLast) {
+        if (isLast){
             //若redis中已经查空 则直接进行兜底
-            return getOrdersBySql(userId, lastScore, pageSize);
-        }*/
+            PageResult<List<OrderRealShowVO>, Long> ordersBySql = getOrdersBySql(userId, lastScore, pageSize);
+            return Result.success(Message.OPERATION_SUCCESS,ordersBySql);
+        }
 
         boolean first = lastScore == null || lastScore < 0;
         if ( first){
@@ -215,13 +215,14 @@ public class OrderServiceImpl implements OrderService {
                 orderRealShowVos = orderRealShowVos.subList(0, pageSize);
             }else{
                 lastScore = orderRedisCache.getLastScores(orderRealShowVos);
+                log.info("lastScore:{}",lastScore);
             }
-            return new PageResult(orderRealShowVos, lastScore, hasPrevious, hasMore);
+            return Result.success(Message.OPERATION_SUCCESS,new PageResult(orderRealShowVos, lastScore, hasPrevious, hasMore));
         }
 
         //未命中 直接启动兜底
-        /*return getOrdersBySql(userId, lastScore, pageSize);*/
-        return null;
+        PageResult<List<OrderRealShowVO>, Long> ordersBySql = getOrdersBySql(userId, lastScore, pageSize);
+        return Result.success(Message.OPERATION_SUCCESS,ordersBySql);
     }
     /**
      * 删除订单
@@ -297,13 +298,20 @@ public class OrderServiceImpl implements OrderService {
             throw new transactionalException("订单"+ i + ": " + Message.QUANTITY_OVER_SALE_STOCK);
     }
 
-/*    private PageResult<List<OrderRealShowVO>,Double> getOrdersBySql(Long userId, Long lastScore, Integer pageSize){
-        Long orderId = lastScore% 1000000L ;
-         long epochMilli = (lastScore / 1000000L)*1000;
-        LocalDateTime localDateTime = LocalDateTime.ofInstant(Instant.ofEpochMilli(epochMilli), ZoneId.systemDefault());
-        List<OrderShowVO> orderList = orderTxService.getOrderList(userId,localDateTime, pageSize + 1);
+    private PageResult<List<OrderRealShowVO>,Long> getOrdersBySql(Long userId, Long lastScore, Integer pageSize){
+        boolean next = false;
+        LocalDateTime localDateTime = LocalDateTime.ofInstant(Instant.ofEpochMilli(lastScore), ZoneId.systemDefault());
+        List<OrderRedisDTO> orderList = orderTxService.getOrderList(userId,localDateTime, pageSize + 1);
+        if(orderList.size() == pageSize + 1){
+            next = true;
+            lastScore = orderList.get(pageSize).getCreatedAt().atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
+            orderList = orderList.subList(0, pageSize);
+        }
 
-    }*/
+        orderRedisCache.syncOrderData(orderList, userId);
+
+        return new PageResult(orderList, lastScore, false, next);
+    }
 
 
 

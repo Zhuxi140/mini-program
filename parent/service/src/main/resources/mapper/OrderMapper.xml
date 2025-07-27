@@ -171,7 +171,7 @@
 
         </select>
 
-    <select id="getOrderList" resultType="src.main.java.com.zhuxi.pojo.VO.Order.OrderShowVO">
+    <select id="getOrderList" resultType="src.main.java.com.zhuxi.pojo.DTO.Order.OrderRedisDTO">
     <![CDATA[
         SELECT o.id,
                 o.order_sn,
@@ -206,7 +206,7 @@
         FROM `order` o
         JOIN product p ON o.product_id = p.id
         INNER JOIN spec s ON o.spec_id = s.id
-        WHERE o.id > #{lastId} AND user_id = #{userId}
+        WHERE o.id > #{lastId} AND user_id = #{userId} AND o.status != 7
         ORDER BY created_at DESC,o.id DESC
         LIMIT #{pageSize}
     </select>

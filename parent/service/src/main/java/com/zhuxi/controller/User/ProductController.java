@@ -36,7 +36,7 @@ public class ProductController {
     )
     public Result<ProductPageResult<ProductOverviewVO>> getListProducts(
             @Parameter(description = "下一页的游标(第一次不用给，后续根据json给值)", required = true)
-            Double lastScore,
+            Long lastScore,
             @Parameter(description = "分页大小(后端默认为10)", hidden = true)
                 @RequestParam(defaultValue = "10")
             Integer pageSize,

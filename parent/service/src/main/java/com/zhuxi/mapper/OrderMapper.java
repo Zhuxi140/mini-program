@@ -149,7 +149,7 @@ public interface OrderMapper {
 
 
     // 展示订单列表
-    List<OrderShowVO> getOrderList(Long userId, LocalDateTime createdAt, Integer pageSize);
+    List<OrderRedisDTO> getOrderList(Long userId, LocalDateTime createdAt, Integer pageSize);
 
 
 
