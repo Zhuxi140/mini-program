@@ -63,8 +63,11 @@ public interface OrderMapper {
     @Select("SELECT id FROM `order` WHERE order_sn = #{orderSn}")
     Long getOrderId(String orderSn);
 
+    @Select("SELECT id FROM `order` WHERE order_sn = #{orderSn} AND status != 7")
+    Long getOrderIdDelete(String orderSn);
+
     //取消订单
-    @Update("UPDATE `order` SET status = 4 WHERE id = #{orderId}")
+    @Update("UPDATE `order` SET status = 4 WHERE id = #{orderId} AND status != 4")
     int cancelOrder(Long orderId);
 
     //释放预占库存
@@ -154,8 +157,8 @@ public interface OrderMapper {
 
 
     //删除订单
-    @Update("UPDATE `order` SET status = 7 WHERE order_sn = #{orderSn} AND user_id = #{userId}")
-    int deleteOrder(String orderSn, Long userId);
+    @Update("UPDATE `order` SET status = 7 WHERE id = #{id} AND user_id = #{userId}")
+    int deleteOrder(Long id, Long userId);
 
 
     @Select("SELECT id,user_id FROM `order` WHERE id > #{lastId}  ORDER BY id LIMIT #{pageSize}")

@@ -1,18 +1,16 @@
 package com.zhuxi.controller.User;
 
 
-import com.zhuxi.Result.PageResult;
 import com.zhuxi.Result.Result;
 import com.zhuxi.annotation.BloomFilterCheck;
 import com.zhuxi.annotation.CurrentUserId;
 import com.zhuxi.annotation.RequireRole;
-import com.zhuxi.service.OrderService;
+import com.zhuxi.service.business.OrderService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.web.bind.annotation.*;
 import src.main.java.com.zhuxi.pojo.DTO.Order.OrderAddDTO;
-import src.main.java.com.zhuxi.pojo.VO.Order.OrderRealShowVO;
 import src.main.java.com.zhuxi.pojo.entity.Role;
 
 import java.util.List;
@@ -59,7 +57,6 @@ public class OrderController {
 
     @PutMapping
     @RequireRole(Role.USER)
-    @BloomFilterCheck(BloomFilterName = "order",key1 = "orderId",key2 = "userId")
     @Operation(
             summary = "取消订单",
             description = "取消订单"
@@ -111,7 +108,6 @@ public class OrderController {
 
     @PutMapping("/delete")
     @RequireRole(Role.USER)
-    @BloomFilterCheck(BloomFilterName = "order",key1 = "orderId",key2 = "userId")
     @Operation(
             summary = "删除订单",
             description = "删除订单"

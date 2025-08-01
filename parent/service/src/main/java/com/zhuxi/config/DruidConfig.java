@@ -21,6 +21,7 @@ public class DruidConfig {
         druidDataSource.setMaxActive(20); // 最大连接数
         druidDataSource.setMinIdle(5); // 最小连接数
         druidDataSource.setMaxWait(60000); // 获取连接等待超时时间
+        druidDataSource.setAsyncInit( true);
         try {
             druidDataSource.setFilters("stat,wall");
         } catch (SQLException e) {

@@ -1,5 +1,6 @@
 package src.main.java.com.zhuxi.pojo.DTO.product;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 public class ProductBaseDTO {
@@ -8,16 +9,20 @@ public class ProductBaseDTO {
     private Long id;
     @Schema(description = "商品名称",requiredMode = Schema.RequiredMode.REQUIRED)
     private String name;
+    @Schema(description = "商品编号",requiredMode = Schema.RequiredMode.NOT_REQUIRED)
+    private Long productNumber;
     @Schema(description = "商品描述",requiredMode = Schema.RequiredMode.NOT_REQUIRED)
     private String description;
     @Schema(description = "商品产地(默认为河南省新乡市封丘县)",requiredMode = Schema.RequiredMode.NOT_REQUIRED)
     private String origin = "河南省新乡市封丘县";
     @Schema(description = "商品状态(0下架,1上架)",requiredMode = Schema.RequiredMode.NOT_REQUIRED)
+    @JsonIgnore
     private Integer status = 0;
 
-    public ProductBaseDTO(Long id,String name, String description, String origin,Integer status ) {
+    public ProductBaseDTO(Long id, String name, Long productNumber, String description, String origin, Integer status ) {
         this.id = id;
         this.name = name;
+        this.productNumber = productNumber;
         this.description = description;
         this.origin = origin;
         this.status = status;
@@ -66,5 +71,13 @@ public class ProductBaseDTO {
 
     public void setStatus(Integer status) {
         this.status = status;
+    }
+
+    public Long getProductNumber() {
+        return productNumber;
+    }
+
+    public void setProductNumber(Long productNumber) {
+        this.productNumber = productNumber;
     }
 }

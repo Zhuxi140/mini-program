@@ -6,6 +6,9 @@ redis:
     ProductCache:
       ZSetPrefix: product:sort
       HashPrefix: product:detail
+      SpecDetailPrefix: product:spec:detail
+      StockPrefix: product:spec:stock
+      SpecMapProductPrefix: product:spec:map
       DetailTTL: 7
       CreateTTL: 30
       priceTTL: 24

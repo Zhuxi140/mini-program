@@ -1,18 +1,16 @@
 package com.zhuxi.service.Sync;
 
-import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import com.zhuxi.Constant.Message;
 import com.zhuxi.Exception.transactionalException;
 import com.zhuxi.Result.Result;
 import com.zhuxi.service.Rollback.OrderRollback;
-import com.zhuxi.service.TxService.OrderTxService;
+import com.zhuxi.service.Tx.OrderTxService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.TransactionDefinition;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,7 +18,6 @@ import org.springframework.transaction.support.DefaultTransactionDefinition;
 import src.main.java.com.zhuxi.pojo.DTO.Order.OrderAddDTO;
 import src.main.java.com.zhuxi.pojo.DTO.Order.PaymentAddDTO;
 import java.math.BigDecimal;
-import java.util.concurrent.*;
 
 @Slf4j
 @Service

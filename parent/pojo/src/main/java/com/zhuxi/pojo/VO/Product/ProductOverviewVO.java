@@ -8,7 +8,10 @@ import java.time.LocalDateTime;
 
 public class ProductOverviewVO {
 
+    @Schema(description = "商品号")
+    private Long productNumber;
     @Schema(description = "商品id")
+    @JsonIgnore
     private Long id;
     @Schema(description = "商品名称")
     private String name;
@@ -21,7 +24,8 @@ public class ProductOverviewVO {
     private LocalDateTime createdAt;
 
 
-    public ProductOverviewVO(Long id, String name, BigDecimal price, String coverUrl, LocalDateTime createdAt) {
+    public ProductOverviewVO(Long productNumber, Long id, String name, BigDecimal price, String coverUrl, LocalDateTime createdAt) {
+        this.productNumber = productNumber;
         this.id = id;
         this.name = name;
         this.price = price;
@@ -72,4 +76,11 @@ public class ProductOverviewVO {
         this.createdAt = createAt;
     }
 
+    public Long getProductNumber() {
+        return productNumber;
+    }
+
+    public void setProductNumber(Long productNumber) {
+        this.productNumber = productNumber;
+    }
 }

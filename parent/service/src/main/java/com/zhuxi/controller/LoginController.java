@@ -3,8 +3,8 @@ package com.zhuxi.controller;
 
 import com.zhuxi.Constant.Message;
 import com.zhuxi.Result.Result;
-import com.zhuxi.service.AdminService;
-import com.zhuxi.service.UserService;
+import com.zhuxi.service.business.AdminService;
+import com.zhuxi.service.business.UserService;
 import com.zhuxi.utils.JwtUtils;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.extern.log4j.Log4j2;

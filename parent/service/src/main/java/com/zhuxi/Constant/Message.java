@@ -58,8 +58,8 @@ public class Message {
     public static final String NO_THIS_PRODUCT = "无此商品";
     public static final String SPECID_IS_NO_PRE_STOCK = "商品规格id无预占库存";
     public static final String ORDER_USER_ID_IS_NULL = "订单号或用户id为空";
-    public static final String GROUP_ID_IS_NULL = "订单组id为空";
-    public static final String ORDER_CONCEAL_ERROR = "订单取消失败";
+    public static final String GROUP_ID_IS_NULL = "订单组号为空";
+    public static final String ORDER_CONCEAL_ERROR = "订单取消失败或已取消";
     public static final String PAY_CONCEAL_ERROR = "支付取消失败";
     public static final String LOCK_CONCEAL_ERROR = "预占取消失败";
     public static final String REDUCE_SALE_STOCK_ERROR = "可售库存减少失败(锁定库存失败)";
@@ -76,4 +76,7 @@ public class Message {
     public static final String GET_USER_IDS_ERROR = "获取用户ids失败";
     public static final String TYPE_TURN_ERROR = "类型转换错误";
     public static final String ALREADY_NO_PRODUCT = "已无商品";
+    public static final String PUT_SALE_ERROR = "上架失败";
+    public static final String EXISTS_ERROR_SPEC = "价格为空或库存为空";
+    public static final String NO_PRODUCT = "无商品记录";
 }

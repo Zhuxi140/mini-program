@@ -3,16 +3,14 @@ package com.zhuxi.controller.Admin;
 
 import com.zhuxi.Result.PageResult;
 import com.zhuxi.Result.Result;
-import com.zhuxi.annotation.CurrentUserId;
 import com.zhuxi.annotation.RequireRole;
-import com.zhuxi.service.AdminProductService;
+import com.zhuxi.service.business.AdminProductService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.web.bind.annotation.*;
 import src.main.java.com.zhuxi.pojo.DTO.product.ProductAddDTO;
 import src.main.java.com.zhuxi.pojo.DTO.product.ProductUpdateDTO;
-import src.main.java.com.zhuxi.pojo.VO.Admin.AdminProductVO;
 import src.main.java.com.zhuxi.pojo.VO.Product.ProductSpecDetailVO;
 import src.main.java.com.zhuxi.pojo.entity.Role;
 
@@ -106,5 +104,19 @@ public class AdminProductController {
             Long id
     ){
         return adminProductService.delete(id);
+    }
+
+    @PutMapping("/putOnSale/{id}")
+    @RequireRole(Role.ADMIN)
+    @Operation(
+            summary = "商品上架",
+            description = "商品上架"
+    )
+    public Result<Void> putOnSale(
+            @Parameter(description = "商品id", required = true)
+            @PathVariable
+            Long id
+    ){
+        return adminProductService.putOnSale(id);
     }
 }

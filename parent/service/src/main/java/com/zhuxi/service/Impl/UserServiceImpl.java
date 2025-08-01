@@ -3,14 +3,10 @@ package com.zhuxi.service.Impl;
 
 import com.zhuxi.Constant.Message;
 import com.zhuxi.Result.Result;
-import com.zhuxi.mapper.UserMapper;
-import com.zhuxi.service.TxService.UserTxService;
-import com.zhuxi.service.UserService;
-import com.zhuxi.utils.JwtUtils;
-import io.jsonwebtoken.Claims;
+import com.zhuxi.service.Tx.UserTxService;
+import com.zhuxi.service.business.UserService;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import src.main.java.com.zhuxi.pojo.DTO.User.UserLoginDTO;
 import src.main.java.com.zhuxi.pojo.DTO.User.UserUpdateDTO;

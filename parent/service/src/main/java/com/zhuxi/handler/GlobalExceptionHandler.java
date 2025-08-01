@@ -14,7 +14,6 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler({transactionalException.class})
     public Result<Void> handleException(transactionalException e) {
-        log.warn("---- transactional error ----");
         String message = e.getMessage();
         return Result.error(message);
     }

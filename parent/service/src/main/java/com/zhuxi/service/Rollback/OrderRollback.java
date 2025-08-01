@@ -1,7 +1,7 @@
 package com.zhuxi.service.Rollback;
 
-import com.zhuxi.service.RedisCache.OrderRedisCache;
-import com.zhuxi.service.TxService.OrderTxService;
+import com.zhuxi.service.Cache.OrderRedisCache;
+import com.zhuxi.service.Tx.OrderTxService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -30,7 +30,7 @@ public class OrderRollback {
             return;
         }
         orderTxService.releaseProductSaleStock(specId, quantity);
-        Long orderId = orderTxService.concealOrder(orderSn);
+        Long orderId = orderTxService.concealOrder(null,orderSn,false);
         orderTxService.releaseLockStock(orderId);
         orderRedisCache.deleteLockKey(orderSn);
     }

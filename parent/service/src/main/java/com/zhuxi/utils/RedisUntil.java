@@ -38,8 +38,8 @@ public class RedisUntil {
     }
 
     //清空对应key
-    public void delete(String key){
-        stringRedisTemplate.delete( key);
+    public Boolean delete(String key){
+         return stringRedisTemplate.delete(key);
     }
 
     // 清空前缀为xx的所有键
@@ -57,7 +57,6 @@ public class RedisUntil {
        return HashOperations.multiGet(key,hashKeys);
     }
 
-    // 存
     public void hPutMap(String key,Map<?,?>  map){
         HashOperations.putAll(key, map);
     }
@@ -71,6 +70,8 @@ public class RedisUntil {
     }
 
 
+
+
     // redis Set类型操作
 
     // redis SortedSet类型操作
@@ -82,9 +83,15 @@ public class RedisUntil {
         return zSetOperations.rangeByScoreWithScores(key,lastScored,Double.POSITIVE_INFINITY,offset,count);
     }
 
+    public Long deleteZSetOneFiled(String key,Object value){
+        return zSetOperations.remove(key, value);
+    }
    public Set<Object> ZSetRangeFirstElement(String key){
        return zSetOperations.range(key, 0, 0);
    }
+
+   // 根据某分值 获取 对应的ZSET 值
+
 
 
 

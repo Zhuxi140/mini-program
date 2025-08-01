@@ -40,6 +40,15 @@ spring:
 #      host: 192.168.186.128
 #      password: 123456
 
+# mq配置
+  rabbitmq:
+    virtual-host: mini_program
+    port: 5672
+    username: mini_program
+    password: 123456
+    host: localhost
+
+
 bloom-filter:
   productConfig:
     expectedElements: 500

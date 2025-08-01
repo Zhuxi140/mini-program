@@ -4,7 +4,7 @@ package com.zhuxi.controller.User;
 import com.zhuxi.Result.Result;
 import com.zhuxi.annotation.CurrentUserId;
 import com.zhuxi.annotation.RequireRole;
-import com.zhuxi.service.UserService;
+import com.zhuxi.service.business.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;

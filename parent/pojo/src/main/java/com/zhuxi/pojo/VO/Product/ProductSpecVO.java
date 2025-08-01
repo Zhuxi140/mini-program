@@ -3,7 +3,7 @@ package src.main.java.com.zhuxi.pojo.VO.Product;
 import java.math.BigDecimal;
 
 public class ProductSpecVO {
-    private Long specId;
+    private Long SpecNumber;
     private String spec;
     private BigDecimal price;
     private String coverUrl;
@@ -12,21 +12,15 @@ public class ProductSpecVO {
     public ProductSpecVO() {
     }
 
-    public ProductSpecVO(Long specId, String spec, BigDecimal price, String coverUrl, Integer stock) {
-        this.specId = specId;
+    public ProductSpecVO(Long specNumber, String spec, BigDecimal price, String coverUrl, Integer stock) {
+        SpecNumber = specNumber;
         this.spec = spec;
         this.price = price;
         this.coverUrl = coverUrl;
         this.stock = stock;
     }
 
-    public Long getSpecId() {
-        return specId;
-    }
 
-    public void setSpecId(Long specId) {
-        this.specId = specId;
-    }
 
     public String getSpec() {
         return spec;
@@ -58,5 +52,13 @@ public class ProductSpecVO {
 
     public void setStock(Integer stock) {
         this.stock = stock;
+    }
+
+    public Long getSpecNumber() {
+        return SpecNumber;
+    }
+
+    public void setSpecNumber(Long specNumber) {
+        SpecNumber = specNumber;
     }
 }

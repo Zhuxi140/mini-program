@@ -27,8 +27,9 @@ public class RedisCacheProperties {
     public static class ProductCache{
         private String StringPrefix;
         private String HashPrefix;
-        private String SetPrefix;
-        private String ListPrefix;
+        private String SpecDetailPrefix;
+        private String SpecMapProductPrefix;
+        private String StockPrefix;
         private String ZSetPrefix;
         private int DetailTTL;
         private int CreateTTL;
@@ -42,6 +43,14 @@ public class RedisCacheProperties {
             StringPrefix = stringPrefix;
         }
 
+        public String getStockPrefix() {
+            return StockPrefix;
+        }
+
+        public void setStockPrefix(String stockPrefix) {
+            StockPrefix = stockPrefix;
+        }
+
         public String getHashPrefix() {
             return HashPrefix;
         }
@@ -50,20 +59,12 @@ public class RedisCacheProperties {
             HashPrefix = hashPrefix;
         }
 
-        public String getSetPrefix() {
-            return SetPrefix;
+        public String getSpecDetailPrefix() {
+            return SpecDetailPrefix;
         }
 
-        public void setSetPrefix(String setPrefix) {
-            SetPrefix = setPrefix;
-        }
-
-        public String getListPrefix() {
-            return ListPrefix;
-        }
-
-        public void setListPrefix(String listPrefix) {
-            ListPrefix = listPrefix;
+        public void setSpecDetailPrefix(String specDetailPrefix) {
+            SpecDetailPrefix = specDetailPrefix;
         }
 
         public String getZSetPrefix() {
@@ -96,6 +97,14 @@ public class RedisCacheProperties {
 
         public void setPriceTTL(int priceTTL) {
             this.priceTTL = priceTTL;
+        }
+
+        public String getSpecMapProductPrefix() {
+            return SpecMapProductPrefix;
+        }
+
+        public void setSpecMapProductPrefix(String specMapProductPrefix) {
+            SpecMapProductPrefix = specMapProductPrefix;
         }
     }
 

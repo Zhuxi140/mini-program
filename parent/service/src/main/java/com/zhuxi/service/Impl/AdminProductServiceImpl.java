@@ -1,11 +1,14 @@
 package com.zhuxi.service.Impl;
 
+import cn.hutool.core.lang.Snowflake;
 import com.zhuxi.Constant.Message;
 import com.zhuxi.Result.PageResult;
 import com.zhuxi.Result.Result;
-import com.zhuxi.service.AdminProductService;
-import com.zhuxi.service.TxService.ProductTxService;
+import com.zhuxi.service.business.AdminProductService;
+import com.zhuxi.service.Tx.ProductTxService;
+import com.zhuxi.utils.IdSnowFLake;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import src.main.java.com.zhuxi.pojo.DTO.RealStock.RealStockDTO;
@@ -20,9 +23,14 @@ import java.util.List;
 @Log4j2
 public class AdminProductServiceImpl implements AdminProductService {
     private ProductTxService productTxService;
+    private final IdSnowFLake snowflake;
+    private RabbitTemplate rabbitTemplate;
 
-    public AdminProductServiceImpl(ProductTxService productTxService) {
+
+    public AdminProductServiceImpl(ProductTxService productTxService, IdSnowFLake snowflake, RabbitTemplate rabbitTemplate) {
         this.productTxService = productTxService;
+        this.snowflake = snowflake;
+        this.rabbitTemplate = rabbitTemplate;
     }
 
     /**
@@ -55,11 +63,16 @@ public class AdminProductServiceImpl implements AdminProductService {
         if (productAddDTO == null || productAddDTO.getBase() == null || productAddDTO.getSpec() == null)
             return Result.error(Message.BODY_NO_MAIN_OR_IS_NULL);
 
-        productTxService.addBase(productAddDTO.getBase());
+        ProductBaseDTO base = productAddDTO.getBase();
+        base.setProductNumber(snowflake.getIdInt());
+        productTxService.addBase(base);
         Long id = productAddDTO.getBase().getId();
 
-        productTxService.addSpec(productAddDTO.getSpec(), id);
-
+        List<ProductSpecDTO> spec = productAddDTO.getSpec();
+        for (ProductSpecDTO specC : spec){
+            specC.setSpecNumber(snowflake.getIdInt());
+        }
+        productTxService.addSpec(spec, id);
 
         List<RealStockDTO> realStockDTO = productAddDTO.getSpec().stream().map(productSpecDTO -> {
             RealStockDTO realStockDTO1 = new RealStockDTO();
@@ -69,7 +82,6 @@ public class AdminProductServiceImpl implements AdminProductService {
         }).toList();
 
         productTxService.addRealStock(realStockDTO);
-
 
         return Result.success(Message.OPERATION_SUCCESS);
     }
@@ -102,6 +114,20 @@ public class AdminProductServiceImpl implements AdminProductService {
     }
 
     /**
+     * 上架商品
+     */
+    @Override
+    @Transactional
+    public Result<Void> putOnSale(Long id) {
+        if (id == null)
+            return Result.error(Message.PRODUCT_ID_IS_NULL);
+        productTxService.putOnSale(id);
+
+        rabbitTemplate.convertAndSend("product.spec.exchange","new",id);
+        return Result.success(Message.OPERATION_SUCCESS);
+    }
+
+    /**
      * 修改商品
      */
     @Override
@@ -112,25 +138,31 @@ public class AdminProductServiceImpl implements AdminProductService {
             return Result.error(Message.BODY_NO_MAIN_OR_IS_NULL);
 
         Long productId = base.getId();
+        List<ProductSpecUpdateDTO> spec = productUpdateDTO.getSpec();
         if (productId == null)
             return Result.error(Message.PRODUCT_ID_IS_NULL + "或" + Message.BODY_NO_MAIN_OR_IS_NULL);
 
-        List<ProductSpecUpdateDTO> spec = productUpdateDTO.getSpec();
-        if (spec == null)
-            return Result.error(Message.BODY_NO_MAIN_OR_IS_NULL);
-
-        for (ProductSpecUpdateDTO productSpecUpdateDTO : spec){
-            if (productSpecUpdateDTO.getId() == null)
-                return Result.error(Message.PRODUCT_SPEC_ID_IS_NULL);
-            Integer realStock = productTxService.getRealStock(productId, productSpecUpdateDTO.getId());
-            if(productSpecUpdateDTO.getStock() > realStock)
-                return Result.error(Message.QUANTITY_OVER_STOCK);
+        if (spec != null) {
+            for (ProductSpecUpdateDTO productSpecUpdateDTO : spec) {
+                if (productSpecUpdateDTO.getId() == null)
+                    return Result.error(Message.PRODUCT_SPEC_ID_IS_NULL);
+                if (productSpecUpdateDTO.getStock() != null){
+                    Integer realStock = productTxService.getRealStock(productId, productSpecUpdateDTO.getId());
+                    if (productSpecUpdateDTO.getStock() > realStock)
+                        return Result.error(Message.QUANTITY_OVER_STOCK);
+                }
+            }
         }
 
+        Integer status = productTxService.updateBase(base);
+        if (spec != null) {
+            productTxService.updateSpec(spec,productId);
+        }
 
-        productTxService.updateBase(base);
-        productTxService.updateSpec(spec,productId);
-
+        if (status == 1){
+            // 修改已上架商品 发送mq
+            rabbitTemplate.convertAndSend("product.spec.exchange","Already",productUpdateDTO);
+        }
         return Result.success(Message.OPERATION_SUCCESS);
     }
 

@@ -5,10 +5,10 @@ import com.zhuxi.Exception.SnycException;
 import com.zhuxi.Exception.transactionalException;
 import com.zhuxi.Result.PageResult;
 import com.zhuxi.Result.Result;
-import com.zhuxi.service.OrderService;
-import com.zhuxi.service.RedisCache.OrderRedisCache;
+import com.zhuxi.service.business.OrderService;
+import com.zhuxi.service.Cache.OrderRedisCache;
 import com.zhuxi.service.Sync.OrderSyncService;
-import com.zhuxi.service.TxService.OrderTxService;
+import com.zhuxi.service.Tx.OrderTxService;
 import com.zhuxi.utils.IdSnowFLake;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.ZSetOperations;
@@ -166,9 +166,15 @@ public class OrderServiceImpl implements OrderService {
         if (orderSn == null || userId == null)
             return Result.error(Message.ORDER_USER_ID_IS_NULL);
 
-        Long orderId = orderTxService.concealOrder(orderSn);
-        orderTxService.releaseLockStock(orderId);
+        Long orderId = orderRedisCache.getOrderIdBySn(orderSn);
+        boolean isHit = true;
+        if (orderId == null){
+            isHit = false;
+        }
+        Long orderIdd = orderTxService.concealOrder(orderId,orderSn,isHit);
+        orderTxService.releaseLockStock(orderIdd);
 
+        orderRedisCache.syncOrderStatus(orderSn,4);
         return Result.success(Message.OPERATION_SUCCESS);
     }
 
@@ -233,7 +239,15 @@ public class OrderServiceImpl implements OrderService {
         if (orderSn == null || userId == null)
             return Result.error(Message.ORDER_USER_ID_IS_NULL);
 
-        orderTxService.deleteOrder(orderSn,userId);
+        Long orderId = orderRedisCache.getOrderIdBySn(orderSn);
+        boolean isHit = true;
+        if (orderId == null){
+            isHit = false;
+        }
+        orderTxService.deleteOrder(orderId,userId,isHit,orderSn);
+
+        // 删除Redis
+        orderRedisCache.deleteOrder(orderSn);
 
         return Result.success(Message.OPERATION_SUCCESS);
     }

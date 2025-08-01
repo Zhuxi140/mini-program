@@ -15,7 +15,7 @@
         JOIN
             (SELECT product_id,MIN(price) AS price FROM spec GROUP BY product_id) mini_price
         ON product.id = mini_price.product_id
-        WHERE product.created_at < #{dateTime} AND status = 1 AND id < #{lastId}
+        WHERE product.created_at < #{dateTime} AND status = 1
         ORDER BY created_at DESC,id DESC
         LIMIT #{pageSize}
     ]]>
@@ -63,6 +63,7 @@
         <![CDATA[
         SELECT
             id,
+            snowflake_id,
             name,
             mini_price.price,
             cover_url,
@@ -126,7 +127,21 @@
         LIMIT #{pageSize}
         ]]>
     </select>
-
+    <select id="getSpec" resultType="src.main.java.com.zhuxi.pojo.DTO.product.SpecRedisDTO">
+        SELECT
+            spec.id,
+            spec.product_id,
+            product.snowflake_id AS product_snowflake,
+            spec.snowflake_id,
+            spec.spec,
+            spec.purchase_price,
+            spec.price AS sale_price,
+            spec.cover_url,
+            spec.stock
+        FROM spec JOIN product ON spec.product_id = product.id
+        WHERE spec.id > #{lastId} AND product.status = 1
+        LIMIT #{pageSize}
+    </select>
 
 
     <!--    <insert id="addSpec">-->
@@ -169,11 +184,8 @@
             <if test="base.origin != null">
                 origin = #{base.origin},
             </if>
-            <if test="base.status != null">
-                status = #{base.status},
-            </if>
         </set>
-        WHERE id = #{base.id}
+        WHERE id = #{base.id};
     </update>
 
     <update id="updateProductSpec">

@@ -3,9 +3,9 @@ package com.zhuxi.service.Impl;
 import com.zhuxi.Constant.Message;
 import com.zhuxi.Result.ProductPageResult;
 import com.zhuxi.Result.Result;
-import com.zhuxi.service.ProductService;
-import com.zhuxi.service.RedisCache.ProductRedisCache;
-import com.zhuxi.service.TxService.ProductTxService;
+import com.zhuxi.service.business.ProductService;
+import com.zhuxi.service.Cache.ProductRedisCache;
+import com.zhuxi.service.Tx.ProductTxService;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.data.redis.core.ZSetOperations;
 import org.springframework.stereotype.Service;
@@ -17,8 +17,6 @@ import java.math.RoundingMode;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 
@@ -37,13 +35,13 @@ public class ProductServiceImpl implements ProductService {
     }
 
         /**
-         * 获取商品列表(默认序列)
+         * 获取商品列表
          */
         @Override
-        public Result<ProductPageResult<ProductOverviewVO>> getListProducts(Long lastScore, Integer pageSize, Integer type,Long lastId,Boolean isLast) {
+        public Result<ProductPageResult<ProductOverviewVO>> getListProducts(Long lastScore, Integer pageSize, Integer type,Boolean isLast) {
             // 如果为最后Redis最后一页的下一页 直接执行兜底
             if (isLast){
-             return noHit(lastScore, pageSize, type, lastId);
+             return noHit(lastScore, pageSize, type);
             }
             boolean first = (lastScore == null || lastScore < 0);
             String CacheKey = "";
@@ -70,23 +68,30 @@ public class ProductServiceImpl implements ProductService {
             }
             log.info("未命中Redis");
             //未命中 启用兜底 查询数据库
-            return noHit(lastScore, pageSize, type, lastId);
+            return noHit(lastScore, pageSize, type);
         }
 
     /**
      * 获取商品详情
      */
     @Override
-    public Result<ProductDetailVO> getProductDetail(Long id) {
+    public Result<ProductDetailVO> getProductDetail(Long ProductNumber) {
 
-        if(id == null)
-            return Result.error(Message.ARTICLE_ID_IS_NULL);
-        ProductDetailVO cacheDetails = productRedisCache.getCacheDetails(id);
+        if(ProductNumber == null)
+            return Result.error(Message.PRODUCT_ID_IS_NULL);
+        ProductDetailVO cacheDetails = productRedisCache.getCacheDetails(ProductNumber);
         if (cacheDetails != null){
             return Result.success(Message.OPERATION_SUCCESS, cacheDetails);
         }
 
-        ProductDetailVO productDetail = productTxService.getProductDetail(id);
+        Long productId = productRedisCache.getProductIdBySnowflakeId(ProductNumber);
+        boolean isHuawei = true;
+        if (productId == null){
+            isHuawei = false;
+        }
+        ProductDetailVO productDetail = productTxService.getProductDetail(productId,isHuawei,ProductNumber);
+        // 刷新redis
+        /*productRedisCache.syncProduct(Arrays.asList(productDetail));*/
         return Result.success(Message.OPERATION_SUCCESS, productDetail);
     }
 
@@ -94,21 +99,35 @@ public class ProductServiceImpl implements ProductService {
      * 获取商品规格
      */
     @Override
-    public Result<List<ProductSpecVO>> getProductSpec(Long productId) {
-        if (productId == null)
+    public Result<List<ProductSpecVO>> getProductSpec(Long productNumber) {
+        if (productNumber == null)
             return Result.error(Message.PRODUCT_ID_IS_NULL);
 
-        List<ProductSpecVO> productSpec = productTxService.getProductSpec(productId);
+        List<ProductSpecVO> productSpec1 = productRedisCache.getProductSpec(productNumber);
+        if (productSpec1 != null){
+            return Result.success(Message.OPERATION_SUCCESS, productSpec1);
+        }
+
+        Long productId = productRedisCache.getProductIdBySnowflakeId(productNumber);
+        boolean isHuawei = true;
+        if (productId == null){
+            isHuawei = false;
+        }
+        List<ProductSpecVO> productSpec = productTxService.getProductSpec(productId,isHuawei,productNumber);
+
+        // 刷新redis
+//        productRedisCache.syncSpecInit(productSpec);
         return Result.success(Message.OPERATION_SUCCESS, productSpec);
     }
 
-    private Result<ProductPageResult<ProductOverviewVO>> noHit(Long lastScore, Integer pageSize, Integer type,Long lastId){
+    private Result<ProductPageResult<ProductOverviewVO>> noHit(Long lastScore, Integer pageSize, Integer type){
         ProductPageResult<ProductOverviewVO> objectProductPageResult = new ProductPageResult<>(null, null, false, null);
+        Long lastId = restoreId(lastScore);
         switch ( type){
             case 1:{
                 // 恢复时间戳
                 LocalDateTime localDateTime = Instant.ofEpochMilli(lastScore).atZone(ZoneId.systemDefault()).toLocalDateTime();
-                List<ProductOverviewVO> listProducts = productTxService.getListProductsByCreate(lastId,localDateTime, pageSize + 1);
+                List<ProductOverviewVO> listProducts = productTxService.getListProductsByCreate(localDateTime, pageSize + 1);
                 if (listProducts == null || listProducts.isEmpty()){
                     return Result.error(Message.NO_DATA,null);
                 }
@@ -157,6 +176,11 @@ public class ProductServiceImpl implements ProductService {
     private BigDecimal restorePrice(Long lastScore){
         long priceInt = (lastScore >> 30) & 0x7FFFFF;
         return BigDecimal.valueOf(priceInt).divide(BigDecimal.valueOf(100),2, RoundingMode.HALF_UP);
+    }
+
+    private Long restoreId(Long lastScore) {
+        long mask = (1L << 30) - 1;
+        return lastScore & mask;
     }
 
     private Long processing(Integer type, BigDecimal price, LocalDateTime time, Long id){

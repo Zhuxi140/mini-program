@@ -4,6 +4,7 @@ import com.zhuxi.Interceptor.JwtInterceptor;
 import com.zhuxi.Interceptor.JwtInterceptorProperties;
 import com.zhuxi.handler.UserIdArgumentResolver;
 import com.zhuxi.utils.JwtUtils;
+import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
@@ -47,6 +48,11 @@ public class WebMvcConfig implements WebMvcConfigurer {
     @Override
     public void addArgumentResolvers(List<HandlerMethodArgumentResolver> resolvers) {
         resolvers.add(new UserIdArgumentResolver(jwtUtils));
+    }
+
+    @Bean
+    public Jackson2JsonMessageConverter jackson2JsonMessageConverter() {
+        return new Jackson2JsonMessageConverter();
     }
 
 }

@@ -1,12 +1,11 @@
 package com.zhuxi.controller.User;
 
 
-import com.zhuxi.Result.PageResult;
 import com.zhuxi.Result.ProductPageResult;
 import com.zhuxi.Result.Result;
 import com.zhuxi.annotation.BloomFilterCheck;
 import com.zhuxi.annotation.RequireRole;
-import com.zhuxi.service.ProductService;
+import com.zhuxi.service.business.ProductService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -43,41 +42,35 @@ public class ProductController {
             @Parameter(description = "商品类型(1:默认序列，2:按价格低到高排序  3:按价格高到低排序)  默认为1", required = true)
                 @RequestParam(defaultValue = "1")
             Integer type,
-            @Parameter(description = "本页最后一条数据的id(第一次不用给，后续根据json给值)")
-            Long lastId,
             @Parameter(description = "是否redis已经查询完了(当redis中未命中(hasNext=false)，则其后一直给true)")
                 @RequestParam(defaultValue = "false")
             Boolean isLast
     )
     {
-        return productService.getListProducts(lastScore, pageSize,type,lastId,isLast);
+        return productService.getListProducts(lastScore, pageSize,type,isLast);
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/detail")
     @RequireRole(Role.USER)
-    @BloomFilterCheck(BloomFilterName = "product", key1 = "id")
     @Operation(
             summary = "获取商品详情接口",
             description = "商品详情"
     )
     public Result<ProductDetailVO> getProductDetail(
-            @Parameter(description = "商品id", required = true)
-            @PathVariable
-            Long id){
-        return productService.getProductDetail(id);
+            @Parameter(description = "商品号", required = true)
+            Long ProductNumber){
+        return productService.getProductDetail(ProductNumber);
     }
 
-    @GetMapping("/spec/{id}")
+    @GetMapping("/spec")
     @RequireRole(Role.USER)
-    @BloomFilterCheck(BloomFilterName = "product", key1 = "id")
     @Operation(
             summary = "获取商品规格接口",
             description = "商品规格"
     )
     public Result<List<ProductSpecVO>> getProductSpec(
-            @Parameter(description = "商品id", required = true)
-            @PathVariable
-            Long id){
-        return productService.getProductSpec(id);
+            @Parameter(description = "商品号", required = true)
+            Long ProductNumber){
+        return productService.getProductSpec(ProductNumber);
     }
 }

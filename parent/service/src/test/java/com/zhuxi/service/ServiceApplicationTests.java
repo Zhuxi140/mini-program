@@ -1,36 +1,37 @@
 package com.zhuxi.service;
 
-import cn.hutool.core.util.IdUtil;
 import com.alibaba.druid.pool.DruidDataSource;
-import com.zhuxi.service.RedisCache.ProductRedisCache;
+import com.zhuxi.mapper.snowflake;
 import com.zhuxi.utils.IdSnowFLake;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import src.main.java.com.zhuxi.pojo.VO.Product.ProductOverviewVO;
 
 import javax.sql.DataSource;
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
 
 
 @SpringBootTest
 class ServiceApplicationTests {
-    private DataSource dataSource;
+
+    private final IdSnowFLake idSnowFLake;
+    private final snowflake  snowflake;
 
     @Autowired
-    public ServiceApplicationTests(DataSource dataSource) {
-        this.dataSource = dataSource;
+    ServiceApplicationTests(IdSnowFLake idSnowFLake, com.zhuxi.mapper.snowflake snowflake) {
+        this.idSnowFLake = idSnowFLake;
+        this.snowflake = snowflake;
     }
 
     @Test
     void contextLoads() {
 
-        String name = dataSource.getClass().getName();
-        DruidDataSource source = (DruidDataSource) dataSource;
-        int minIdle = source.getMinIdle();
-        System.out.println("minIdle = " + minIdle);
+        for (long i = 1; i <= 50; i++){
+            Long idInt = idSnowFLake.getIdInt();
+            if (snowflake.getUserId(i) == null){
+                snowflake.updateUserId(i,idInt);
+            }
+        }
+
     }
 
 

@@ -1,3 +1,4 @@
+
 package com.zhuxi.ApplicationRunner;
 
 import com.alibaba.druid.pool.DruidDataSource;
@@ -10,9 +11,6 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.*;
 import java.util.stream.IntStream;
 
 @Service
@@ -47,8 +45,8 @@ public class ConnectionPoolPreheater {
     private void validateConnection(Connection conn,String validationQuery) throws SQLException{
         log.debug("验证连接");
         try(
-        Statement statement = conn.createStatement();
-        ResultSet resultSet = statement.executeQuery(validationQuery);
+                Statement statement = conn.createStatement();
+                ResultSet resultSet = statement.executeQuery(validationQuery);
         ){
             if(!resultSet.next()){
                 throw new SQLException("验证查询未返回结果");
@@ -59,3 +57,5 @@ public class ConnectionPoolPreheater {
         }
     }
 }
+
+

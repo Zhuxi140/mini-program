@@ -2,7 +2,7 @@ package com.zhuxi.controller;
 
 import com.zhuxi.Result.Result;
 import com.zhuxi.annotation.RequireRole;
-import com.zhuxi.service.ArticleService;
+import com.zhuxi.service.business.ArticleService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;

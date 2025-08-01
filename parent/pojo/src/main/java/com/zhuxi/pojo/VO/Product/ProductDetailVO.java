@@ -9,6 +9,8 @@ public class ProductDetailVO {
 
     @JsonIgnore
     private Long id;
+    @JsonIgnore
+    private Long snowflakeId;
     private String name;
     private BigDecimal price;
     private String coverUrl;
@@ -19,8 +21,9 @@ public class ProductDetailVO {
     @JsonIgnore
     private LocalDateTime createdAt;
 
-    public ProductDetailVO(Long id,String name, BigDecimal price,String coverUrl, List<String> images, String description,Integer status,  String origin, LocalDateTime createdAt) {
+    public ProductDetailVO(Long id, Long snowflakeId, String name, BigDecimal price, String coverUrl, List<String> images, String description, Integer status, String origin, LocalDateTime createdAt) {
         this.id = id;
+        this.snowflakeId = snowflakeId;
         this.name = name;
         this.price = price;
         this.images = images;
@@ -106,4 +109,11 @@ public class ProductDetailVO {
         this.createdAt = createdAt;
     }
 
+    public Long getSnowflakeId() {
+        return snowflakeId;
+    }
+
+    public void setSnowflakeId(Long snowflakeId) {
+        this.snowflakeId = snowflakeId;
+    }
 }
