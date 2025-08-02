@@ -1,17 +1,20 @@
 package com.zhuxi.service.Cache;
 
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.zhuxi.Constant.Message;
+import com.zhuxi.Constant.MessageReturn;
 import com.zhuxi.Exception.RedisException;
-import com.zhuxi.utils.JsonUtils;
+import com.zhuxi.utils.JacksonUtils;
 import com.zhuxi.utils.RedisUntil;
 import com.zhuxi.utils.properties.RedisCacheProperties;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.HashOperations;
+import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.data.redis.core.ZSetOperations;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
+import src.main.java.com.zhuxi.pojo.DTO.product.PIdSnowFlake;
 import src.main.java.com.zhuxi.pojo.DTO.product.SpecRedisDTO;
+import src.main.java.com.zhuxi.pojo.DTO.product.snowFlakeMap;
 import src.main.java.com.zhuxi.pojo.VO.Product.ProductDetailVO;
 import src.main.java.com.zhuxi.pojo.VO.Product.ProductOverviewVO;
 import src.main.java.com.zhuxi.pojo.VO.Product.ProductSpecVO;
@@ -22,7 +25,6 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 
@@ -58,8 +60,8 @@ public class ProductRedisCache {
         return rCP.getProductCache().getSpecMapProductPrefix();
     }
 
-    public String getStockKey(){
-        return rCP.getProductCache().getStockPrefix();
+    public String getStockKey(Long specId){
+        return rCP.getProductCache().getStockPrefix() + ":" + specId;
     }
 
     public Set<ZSetOperations.TypedTuple<Object>> getListProductsIds(String key, Integer type, Long lastScore, Integer pageSize){
@@ -120,7 +122,7 @@ public class ProductRedisCache {
 
         return results.stream().map(map -> {
             if (!(map instanceof List< ?> list)){
-                throw new RedisException(Message.TYPE_TURN_ERROR);
+                throw new RedisException(MessageReturn.TYPE_TURN_ERROR);
             }
             String productNumber = iterator.next();
             ProductOverviewVO pOVO = new ProductOverviewVO();
@@ -168,6 +170,17 @@ public class ProductRedisCache {
                 pipe.expire(sortPriceASC,rCP.getProductCache().getPriceTTL(), TimeUnit.HOURS);
             });
         });
+    }
+
+    public void SyncProductMQ(Map<String,Object>  product,Long snowflakeId){
+        String productDetailKey = getProductDetailKey(snowflakeId.toString());
+        redisUntil.hPutMap(productDetailKey,product);
+    }
+
+    public void SyncSpecMQ(Map<String,Object> spec,Long snowflakeId,Integer stock){
+        String specKey = getSpecDetailKey(snowflakeId);
+        redisUntil.hPutMap(specKey,spec);
+        redisUntil.setStringValue(getStockKey(snowflakeId), String.valueOf(stock),10,TimeUnit.MINUTES);
     }
 
     public void syncProductInit(List<ProductDetailVO> product){
@@ -239,89 +252,37 @@ public class ProductRedisCache {
         });
     }
 
-
-    public void syncSpecInit(List<SpecRedisDTO> spec){
+    public void syncSpecInit(List<SpecRedisDTO> spec,List<PIdSnowFlake> saleProductId){
         HashMap<Object, Object> HashMap = new HashMap<>();
-        String stockKey = getStockKey();
         String mapSpecProductKey = getMapSpecProductKey();
 
-        Map<String,List<Long>> productMapSpec = new HashMap<>();
-        spec.forEach(s->{
-            Long productSnowflake = s.getProductSnowflake();
-            Long snowflakeId = s.getSnowflakeId();
-            if (productMapSpec.containsKey(productSnowflake.toString())){
-                productMapSpec.get(productSnowflake.toString()).add(snowflakeId);
-            }else{
-                productMapSpec.put(productSnowflake.toString(),new ArrayList<>(){{add(snowflakeId);}});
-            }
-        });
+        Map<String, List<Long>> productMapSpec = sortMap(spec, saleProductId);
 
         redisUntil.executePipeline(p->{
             HashOperations<String, Object, Object> hash = p.opsForHash();
+            ValueOperations<String, Object> value = p.opsForValue();
 
-            hash.putAll(mapSpecProductKey,productMapSpec);
+                hash.putAll(mapSpecProductKey,productMapSpec);
             p.expire(mapSpecProductKey,12,TimeUnit.HOURS);
 
             spec.forEach(s->{
                 Long snowflakeId = s.getSnowflakeId();
                 String specDetailKey = getSpecDetailKey(snowflakeId);
+                String stockKey = getStockKey(snowflakeId);
                 Integer stock = s.getStock();
                 HashMap.put("id",s.getId());
                 HashMap.put("productId",s.getProductId());
                 HashMap.put("spec",s.getSpec());
-                HashMap.put("purchasePrice",s.getPurchasePrice());
                 HashMap.put("salePrice",s.getSalePrice());
                 HashMap.put("coverUrl",s.getCoverUrl());
                 hash.putAll(specDetailKey,HashMap);
-                hash.put(stockKey,snowflakeId.toString(),stock);
+                value.set(stockKey,stock);
 
                 HashMap.clear();
+                p.expire(stockKey,10,TimeUnit.MINUTES);
             });
-            p.expire(stockKey,10,TimeUnit.MINUTES);
         });
     }
-
-    /*public void syncSpec(List<ProductSpecVO> spec){
-        HashMap<Object, Object> HashMap = new HashMap<>();
-        String stockKey = getStockKey();
-        String mapSpecProductKey = getMapSpecProductKey();
-
-        Map<String,List<Long>> productMapSpec = new HashMap<>();
-        spec.forEach(s->{
-            Long productSnowflake = s.getProductSnowflake();
-            Long snowflakeId = s.getSnowflakeId();
-            if (productMapSpec.containsKey(productSnowflake.toString())){
-                productMapSpec.get(productSnowflake.toString()).add(snowflakeId);
-            }else{
-                productMapSpec.put(productSnowflake.toString(),new ArrayList<>(){{add(snowflakeId);}});
-            }
-        });
-
-        redisUntil.executePipeline(p->{
-            HashOperations<String, Object, Object> hash = p.opsForHash();
-
-            hash.putAll(mapSpecProductKey,productMapSpec);
-            p.expire(mapSpecProductKey,12,TimeUnit.HOURS);
-
-            spec.forEach(s->{
-                Long snowflakeId = s.getSnowflakeId();
-                String specDetailKey = getSpecDetailKey(snowflakeId);
-                Integer stock = s.getStock();
-                HashMap.put("id",s.getId());
-                HashMap.put("productId",s.getProductId());
-                HashMap.put("spec",s.getSpec());
-                HashMap.put("purchasePrice",s.getPurchasePrice());
-                HashMap.put("salePrice",s.getSalePrice());
-                HashMap.put("coverUrl",s.getCoverUrl());
-                hash.putAll(specDetailKey,HashMap);
-                hash.put(stockKey,snowflakeId.toString(),stock);
-
-                HashMap.clear();
-            });
-            p.expire(stockKey,10,TimeUnit.MINUTES);
-        });
-    }*/
-
 
     public ProductDetailVO getCacheDetails(Long ProductNumber){
         String ProductNumberS = ProductNumber.toString();
@@ -342,7 +303,7 @@ public class ProductRedisCache {
         pDVO.setStatus((Integer) objects1.get(4));
         pDVO.setOrigin((String) objects1.get(5));
         Object o = objects1.get(6);
-        List<String> list = JsonUtils.objectToObject(o, new TypeReference<>() {
+        List<String> list = JacksonUtils.objectToObject(o, new TypeReference<>() {
         });
         pDVO.setImages(list);
 
@@ -362,9 +323,8 @@ public class ProductRedisCache {
 
     public List<ProductSpecVO> getProductSpec(Long productNumber){
         String mapSpecProductKey = getMapSpecProductKey();
-        String stockKey = getStockKey();
         Object result = redisUntil.hGet(mapSpecProductKey, productNumber.toString());
-        List<Long> specNumbers = JsonUtils.objectToObject(result, new TypeReference<>() {
+        List<Long> specNumbers = JacksonUtils.objectToObject(result, new TypeReference<>() {
         });
         Collection<Object> filed = new ArrayList<>(Arrays.asList("spec", "salePrice","purchasePrice","coverUrl"));
 
@@ -374,14 +334,6 @@ public class ProductRedisCache {
                 pipe.opsForHash().multiGet(specDetailKey, filed);
             }
         });
-
-        filed.clear();
-        for(int i=0; i < specNumbers.size(); i++){
-            String string = specNumbers.get(i).toString();
-            filed.add(string);
-        }
-
-        List<Object> stocks = redisUntil.hMultiGet(stockKey,filed);
         ArrayList<ProductSpecVO> vos = new ArrayList<>();
 
         for (int i =  0; i < objects.size(); i++) {
@@ -393,7 +345,6 @@ public class ProductRedisCache {
             vo.setPrice(BigDecimal.valueOf((Double) lists.get(1)));
             vo.setCoverUrl((String) lists.get(3));
             vo.setSpecNumber(specNumbers.get(i));
-            vo.setStock((Integer) stocks.get( i));
             vos.add(vo);
         }
 
@@ -408,6 +359,43 @@ public class ProductRedisCache {
 
         String productDetailKey = getProductDetailKey(snowflake_id.toString());
         return (Long) redisUntil.hGet(productDetailKey, "id");
+    }
+
+    public void deleteProduct(Long productId,List<Long> specNumbers) {
+        String product = productId.toString();
+        redisUntil.delete(getProductDetailKey(product));
+        redisUntil.deleteZSetOneFiled(getSortPriceKey(),productId);
+        redisUntil.deleteZSetOneFiled(getSortCreateDesc(),productId);
+        redisUntil.hDelete(getMapSpecProductKey(),product);
+        for(int i =0; i < specNumbers.size(); i++){
+            Long specSnowFlake = specNumbers.get(i);
+            redisUntil.delete(getSpecDetailKey(specSnowFlake));
+            redisUntil.delete(getStockKey(specSnowFlake));
+        }
+    }
+
+    public void syncSPMap(List<snowFlakeMap> snowFlakeMaps){
+        Map<Long, Object> objectObjectHashMap = new HashMap<>();
+    }
+
+    public Map<String, List<Long>> sortMap(List<SpecRedisDTO> spec,List<PIdSnowFlake> saleProductId) {
+        Map<String,List<Long>> productMapSpec = new HashMap<>();
+        Map<Long, String> productIdToSnowflakeMap = new HashMap<>();
+        saleProductId.forEach(s -> {
+            productIdToSnowflakeMap.put(s.getId(), s.getSnowflakeId().toString());
+        });
+
+        spec.forEach(specs -> {
+            Long productId = specs.getProductId();
+            String productSnowflake = productIdToSnowflakeMap.get(productId);
+
+            if (productSnowflake != null) {
+                productMapSpec.computeIfAbsent(productSnowflake, k -> new ArrayList<>())
+                        .add(specs.getSnowflakeId());
+            }
+        });
+
+        return productMapSpec;
     }
 
 }

@@ -1,7 +1,7 @@
 package com.zhuxi.service.Impl;
 
 
-import com.zhuxi.Constant.Message;
+import com.zhuxi.Constant.MessageReturn;
 import com.zhuxi.Result.Result;
 import com.zhuxi.service.Tx.UserTxService;
 import com.zhuxi.service.business.UserService;
@@ -38,11 +38,11 @@ public class UserServiceImpl implements UserService {
     public Result<UserLoginDTO> loginTest(UserLoginDTO userLoginDTO) {
 
         if(userLoginDTO.getOpenId() == null || userLoginDTO.getOpenId().isBlank())
-            return Result.error(Message.BODY_NO_MAIN_OR_IS_NULL);
+            return Result.error(MessageReturn.BODY_NO_MAIN_OR_IS_NULL);
 
         UserLoginDTO userExist = userTxService.isUserExist(userLoginDTO.getOpenId());
 
-        return Result.success(Message.LOGIN_SUCCESS,userExist);
+        return Result.success(MessageReturn.LOGIN_SUCCESS,userExist);
     }
 
 
@@ -57,7 +57,7 @@ public class UserServiceImpl implements UserService {
         userUpdateDTO.setId(userId);
 
         if(userUpdateDTO.getId() == null)
-            return Result.error(Message.BODY_NO_MAIN_OR_IS_NULL);
+            return Result.error(MessageReturn.BODY_NO_MAIN_OR_IS_NULL);
 
         String nickName = userUpdateDTO.getNickName();
         String customAvatarUrl = userUpdateDTO.getCustomAvatarOss();
@@ -65,11 +65,11 @@ public class UserServiceImpl implements UserService {
         if((nickName == null || nickName.isBlank())
            && (customAvatarUrl == null || customAvatarUrl.isBlank())
         )
-            return Result.error(Message.AT_LEAST_ONE_FIELD);
+            return Result.error(MessageReturn.AT_LEAST_ONE_FIELD);
 
         userTxService.updateUser(userUpdateDTO);
 
-        return Result.success(Message.OPERATION_SUCCESS);
+        return Result.success(MessageReturn.OPERATION_SUCCESS);
     }
 
 

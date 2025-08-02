@@ -1,6 +1,7 @@
 package com.zhuxi.utils;
 
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -12,13 +13,13 @@ import java.util.List;
 import java.util.Map;
 
 @Component
-public class JsonUtils {
+public class JacksonUtils {
 
     private static  ObjectMapper objectMapper;
 
     private final ObjectMapper springObjectMapper;
 
-    public JsonUtils( ObjectMapper springObjectMapper) {
+    public JacksonUtils(ObjectMapper springObjectMapper) {
         this.springObjectMapper = springObjectMapper;
     }
 
@@ -26,9 +27,6 @@ public class JsonUtils {
     public void init(){
         objectMapper = springObjectMapper;
     }
-
-
-
 
 
     //将Json字符串转换成对象
@@ -72,5 +70,9 @@ public class JsonUtils {
         return objectMapper.convertValue(object, clazz);
     }
 
-
+    //filterNullFields
+   public static Map<String, Object> filterNullFields(Object obj){
+        objectMapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
+        return objectMapper.convertValue(obj, new TypeReference<Map<String, Object>>(){});
+   }
 }

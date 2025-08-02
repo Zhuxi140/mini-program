@@ -1,7 +1,7 @@
 package com.zhuxi.controller;
 
 
-import com.zhuxi.Constant.Message;
+import com.zhuxi.Constant.MessageReturn;
 import com.zhuxi.Result.Result;
 import com.zhuxi.service.business.AdminService;
 import com.zhuxi.service.business.UserService;
@@ -55,7 +55,7 @@ public class LoginController {
         claims.put("role",data.getRole().name());
         String token = jwtUtils.createToken(claims);
         data.setToken(token);
-        return Result.success(Message.LOGIN_SUCCESS,data);
+        return Result.success(MessageReturn.LOGIN_SUCCESS,data);
     }
 
     /**
@@ -84,6 +84,6 @@ public class LoginController {
         String token = jwtUtils.createToken(claims);
         data.setToken(token);
 
-        return Result.success(Message.LOGIN_SUCCESS,data);
+        return Result.success(MessageReturn.LOGIN_SUCCESS,data);
     }
 }

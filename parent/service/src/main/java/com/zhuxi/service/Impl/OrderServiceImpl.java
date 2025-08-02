@@ -1,6 +1,6 @@
 package com.zhuxi.service.Impl;
 
-import com.zhuxi.Constant.Message;
+import com.zhuxi.Constant.MessageReturn;
 import com.zhuxi.Exception.SnycException;
 import com.zhuxi.Exception.transactionalException;
 import com.zhuxi.Result.PageResult;
@@ -46,18 +46,18 @@ public class OrderServiceImpl implements OrderService {
     public Result<String> add(OrderAddDTO orderAddDTO,Long userId) {
         // 基础效验
         if (orderAddDTO == null)
-            return Result.error(Message.BODY_NO_MAIN_OR_IS_NULL);
+            return Result.error(MessageReturn.BODY_NO_MAIN_OR_IS_NULL);
 
         orderAddDTO.setUserId(userId);
         Long productId = orderAddDTO.getProductId();
         Long specId = orderAddDTO.getSpecId();
         if(productId == null || specId == null)
-            return Result.error(Message.SPEC_ID_IS_NULL + "或" + Message.PRODUCT_ID_IS_NULL);
+            return Result.error(MessageReturn.SPEC_ID_IS_NULL + "或" + MessageReturn.PRODUCT_ID_IS_NULL);
 
         Integer productQuantity = orderAddDTO.getProductQuantity();
         BigDecimal totalAmount = orderAddDTO.getTotalAmount();
         if (totalAmount == null) {
-            throw new SnycException(Message.PRICE_IS_NULL);
+            throw new SnycException(MessageReturn.PRICE_IS_NULL);
         }
         BigDecimal productSalePrice = orderTxService.getProductSalePrice(orderAddDTO.getSpecId());
         BigDecimal blackTotalPrice = productSalePrice.multiply(BigDecimal.valueOf(orderAddDTO.getProductQuantity())).setScale(2, RoundingMode.HALF_UP);
@@ -65,7 +65,7 @@ public class OrderServiceImpl implements OrderService {
         BigDecimal abs = blackTotalPrice.subtract(frontPrice).abs();
         BigDecimal bigDecimal = new BigDecimal("0.01");
         if (abs.compareTo(bigDecimal) > 0)
-            throw new SnycException(Message.PRICE_IS_DIFFERENCE);
+            throw new SnycException(MessageReturn.PRICE_IS_DIFFERENCE);
 
         // 预先减库存 （乐观锁）
         Result<String> voidResult = orderSyncService.deductStockWithLock( specId,productQuantity);
@@ -83,7 +83,7 @@ public class OrderServiceImpl implements OrderService {
 
         orderSyncService.syncOrder(orderAddDTO,userId,pSn,iSn,productId,specId,productQuantity,orderSn,frontPrice);
 
-        return Result.success(Message.OPERATION_SUCCESS,orderSn);
+        return Result.success(MessageReturn.OPERATION_SUCCESS,orderSn);
     }
 
     /**
@@ -93,7 +93,7 @@ public class OrderServiceImpl implements OrderService {
     @Transactional(rollbackFor = {transactionalException.class,RuntimeException.class })
     public Result<Void> addGroup(List<OrderAddDTO> orderAddDTO, Long userId) {
         if(orderAddDTO == null || orderAddDTO.isEmpty())
-            return Result.error(Message.BODY_NO_MAIN_OR_IS_NULL);
+            return Result.error(MessageReturn.BODY_NO_MAIN_OR_IS_NULL);
 
         List<Long> specIds = new ArrayList<>();
 
@@ -154,7 +154,7 @@ public class OrderServiceImpl implements OrderService {
         orderTxService.insertInventoryLockList(inventoryLockAddDTOS);
         orderTxService.releaseLockStockList(specIds, quantityList);
 
-        return Result.success(Message.OPERATION_SUCCESS);
+        return Result.success(MessageReturn.OPERATION_SUCCESS);
     }
 
     /**
@@ -164,7 +164,7 @@ public class OrderServiceImpl implements OrderService {
     @Transactional
     public Result<Void> cancelOrder(String orderSn, Long userId) {
         if (orderSn == null || userId == null)
-            return Result.error(Message.ORDER_USER_ID_IS_NULL);
+            return Result.error(MessageReturn.ORDER_USER_ID_IS_NULL);
 
         Long orderId = orderRedisCache.getOrderIdBySn(orderSn);
         boolean isHit = true;
@@ -175,7 +175,7 @@ public class OrderServiceImpl implements OrderService {
         orderTxService.releaseLockStock(orderIdd);
 
         orderRedisCache.syncOrderStatus(orderSn,4);
-        return Result.success(Message.OPERATION_SUCCESS);
+        return Result.success(MessageReturn.OPERATION_SUCCESS);
     }
 
     /**
@@ -185,11 +185,11 @@ public class OrderServiceImpl implements OrderService {
     @Transactional
     public Result<Void> cancelOrderGroup(Long groupId, Long userId) {
         if (groupId == null)
-            return Result.error(Message.GROUP_ID_IS_NULL);
+            return Result.error(MessageReturn.GROUP_ID_IS_NULL);
         List<Long> orderIdList = orderTxService.getOrderIdList(groupId);
         orderTxService.concealOrderList(orderIdList);
 
-        return Result.success(Message.OPERATION_SUCCESS);
+        return Result.success(MessageReturn.OPERATION_SUCCESS);
     }
 
 
@@ -201,7 +201,7 @@ public class OrderServiceImpl implements OrderService {
         if (isLast){
             //若redis中已经查空 则直接进行兜底
             PageResult<List<OrderRealShowVO>, Long> ordersBySql = getOrdersBySql(userId, lastScore, pageSize);
-            return Result.success(Message.OPERATION_SUCCESS,ordersBySql);
+            return Result.success(MessageReturn.OPERATION_SUCCESS,ordersBySql);
         }
 
         boolean first = lastScore == null || lastScore < 0;
@@ -223,12 +223,12 @@ public class OrderServiceImpl implements OrderService {
                 lastScore = orderRedisCache.getLastScores(orderRealShowVos);
                 log.info("lastScore:{}",lastScore);
             }
-            return Result.success(Message.OPERATION_SUCCESS,new PageResult(orderRealShowVos, lastScore, hasPrevious, hasMore));
+            return Result.success(MessageReturn.OPERATION_SUCCESS,new PageResult(orderRealShowVos, lastScore, hasPrevious, hasMore));
         }
 
         //未命中 直接启动兜底
         PageResult<List<OrderRealShowVO>, Long> ordersBySql = getOrdersBySql(userId, lastScore, pageSize);
-        return Result.success(Message.OPERATION_SUCCESS,ordersBySql);
+        return Result.success(MessageReturn.OPERATION_SUCCESS,ordersBySql);
     }
     /**
      * 删除订单
@@ -237,7 +237,7 @@ public class OrderServiceImpl implements OrderService {
     @Transactional
     public Result<Void> deleteOrder(String orderSn, Long userId) {
         if (orderSn == null || userId == null)
-            return Result.error(Message.ORDER_USER_ID_IS_NULL);
+            return Result.error(MessageReturn.ORDER_USER_ID_IS_NULL);
 
         Long orderId = orderRedisCache.getOrderIdBySn(orderSn);
         boolean isHit = true;
@@ -249,7 +249,7 @@ public class OrderServiceImpl implements OrderService {
         // 删除Redis
         orderRedisCache.deleteOrder(orderSn);
 
-        return Result.success(Message.OPERATION_SUCCESS);
+        return Result.success(MessageReturn.OPERATION_SUCCESS);
     }
 
 
@@ -269,7 +269,7 @@ public class OrderServiceImpl implements OrderService {
             return String.format("%s%d","ITY", l);
         }
 
-        throw new RuntimeException(Message.ID_GENERATE_ERROR);
+        throw new RuntimeException(MessageReturn.ID_GENERATE_ERROR);
     }
 
     // 验证必填字段
@@ -280,7 +280,7 @@ public class OrderServiceImpl implements OrderService {
            || orderAddDTO.getTotalAmount() == null
            || orderAddDTO.getProductQuantity() < 1
         )
-            throw new transactionalException("订单"+ i + ": " + Message.FIELDS_IS_NULL + "/" + Message.QUANTITY_IS_NULL_OR_LESS_THAN_ONE);
+            throw new transactionalException("订单"+ i + ": " + MessageReturn.FIELDS_IS_NULL + "/" + MessageReturn.QUANTITY_IS_NULL_OR_LESS_THAN_ONE);
     }
 
     // 处理地址
@@ -288,7 +288,7 @@ public class OrderServiceImpl implements OrderService {
         if(orderAddDTO.getAddressId() == null){
             orderAddDTO.setAddressId(orderTxService.getDefaultAddressId(userId));
         } else if (orderAddDTO.getAddressId() < 1) {
-            throw new transactionalException("订单"+ i + ": " +  Message.ADDRESS_ID_IS_NULL_OR_LESS_THAN_ONE);
+            throw new transactionalException("订单"+ i + ": " +  MessageReturn.ADDRESS_ID_IS_NULL_OR_LESS_THAN_ONE);
         }
     }
 
@@ -301,7 +301,7 @@ public class OrderServiceImpl implements OrderService {
         BigDecimal abs = blackTotalPrice.subtract(frontPrice).abs();
         BigDecimal bigDecimal = new BigDecimal("0.01");
         if(abs.compareTo(bigDecimal) > 0 )
-            throw new transactionalException("订单"+ i + ": " + Message.PRICE_IS_DIFFERENCE);
+            throw new transactionalException("订单"+ i + ": " + MessageReturn.PRICE_IS_DIFFERENCE);
     }
 
     //验证库存
@@ -309,7 +309,7 @@ public class OrderServiceImpl implements OrderService {
         Integer productSaleStock = saleStock.get(i);
         Integer productPreStock = preStock.get(i);
         if(orderAddDTO.getProductQuantity() > (productSaleStock - productPreStock))
-            throw new transactionalException("订单"+ i + ": " + Message.QUANTITY_OVER_SALE_STOCK);
+            throw new transactionalException("订单"+ i + ": " + MessageReturn.QUANTITY_OVER_SALE_STOCK);
     }
 
     private PageResult<List<OrderRealShowVO>,Long> getOrdersBySql(Long userId, Long lastScore, Integer pageSize){

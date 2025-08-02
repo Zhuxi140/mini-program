@@ -1,7 +1,7 @@
 package com.zhuxi.service.Tx;
 
 
-import com.zhuxi.Constant.Message;
+import com.zhuxi.Constant.MessageReturn;
 import com.zhuxi.Exception.transactionalException;
 import com.zhuxi.mapper.UserMapper;
 import org.springframework.stereotype.Service;
@@ -25,7 +25,7 @@ public class UserTxService {
 
         UserLoginDTO userExist = userMapper.isUserExist(openid);
         if(userExist == null)
-            throw new transactionalException(Message.USER_NOT_EXIST);
+            throw new transactionalException(MessageReturn.USER_NOT_EXIST);
 
         return userExist;
     }
@@ -38,7 +38,7 @@ public class UserTxService {
     @Transactional(rollbackFor = transactionalException.class)
     public void updateUser(UserUpdateDTO userUpdateDTO){
         if(userMapper.updateUser(userUpdateDTO) < 2)
-            throw new transactionalException(Message.UPDATE_ERROR);
+            throw new transactionalException(MessageReturn.UPDATE_ERROR);
     }
 
 }

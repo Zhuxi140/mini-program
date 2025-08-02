@@ -7,9 +7,7 @@ public class SpecRedisDTO {
     private Long id;
     private Long productId;
     private Long snowflakeId;
-    private Long productSnowflake;
     private String spec;
-    private BigDecimal purchasePrice;
     private BigDecimal salePrice;
     private String coverUrl;
     private Integer stock;
@@ -17,13 +15,11 @@ public class SpecRedisDTO {
     public SpecRedisDTO() {
     }
 
-    public SpecRedisDTO(Long id, Long productId, Long snowflakeId, Long productSnowflake, String spec, BigDecimal purchasePrice, BigDecimal salePrice, String coverUrl, Integer stock) {
+    public SpecRedisDTO(Long id, Long productId, Long snowflakeId,String spec, BigDecimal salePrice, String coverUrl, Integer stock) {
         this.id = id;
         this.productId = productId;
         this.snowflakeId = snowflakeId;
-        this.productSnowflake = productSnowflake;
         this.spec = spec;
-        this.purchasePrice = purchasePrice;
         this.salePrice = salePrice;
         this.coverUrl = coverUrl;
         this.stock = stock;
@@ -52,15 +48,6 @@ public class SpecRedisDTO {
     public void setSpec(String spec) {
         this.spec = spec;
     }
-
-    public BigDecimal getPurchasePrice() {
-        return purchasePrice;
-    }
-
-    public void setPurchasePrice(BigDecimal purchasePrice) {
-        this.purchasePrice = purchasePrice;
-    }
-
     public BigDecimal getSalePrice() {
         return salePrice;
     }
@@ -93,11 +80,4 @@ public class SpecRedisDTO {
         this.snowflakeId = snowflakeId;
     }
 
-    public Long getProductSnowflake() {
-        return productSnowflake;
-    }
-
-    public void setProductSnowflake(Long productSnowflake) {
-        this.productSnowflake = productSnowflake;
-    }
 }

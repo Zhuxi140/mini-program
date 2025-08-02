@@ -1,6 +1,6 @@
 package com.zhuxi.service.Impl;
 
-import com.zhuxi.Constant.Message;
+import com.zhuxi.Constant.MessageReturn;
 import com.zhuxi.Result.Result;
 import com.zhuxi.service.business.CartService;
 import com.zhuxi.service.Tx.CartTxService;
@@ -30,14 +30,14 @@ public class CartServiceImpl implements CartService {
     public Result<Void> update(CartUpdateDTO cartUpdateDTO, Long userId) {
 
         if(cartUpdateDTO == null || cartUpdateDTO.getCartId() == null)
-            return Result.error(Message.BODY_NO_MAIN_OR_IS_NULL + "/" + Message.CART_ID_IS_NULL);
+            return Result.error(MessageReturn.BODY_NO_MAIN_OR_IS_NULL + "/" + MessageReturn.CART_ID_IS_NULL);
 
         if( cartUpdateDTO.getQuantity() == null && cartUpdateDTO.getSpecId() == null)
-            return Result.error(Message.BODY_NO_MAIN_OR_IS_NULL);
+            return Result.error(MessageReturn.BODY_NO_MAIN_OR_IS_NULL);
 
         cartTxService.updateQuantityOrSpec(cartUpdateDTO,userId);
 
-        return Result.success(Message.OPERATION_SUCCESS);
+        return Result.success(MessageReturn.OPERATION_SUCCESS);
 
     }
 
@@ -50,18 +50,18 @@ public class CartServiceImpl implements CartService {
     public Result<Void> add(CarAddDTO carAddDTO, Long userId) {
 
         if(carAddDTO == null)
-            return Result.error(Message.BODY_NO_MAIN_OR_IS_NULL);
+            return Result.error(MessageReturn.BODY_NO_MAIN_OR_IS_NULL);
 
         if(carAddDTO.getProductId() == null || carAddDTO.getSpecId() == null)
-            return Result.error(Message.SPEC_ID_IS_NULL + "或" + Message.PRODUCT_ID_IS_NULL);
+            return Result.error(MessageReturn.SPEC_ID_IS_NULL + "或" + MessageReturn.PRODUCT_ID_IS_NULL);
 
         Integer stock = cartTxService.getStock(carAddDTO.getProductId(), carAddDTO.getSpecId());
         if(carAddDTO.getQuantity() > stock)
-            return Result.error(Message.STOCK_NOT_ENOUGH);
+            return Result.error(MessageReturn.STOCK_NOT_ENOUGH);
 
         cartTxService.insert(carAddDTO,userId);
 
-        return Result.error(Message.OPERATION_SUCCESS);
+        return Result.error(MessageReturn.OPERATION_SUCCESS);
     }
 
 
@@ -73,11 +73,11 @@ public class CartServiceImpl implements CartService {
     public Result<Void> delete(Long cartId) {
 
         if(cartId == null)
-            return Result.error(Message.CART_ID_IS_NULL);
+            return Result.error(MessageReturn.CART_ID_IS_NULL);
 
         cartTxService.delete(cartId);
 
-        return Result.success(Message.OPERATION_SUCCESS);
+        return Result.success(MessageReturn.OPERATION_SUCCESS);
     }
 
 
@@ -90,7 +90,7 @@ public class CartServiceImpl implements CartService {
 
         cartTxService.deleteAll(userId);
 
-        return Result.success(Message.OPERATION_SUCCESS);
+        return Result.success(MessageReturn.OPERATION_SUCCESS);
     }
 
 
@@ -102,7 +102,7 @@ public class CartServiceImpl implements CartService {
 
         List<CartVO> cartVO = cartTxService.getListCart(userId);
 
-        return Result.success(Message.OPERATION_SUCCESS, cartVO);
+        return Result.success(MessageReturn.OPERATION_SUCCESS, cartVO);
     }
 
 
@@ -110,11 +110,11 @@ public class CartServiceImpl implements CartService {
     public Result<CartNewVO> getNewCar(Long productId, Long specId) {
 
         if (productId == null || specId == null)
-            return Result.error(Message.PRODUCT_ID_IS_NULL + "或" + Message.SPEC_ID_IS_NULL);
+            return Result.error(MessageReturn.PRODUCT_ID_IS_NULL + "或" + MessageReturn.SPEC_ID_IS_NULL);
 
         CartNewVO cartVO = cartTxService.getNewCar(productId, specId);
 
-        return Result.success(Message.OPERATION_SUCCESS, cartVO);
+        return Result.success(MessageReturn.OPERATION_SUCCESS, cartVO);
     }
 
 

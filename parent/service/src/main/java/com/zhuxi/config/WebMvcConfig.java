@@ -50,9 +50,6 @@ public class WebMvcConfig implements WebMvcConfigurer {
         resolvers.add(new UserIdArgumentResolver(jwtUtils));
     }
 
-    @Bean
-    public Jackson2JsonMessageConverter jackson2JsonMessageConverter() {
-        return new Jackson2JsonMessageConverter();
-    }
+
 
 }

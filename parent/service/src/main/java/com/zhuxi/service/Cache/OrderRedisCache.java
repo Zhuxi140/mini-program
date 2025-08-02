@@ -1,6 +1,6 @@
 package com.zhuxi.service.Cache;
 
-import com.zhuxi.Constant.Message;
+import com.zhuxi.Constant.MessageReturn;
 import com.zhuxi.Exception.RedisException;
 import com.zhuxi.utils.IdSnowFLake;
 import com.zhuxi.utils.RedisUntil;
@@ -209,7 +209,7 @@ public class OrderRedisCache {
         return results.stream()
                 .map(map -> {
                     if (!(map instanceof List<?> list)) {
-                        throw new RedisException(Message.TYPE_TURN_ERROR);
+                        throw new RedisException(MessageReturn.TYPE_TURN_ERROR);
                     }
                     OrderShowVO orderShowVO = new OrderShowVO();
                     orderShowVO.setId(Long.valueOf((Integer) list.get(0)));

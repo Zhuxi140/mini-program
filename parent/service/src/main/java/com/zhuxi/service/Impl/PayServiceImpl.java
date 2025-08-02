@@ -1,6 +1,6 @@
 package com.zhuxi.service.Impl;
 
-import com.zhuxi.Constant.Message;
+import com.zhuxi.Constant.MessageReturn;
 import com.zhuxi.Result.Result;
 import com.zhuxi.service.business.PayService;
 import com.zhuxi.service.Tx.PayTxService;
@@ -25,11 +25,11 @@ public class PayServiceImpl implements PayService {
     @Transactional
     public Result<Void> pay(PayDTO payDTO, Long userId) {
         if (payDTO.getOrderId() ==  null || payDTO.getPaidAmount() == null)
-            return Result.error(Message.BODY_NO_MAIN_OR_IS_NULL);
+            return Result.error(MessageReturn.BODY_NO_MAIN_OR_IS_NULL);
 
         payDTO.setUserId(userId);
         payTxService.pay(payDTO);
-        return Result.success(Message.OPERATION_SUCCESS);
+        return Result.success(MessageReturn.OPERATION_SUCCESS);
     }
 
 

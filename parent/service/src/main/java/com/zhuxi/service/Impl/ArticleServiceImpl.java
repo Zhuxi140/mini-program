@@ -1,6 +1,6 @@
 package com.zhuxi.service.Impl;
 
-import com.zhuxi.Constant.Message;
+import com.zhuxi.Constant.MessageReturn;
 import com.zhuxi.Result.PageResult;
 import com.zhuxi.Result.Result;
 import com.zhuxi.service.business.ArticleService;
@@ -29,10 +29,10 @@ public class ArticleServiceImpl implements ArticleService {
     public Result<ArticleDetailVO> getArticleDetailById(Long id) {
 
         if(id == null)
-            return Result.error(Message.ARTICLE_IS_NOT_EXIST);
+            return Result.error(MessageReturn.ARTICLE_IS_NOT_EXIST);
 
         ArticleDetailVO articleDetailById = articleTxService.getArticleDetailById(id);
-        return Result.success(Message.OPERATION_SUCCESS,articleDetailById);
+        return Result.success(MessageReturn.OPERATION_SUCCESS,articleDetailById);
     }
 
 
@@ -43,7 +43,7 @@ public class ArticleServiceImpl implements ArticleService {
     public Result<List<ArticleVO>> getListArticle(Integer type) {
 
         List<ArticleVO> listArticle = articleTxService.getListArticle(type);
-        return Result.success(Message.OPERATION_SUCCESS,listArticle);
+        return Result.success(MessageReturn.OPERATION_SUCCESS,listArticle);
     }
 
     /**
@@ -79,15 +79,15 @@ public class ArticleServiceImpl implements ArticleService {
     public Result<Void> insertArticle(ArticleInsertOrUpdateDTO articleInsertOrUpdateDTO) {
 
         if(articleInsertOrUpdateDTO == null)
-            return Result.error(Message.NO_DATA);
+            return Result.error(MessageReturn.NO_DATA);
 
         if((articleInsertOrUpdateDTO.getTitle() == null || articleInsertOrUpdateDTO.getTitle().isEmpty())
             || (articleInsertOrUpdateDTO.getType() == null))
-            return Result.error(Message.PARAM_ERROR);
+            return Result.error(MessageReturn.PARAM_ERROR);
 
         articleTxService.insertArticle(articleInsertOrUpdateDTO);
 
-        return Result.success(Message.OPERATION_SUCCESS);
+        return Result.success(MessageReturn.OPERATION_SUCCESS);
     }
 
     /**
@@ -98,22 +98,22 @@ public class ArticleServiceImpl implements ArticleService {
     public Result<Void> updateArticle(ArticleInsertOrUpdateDTO articleInsertOrUpdateDTO, Long id) {
 
         if (articleInsertOrUpdateDTO == null)
-            return Result.error(Message.NO_DATA);
+            return Result.error(MessageReturn.NO_DATA);
 
         if (id == null)
-            return Result.error(Message.ARTICLE_ID_IS_NULL);
+            return Result.error(MessageReturn.ARTICLE_ID_IS_NULL);
 
         if ((articleInsertOrUpdateDTO.getTitle() == null || articleInsertOrUpdateDTO.getTitle().isEmpty())
                 && (articleInsertOrUpdateDTO.getType() == null)
                 && (articleInsertOrUpdateDTO.getStatus() == null)
         )
-            return Result.error(Message.AT_LEAST_ONE_FIELD);
+            return Result.error(MessageReturn.AT_LEAST_ONE_FIELD);
 
         articleTxService.isExist(id);
 
         articleTxService.updateArticle(articleInsertOrUpdateDTO,id);
 
-        return Result.success(Message.OPERATION_SUCCESS);
+        return Result.success(MessageReturn.OPERATION_SUCCESS);
     }
 
 
@@ -125,12 +125,12 @@ public class ArticleServiceImpl implements ArticleService {
     public Result<Void> deleteArticle(Long id) {
 
         if (id == null)
-            return Result.error(Message.ARTICLE_ID_IS_NULL);
+            return Result.error(MessageReturn.ARTICLE_ID_IS_NULL);
         articleTxService.isExist(id);
 
         articleTxService.deleteArticle(id);
 
-        return Result.success(Message.OPERATION_SUCCESS);
+        return Result.success(MessageReturn.OPERATION_SUCCESS);
     }
 
 }

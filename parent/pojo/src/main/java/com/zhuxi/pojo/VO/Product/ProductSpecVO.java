@@ -7,17 +7,15 @@ public class ProductSpecVO {
     private String spec;
     private BigDecimal price;
     private String coverUrl;
-    private Integer stock;
 
     public ProductSpecVO() {
     }
 
-    public ProductSpecVO(Long specNumber, String spec, BigDecimal price, String coverUrl, Integer stock) {
+    public ProductSpecVO(Long specNumber, String spec, BigDecimal price, String coverUrl) {
         SpecNumber = specNumber;
         this.spec = spec;
         this.price = price;
         this.coverUrl = coverUrl;
-        this.stock = stock;
     }
 
 
@@ -44,14 +42,6 @@ public class ProductSpecVO {
 
     public void setCoverUrl(String coverUrl) {
         this.coverUrl = coverUrl;
-    }
-
-    public Integer getStock() {
-        return stock;
-    }
-
-    public void setStock(Integer stock) {
-        this.stock = stock;
     }
 
     public Long getSpecNumber() {

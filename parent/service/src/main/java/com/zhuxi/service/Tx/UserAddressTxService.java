@@ -1,7 +1,7 @@
 package com.zhuxi.service.Tx;
 
 
-import com.zhuxi.Constant.Message;
+import com.zhuxi.Constant.MessageReturn;
 import com.zhuxi.Exception.transactionalException;
 import com.zhuxi.mapper.UserAddressMapper;
 import org.springframework.stereotype.Service;
@@ -46,51 +46,51 @@ public class UserAddressTxService {
     @Transactional(rollbackFor = transactionalException.class)
     public void delete(Long addressId) {
         if(!userAddressMapper.delete(addressId))
-            throw new transactionalException(Message.DELETE_ERROR);
+            throw new transactionalException(MessageReturn.DELETE_ERROR);
     }
 
     @Transactional(rollbackFor = transactionalException.class)
     public void update(UserAddressDTO uADto, Long addressId) {
         if(!userAddressMapper.update(uADto,addressId))
-            throw new transactionalException(Message.UPDATE_ERROR);
+            throw new transactionalException(MessageReturn.UPDATE_ERROR);
     }
 
     @Transactional(rollbackFor = transactionalException.class)
     public void isDefaultAndUpdateUserAddressId(Long addressId, Long userId) {
         if(userAddressMapper.isDefault(addressId))
             if(userAddressMapper.updateUserAddressId(0L,userId) == 0)
-                throw new transactionalException(Message.OPERATION_ERROR);
+                throw new transactionalException(MessageReturn.OPERATION_ERROR);
     }
 
     @Transactional(rollbackFor = transactionalException.class)
     public void insertAndUpdateUserAddressId(UserAddressDTO uADto, Long userId){
         if(!userAddressMapper.insert(uADto, userId))
-            throw new transactionalException(Message.INSERT_ERROR);
+            throw new transactionalException(MessageReturn.INSERT_ERROR);
         if(userAddressMapper.updateUserAddressId(uADto.getId(),userId) == 0)
-            throw new transactionalException(Message.UPDATE_ERROR);
+            throw new transactionalException(MessageReturn.UPDATE_ERROR);
     }
 
     @Transactional(rollbackFor = transactionalException.class)
     public void cancelDefault(Long defaultAddressId){
         int b = userAddressMapper.cancelDefault(defaultAddressId);
         if(b == 0)
-            throw new transactionalException(Message.UPDATE_ERROR);
+            throw new transactionalException(MessageReturn.UPDATE_ERROR);
     }
 
     @Transactional(rollbackFor = transactionalException.class)
     public void setDefaultAndUpdateUserAddressId(Long addressId, Long userId){
         if(userAddressMapper.setDefault(1,addressId) == 0)
-            throw new transactionalException(Message.UPDATE_ERROR);
+            throw new transactionalException(MessageReturn.UPDATE_ERROR);
         if(userAddressMapper.updateUserAddressId(addressId,userId) == 0)
-            throw new transactionalException(Message.UPDATE_ERROR);
+            throw new transactionalException(MessageReturn.UPDATE_ERROR);
     }
 
     @Transactional(rollbackFor = transactionalException.class)
     public void cancelDefaultAndUpdateUserAddressId(Long addressId, Long userId){
         if(userAddressMapper.cancelDefault(addressId) == 0)
-            throw new transactionalException(Message.UPDATE_ERROR);
+            throw new transactionalException(MessageReturn.UPDATE_ERROR);
         if(userAddressMapper.updateUserAddressId(0L,userId) == 0)
-            throw new transactionalException(Message.UPDATE_ERROR);
+            throw new transactionalException(MessageReturn.UPDATE_ERROR);
     }
 
 

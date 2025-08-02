@@ -1,10 +1,8 @@
 package com.zhuxi.Result;
 
-import com.zhuxi.utils.JsonUtils;
+import com.zhuxi.utils.JacksonUtils;
 import io.swagger.v3.oas.annotations.media.Schema;
 
-import java.math.BigDecimal;
-import java.time.LocalDateTime;
 import java.util.List;
 
 public class ProductPageResult<T>{
@@ -59,7 +57,7 @@ public class ProductPageResult<T>{
     @Override
     public String toString() {
         return "PageResult{" +
-                "items=" + JsonUtils.objectToJson(items) +
+                "items=" + JacksonUtils.objectToJson(items) +
                 ", nextCursor=" + nextCursor +
                 ", hasNext=" + hasNext +
                 '}';

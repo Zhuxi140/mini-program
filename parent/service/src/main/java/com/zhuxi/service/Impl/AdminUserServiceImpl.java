@@ -1,6 +1,6 @@
 package com.zhuxi.service.Impl;
 
-import com.zhuxi.Constant.Message;
+import com.zhuxi.Constant.MessageReturn;
 import com.zhuxi.Result.PageResult;
 import com.zhuxi.Result.Result;
 import com.zhuxi.service.business.AdminUserService;
@@ -27,7 +27,7 @@ public class AdminUserServiceImpl implements AdminUserService {
     public Result<PageResult> getListUser(Long lastId, Integer pageSize, Integer DESC) {
 
         if(DESC == null)
-            return Result.error(Message.PARAM_ERROR);
+            return Result.error(MessageReturn.PARAM_ERROR);
 
         PageResult<AdminUserVO,Long> adminUserVO;
         if(DESC.equals(1))
@@ -36,7 +36,7 @@ public class AdminUserServiceImpl implements AdminUserService {
             adminUserVO = PageAsc(lastId, pageSize);
 
 
-        return Result.success(Message.OPERATION_SUCCESS, adminUserVO);
+        return Result.success(MessageReturn.OPERATION_SUCCESS, adminUserVO);
     }
 
 
@@ -48,14 +48,14 @@ public class AdminUserServiceImpl implements AdminUserService {
     public Result<Void> disableUser(Integer status,Long id) {
 
         if(status == null || status < 0 || status > 1)
-            return Result.error(Message.PARAM_ERROR);
+            return Result.error(MessageReturn.PARAM_ERROR);
         if(id == null || id <= 0)
-            return Result.error(Message.PARAM_ERROR);
+            return Result.error(MessageReturn.PARAM_ERROR);
 
         adminUserTxService.isUserExist( id);
 
         adminUserTxService.updateUserStatus(status, id);
-        return Result.success(Message.OPERATION_SUCCESS);
+        return Result.success(MessageReturn.OPERATION_SUCCESS);
     }
 
 

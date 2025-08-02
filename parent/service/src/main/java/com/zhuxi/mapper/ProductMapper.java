@@ -29,7 +29,26 @@ public interface ProductMapper {
 
     List<AdminProductVO>  getListAdminProductsASC(Long lastId , Integer pageSize);
 
-    List<SpecRedisDTO> getSpec(Long lastId,int pageSize);
+    @Select("""
+    SELECT id,snowflake_id
+    FROM product
+    WHERE id > #{lastId} AND status = 1
+    ORDER BY id ASC
+    LIMIT #{pageSize}
+    """)
+    List<PIdSnowFlake> getSaleProductId(Long lastId,int pageSize);
+
+    @Select("""
+    SELECT snowflake_id
+    FROM product
+    WHERE id = #{productId} AND status = 1
+    """)
+    Long getSaleProductIdOne(Long productId);
+
+
+
+
+    List<SpecRedisDTO> getSpec(List<Long> productIds);
 
 
     @Select("""
@@ -105,6 +124,9 @@ public interface ProductMapper {
     @Delete("DELETE FROM spec WHERE product_id = #{id}")
     int deleteProductSpec(Long id);
 
+    @Delete("DELETE FROM real_stock WHERE product_id = #{productId}")
+    int deleteProductRealStock(Long productId);
+
     // 添加规格图
     @Insert("""
     UPDATE spec SET cover_url = #{coverUrl} WHERE product_id = #{productID} AND id = #{id}
@@ -127,7 +149,7 @@ public interface ProductMapper {
     SELECT NOT EXISTS(
     SELECT 1 FROM spec s 
              WHERE s.product_id = #{id}
-             AND (s.price is NULL or s.stock <= 0))
+             AND (s.price IS NULL or s.stock <= 0))
     """)
     boolean isExistsErrorSpec(Long id);
 
@@ -150,7 +172,7 @@ public interface ProductMapper {
                      ON product.id = mini_price.product_id
             WHERE product.id = #{productId} AND status = 1
     """)
-    ProductDetailVO getListProduct(Long productId);
+    ProductDetailVO getListProductMQ(Long productId);
 
     @Select("""
         SELECT
@@ -159,14 +181,34 @@ public interface ProductMapper {
                 product.snowflake_id AS product_snowflake,
                 spec.snowflake_id,
                 spec.spec,
-                spec.purchase_price,
                 spec.price AS sale_price,
                 spec.cover_url,
                 spec.stock
             FROM spec JOIN product ON spec.product_id = product.id
             WHERE product.id = #{productId} AND  product.status = 1
     """)
-    SpecRedisDTO getSpecOne(Long productId);
+    List<SpecRedisDTO> getSpecOne(Long productId);
 
+
+    @Select("SELECT snowflake_id FROM product WHERE id = #{id}")
+    Long getProductSnowFlakeById(Long id);
+
+    @Select("SELECT spec.snowflake_id FROM spec WHERE id = #{id}")
+    Long getSpecSnowFlakeById(Long id);
+
+
+    @Select("SELECT spec.snowflake_id FROM spec WHERE product_id = #{productId}")
+    List<Long> getSpecSnowFlakeByIdList(Long productId);
+
+
+    @Select("""
+    SELECT
+        p.snowflake_id AS productSnowFlake,
+        s.snowflake_id AS specSnowFlake
+    FROM spec s JOIN product p ON s.product_id = p.id
+    WHERE s.id > #{lastId}
+    LIMIT #{pageSzie}
+    """)
+    List<snowFlakeMap> getSnowFlakeMap(Long lastId,int pageSize);
 
 }

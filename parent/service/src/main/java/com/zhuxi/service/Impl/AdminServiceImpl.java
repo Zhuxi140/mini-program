@@ -1,6 +1,6 @@
 package com.zhuxi.service.Impl;
 
-import com.zhuxi.Constant.Message;
+import com.zhuxi.Constant.MessageReturn;
 import com.zhuxi.Result.Result;
 import com.zhuxi.service.business.AdminService;
 import com.zhuxi.service.Tx.AdminTxService;
@@ -48,7 +48,7 @@ public class AdminServiceImpl implements AdminService {
 
         if(LoginDTO == null || !bCryptUtils.checkPw(password,hashPassword)){
             log.error("用户名或密码错误,{},{}",hashPassword,password);
-            return Result.error(Message.USERNAME_OR_PASSWORD_ERROR);
+            return Result.error(MessageReturn.USERNAME_OR_PASSWORD_ERROR);
 
         }
 
@@ -57,7 +57,7 @@ public class AdminServiceImpl implements AdminService {
         adminLoginVO.setLastLogin(LocalDateTime.now());
         adminTxService.updateLastLogin(adminLoginVO.getId(),adminLoginVO.getLastLogin());
 
-        return Result.success(Message.LOGIN_SUCCESS,adminLoginVO);
+        return Result.success(MessageReturn.LOGIN_SUCCESS,adminLoginVO);
     }
 
 
@@ -74,14 +74,14 @@ public class AdminServiceImpl implements AdminService {
     public Result<Void> registerAdmin(Admin admin) {
 
         if(admin == null || StringUtils.isBlank(admin.getUsername()) || StringUtils.isBlank(admin.getPassword()))
-            return Result.error(Message.BODY_NO_MAIN_OR_IS_NULL);
+            return Result.error(MessageReturn.BODY_NO_MAIN_OR_IS_NULL);
 
        adminTxService.isExists(admin.getUsername());
         String hashPassword = bCryptUtils.hashCode(admin.getPassword());
         admin.setPassword(hashPassword);
         adminTxService.insertAdmin( admin);
 
-        return Result.success(Message.OPERATION_SUCCESS);
+        return Result.success(MessageReturn.OPERATION_SUCCESS);
     }
 
     /**
@@ -92,12 +92,12 @@ public class AdminServiceImpl implements AdminService {
         try {
             List<AdminVO> adminList = adminTxService.queryAdminList();
             if (CollectionUtils.isEmpty(adminList))
-                return Result.error(Message.NO_DATA);
+                return Result.error(MessageReturn.NO_DATA);
 
 
-            return Result.success(Message.OPERATION_SUCCESS,adminList);
+            return Result.success(MessageReturn.OPERATION_SUCCESS,adminList);
         }catch(Exception e){
-            return Result.error(Message.OPERATION_ERROR);
+            return Result.error(MessageReturn.OPERATION_ERROR);
         }
     }
 
@@ -109,11 +109,11 @@ public class AdminServiceImpl implements AdminService {
     @Transactional
     public Result<Void> deleteAdmin(Integer id) {
         if(id == null)
-            return Result.error(Message.PARAM_ERROR);
+            return Result.error(MessageReturn.PARAM_ERROR);
         adminTxService.isExistsById(id);
        adminTxService.deleteAdmin( id);
 
-       return Result.success(Message.OPERATION_SUCCESS);
+       return Result.success(MessageReturn.OPERATION_SUCCESS);
     }
 
     /**
@@ -124,17 +124,17 @@ public class AdminServiceImpl implements AdminService {
     public Result<Void> updateAdmin(AdminUpdateDTO admin) {
 
         if(admin == null || admin.getId() == null)
-            return Result.error(Message.BODY_NO_MAIN_OR_IS_NULL);
+            return Result.error(MessageReturn.BODY_NO_MAIN_OR_IS_NULL);
 
         boolean isStatus = admin.getStatus() == null;
         if (isStatus &&  admin.getRole() == null &&
                 StringUtils.isBlank(admin.getRealName())) {
-            return Result.error(Message.AT_LEAST_ONE_FIELD);
+            return Result.error(MessageReturn.AT_LEAST_ONE_FIELD);
         }
         adminTxService.isExistsById(admin.getId());
         adminTxService.updateAdmin( admin);
 
-        return Result.success(Message.OPERATION_SUCCESS);
+        return Result.success(MessageReturn.OPERATION_SUCCESS);
     }
 
     /**
@@ -144,10 +144,10 @@ public class AdminServiceImpl implements AdminService {
     public Result<AdminVO> getAdminById(Integer id) {
 
         if(id == null)
-            return Result.error(Message.PARAM_ERROR);
+            return Result.error(MessageReturn.PARAM_ERROR);
         adminTxService.isExistsById( id);
         AdminVO adminById = adminTxService.getAdminById(id);
-        return Result.success(Message.OPERATION_SUCCESS,adminById);
+        return Result.success(MessageReturn.OPERATION_SUCCESS,adminById);
     }
 
 

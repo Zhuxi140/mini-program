@@ -1,7 +1,7 @@
 package com.zhuxi.aspect;
 
 
-import com.zhuxi.Constant.Message;
+import com.zhuxi.Constant.MessageReturn;
 import com.zhuxi.Result.Result;
 import com.zhuxi.utils.JwtUtils;
 import io.jsonwebtoken.Claims;
@@ -35,16 +35,16 @@ public class RoleCheckAspect {
 
         HttpServletRequest request = getRequest();
         if (request == null)
-            return Result.error(Message.REQUEST_ERROR);
+            return Result.error(MessageReturn.REQUEST_ERROR);
 
         String token = request.getHeader("Authorization");
         if(token == null || token.isBlank())
-            return Result.error(Message.USER_NOT_LOGIN + " or " +  Message.JWT_ERROR);
+            return Result.error(MessageReturn.USER_NOT_LOGIN + " or " +  MessageReturn.JWT_ERROR);
 
         Claims claims = jwtUtils.parseToken(token);
         if(claims == null){
             log.warn("Role error1 :{} ",claims);
-            return Result.error(Message.JWT_ERROR);
+            return Result.error(MessageReturn.JWT_ERROR);
         }
 
 
@@ -52,7 +52,7 @@ public class RoleCheckAspect {
         try{
             String StrRole = claims.get("role",String.class);
             if(StrRole == null || StrRole.isBlank())
-                return Result.error(Message.JWT_NO_ROLE);
+                return Result.error(MessageReturn.JWT_NO_ROLE);
 
             role = Role.valueOf(StrRole.toUpperCase());
 
@@ -61,13 +61,13 @@ public class RoleCheckAspect {
 
         }catch (JwtException e){
             log.warn("Role error2 :{} ",e.getMessage());
-            return Result.error(Message.JWT_ERROR);
+            return Result.error(MessageReturn.JWT_ERROR);
         }
 
         if(role.equals(requireRole.value()))
             return joinPoint.proceed();
 
-        return Result.error(Message.ROLE_ERROR);
+        return Result.error(MessageReturn.ROLE_ERROR);
     }
 
 

@@ -1,6 +1,6 @@
 package com.zhuxi.service.Impl;
 
-import com.zhuxi.Constant.Message;
+import com.zhuxi.Constant.MessageReturn;
 import com.zhuxi.Result.ProductPageResult;
 import com.zhuxi.Result.Result;
 import com.zhuxi.service.business.ProductService;
@@ -63,7 +63,7 @@ public class ProductServiceImpl implements ProductService {
                     Long id = productOverviewVO.getId();
                     boolean hasMore = listIds.size() > pageSize;
                     ProductPageResult<ProductOverviewVO> PageResult = new ProductPageResult<>(listProducts,lastScore1,hasMore,id);
-                    return Result.success(Message.OPERATION_SUCCESS, PageResult);
+                    return Result.success(MessageReturn.OPERATION_SUCCESS, PageResult);
                 }
             }
             log.info("未命中Redis");
@@ -78,10 +78,10 @@ public class ProductServiceImpl implements ProductService {
     public Result<ProductDetailVO> getProductDetail(Long ProductNumber) {
 
         if(ProductNumber == null)
-            return Result.error(Message.PRODUCT_ID_IS_NULL);
+            return Result.error(MessageReturn.PRODUCT_ID_IS_NULL);
         ProductDetailVO cacheDetails = productRedisCache.getCacheDetails(ProductNumber);
         if (cacheDetails != null){
-            return Result.success(Message.OPERATION_SUCCESS, cacheDetails);
+            return Result.success(MessageReturn.OPERATION_SUCCESS, cacheDetails);
         }
 
         Long productId = productRedisCache.getProductIdBySnowflakeId(ProductNumber);
@@ -92,7 +92,7 @@ public class ProductServiceImpl implements ProductService {
         ProductDetailVO productDetail = productTxService.getProductDetail(productId,isHuawei,ProductNumber);
         // 刷新redis
         /*productRedisCache.syncProduct(Arrays.asList(productDetail));*/
-        return Result.success(Message.OPERATION_SUCCESS, productDetail);
+        return Result.success(MessageReturn.OPERATION_SUCCESS, productDetail);
     }
 
     /**
@@ -101,11 +101,11 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public Result<List<ProductSpecVO>> getProductSpec(Long productNumber) {
         if (productNumber == null)
-            return Result.error(Message.PRODUCT_ID_IS_NULL);
+            return Result.error(MessageReturn.PRODUCT_ID_IS_NULL);
 
         List<ProductSpecVO> productSpec1 = productRedisCache.getProductSpec(productNumber);
         if (productSpec1 != null){
-            return Result.success(Message.OPERATION_SUCCESS, productSpec1);
+            return Result.success(MessageReturn.OPERATION_SUCCESS, productSpec1);
         }
 
         Long productId = productRedisCache.getProductIdBySnowflakeId(productNumber);
@@ -117,7 +117,7 @@ public class ProductServiceImpl implements ProductService {
 
         // 刷新redis
 //        productRedisCache.syncSpecInit(productSpec);
-        return Result.success(Message.OPERATION_SUCCESS, productSpec);
+        return Result.success(MessageReturn.OPERATION_SUCCESS, productSpec);
     }
 
     private Result<ProductPageResult<ProductOverviewVO>> noHit(Long lastScore, Integer pageSize, Integer type){
@@ -129,7 +129,7 @@ public class ProductServiceImpl implements ProductService {
                 LocalDateTime localDateTime = Instant.ofEpochMilli(lastScore).atZone(ZoneId.systemDefault()).toLocalDateTime();
                 List<ProductOverviewVO> listProducts = productTxService.getListProductsByCreate(localDateTime, pageSize + 1);
                 if (listProducts == null || listProducts.isEmpty()){
-                    return Result.error(Message.NO_DATA,null);
+                    return Result.error(MessageReturn.NO_DATA,null);
                 }
                 dealPageResult(pageSize, objectProductPageResult, listProducts, type);
             }
@@ -138,7 +138,7 @@ public class ProductServiceImpl implements ProductService {
                 BigDecimal price = restorePrice(lastScore);
                 List<ProductOverviewVO> listProducts = productTxService.getListProductByPriceDESC(lastId,price, pageSize + 1);
                 if (listProducts == null || listProducts.isEmpty()){
-                    return Result.error(Message.NO_DATA,null);
+                    return Result.error(MessageReturn.NO_DATA,null);
                 }
                 dealPageResult(pageSize, objectProductPageResult, listProducts, type);
             }
@@ -147,7 +147,7 @@ public class ProductServiceImpl implements ProductService {
                 BigDecimal price = restorePrice(lastScore);
                 List<ProductOverviewVO> listProducts = productTxService.getListProductByPriceASC(lastId,price, pageSize + 1);
                 if (listProducts == null || listProducts.isEmpty()){
-                    return Result.error(Message.NO_DATA,null);
+                    return Result.error(MessageReturn.NO_DATA,null);
                 }
                 dealPageResult(pageSize, objectProductPageResult, listProducts, type);
             }

@@ -32,9 +32,9 @@ public class RedisUntil {
         return stringRedisTemplate.opsForValue().get(key);
     }
 
-    //并设置时间
-    public void setStringValue(String key,String value,long time){
-        stringRedisTemplate.opsForValue().set(key,value,time, TimeUnit.MINUTES);
+
+    public void setStringValue(String key,String value,long time,TimeUnit unit){
+        stringRedisTemplate.opsForValue().set(key,value,time, unit);
     }
 
     //清空对应key
@@ -69,7 +69,14 @@ public class RedisUntil {
         return HashOperations.get(key, hashKey);
     }
 
+    public void hDelete(String key,String hashKey){
+        HashOperations.delete(key,hashKey);
+    }
 
+    // 设置过期时间
+    public void expire(String key, long time, TimeUnit unit){
+        redisTemplate.expire(key, time, unit);
+    }
 
 
     // redis Set类型操作

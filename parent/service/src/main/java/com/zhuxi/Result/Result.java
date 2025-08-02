@@ -1,6 +1,6 @@
 package com.zhuxi.Result;
 
-import com.zhuxi.Constant.Message;
+import com.zhuxi.Constant.MessageReturn;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 public class Result<T> {
@@ -28,21 +28,21 @@ public class Result<T> {
 
     // 快速返回错误
     public static Result error(){
-        return new Result(Message.OPERATION_ERROR,500);
+        return new Result(MessageReturn.OPERATION_ERROR,500);
     }
 
     //快速返回成功
     public static Result success(){
-        return new Result(Message.OPERATION_SUCCESS,200);
+        return new Result(MessageReturn.OPERATION_SUCCESS,200);
     }
 
     //返回带数据的成功
     public static <T> Result<T> success(String message, T data){
-        return new Result(Message.OPERATION_SUCCESS,200,data);
+        return new Result(MessageReturn.OPERATION_SUCCESS,200,data);
     }
 
     public static <T> Result<T> success(T data){
-        return new Result(Message.OPERATION_SUCCESS,200,data);
+        return new Result(MessageReturn.OPERATION_SUCCESS,200,data);
     }
 
     // 返回带数据的错误

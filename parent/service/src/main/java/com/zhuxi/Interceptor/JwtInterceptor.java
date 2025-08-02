@@ -2,7 +2,7 @@ package com.zhuxi.Interceptor;
 
 
 
-import com.zhuxi.Constant.Message;
+import com.zhuxi.Constant.MessageReturn;
 import com.zhuxi.Exception.JwtException;
 import com.zhuxi.utils.JwtUtils;
 import io.jsonwebtoken.Claims;
@@ -44,12 +44,12 @@ public class JwtInterceptor implements HandlerInterceptor {
         if(token !=null && !token.isBlank()){
             token  = token.replaceFirst("(?i)Bearer\\s*", "");
             if(!jwtUtils.verifyToken( token)){
-                throw new JwtException(Message.JWT_ERROR);
+                throw new JwtException(MessageReturn.JWT_ERROR);
             }
 
         }else{
             log.warn("Token is null");
-            throw new JwtException(Message.JWT_IS_NULL);
+            throw new JwtException(MessageReturn.JWT_IS_NULL);
         }
 
         Claims claims = jwtUtils.parseToken(token);
@@ -57,7 +57,7 @@ public class JwtInterceptor implements HandlerInterceptor {
         long timestamp = claims.getExpiration().getTime();
         long timeNow = System.currentTimeMillis();
         if( timeNow > timestamp){
-            throw new JwtException(Message.JWT_IS_OVER_TIME);
+            throw new JwtException(MessageReturn.JWT_IS_OVER_TIME);
         }
 
 

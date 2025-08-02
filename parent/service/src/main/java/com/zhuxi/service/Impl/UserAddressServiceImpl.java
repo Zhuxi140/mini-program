@@ -1,6 +1,6 @@
 package com.zhuxi.service.Impl;
 
-import com.zhuxi.Constant.Message;
+import com.zhuxi.Constant.MessageReturn;
 import com.zhuxi.Result.Result;
 import com.zhuxi.service.Tx.UserAddressTxService;
 import com.zhuxi.service.business.UserAddressService;
@@ -31,7 +31,7 @@ public class UserAddressServiceImpl implements UserAddressService {
         int exist = userAddressTxService.isExist(userId);
 
         if(exist == 5)
-            return Result.error(Message.USER_ADDRESS_MAX);
+            return Result.error(MessageReturn.USER_ADDRESS_MAX);
         else if(exist == 0){
             userAddressDTO.setIsDefault(1);
             Long defaultAddressId = userAddressTxService.getDefaultAddressId(userId);
@@ -43,7 +43,7 @@ public class UserAddressServiceImpl implements UserAddressService {
 
         userAddressTxService.insertAndUpdateUserAddressId(userAddressDTO,userId);
 
-        return Result.success(Message.OPERATION_SUCCESS);
+        return Result.success(MessageReturn.OPERATION_SUCCESS);
     }
 
     /**Long userId地址为默认
@@ -53,7 +53,7 @@ public class UserAddressServiceImpl implements UserAddressService {
     public Result<Void> setDefault(Long addressId, Long userId) {
 
         if (addressId == null || userAddressTxService.isExistAddressId(addressId))
-            return Result.error(Message.PARAM_ERROR + " 或 " + Message.USER_ADDRESS_NOT_EXIST);
+            return Result.error(MessageReturn.PARAM_ERROR + " 或 " + MessageReturn.USER_ADDRESS_NOT_EXIST);
 
         Long defaultAddressId = userAddressTxService.getDefaultAddressId(userId);
 
@@ -62,7 +62,7 @@ public class UserAddressServiceImpl implements UserAddressService {
 
         userAddressTxService.setDefaultAndUpdateUserAddressId(addressId,userId);
 
-        return Result.success(Message.OPERATION_SUCCESS);
+        return Result.success(MessageReturn.OPERATION_SUCCESS);
     }
 
 
@@ -74,11 +74,11 @@ public class UserAddressServiceImpl implements UserAddressService {
     public Result<Void> cancelDefault(Long addressId,Long userId) {
 
         if(addressId == null)
-            return Result.error(Message.PARAM_ERROR);
+            return Result.error(MessageReturn.PARAM_ERROR);
 
         userAddressTxService.cancelDefaultAndUpdateUserAddressId(addressId,userId);
 
-        return Result.success(Message.OPERATION_SUCCESS);
+        return Result.success(MessageReturn.OPERATION_SUCCESS);
     }
 
 
@@ -90,9 +90,9 @@ public class UserAddressServiceImpl implements UserAddressService {
 
         List<UserAddressVO> list = userAddressTxService.getList(userId);
         if(list != null)
-            return Result.success(Message.OPERATION_SUCCESS,list);
+            return Result.success(MessageReturn.OPERATION_SUCCESS,list);
 
-        return Result.error(Message.NO_USER_ADDRESS);
+        return Result.error(MessageReturn.NO_USER_ADDRESS);
     }
 
     /**
@@ -103,13 +103,13 @@ public class UserAddressServiceImpl implements UserAddressService {
     public Result<Void> delete(Long addressId,Long userId) {
 
         if(addressId == null)
-            return Result.error(Message.PARAM_ERROR);
+            return Result.error(MessageReturn.PARAM_ERROR);
 
 
         userAddressTxService.isDefaultAndUpdateUserAddressId(addressId,userId);
         userAddressTxService.delete(addressId);
 
-        return Result.success(Message.OPERATION_SUCCESS);
+        return Result.success(MessageReturn.OPERATION_SUCCESS);
     }
 
 
@@ -121,7 +121,7 @@ public class UserAddressServiceImpl implements UserAddressService {
     public Result<Void> update(UserAddressDTO userAddressDTO,Long addressId,Long userId) {
 
         if(addressId == null)
-            return Result.error(Message.PARAM_ERROR);
+            return Result.error(MessageReturn.PARAM_ERROR);
 
         if(userAddressDTO.getIsDefault() == 1){
             Long defaultAddressId = userAddressTxService.getDefaultAddressId(userId);
@@ -130,7 +130,7 @@ public class UserAddressServiceImpl implements UserAddressService {
 
         userAddressTxService.update(userAddressDTO,addressId);
 
-        return Result.success(Message.OPERATION_SUCCESS);
+        return Result.success(MessageReturn.OPERATION_SUCCESS);
     }
 
 

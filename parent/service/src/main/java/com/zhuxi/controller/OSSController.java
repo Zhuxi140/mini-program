@@ -6,7 +6,7 @@ import com.aliyun.oss.HttpMethod;
 import com.aliyun.oss.OSS;
 import com.aliyun.oss.OSSClientBuilder;
 import com.aliyun.oss.model.GeneratePresignedUrlRequest;
-import com.zhuxi.Constant.Message;
+import com.zhuxi.Constant.MessageReturn;
 import com.zhuxi.Result.Result;
 import com.zhuxi.service.Tx.ArticleTxService;
 import com.zhuxi.service.Tx.ProductTxService;
@@ -86,7 +86,7 @@ public class OSSController {
 
         Claims claims = jwtUtils.parseToken(token);
         if (claims == null)
-            throw new RuntimeException(Message.JWT_IS_NULL);
+            throw new RuntimeException(MessageReturn.JWT_IS_NULL);
 
 
         //返回
@@ -115,7 +115,7 @@ public class OSSController {
 
         // 验证签名
         if(!checkCallback(mapHeaders, mapBody))
-            return Result.error(Message.PARAM_ERROR);
+            return Result.error(MessageReturn.PARAM_ERROR);
 
         // 解析回调数据
         CallbackData callbackData = parseCallback(mapHeaders, mapBody);
@@ -123,13 +123,13 @@ public class OSSController {
         // 业务处理
         callbackDataDeal(callbackData);
 
-        return Result.success(Message.OPERATION_SUCCESS);
+        return Result.success(MessageReturn.OPERATION_SUCCESS);
     }
 
     //业务 处理
     private void callbackDataDeal(CallbackData callbackData){
         if(callbackData == null){
-            log.error(Message.CALLBACK_IS_NULL);
+            log.error(MessageReturn.CALLBACK_IS_NULL);
             return;
         }
 
@@ -243,7 +243,7 @@ public class OSSController {
         }
 
         if(!publicKey.startsWith("https://gosspublic.alicdn.com/")){
-            throw new RuntimeException(Message.INVALID_PUBLIC_KEY_URL);
+            throw new RuntimeException(MessageReturn.INVALID_PUBLIC_KEY_URL);
         }
 
         URL url = new URL(publicKey);
@@ -282,7 +282,7 @@ public class OSSController {
             switch (config.getCategory().toLowerCase()) {
                 case "avatar": {
                     if (!(s).equalsIgnoreCase("user"))
-                        throw new RuntimeException(Message.ROLE_ERROR);
+                        throw new RuntimeException(MessageReturn.ROLE_ERROR);
                     String s1 = generateObjectName(config.getType(), config.getCategory(), config.getFileType(), id, config.getProductId(), config.getArticleId(), config.getSpecId());
                     map = generateUrl(s1, config.getFileType(), config.getCategory(), config.getType(), id, config.getProductId(), config.getArticleId(), config.getSpecId());
                     ossTokenDTO.setUrl(map.get("url"));
@@ -298,7 +298,7 @@ public class OSSController {
                     ossTokenDTOS.add(ossTokenDTO);
                 } break;
                 default:
-                    throw new RuntimeException(Message.NO_CATEGORY);
+                    throw new RuntimeException(MessageReturn.NO_CATEGORY);
             }
         }
 
@@ -315,7 +315,7 @@ public class OSSController {
             case "article_content" -> "article/Id" + articleId + "/admin" + id + "/content/";
             case "article_contentImages" -> "article/Id" +articleId + "/admin" + id + "/contentImages/";
             case "avatar_avatar" -> "avatar/user" + id + "/";
-            default -> throw new RuntimeException(Message.CATEGORY_FIT_ERROR);
+            default -> throw new RuntimeException(MessageReturn.CATEGORY_FIT_ERROR);
         };
 
         String s = String.valueOf(System.currentTimeMillis());
@@ -330,14 +330,14 @@ public class OSSController {
             case "jpg", "jpeg", "webp", "png", "html", "txt":
                 break;
             default:
-                throw new RuntimeException(Message.FILE_TYPE_ERROR);
+                throw new RuntimeException(MessageReturn.FILE_TYPE_ERROR);
         }
     }
 
     // 检查角色
     private void checkRole(String role){
         if(!(role).equalsIgnoreCase("admin") && !(role).equalsIgnoreCase("super_admin"))
-            throw new RuntimeException(Message.ROLE_ERROR);
+            throw new RuntimeException(MessageReturn.ROLE_ERROR);
     }
 
     // 生成带签名的url
@@ -410,7 +410,7 @@ public class OSSController {
             case "html" -> "text/html";
             case "webp" -> "image/webp";
 
-            default -> throw new RuntimeException(Message.FILE_TYPE_ERROR);
+            default -> throw new RuntimeException(MessageReturn.FILE_TYPE_ERROR);
         };
 
     }

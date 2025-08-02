@@ -13,19 +13,17 @@ public class ProductBaseUpdateDTO {
     private String description;
     @Schema(description = "商品产地")
     private String origin;
-    @Schema(description = "商品状态")
-    private Integer status;
+
 
     public ProductBaseUpdateDTO() {
     }
 
-    public ProductBaseUpdateDTO(Long id, Integer supplierId, String name, String description, String origin, Integer status) {
+    public ProductBaseUpdateDTO(Long id, Integer supplierId, String name, String description, String origin) {
         this.id = id;
         this.supplierId = supplierId;
         this.name = name;
         this.description = description;
         this.origin = origin;
-        this.status = status;
     }
 
     public Long getId() {
@@ -67,14 +65,5 @@ public class ProductBaseUpdateDTO {
     public void setOrigin(String origin) {
         this.origin = origin;
     }
-
-    public Integer getStatus() {
-        return status;
-    }
-
-    public void setStatus(Integer status) {
-        this.status = status;
-    }
-
 
 }

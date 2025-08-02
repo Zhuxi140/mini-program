@@ -127,20 +127,21 @@
         LIMIT #{pageSize}
         ]]>
     </select>
+
     <select id="getSpec" resultType="src.main.java.com.zhuxi.pojo.DTO.product.SpecRedisDTO">
         SELECT
             spec.id,
             spec.product_id,
-            product.snowflake_id AS product_snowflake,
             spec.snowflake_id,
             spec.spec,
-            spec.purchase_price,
             spec.price AS sale_price,
             spec.cover_url,
             spec.stock
-        FROM spec JOIN product ON spec.product_id = product.id
-        WHERE spec.id > #{lastId} AND product.status = 1
-        LIMIT #{pageSize}
+        FROM spec
+        WHERE product_id IN
+            <foreach collection="productIds" item="ps" open="(" close=")" separator=",">
+                #{ps}
+            </foreach>
     </select>
 
 
@@ -193,9 +194,6 @@
             <set>
                 <if test="specU.spec != null">
                     spec = #{specU.spec},
-                </if>
-                <if test="specU.purchasePrice != null">
-                    purchase_price = #{specU.purchasePrice},
                 </if>
                 <if test="specU.price != null">
                     price = #{specU.price},

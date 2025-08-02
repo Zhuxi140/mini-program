@@ -1,7 +1,7 @@
 package com.zhuxi.service.Tx;
 
 
-import com.zhuxi.Constant.Message;
+import com.zhuxi.Constant.MessageReturn;
 import com.zhuxi.Exception.transactionalException;
 import com.zhuxi.mapper.AdminMapper;
 import org.springframework.stereotype.Service;
@@ -31,21 +31,21 @@ public class AdminTxService {
         if(passwordByUsername != null)
             return passwordByUsername;
 
-        throw new transactionalException(Message.USER_NOT_EXIST);
+        throw new transactionalException(MessageReturn.USER_NOT_EXIST);
     }
 
 
     @Transactional(readOnly = true)
     public void isExists(String username){
         if (adminMapper.isExists(username)) {
-            throw new transactionalException(Message.USER_EXIST);
+            throw new transactionalException(MessageReturn.USER_EXIST);
         }
     }
 
     @Transactional(readOnly = true)
     public void isExistsById(Integer id){
         if (adminMapper.isExistsById(id)) {
-            throw new transactionalException(Message.USER_EXIST);
+            throw new transactionalException(MessageReturn.USER_EXIST);
         }
     }
 
@@ -55,7 +55,7 @@ public class AdminTxService {
         if(adminById != null)
             return adminById;
 
-        throw new transactionalException(Message.USER_NOT_EXIST);
+        throw new transactionalException(MessageReturn.USER_NOT_EXIST);
     }
 
     @Transactional(readOnly = true)
@@ -64,30 +64,30 @@ public class AdminTxService {
         if(adminVOS != null)
             return adminVOS;
 
-        throw new transactionalException(Message.NO_DATA);
+        throw new transactionalException(MessageReturn.NO_DATA);
     }
 
     @Transactional(rollbackFor = transactionalException.class)
     public void updateLastLogin(Integer id, LocalDateTime lastLogin){
         if (adminMapper.updateLastLogin(id,lastLogin) == 0)
-            throw new transactionalException(Message.UPDATE_ERROR);
+            throw new transactionalException(MessageReturn.UPDATE_ERROR);
     }
 
     @Transactional(rollbackFor = transactionalException.class)
     public void insertAdmin(Admin admin){
         if (!adminMapper.insertAdmin(admin))
-            throw new transactionalException(Message.INSERT_ERROR);
+            throw new transactionalException(MessageReturn.INSERT_ERROR);
     }
 
     @Transactional(rollbackFor = transactionalException.class)
     public void deleteAdmin(Integer id) {
         if (!adminMapper.deleteAdmin(id))
-            throw new transactionalException(Message.DELETE_ERROR);
+            throw new transactionalException(MessageReturn.DELETE_ERROR);
     }
 
     @Transactional(rollbackFor = transactionalException.class)
     public void updateAdmin(AdminUpdateDTO  admin){
         if (adminMapper.updateAdmin(admin) == 0)
-            throw new transactionalException(Message.UPDATE_ERROR);
+            throw new transactionalException(MessageReturn.UPDATE_ERROR);
     }
 }

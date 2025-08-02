@@ -2,35 +2,35 @@ package com.zhuxi.service;
 
 import com.alibaba.druid.pool.DruidDataSource;
 import com.zhuxi.mapper.snowflake;
+import com.zhuxi.service.Cache.ProductRedisCache;
+import com.zhuxi.service.Tx.ProductTxService;
 import com.zhuxi.utils.IdSnowFLake;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import javax.sql.DataSource;
+import java.util.List;
 
 
 @SpringBootTest
 class ServiceApplicationTests {
 
-    private final IdSnowFLake idSnowFLake;
-    private final snowflake  snowflake;
+   private ProductRedisCache productRedisCache;
+   private ProductTxService productTxService;
 
-    @Autowired
-    ServiceApplicationTests(IdSnowFLake idSnowFLake, com.zhuxi.mapper.snowflake snowflake) {
-        this.idSnowFLake = idSnowFLake;
-        this.snowflake = snowflake;
+   @Autowired
+    ServiceApplicationTests(ProductRedisCache productRedisCache, ProductTxService productTxService) {
+        this.productRedisCache = productRedisCache;
+        this.productTxService = productTxService;
     }
 
     @Test
     void contextLoads() {
 
-        for (long i = 1; i <= 50; i++){
-            Long idInt = idSnowFLake.getIdInt();
-            if (snowflake.getUserId(i) == null){
-                snowflake.updateUserId(i,idInt);
-            }
-        }
+        Long productSnowFlakeById = productTxService.getProductSnowFlakeById(24L);
+        List<Long> snowFlakeId = productTxService.getSpecSnowFlakeByIdList(24L);
+        productRedisCache.deleteProduct(productSnowFlakeById,snowFlakeId);
 
     }
 

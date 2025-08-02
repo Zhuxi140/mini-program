@@ -1,6 +1,6 @@
 package com.zhuxi.service.Sync;
 
-import com.zhuxi.Constant.Message;
+import com.zhuxi.Constant.MessageReturn;
 import com.zhuxi.Exception.transactionalException;
 import com.zhuxi.Result.Result;
 import com.zhuxi.service.Rollback.OrderRollback;
@@ -75,7 +75,7 @@ public class OrderSyncService {
         if(orderAddDTO.getAddressId() == null){
             orderAddDTO.setAddressId(orderTxService.getDefaultAddressId(userId));
         } else if (orderAddDTO.getAddressId() < 1) {
-            throw new transactionalException( Message.ADDRESS_ID_IS_NULL_OR_LESS_THAN_ONE);
+            throw new transactionalException( MessageReturn.ADDRESS_ID_IS_NULL_OR_LESS_THAN_ONE);
         }
     }
 
@@ -92,7 +92,7 @@ public class OrderSyncService {
 
         // 验证数量
         if(productQuantity == null || productQuantity < 1)
-            return Result.error(Message.QUANTITY_IS_NULL_OR_LESS_THAN_ONE);
+            return Result.error(MessageReturn.QUANTITY_IS_NULL_OR_LESS_THAN_ONE);
 
 
 
@@ -101,12 +101,12 @@ public class OrderSyncService {
             // 验证够购买数量 是否超出可售库存
             Integer productSaleStock = orderTxService.getProductSaleStock(specId);
             if(productQuantity > productSaleStock){
-                return Result.error(Message.QUANTITY_OVER_SALE_STOCK);
+                return Result.error(MessageReturn.QUANTITY_OVER_SALE_STOCK);
             }
-            return Result.error(Message.BUSY_TRY_AGAIN_LATER);
+            return Result.error(MessageReturn.BUSY_TRY_AGAIN_LATER);
         }
 
-        return Result.success(Message.OPERATION_SUCCESS);
+        return Result.success(MessageReturn.OPERATION_SUCCESS);
     }
 
 

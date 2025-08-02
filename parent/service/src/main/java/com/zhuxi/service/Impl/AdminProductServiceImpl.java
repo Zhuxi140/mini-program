@@ -1,33 +1,39 @@
 package com.zhuxi.service.Impl;
 
-import cn.hutool.core.lang.Snowflake;
-import com.zhuxi.Constant.Message;
+import com.zhuxi.Constant.MessageReturn;
 import com.zhuxi.Result.PageResult;
 import com.zhuxi.Result.Result;
 import com.zhuxi.service.business.AdminProductService;
 import com.zhuxi.service.Tx.ProductTxService;
 import com.zhuxi.utils.IdSnowFLake;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.amqp.core.*;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionSynchronization;
+import org.springframework.transaction.support.TransactionSynchronizationManager;
 import src.main.java.com.zhuxi.pojo.DTO.RealStock.RealStockDTO;
 import src.main.java.com.zhuxi.pojo.DTO.product.*;
 import src.main.java.com.zhuxi.pojo.VO.Admin.AdminProductVO;
 import src.main.java.com.zhuxi.pojo.VO.Product.ProductSpecDetailVO;
-
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 
 @Service
 @Log4j2
 public class AdminProductServiceImpl implements AdminProductService {
-    private ProductTxService productTxService;
+    private final ProductTxService productTxService;
     private final IdSnowFLake snowflake;
-    private RabbitTemplate rabbitTemplate;
+    private final RabbitTemplate rabbitTemplate;
 
-
-    public AdminProductServiceImpl(ProductTxService productTxService, IdSnowFLake snowflake, RabbitTemplate rabbitTemplate) {
+    public AdminProductServiceImpl(ProductTxService productTxService, IdSnowFLake snowflake,
+                                   @Qualifier("rabbitTemplate")
+                                   RabbitTemplate rabbitTemplate) {
         this.productTxService = productTxService;
         this.snowflake = snowflake;
         this.rabbitTemplate = rabbitTemplate;
@@ -40,7 +46,7 @@ public class AdminProductServiceImpl implements AdminProductService {
     public Result<PageResult> getListAdminProducts(Long lastId, Integer pageSize, Integer DESC) {
 
         if(DESC == null)
-            return Result.error(Message.PARAM_ERROR);
+            return Result.error(MessageReturn.PARAM_ERROR);
 
         PageResult<AdminProductVO,Long> adminProductVO;
         if(DESC.equals(1))
@@ -49,7 +55,7 @@ public class AdminProductServiceImpl implements AdminProductService {
             adminProductVO = PageAsc(lastId, pageSize);
 
 
-        return Result.success(Message.OPERATION_SUCCESS, adminProductVO);
+        return Result.success(MessageReturn.OPERATION_SUCCESS, adminProductVO);
 
     }
 
@@ -61,7 +67,7 @@ public class AdminProductServiceImpl implements AdminProductService {
     @Transactional
     public Result<Void> add(ProductAddDTO productAddDTO) {
         if (productAddDTO == null || productAddDTO.getBase() == null || productAddDTO.getSpec() == null)
-            return Result.error(Message.BODY_NO_MAIN_OR_IS_NULL);
+            return Result.error(MessageReturn.BODY_NO_MAIN_OR_IS_NULL);
 
         ProductBaseDTO base = productAddDTO.getBase();
         base.setProductNumber(snowflake.getIdInt());
@@ -83,7 +89,7 @@ public class AdminProductServiceImpl implements AdminProductService {
 
         productTxService.addRealStock(realStockDTO);
 
-        return Result.success(Message.OPERATION_SUCCESS);
+        return Result.success(MessageReturn.OPERATION_SUCCESS);
     }
 
 
@@ -94,11 +100,19 @@ public class AdminProductServiceImpl implements AdminProductService {
     @Transactional
     public Result<Void> delete(Long id) {
         if (id == null)
-            return Result.error(Message.PRODUCT_ID_IS_NULL);
-
+            return Result.error(MessageReturn.PRODUCT_ID_IS_NULL);
+        PSsnowFlake pSsnowFlake = new PSsnowFlake();
+        pSsnowFlake.setProductSnowflake(productTxService.getProductSnowFlakeById(id));
+        pSsnowFlake.setSpecSnowflake(productTxService.getSpecSnowFlakeByIdList(id));
         productTxService.delete(id);
 
-        return Result.success(Message.OPERATION_SUCCESS);
+        rabbitTemplate.convertAndSend("product.spec.exchange","delete",pSsnowFlake,message -> {
+            MessageProperties props = message.getMessageProperties();
+            props.setMessageId(UUID.randomUUID().toString());
+            props.setDeliveryMode(MessageDeliveryMode.PERSISTENT);
+            return message;
+        });
+        return Result.success(MessageReturn.OPERATION_SUCCESS);
     }
 
     /**
@@ -107,10 +121,10 @@ public class AdminProductServiceImpl implements AdminProductService {
     @Override
     public Result<List<ProductSpecDetailVO>> getProductSpecDetail(Long productId) {
         if (productId == null)
-            return Result.error(Message.PRODUCT_ID_IS_NULL);
+            return Result.error(MessageReturn.PRODUCT_ID_IS_NULL);
 
         List<ProductSpecDetailVO> productSpecDetail = productTxService.getProductSpecDetail(productId);
-        return Result.success(Message.OPERATION_SUCCESS, productSpecDetail);
+        return Result.success(MessageReturn.OPERATION_SUCCESS, productSpecDetail);
     }
 
     /**
@@ -120,11 +134,17 @@ public class AdminProductServiceImpl implements AdminProductService {
     @Transactional
     public Result<Void> putOnSale(Long id) {
         if (id == null)
-            return Result.error(Message.PRODUCT_ID_IS_NULL);
+            return Result.error(MessageReturn.PRODUCT_ID_IS_NULL);
         productTxService.putOnSale(id);
 
-        rabbitTemplate.convertAndSend("product.spec.exchange","new",id);
-        return Result.success(Message.OPERATION_SUCCESS);
+        rabbitTemplate.convertAndSend("product.spec.exchange","new",id,message -> {
+            MessageProperties props = message.getMessageProperties();
+            props.setMessageId(UUID.randomUUID().toString());
+            props.setDeliveryMode(MessageDeliveryMode.PERSISTENT);
+            return message;
+        });
+
+        return Result.success(MessageReturn.OPERATION_SUCCESS);
     }
 
     /**
@@ -133,37 +153,56 @@ public class AdminProductServiceImpl implements AdminProductService {
     @Override
     @Transactional
     public Result<Void> update(ProductUpdateDTO productUpdateDTO) {
-        ProductBaseUpdateDTO base = productUpdateDTO.getBase();
-        if (base == null)
-            return Result.error(Message.BODY_NO_MAIN_OR_IS_NULL);
 
-        Long productId = base.getId();
+        ProductBaseUpdateDTO base = productUpdateDTO.getBase();
         List<ProductSpecUpdateDTO> spec = productUpdateDTO.getSpec();
+        if (base == null && spec ==  null){
+            return Result.error(MessageReturn.BODY_NO_MAIN_OR_IS_NULL);
+        }
+
+        Long productId = null;
+        if (base != null) {
+            productId = base.getId();
+        }
+
         if (productId == null)
-            return Result.error(Message.PRODUCT_ID_IS_NULL + "或" + Message.BODY_NO_MAIN_OR_IS_NULL);
+            return Result.error(MessageReturn.PRODUCT_ID_IS_NULL + "或" + MessageReturn.BODY_NO_MAIN_OR_IS_NULL);
 
         if (spec != null) {
             for (ProductSpecUpdateDTO productSpecUpdateDTO : spec) {
                 if (productSpecUpdateDTO.getId() == null)
-                    return Result.error(Message.PRODUCT_SPEC_ID_IS_NULL);
+                    return Result.error(MessageReturn.PRODUCT_SPEC_ID_IS_NULL);
                 if (productSpecUpdateDTO.getStock() != null){
                     Integer realStock = productTxService.getRealStock(productId, productSpecUpdateDTO.getId());
                     if (productSpecUpdateDTO.getStock() > realStock)
-                        return Result.error(Message.QUANTITY_OVER_STOCK);
+                        return Result.error(MessageReturn.QUANTITY_OVER_STOCK);
                 }
             }
         }
-
         Integer status = productTxService.updateBase(base);
         if (spec != null) {
             productTxService.updateSpec(spec,productId);
         }
 
         if (status == 1){
-            // 修改已上架商品 发送mq
-            rabbitTemplate.convertAndSend("product.spec.exchange","Already",productUpdateDTO);
+            TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronization() {
+                @Override
+                public void afterCompletion(int status) {
+                    MessagePostProcessor headerProcessor =  message -> {
+                        MessageProperties props = message.getMessageProperties();
+                        props.setDeliveryMode(MessageDeliveryMode.PERSISTENT);
+                        props.setMessageId(UUID.randomUUID().toString());
+                        Map<String, Object> headers = new HashMap<>();
+                        headers.put("spec-is-null", spec == null || spec.isEmpty());
+                        return MessageBuilder.fromMessage(message)
+                                .copyHeaders(headers)
+                                .build();
+                    };
+                    rabbitTemplate.convertAndSend("product.spec.exchange","Already",productUpdateDTO,headerProcessor);
+                }
+            });
         }
-        return Result.success(Message.OPERATION_SUCCESS);
+        return Result.success(MessageReturn.OPERATION_SUCCESS);
     }
 
 

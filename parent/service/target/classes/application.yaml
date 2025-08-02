@@ -47,6 +47,17 @@ spring:
     username: mini_program
     password: 123456
     host: localhost
+    publisher-confirm-type: correlated
+    publisher-returns: true
+    listener:
+      simple:
+        acknowledge-mode: auto
+        default-requeue-rejected: false
+        retry:
+          enabled: true
+          max-attempts: 3
+          initial-interval: 1000
+          multiplier: 2.0
 
 
 bloom-filter:

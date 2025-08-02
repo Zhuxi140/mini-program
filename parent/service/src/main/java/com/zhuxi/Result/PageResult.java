@@ -1,6 +1,6 @@
 package com.zhuxi.Result;
 
-import com.zhuxi.utils.JsonUtils;
+import com.zhuxi.utils.JacksonUtils;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 import java.util.List;
@@ -57,7 +57,7 @@ public class PageResult<T,C> {
     @Override
     public String toString() {
         return "PageResult{" +
-                "items=" + JsonUtils.objectToJson(items) +
+                "items=" + JacksonUtils.objectToJson(items) +
                 ", nextCursor=" + nextCursor +
                 ", hasPrevious=" + hasPrevious +
                 ", hasNext=" + hasNext +

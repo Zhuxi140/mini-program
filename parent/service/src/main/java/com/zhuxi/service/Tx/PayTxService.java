@@ -1,7 +1,7 @@
 package com.zhuxi.service.Tx;
 
 
-import com.zhuxi.Constant.Message;
+import com.zhuxi.Constant.MessageReturn;
 import com.zhuxi.Exception.transactionalException;
 import com.zhuxi.mapper.PayMapper;
 import org.springframework.stereotype.Service;
@@ -22,12 +22,12 @@ public class PayTxService {
         Long userId = payDTO.getUserId();
         int i = payMapper.updateOrderStatus(orderId, userId);
         if (i != 1)
-            throw new transactionalException(Message.UPDATE_ORDER_ERROR);
+            throw new transactionalException(MessageReturn.UPDATE_ORDER_ERROR);
         int j = payMapper.updateInventory(orderId);
         if (j != 1)
-            throw new transactionalException(Message.INVENTORY_LOCK_UPDATE_ERROR);
+            throw new transactionalException(MessageReturn.INVENTORY_LOCK_UPDATE_ERROR);
         int k = payMapper.updatepayment(payDTO);
         if (k != 1)
-            throw new transactionalException(Message.PAYMENT_UPDATE_ERROR);
+            throw new transactionalException(MessageReturn.PAYMENT_UPDATE_ERROR);
     }
 }

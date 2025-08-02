@@ -1,6 +1,6 @@
 package com.zhuxi.service.Tx;
 
-import com.zhuxi.Constant.Message;
+import com.zhuxi.Constant.MessageReturn;
 import com.zhuxi.Exception.transactionalException;
 import com.zhuxi.mapper.ArticleMapper;
 import org.springframework.stereotype.Service;
@@ -25,14 +25,14 @@ public class ArticleTxService {
     @Transactional(readOnly = true)
     public void isExist(Long id) {
         if(articleMapper.isExist(id) <= 0)
-            throw new transactionalException(Message.ARTICLE_IS_NOT_EXIST);
+            throw new transactionalException(MessageReturn.ARTICLE_IS_NOT_EXIST);
     }
 
     @Transactional(readOnly = true,propagation = Propagation.SUPPORTS)
     public ArticleDetailVO getArticleDetailById(Long id) {
         ArticleDetailVO articleDetailById = articleMapper.getArticleDetailById(id);
         if(articleDetailById == null)
-            throw new RuntimeException(Message.ARTICLE_IS_NOT_EXIST);
+            throw new RuntimeException(MessageReturn.ARTICLE_IS_NOT_EXIST);
         return articleDetailById;
     }
 
@@ -40,7 +40,7 @@ public class ArticleTxService {
     public List<ArticleVO> getListArticle(Integer  type) {
         List<ArticleVO> listArticle = articleMapper.getListArticle(type);
         if(listArticle.isEmpty())
-            throw new transactionalException(Message.NO_DATA);
+            throw new transactionalException(MessageReturn.NO_DATA);
         return listArticle;
     }
 
@@ -48,7 +48,7 @@ public class ArticleTxService {
     public List<ArticleVO> getListArticleDESC(Long lastId, Integer pageSize,Integer type) {
         List<ArticleVO> listArticleDESC = articleMapper.getListArticleDESC(lastId, pageSize,type);
         if(listArticleDESC.isEmpty())
-            throw new transactionalException(Message.NO_DATA);
+            throw new transactionalException(MessageReturn.NO_DATA);
         return listArticleDESC;
     }
 
@@ -56,7 +56,7 @@ public class ArticleTxService {
     public void insertArticle(ArticleInsertOrUpdateDTO articleInsertOrUpdateDTO) {
         Boolean b = articleMapper.insertArticle(articleInsertOrUpdateDTO);
         if(!b)
-            throw new transactionalException(Message.INSERT_ERROR);
+            throw new transactionalException(MessageReturn.INSERT_ERROR);
     }
 
 
@@ -64,20 +64,20 @@ public class ArticleTxService {
     public void updateArticle(ArticleInsertOrUpdateDTO articleInsertOrUpdateDTO,Long id) {
         int i = articleMapper.updateArticle(articleInsertOrUpdateDTO, id);
         if(i <= 0)
-            throw new transactionalException(Message.UPDATE_ERROR);
+            throw new transactionalException(MessageReturn.UPDATE_ERROR);
     }
 
     @Transactional(rollbackFor = transactionalException.class)
     public void deleteArticle(Long id) {
         Boolean b = articleMapper.deleteArticle(id);
         if(!b)
-            throw new transactionalException(Message.DELETE_ERROR);
+            throw new transactionalException(MessageReturn.DELETE_ERROR);
     }
 
     @Transactional(rollbackFor = transactionalException.class)
     public void updateArticleOss(ArticleOssUpdateDTO articleOssUpdateDTO) {
         int i = articleMapper.updateArticleOss(articleOssUpdateDTO);
         if(i <= 0)
-            throw new transactionalException(Message.UPDATE_ERROR);
+            throw new transactionalException(MessageReturn.UPDATE_ERROR);
     }
 }

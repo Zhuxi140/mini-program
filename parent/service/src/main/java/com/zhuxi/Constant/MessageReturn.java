@@ -1,6 +1,6 @@
 package com.zhuxi.Constant;
 
-public class Message {
+public class MessageReturn {
 
     public static final String OPERATION_ERROR = "操作失败";
     public static final String USER_NOT_LOGIN = "未登录";

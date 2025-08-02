@@ -4,6 +4,7 @@ import com.zhuxi.service.Cache.ProductRedisCache;
 import com.zhuxi.service.Tx.ProductTxService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+import src.main.java.com.zhuxi.pojo.DTO.product.PIdSnowFlake;
 import src.main.java.com.zhuxi.pojo.DTO.product.SpecRedisDTO;
 
 import java.util.List;
@@ -31,13 +32,18 @@ public class SpecDataLoader {
         Long lastId = 0L;
         int batchSize = PageSize;
         while(true){
-            List<SpecRedisDTO> spec = productTxService.getSpec(lastId, batchSize + 1);
+            List<PIdSnowFlake> saleProduct = productTxService.getSaleProductId(lastId, batchSize + 1);
+            List<Long> productIds = saleProduct.stream()
+                    .map(PIdSnowFlake::getId)
+                    .toList();
+            List<SpecRedisDTO> spec = productTxService.getSpec(productIds);
             if (spec.size() == batchSize + 1){
-                lastId = spec.get(batchSize).getId();
+                lastId = productIds.get(batchSize);
                 spec = spec.subList(0, batchSize);
-                productRedisCache.syncSpecInit(spec);
+                saleProduct = saleProduct.subList(0, batchSize);
+                productRedisCache.syncSpecInit(spec,saleProduct);
             }else {
-                productRedisCache.syncSpecInit(spec);
+                productRedisCache.syncSpecInit(spec,saleProduct);
                 break;
             }
         }

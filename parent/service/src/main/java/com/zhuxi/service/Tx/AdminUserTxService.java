@@ -1,7 +1,7 @@
 package com.zhuxi.service.Tx;
 
 
-import com.zhuxi.Constant.Message;
+import com.zhuxi.Constant.MessageReturn;
 import com.zhuxi.Exception.transactionalException;
 import com.zhuxi.mapper.UserMapper;
 import org.springframework.stereotype.Service;
@@ -23,7 +23,7 @@ public class AdminUserTxService {
     public void isUserExist(Long id){
         boolean userExist = userMapper.isUserExistById(id);
         if(!userExist)
-            throw new transactionalException(Message.USER_NOT_EXIST);
+            throw new transactionalException(MessageReturn.USER_NOT_EXIST);
     }
 
     @Transactional(readOnly = true,propagation = Propagation.SUPPORTS)
@@ -31,7 +31,7 @@ public class AdminUserTxService {
         List<AdminUserVO> listUserDESC = userMapper.getListUserDESC(lastId, pageSize);
 
         if(listUserDESC == null)
-            throw new transactionalException(Message.NO_DATA);
+            throw new transactionalException(MessageReturn.NO_DATA);
 
         return listUserDESC;
     }
@@ -41,7 +41,7 @@ public class AdminUserTxService {
         List<AdminUserVO> listUserASC = userMapper.getListUserASC(lastId, pageSize);
 
         if(listUserASC == null)
-            throw new transactionalException(Message.NO_DATA);
+            throw new transactionalException(MessageReturn.NO_DATA);
 
         return listUserASC;
     }
@@ -50,6 +50,6 @@ public class AdminUserTxService {
     public void updateUserStatus(Integer status,Long id){
         int i = userMapper.updateUserStatus(status, id);
         if(i == 1)
-            throw new transactionalException(Message.UPDATE_ERROR);
+            throw new transactionalException(MessageReturn.UPDATE_ERROR);
     }
 }
