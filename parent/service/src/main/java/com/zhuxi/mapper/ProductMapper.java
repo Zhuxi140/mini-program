@@ -206,8 +206,9 @@ public interface ProductMapper {
         p.snowflake_id AS productSnowFlake,
         s.snowflake_id AS specSnowFlake
     FROM spec s JOIN product p ON s.product_id = p.id
-    WHERE s.id > #{lastId}
-    LIMIT #{pageSzie}
+    WHERE s.id > #{lastId} AND p.status = 1
+    ORDER BY s.id ASC
+    LIMIT #{pageSize}
     """)
     List<snowFlakeMap> getSnowFlakeMap(Long lastId,int pageSize);
 

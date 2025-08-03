@@ -27,6 +27,8 @@ import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
+import static cn.hutool.core.util.NumberUtil.add;
+
 
 @Slf4j
 @Service
@@ -375,7 +377,17 @@ public class ProductRedisCache {
     }
 
     public void syncSPMap(List<snowFlakeMap> snowFlakeMaps){
-        Map<Long, Object> objectObjectHashMap = new HashMap<>();
+        Map<String, List<Object>> Map = new HashMap<>();
+        String mapSpecProductKey = getMapSpecProductKey();
+        snowFlakeMaps.forEach(s->{
+            Long productSnowFlake = s.getProductSnowFlake();
+            Long specSnowFlake = s.getSpecSnowFlake();
+            Map.computeIfAbsent(String.valueOf(productSnowFlake), k -> new ArrayList<>())
+                    .add(specSnowFlake);
+        });
+
+        redisUntil.hPutMap(mapSpecProductKey,Map);
+        redisUntil.expire(mapSpecProductKey,12,TimeUnit.HOURS);
     }
 
     public Map<String, List<Long>> sortMap(List<SpecRedisDTO> spec,List<PIdSnowFlake> saleProductId) {

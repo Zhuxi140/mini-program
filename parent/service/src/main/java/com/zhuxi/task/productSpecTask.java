@@ -3,6 +3,7 @@ package com.zhuxi.task;
 
 import com.zhuxi.service.Cache.ProductRedisCache;
 import com.zhuxi.service.Tx.ProductTxService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -13,6 +14,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Component
+@Slf4j
 public class productSpecTask {
 
     private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
@@ -37,12 +39,13 @@ public class productSpecTask {
             if (snowFlakeMap.size() == pageSize + 1){
                 lastId = snowFlakeMap.get(pageSize).getProductSnowFlake();
                 snowFlakeMap = snowFlakeMap.subList(0, pageSize);
+                productRedisCache.syncSPMap(snowFlakeMap);
             }else {
-        /*        productRedisCache*/
+                productRedisCache.syncSPMap(snowFlakeMap);
                 break;
             }
-
         }
+        log.info("同步Map数据完成：{}", DATE_FORMATTER.format(LocalDateTime.now()));
     }
 
 }
