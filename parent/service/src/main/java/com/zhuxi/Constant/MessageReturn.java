@@ -13,7 +13,7 @@ public class MessageReturn {
     public static final String LOGIN_SUCCESS = "登录成功";
     public static final String OPERATION_SUCCESS = "操作成功";
     public static final String PARAM_ERROR = "参数错误";
-    public static final String BODY_NO_MAIN_OR_IS_NULL = "请求体中缺少必要字段或DTO/VO为空";
+    public static final String BODY_NO_MAIN_OR_IS_NULL = "请求中缺少必要字段或DTO/VO为空";
     public static final String FIELDS_IS_NULL = "字段为空";
     public static final String USERNAME_OR_PASSWORD_ERROR = "用户名或密码错误";
     public static final String USER_EXIST = "用户已存在";
@@ -68,7 +68,7 @@ public class MessageReturn {
     public static final String RELEASE_SALE_STOCK_ERROR = "可售库存释放失败";
     public static final String NO_ORDER_RECORD = "无此订单记录";
     public static final String DELETE_ORDER_ERROR = "删除订单失败";
-    public static final String UPDATE_ORDER_ERROR = "更新订单失败";
+    public static final String UPDATE_ORDER_ERROR = "更新订单状态失败/订单状态错误";
     public static final String INVENTORY_LOCK_UPDATE_ERROR = "库存锁定更新失败";
     public static final String PAYMENT_UPDATE_ERROR = "支付更新失败";
     public static final String BUSY_TRY_AGAIN_LATER = "当前繁忙中请稍后再试";
@@ -79,4 +79,5 @@ public class MessageReturn {
     public static final String PUT_SALE_ERROR = "上架失败";
     public static final String EXISTS_ERROR_SPEC = "价格为空或库存为空";
     public static final String NO_PRODUCT = "无商品记录";
+    public static final String REAL_STOCK_UPDATE_ERROR = "订单已预占，当前服务器繁忙，请稍后重试";
 }

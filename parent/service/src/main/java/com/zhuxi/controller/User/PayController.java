@@ -29,7 +29,6 @@ public class PayController {
             @RequestBody
             @Parameter(description = "支付信息",required = true)
             PayDTO payDTO,
-            @RequestHeader (name = "Authorization")
             @Parameter(description = "用户id",hidden = true)
             @CurrentUserId Long userId
     ) {

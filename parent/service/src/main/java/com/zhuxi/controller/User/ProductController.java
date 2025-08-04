@@ -51,6 +51,7 @@ public class ProductController {
     }
 
     @GetMapping("/detail")
+    @BloomFilterCheck(BloomFilterName = "product",key1 = "ProductNumber")
     @RequireRole(Role.USER)
     @Operation(
             summary = "获取商品详情接口",
@@ -63,6 +64,7 @@ public class ProductController {
     }
 
     @GetMapping("/spec")
+    @BloomFilterCheck(BloomFilterName = "product",key1 = "ProductNumber")
     @RequireRole(Role.USER)
     @Operation(
             summary = "获取商品规格接口",

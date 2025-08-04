@@ -138,7 +138,7 @@ public interface ProductMapper {
 
 
 
-    @Select("SELECT id FROM product WHERE id > #{lastId} ORDER BY id LIMIT #{pageSize}")
+    @Select("SELECT snowflake_id FROM product WHERE id > #{lastId} ORDER BY id LIMIT #{pageSize}")
     List<Long> getAllProductId(Long lastId,int pageSize);
 
 

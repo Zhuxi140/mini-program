@@ -37,7 +37,8 @@ public class ProductListener {
             ),
             exchange = @Exchange(name = "product.spec.exchange"),
             key = "new"
-    ))
+    ),
+            containerFactory = "auto")
     public void NewProductSpecListener(Long productId){
         ProductDetailVO product = productTxService.getListProductMQ(productId);
         productRedisCache.syncProductOne(product);
@@ -56,7 +57,9 @@ public class ProductListener {
             ),
             exchange = @Exchange(name = "product.spec.exchange"),
             key = "Already"
-    ))
+    ),
+            containerFactory = "auto"
+    )
     public void alreadyProductSpecListener(ProductUpdateDTO productUpdateDTO,
                                            @Header("spec-is-null") boolean specIsNull
                                            ){
@@ -104,7 +107,9 @@ public class ProductListener {
             ),
             exchange = @Exchange(name = "product.spec.exchange"),
             key = "delete"
-    ))
+    ),
+            containerFactory = "auto"
+    )
     public void deleteProductSpecListener(PSsnowFlake pSsnowFlake){
         productRedisCache.deleteProduct(pSsnowFlake.getProductSnowflake(),pSsnowFlake.getSpecSnowflake());
     }

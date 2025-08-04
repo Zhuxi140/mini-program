@@ -14,10 +14,14 @@ public class OrderAddDTO {
     private Long groupId;
     @Schema(description = "用户id",hidden = true)
     private Long userId;
-    @Schema(description = "商品id",requiredMode = Schema.RequiredMode.REQUIRED)
+    @Schema(description = "商品id",hidden = true)
     private Long productId;
-    @Schema(description = "商品规格id",requiredMode = Schema.RequiredMode.REQUIRED)
+    @Schema(description = "商品规格id",hidden = true)
     private Long specId;
+    @Schema(description = "商品号",/*requiredMode = Schema.RequiredMode.REQUIRED*/ hidden = true)
+    private Long productSnowflake;
+    @Schema(description = "商品规格号",requiredMode = Schema.RequiredMode.REQUIRED)
+    private Long specSnowflake;
     @Schema(description = "收货地址id(自动使用默认,除非前端有传入)",requiredMode = Schema.RequiredMode.NOT_REQUIRED)
     private Long addressId;
     @Schema(description = "商品数量(默认为1，除非前端传入)",requiredMode = Schema.RequiredMode.NOT_REQUIRED)
@@ -30,13 +34,15 @@ public class OrderAddDTO {
     public OrderAddDTO() {
     }
 
-    public OrderAddDTO(Long id,String orderSn,Long groupId, Long userId, Long productId, Long specId, Long addressId, Integer productQuantity, BigDecimal totalAmount, Integer status) {
+    public OrderAddDTO(Long id, String orderSn, Long groupId, Long userId, Long productId, Long productSnowflake, Long specId, Long specSnowflake, Long addressId, Integer productQuantity, BigDecimal totalAmount, Integer status) {
         this.id = id;
         this.orderSn = orderSn;
         this.groupId = groupId;
         this.userId = userId;
         this.productId = productId;
+        this.productSnowflake = productSnowflake;
         this.specId = specId;
+        this.specSnowflake = specSnowflake;
         this.addressId = addressId;
         this.productQuantity = productQuantity;
         this.totalAmount = totalAmount;
@@ -121,5 +127,21 @@ public class OrderAddDTO {
 
     public void setStatus(Integer status) {
         this.status = status;
+    }
+
+    public Long getProductSnowflake() {
+        return productSnowflake;
+    }
+
+    public void setProductSnowflake(Long productSnowflake) {
+        this.productSnowflake = productSnowflake;
+    }
+
+    public Long getSpecSnowflake() {
+        return specSnowflake;
+    }
+
+    public void setSpecSnowflake(Long specSnowflake) {
+        this.specSnowflake = specSnowflake;
     }
 }

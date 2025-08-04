@@ -67,15 +67,15 @@ public interface OrderMapper {
     Long getOrderIdDelete(String orderSn);
 
     //取消订单
-    @Update("UPDATE `order` SET status = 4 WHERE id = #{orderId} AND status != 4")
+    @Update("UPDATE `order` SET status = 4 WHERE id = #{orderId} AND status = 0")
     int cancelOrder(Long orderId);
 
     //释放预占库存
-    @Update("UPDATE inventory_lock SET status = 2 WHERE order_id = #{orderId}")
+    @Update("UPDATE inventory_lock SET status = 2 WHERE order_id = #{orderId} AND status = 0")
     int releaseInventoryLock(Long orderId);
 
     //取消支付
-    @Update("UPDATE payment SET status = 4 WHERE order_id = #{orderId}")
+    @Update("UPDATE payment SET status = 4 WHERE order_id = #{orderId} AND status = 0")
     int cancelPayment(Long orderId);
 
     // 查询需要恢复的数量
@@ -161,7 +161,7 @@ public interface OrderMapper {
     int deleteOrder(Long id, Long userId);
 
 
-    @Select("SELECT id,user_id FROM `order` WHERE id > #{lastId}  ORDER BY id LIMIT #{pageSize}")
+    @Select("SELECT id,order_sn,user_id FROM `order` WHERE id > #{lastId}  ORDER BY id LIMIT #{pageSize}")
     List<BloomOrderDTO> getAllOrderId(Long lastId, int pageSize);
 
 
@@ -169,5 +169,13 @@ public interface OrderMapper {
 
     @Select("SELECT id FROM user WHERE id > #{lastId} ORDER BY id LIMIT #{pageSize}")
     List<Long> getUserIds(Long lastId,int pageSize);
+
+
+    @Select("SELECT product_id FROM spec WHERE snowflake_id = #{snowflakeId}")
+    Long getProductIdBySnowFlake(Long specSnowFlake);
+
+    @Select("SELECT id FROM spec WHERE snowflake_id = #{snowflakeId}")
+    Long getSpecIdBySnowFlake(Long specSnowFlake);
+
 
 }

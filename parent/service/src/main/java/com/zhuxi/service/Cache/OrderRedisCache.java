@@ -68,6 +68,57 @@ public class OrderRedisCache {
         redisUntil.delete(keys);
     }
 
+    public String getStatusKey(Integer status) {
+        return rCP.getOrderCache().getOrderStatusPrefix() + ":" + status;    }
+
+
+    /**
+     * 获取商品价格
+     * @param specSnowflake 商品规格id
+     * @return 商品价格
+     */
+    public BigDecimal getSalePrice(Long specSnowflake) {
+        String specDetailKey = rCP.getProductCache().getSpecDetailPrefix() + ":" + specSnowflake;
+        Object price = redisUntil.hGet(specDetailKey, "salePrice");
+        return price == null ? null : (BigDecimal) price;
+    }
+
+    public void saveSalePrice(BigDecimal price,Long specSnowflake){
+        String specDetailKey = rCP.getProductCache().getSpecDetailPrefix() + ":" + specSnowflake;
+        redisUntil.hPut(specDetailKey,"salePrice",price);
+    }
+
+    /**
+     * 获取商品id和规格id
+     * @param specSnowflake 商品规格号
+     * @return 商品id和规格id
+     */
+    public List<Long> getIdBySnowflake(Long specSnowflake){
+        String specDetailKey = rCP.getProductCache().getSpecDetailPrefix() + ":" + specSnowflake;
+        List<Object> ids = redisUntil.hMultiGet(specDetailKey, List.of("productId", "id"));
+
+        return ids.stream().map(o -> (Long) o).collect(Collectors.toList());
+    }
+
+    public void saveProductId(Long specSnowflake,Long productId){
+        String specDetailKey = rCP.getProductCache().getSpecDetailPrefix() + ":" + specSnowflake;
+        redisUntil.hPut(specDetailKey,"productId",productId);
+    }
+
+    public void saveSpecId(Long specSnowflake,Long SpecId){
+        String specDetailKey = rCP.getProductCache().getSpecDetailPrefix() + ":" + specSnowflake;
+        redisUntil.hPut(specDetailKey,"id",SpecId);
+    }
+
+
+/*
+    public boolean getStockAndValidate(Long specSnowflake,Integer quantity){
+        String specDetailKey = rCP.getProductCache().getStockPrefix() + ":" + specSnowflake;
+        String stringValue = redisUntil.getStringValue(specDetailKey);
+        return
+    }
+*/
+
     /**
      * 预加载订单数据到Redis中
      * @param orderRedisList 订单数据
@@ -113,26 +164,31 @@ public class OrderRedisCache {
                 HashMap.put("createdAt", epochMilli);
                 hash.putAll(orderDetailKey, HashMap);
                 ZSet.add(orderListKey, orderSn, epochMilli);
-
+                ZSet.add(getStatusKey(status), orderSn, epochMilli);
                 switch(status){
                     case 0:{
                         // 待付款
-                        p.expire(orderDetailKey,30, TimeUnit.MINUTES);
+                        p.expire(orderDetailKey,31, TimeUnit.MINUTES);
                     } break;
-                    case 1,2,6,4:{
-                        // 待发货/待收货/已退款/已取消
+                    case 1:{
+                        // 待发货
                         p.expire(orderDetailKey,7, TimeUnit.DAYS);
                     }  break;
-                    case 3:{
-                        // 已完成
+                    case 3,4,6:{
+                        // 已完成/已取消/已退款
                         p.expire(orderDetailKey,30, TimeUnit.DAYS);
                     } break;
+                    case 2,5:{
+                        //待收货/退款中
+                        p.expire(orderDetailKey,15, TimeUnit.DAYS);
+                    }
                 }
 
                 HashMap.clear();
             });
 
-            p.expire(orderListKey,30, TimeUnit.DAYS);
+/*            p.expire(orderListKey,30, TimeUnit.DAYS);
+            p.expire(orderListKey,30, TimeUnit.DAYS);*/
 
             if (!Data.isEmpty()) {
                 hash.putAll(orderGroupKey, Data);

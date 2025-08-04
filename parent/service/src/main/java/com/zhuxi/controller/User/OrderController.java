@@ -57,6 +57,7 @@ public class OrderController {
 
     @PutMapping
     @RequireRole(Role.USER)
+    @BloomFilterCheck(BloomFilterName = "order",key1="orderSn",key2="userId")
     @Operation(
             summary = "取消订单",
             description = "取消订单"
@@ -67,7 +68,7 @@ public class OrderController {
             @Parameter(description = "用户id",hidden = true)
             @CurrentUserId Long userId
     ){
-        return orderService.cancelOrder(orderSn,userId);
+        return orderService.cancelOrder(orderSn);
     }
 
     @PutMapping("/group")
@@ -108,6 +109,7 @@ public class OrderController {
 
     @PutMapping("/delete")
     @RequireRole(Role.USER)
+    @BloomFilterCheck(BloomFilterName = "order",key1="orderSn",key2="userId")
     @Operation(
             summary = "删除订单",
             description = "删除订单"

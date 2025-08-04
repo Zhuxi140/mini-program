@@ -193,7 +193,12 @@
     ]]>
     </select>
     <select id="getOrderRedisList" resultType="src.main.java.com.zhuxi.pojo.DTO.Order.OrderRedisDTO">
-            SELECT
+    <![CDATA[
+    WITH LatestOrder AS(
+        SELECT MAX(created_at) AS latest_time
+        FROM `order`
+        WHERE user_id = #{userId}
+    )       SELECT
             o.id,
             o.order_sn,
             o.group_id,
@@ -206,9 +211,15 @@
         FROM `order` o
         JOIN product p ON o.product_id = p.id
         INNER JOIN spec s ON o.spec_id = s.id
-        WHERE o.id > #{lastId} AND user_id = #{userId} AND o.status != 7
+        JOIN LatestOrder lo ON 1=1
+        WHERE
+            o.id > #{lastId}
+          AND user_id = #{userId}
+          AND o.status != 7
+          AND o.created_at <= DATE_ADD(lo.latest_time,INTERVAL 30 DAY)
         ORDER BY created_at DESC,o.id DESC
         LIMIT #{pageSize}
+    ]]>
     </select>
 
     <update id="releaseProductSaleStockList">

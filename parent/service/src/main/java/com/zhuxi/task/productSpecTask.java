@@ -29,7 +29,6 @@ public class productSpecTask {
         this.productRedisCache = productRedisCache;
     }
 
-
     @Scheduled(cron = "0 0 */11 * * ?")
     public void syncRedisMap()
     {

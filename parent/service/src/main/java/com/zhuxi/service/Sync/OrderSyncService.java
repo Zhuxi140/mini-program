@@ -6,8 +6,13 @@ import com.zhuxi.Result.Result;
 import com.zhuxi.service.Rollback.OrderRollback;
 import com.zhuxi.service.Tx.OrderTxService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.amqp.AmqpException;
+import org.springframework.amqp.core.MessageDeliveryMode;
+import org.springframework.amqp.core.MessageProperties;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
@@ -26,13 +31,17 @@ public class OrderSyncService {
 
     private final OrderTxService orderTxService;
     private final OrderRollback orderRollback;
+    private final RabbitTemplate rabbitTemplate;
     @Autowired
     private DataSourceTransactionManager transactionManager;
 
 
-    public OrderSyncService(OrderTxService orderTxService,OrderRollback orderRollback) {
+    public OrderSyncService(OrderTxService orderTxService, OrderRollback orderRollback,
+                            @Qualifier("rabbitTemplate")
+                            RabbitTemplate rabbitTemplate) {
         this.orderTxService = orderTxService;
         this.orderRollback = orderRollback;
+        this.rabbitTemplate = rabbitTemplate;
     }
 
     @Async("orderAsyncExecutor")
@@ -50,24 +59,40 @@ public class OrderSyncService {
                 // 创建订单
                 orderTxService.insert(localDTO);
                 Long id = localDTO.getId();
-                // 创建支付编号
+                // 创建支付
                 PaymentAddDTO paymentAddDTO = new PaymentAddDTO(pSn, userId, id, frontPrice, 0);
 
                 orderTxService.insertPayment(paymentAddDTO);
                 orderTxService.insertInventoryLock(productId, specId, id, productQuantity, iSn);
-                transactionManager.commit(status);
-            }catch (Exception e){
-                orderRollback.rollbackOrder(orderSn, specId);
-            if (status != null && !status.isCompleted()) {
-                transactionManager.rollback(status);
+            transactionManager.commit(status);
+            try {
+                rabbitTemplate.convertAndSend(
+                        "delay_exchange",
+                        "new",
+                        orderSn,
+                        Message -> {
+                            MessageProperties props = Message.getMessageProperties();
+                            props.setHeader("x-delay", 1800000);
+                            Message.getMessageProperties().setDeliveryMode(MessageDeliveryMode.PERSISTENT);
+                            return Message;
+                        }
+                );
+                log.info("订单消息发送成功: {}", orderSn);
+            }catch (AmqpException  e){
+                log.error("订单消息发送失败");
             }
-            log.warn("-------订单创建失败%n {} ", e.getMessage());
-            }finally {
-            orderRollback.deleteKey(orderSn);
-            if (status != null && !status.isCompleted()){
-                transactionManager.rollback(status);
-            }
-        }
+                }catch (Exception e){
+                        orderRollback.rollbackOrder(orderSn, specId);
+                    if (status != null && !status.isCompleted()) {
+                        transactionManager.rollback(status);
+                    }
+                    log.warn("-------订单创建失败%n {} ", e.getMessage());
+                    }finally {
+                    orderRollback.deleteKey(orderSn);
+                    if (status != null && !status.isCompleted()){
+                        transactionManager.rollback(status);
+                    }
+                }
     }
 
 
@@ -89,12 +114,6 @@ public class OrderSyncService {
 
     @Transactional
     public Result<String> deductStockWithLock(Long specId, Integer productQuantity){
-
-        // 验证数量
-        if(productQuantity == null || productQuantity < 1)
-            return Result.error(MessageReturn.QUANTITY_IS_NULL_OR_LESS_THAN_ONE);
-
-
 
         boolean success = orderTxService.reduceProductSaleStock(specId, productQuantity);
         if (!success){

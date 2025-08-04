@@ -38,9 +38,9 @@ public class BloomFilterConfig {
 
     // 订单过滤器
     @Bean("orderBloomFilter")
-    public BloomFilter<Long> orderBloomFilter() {
+    public BloomFilter<String> orderBloomFilter() {
         return BloomFilter.create(
-                Funnels.longFunnel(),
+                Funnels.stringFunnel(StandardCharsets.UTF_8),
                 orderConfig.expectedElements,
                 orderConfig.fpp
         );

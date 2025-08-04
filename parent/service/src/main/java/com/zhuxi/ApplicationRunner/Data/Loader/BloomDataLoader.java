@@ -23,7 +23,7 @@ public class BloomDataLoader {
     private final BloomFilterManager bloomFilterManager;
     private final BloomFilter<Long> productBloomFilter;
     private final BloomFilter<Long> userBloomFilter;
-    private final BloomFilter<Long> orderBloomFilter;
+    private final BloomFilter<String> orderBloomFilter;
 
 
     public BloomDataLoader(
@@ -33,7 +33,7 @@ public class BloomDataLoader {
             BloomFilterManager bloomFilterManager,
             @Qualifier("productBloomFilter") BloomFilter<Long> productBloomFilter,
             @Qualifier("userBloomFilter") BloomFilter<Long> userBloomFilter,
-            @Qualifier("orderBloomFilter") BloomFilter<Long> orderBloomFilter
+            @Qualifier("orderBloomFilter") BloomFilter<String> orderBloomFilter
             )
 
     {
@@ -98,7 +98,7 @@ public class BloomDataLoader {
 
 
     private void loadOrderData(){
-        bloomFilterManager.addFilterLong("order",orderBloomFilter);
+        bloomFilterManager.addFilterString("order",orderBloomFilter);
         int pageSize = 1000;
         Long lastId = 0L;
         while(true){
@@ -108,17 +108,17 @@ public class BloomDataLoader {
                 lastId = allOrderId.get(allOrderId.size() - 1).getId();
             }else{
                 allOrderId.forEach( p-> {
-                    Long orderId = p.getId();
+                    String orderSn = p.getOrderSn();
                     Long userId = p.getUserId();
-                    bloomFilterManager.putLong("order",userId + orderId);
+                    bloomFilterManager.putString("order",userId + orderSn);
                 });
                 break;
             }
             //添加到布隆过滤器
             allOrderId.forEach( p-> {
-                Long orderId = p.getId();
+                String orderSn = p.getOrderSn();
                 Long userId = p.getUserId();
-                bloomFilterManager.putLong("order",userId + orderId);
+                bloomFilterManager.putString("order",userId + orderSn);
             });
         }
     }

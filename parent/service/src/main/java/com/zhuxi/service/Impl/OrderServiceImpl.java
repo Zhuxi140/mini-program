@@ -43,32 +43,56 @@ public class OrderServiceImpl implements OrderService {
      * 添加订单
      */
     @Override
+    @Transactional
     public Result<String> add(OrderAddDTO orderAddDTO,Long userId) {
         // 基础效验
-        if (orderAddDTO == null)
+        if (orderAddDTO == null){
             return Result.error(MessageReturn.BODY_NO_MAIN_OR_IS_NULL);
+        }
 
         orderAddDTO.setUserId(userId);
-        Long productId = orderAddDTO.getProductId();
-        Long specId = orderAddDTO.getSpecId();
-        if(productId == null || specId == null)
+        Long specSnowflake = orderAddDTO.getSpecSnowflake();
+        if(specSnowflake == null){
             return Result.error(MessageReturn.SPEC_ID_IS_NULL + "或" + MessageReturn.PRODUCT_ID_IS_NULL);
+        }
 
         Integer productQuantity = orderAddDTO.getProductQuantity();
+        // 验证数量
+        if(productQuantity == null || productQuantity < 1)
+            return Result.error(MessageReturn.QUANTITY_IS_NULL_OR_LESS_THAN_ONE);
+
+        //验证价格
         BigDecimal totalAmount = orderAddDTO.getTotalAmount();
         if (totalAmount == null) {
             throw new SnycException(MessageReturn.PRICE_IS_NULL);
         }
-        BigDecimal productSalePrice = orderTxService.getProductSalePrice(orderAddDTO.getSpecId());
+        BigDecimal productSalePrice = orderRedisCache.getSalePrice(specSnowflake);
+        if (productSalePrice == null){
+            productSalePrice = orderTxService.getProductSalePrice(orderAddDTO.getSpecId());
+            orderRedisCache.saveSalePrice(productSalePrice,specSnowflake);
+        }
         BigDecimal blackTotalPrice = productSalePrice.multiply(BigDecimal.valueOf(orderAddDTO.getProductQuantity())).setScale(2, RoundingMode.HALF_UP);
         BigDecimal frontPrice = totalAmount.setScale(2, RoundingMode.HALF_UP);
         BigDecimal abs = blackTotalPrice.subtract(frontPrice).abs();
         BigDecimal bigDecimal = new BigDecimal("0.01");
-        if (abs.compareTo(bigDecimal) > 0)
+        if (abs.compareTo(bigDecimal) > 0){
             throw new SnycException(MessageReturn.PRICE_IS_DIFFERENCE);
+        }
+
+        List<Long> idBySnowflake = orderRedisCache.getIdBySnowflake(specSnowflake);
+        Long productId = idBySnowflake.get(0);
+        Long specId = idBySnowflake.get(1);
+        if (productId == null){
+            productId = orderTxService.getProductIdBySnowFlake(specSnowflake);
+            orderRedisCache.saveProductId(specSnowflake,productId);
+        }
+        if (specId == null){
+            specId = orderTxService.getSpecBySnowFlake(specSnowflake);
+            orderRedisCache.saveSpecId(specSnowflake,specId);
+        }
 
         // 预先减库存 （乐观锁）
-        Result<String> voidResult = orderSyncService.deductStockWithLock( specId,productQuantity);
+        Result<String> voidResult = orderSyncService.deductStockWithLock(specId,productQuantity);
         if (voidResult.getCode() == 500){
             return voidResult;
         }
@@ -78,10 +102,10 @@ public class OrderServiceImpl implements OrderService {
         String orderSn = generateSn(1);
         String iSn = generateSn(4);
 
-        // 将单号临时存储Redis
-        orderRedisCache.saveOrderLock(orderSn,productQuantity);
+            // 将单号临时存储Redis
+            orderRedisCache.saveOrderLock(orderSn,productQuantity);
 
-        orderSyncService.syncOrder(orderAddDTO,userId,pSn,iSn,productId,specId,productQuantity,orderSn,frontPrice);
+            orderSyncService.syncOrder(orderAddDTO,userId,pSn,iSn,productId,specId,productQuantity,orderSn,frontPrice);
 
         return Result.success(MessageReturn.OPERATION_SUCCESS,orderSn);
     }
@@ -162,8 +186,8 @@ public class OrderServiceImpl implements OrderService {
      */
     @Override
     @Transactional
-    public Result<Void> cancelOrder(String orderSn, Long userId) {
-        if (orderSn == null || userId == null)
+    public Result<Void> cancelOrder(String orderSn) {
+        if (orderSn == null)
             return Result.error(MessageReturn.ORDER_USER_ID_IS_NULL);
 
         Long orderId = orderRedisCache.getOrderIdBySn(orderSn);
@@ -321,9 +345,6 @@ public class OrderServiceImpl implements OrderService {
             lastScore = orderList.get(pageSize).getCreatedAt().atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
             orderList = orderList.subList(0, pageSize);
         }
-
-        orderRedisCache.syncOrderData(orderList, userId);
-
         return new PageResult(orderList, lastScore, false, next);
     }
 

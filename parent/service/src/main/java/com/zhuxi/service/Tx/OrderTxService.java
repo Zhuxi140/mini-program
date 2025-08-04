@@ -1,6 +1,7 @@
 package com.zhuxi.service.Tx;
 
 import com.zhuxi.Constant.MessageReturn;
+import com.zhuxi.Exception.MQException;
 import com.zhuxi.Exception.transactionalException;
 import com.zhuxi.mapper.OrderMapper;
 import lombok.extern.slf4j.Slf4j;
@@ -41,6 +42,24 @@ public class OrderTxService {
             throw new transactionalException(MessageReturn.ORDER_NOT_EXIST);
         }
         return orderId;
+    }
+
+    @Transactional(readOnly = true)
+    public Long getProductIdBySnowFlake(Long specSnowFlake){
+        Long productId = orderMapper.getProductIdBySnowFlake(specSnowFlake);
+        if(productId == null || productId < 0) {
+            throw new transactionalException(MessageReturn.SELECT_ERROR);
+        }
+        return productId;
+    }
+
+    @Transactional(readOnly = true)
+    public Long getSpecBySnowFlake(Long specSnowFlake){
+        Long specId = orderMapper.getSpecIdBySnowFlake(specSnowFlake);
+        if(specId == null || specId < 0) {
+            throw new transactionalException(MessageReturn.SELECT_ERROR);
+        }
+        return specId;
     }
 
     @Transactional(readOnly = true,propagation = Propagation.SUPPORTS)
@@ -239,6 +258,40 @@ public class OrderTxService {
         return orderId;
     }
 
+
+    @Transactional(rollbackFor = MQException.class)
+    public void concealOrderL(Long orderId,String orderSn,boolean isHit){
+        if (!isHit){
+            orderId = orderMapper.getOrderId(orderSn);
+        }
+        int i1 = orderMapper.cancelOrder(orderId);
+        if(i1 !=  1) {
+            throw new MQException(MessageReturn.ORDER_CONCEAL_ERROR);
+        }
+        int i = orderMapper.cancelPayment(orderId);
+        if(i !=  1) {
+            throw new MQException(MessageReturn.PAY_CONCEAL_ERROR);
+        }
+        i = orderMapper.releaseInventoryLock(orderId);
+        if(i !=  1) {
+            throw new MQException(MessageReturn.LOCK_CONCEAL_ERROR);
+        }
+
+        int w = orderMapper.getInventoryLockQuantity(orderId);
+        if(w <= 0) {
+            throw new MQException(MessageReturn.NO_NEED_RECOVERY_STOCK);
+        }
+        Long specId = orderMapper.getSpecId(orderId);
+        if (specId == null) {
+            throw new MQException(MessageReturn.NO_SELECT_SPEC_ID);
+        }
+
+        int h = orderMapper.releaseProductSaleStock(specId, i);
+        if(h !=  1) {
+            throw new MQException(MessageReturn.RELEASE_SALE_STOCK_ERROR);
+        }
+    }
+
     @Transactional(readOnly = true)
     public List<Long> getOrderIdList(Long groupId){
         List<Long> orderIdList = orderMapper.getOrderIdList(groupId);
@@ -287,6 +340,11 @@ public class OrderTxService {
         if(i1 !=  1) {
             throw new transactionalException(MessageReturn.RELEASE_SALE_STOCK_ERROR);
         }
+    }
+
+    @Transactional(rollbackFor = MQException.class)
+    public void releaseLockStockL(Long orderId){
+
     }
 
 

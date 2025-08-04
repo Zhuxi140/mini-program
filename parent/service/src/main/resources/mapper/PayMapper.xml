@@ -6,11 +6,12 @@
         UPDATE payment
         SET
             status = 2,
-            paid_amount = #{payDTO.paidAmount},
-            payment_method = #{payDTO.paymentMethod}
+            paid_amount = #{paidAmount},
+            payment_method = #{paymentMethod}
         WHERE
-            order_id = #{payDTO.orderId}
+            order_id = #{OrderId}
         AND
-            user_id = #{payDTO.userId}
+            user_id = #{userId}
+        AND status = 0
     </update>
 </mapper>

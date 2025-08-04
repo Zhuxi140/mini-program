@@ -163,10 +163,19 @@ public class RedisCacheProperties {
         private String OrderSortSetPrefix;
         private String OrderDetailHashPrefix;
         private String OrderGroupPrefix;
+        private String OrderStatusPrefix;
         private int OrderLockTTL;
         private int OrderSortSetTTL;
         private int OrderDetailHashTTL;
         private int OrderGroupTTL;
+
+        public String getOrderStatusPrefix() {
+            return OrderStatusPrefix;
+        }
+
+        public void setOrderStatusPrefix(String orderStatusPrefix) {
+            OrderStatusPrefix = orderStatusPrefix;
+        }
 
         public int getOrderLockTTL() {
             return OrderLockTTL;
