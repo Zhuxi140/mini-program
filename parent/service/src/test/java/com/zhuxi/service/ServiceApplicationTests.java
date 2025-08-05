@@ -33,17 +33,6 @@ class ServiceApplicationTests {
     @Test
     void contextLoads() {
 
-                Long orderId = orderRedisCache.getOrderIdBySn("OD1952616585969668097");
-                if (orderId == null) {
-                    orderId = orderTxService.getOrderIdByOrderSn("OD1952616585969668097");
-                }
-                boolean orderStatus = orderTxService.getOrderStatus(orderId);
-                if (orderStatus) {
-                    return;
-                }else{
-                    orderTxService.concealOrderL(orderId);
-                }
-
 
     }
 
