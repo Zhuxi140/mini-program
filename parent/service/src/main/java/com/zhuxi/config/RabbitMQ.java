@@ -1,5 +1,7 @@
 package com.zhuxi.config;
 
+import com.zhuxi.service.Listener.MessageHandler.ConfirmCallbackDispatcher;
+import com.zhuxi.task.OrderTask;
 import org.springframework.amqp.core.AcknowledgeMode;
 import org.springframework.amqp.core.CustomExchange;
 import org.springframework.amqp.rabbit.config.SimpleRabbitListenerContainerFactory;
@@ -7,6 +9,7 @@ import org.springframework.amqp.rabbit.connection.CachingConnectionFactory;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -14,38 +17,37 @@ import java.util.HashMap;
 
 @Configuration
 public class RabbitMQ {
-
-    @Bean
-    public RabbitTemplate rabbitTemplate(ConnectionFactory connectionFactory, Jackson2JsonMessageConverter messageConverter){
-        RabbitTemplate rabbitTemplate = new RabbitTemplate(connectionFactory);
-        rabbitTemplate.setMessageConverter(messageConverter);
-        rabbitTemplate.setConfirmCallback((correlationData, ack, cause) -> {
-            if (ack){
-                System.out.println("消息发送成功");
-            }else {
-                System.out.println("消息发送失败" + cause);
-            }
-        });
-
-        rabbitTemplate.setReturnsCallback(returnMessage -> {
-            System.out.println("消息路由失败" + returnMessage.getMessage());
-        });
-
-        return rabbitTemplate;
-    }
-
     // 无确认
-    @Bean
+    @Bean("noConfirm")
     public ConnectionFactory noConfirmConnectionFactory() {
         CachingConnectionFactory factory = new CachingConnectionFactory();
+        factory.setPublisherConfirmType(CachingConnectionFactory.ConfirmType.NONE);
+        factory.setVirtualHost("mini_program");
+        factory.setUsername("mini_program");
+        factory.setPassword("123456");
         factory.setHost("localhost");
-        factory.setPublisherConfirmType(CachingConnectionFactory.ConfirmType.NONE); // 关闭Confirm
+        factory.setPort(5672);
+        factory.setPublisherReturns(false);
         return factory;
     }
 
     @Bean
-    public RabbitTemplate expressTemplate() {
-        return new RabbitTemplate(noConfirmConnectionFactory());
+    public RabbitTemplate rabbitTemplate(ConnectionFactory connectionFactory,ConfirmCallbackDispatcher confirmCallbackDispatcher) {
+        RabbitTemplate rabbitTemplate = new RabbitTemplate();
+        rabbitTemplate.setMessageConverter(jackson2JsonMessageConverter());
+        rabbitTemplate.setConnectionFactory(connectionFactory);
+        rabbitTemplate.setConfirmCallback(confirmCallbackDispatcher);
+        rabbitTemplate.setReturnsCallback(confirmCallbackDispatcher);
+        return rabbitTemplate;
+    }
+
+    @Bean
+    public RabbitTemplate expressTemplate(ConfirmCallbackDispatcher confirmCallbackDispatcher) {
+        RabbitTemplate rabbitTemplate = new RabbitTemplate(noConfirmConnectionFactory());
+        rabbitTemplate.setMessageConverter(jackson2JsonMessageConverter());
+        rabbitTemplate.setReturnsCallback(confirmCallbackDispatcher);
+        rabbitTemplate.setConfirmCallback(confirmCallbackDispatcher);
+        return rabbitTemplate;
     }
 
     @Bean
@@ -58,7 +60,7 @@ public class RabbitMQ {
         HashMap<String, Object> hashMap = new HashMap<>();
         hashMap.put("x-delayed-type", "direct");
         return new CustomExchange(
-                "delay_exchange",
+                "delay.exchange",
                 "x-delayed-message",
                 true,
                 false,

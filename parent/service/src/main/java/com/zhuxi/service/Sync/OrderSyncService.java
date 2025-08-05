@@ -3,6 +3,7 @@ package com.zhuxi.service.Sync;
 import com.zhuxi.Constant.MessageReturn;
 import com.zhuxi.Exception.transactionalException;
 import com.zhuxi.Result.Result;
+import com.zhuxi.service.MessageService.OrderMessage;
 import com.zhuxi.service.Rollback.OrderRollback;
 import com.zhuxi.service.Tx.OrderTxService;
 import lombok.extern.slf4j.Slf4j;
@@ -31,17 +32,15 @@ public class OrderSyncService {
 
     private final OrderTxService orderTxService;
     private final OrderRollback orderRollback;
-    private final RabbitTemplate rabbitTemplate;
+    private final OrderMessage orderMessage;
     @Autowired
     private DataSourceTransactionManager transactionManager;
 
 
-    public OrderSyncService(OrderTxService orderTxService, OrderRollback orderRollback,
-                            @Qualifier("rabbitTemplate")
-                            RabbitTemplate rabbitTemplate) {
+    public OrderSyncService(OrderTxService orderTxService, OrderRollback orderRollback, OrderMessage orderMessage) {
         this.orderTxService = orderTxService;
         this.orderRollback = orderRollback;
-        this.rabbitTemplate = rabbitTemplate;
+        this.orderMessage = orderMessage;
     }
 
     @Async("orderAsyncExecutor")
@@ -55,7 +54,11 @@ public class OrderSyncService {
         try {
                 status = transactionManager.getTransaction(def);
                 // 验证地址
+
                 dealAddressId(localDTO, userId);
+
+                localDTO.setProductId(productId);
+                localDTO.setSpecId(specId);
                 // 创建订单
                 orderTxService.insert(localDTO);
                 Long id = localDTO.getId();
@@ -65,23 +68,10 @@ public class OrderSyncService {
                 orderTxService.insertPayment(paymentAddDTO);
                 orderTxService.insertInventoryLock(productId, specId, id, productQuantity, iSn);
             transactionManager.commit(status);
-            try {
-                rabbitTemplate.convertAndSend(
-                        "delay_exchange",
-                        "new",
-                        orderSn,
-                        Message -> {
-                            MessageProperties props = Message.getMessageProperties();
-                            props.setHeader("x-delay", 1800000);
-                            Message.getMessageProperties().setDeliveryMode(MessageDeliveryMode.PERSISTENT);
-                            return Message;
-                        }
-                );
-                log.info("订单消息发送成功: {}", orderSn);
-            }catch (AmqpException  e){
-                log.error("订单消息发送失败");
-            }
+            orderMessage.sendOrderDelayMessage(orderSn, "delay.exchange", "new");
+
                 }catch (Exception e){
+                log.info("订单创建失败 : {}", e.getMessage());
                         orderRollback.rollbackOrder(orderSn, specId);
                     if (status != null && !status.isCompleted()) {
                         transactionManager.rollback(status);

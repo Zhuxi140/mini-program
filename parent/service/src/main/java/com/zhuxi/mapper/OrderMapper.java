@@ -79,8 +79,8 @@ public interface OrderMapper {
     int cancelPayment(Long orderId);
 
     // 查询需要恢复的数量
-    @Select("SELECT inventory_lock.quantity FROM inventory_lock WHERE order_id = #{orderId} ")
-    int getInventoryLockQuantity(Long orderId);
+    @Select("SELECT i.quantity FROM inventory_lock i WHERE order_id = #{orderId} AND i.status = 0 ")
+    Integer getInventoryLockQuantity(Long orderId);
 
     // 查询对应specId
     @Select("SELECT spec_id FROM inventory_lock WHERE order_id = #{orderId}")
@@ -177,5 +177,8 @@ public interface OrderMapper {
     @Select("SELECT id FROM spec WHERE snowflake_id = #{snowflakeId}")
     Long getSpecIdBySnowFlake(Long specSnowFlake);
 
+
+    @Select("SELECT status FROM `order` WHERE id = #{orderId}")
+    int getOrderStatus(Long orderId);
 
 }

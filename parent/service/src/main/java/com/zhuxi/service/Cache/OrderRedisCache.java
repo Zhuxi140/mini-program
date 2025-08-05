@@ -80,7 +80,7 @@ public class OrderRedisCache {
     public BigDecimal getSalePrice(Long specSnowflake) {
         String specDetailKey = rCP.getProductCache().getSpecDetailPrefix() + ":" + specSnowflake;
         Object price = redisUntil.hGet(specDetailKey, "salePrice");
-        return price == null ? null : (BigDecimal) price;
+        return price == null ? null : BigDecimal.valueOf((Double) price);
     }
 
     public void saveSalePrice(BigDecimal price,Long specSnowflake){
@@ -97,7 +97,15 @@ public class OrderRedisCache {
         String specDetailKey = rCP.getProductCache().getSpecDetailPrefix() + ":" + specSnowflake;
         List<Object> ids = redisUntil.hMultiGet(specDetailKey, List.of("productId", "id"));
 
-        return ids.stream().map(o -> (Long) o).collect(Collectors.toList());
+        ArrayList<Long> id = new ArrayList<>();
+        for (Object o : ids){
+            if (o instanceof Long){
+                id.add((Long) o);
+            }else{
+                id.add(Long.valueOf((Integer)o));
+            }
+        }
+        return id;
     }
 
     public void saveProductId(Long specSnowflake,Long productId){
@@ -501,10 +509,26 @@ public class OrderRedisCache {
     }
 
     public void syncOrderStatus(String orderSn,Integer status){
-
         String orderDetailKey = getOrderDetailKey(orderSn);
         redisUntil.hPut(orderDetailKey, "status", status);
+        switch(status){
+            case 1:{
+                // 待发货
+                redisUntil.expire(orderDetailKey,7, TimeUnit.DAYS);
+            }  break;
+            case 3,4,6:{
+                // 已完成/已取消/已退款
+                redisUntil.expire(orderDetailKey,30, TimeUnit.DAYS);
+            } break;
+            case 2,5:{
+                //待收货/退款中
+                redisUntil.expire(orderDetailKey,15, TimeUnit.DAYS);
+            }
+        }
     }
+
+
+
 
 
 

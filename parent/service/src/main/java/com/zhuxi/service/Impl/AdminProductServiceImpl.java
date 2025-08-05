@@ -106,11 +106,21 @@ public class AdminProductServiceImpl implements AdminProductService {
         pSsnowFlake.setSpecSnowflake(productTxService.getSpecSnowFlakeByIdList(id));
         productTxService.delete(id);
 
-        rabbitTemplate.convertAndSend("product.spec.exchange","delete",pSsnowFlake,message -> {
-            MessageProperties props = message.getMessageProperties();
-            props.setMessageId(UUID.randomUUID().toString());
-            props.setDeliveryMode(MessageDeliveryMode.PERSISTENT);
-            return message;
+
+        TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronization() {
+            @Override
+            public void afterCompletion(int status) {
+                if (status == TransactionSynchronization.STATUS_COMMITTED) {
+                    rabbitTemplate.convertAndSend("product.spec.exchange","delete",pSsnowFlake,message -> {
+                        MessageProperties props = message.getMessageProperties();
+                        props.setMessageId(UUID.randomUUID().toString());
+                        props.setDeliveryMode(MessageDeliveryMode.PERSISTENT);
+                        return message;
+                    });
+                }else{
+                    log.warn("事务未提交，截断发送消息");
+                }
+            }
         });
         return Result.success(MessageReturn.OPERATION_SUCCESS);
     }
@@ -136,12 +146,20 @@ public class AdminProductServiceImpl implements AdminProductService {
         if (id == null)
             return Result.error(MessageReturn.PRODUCT_ID_IS_NULL);
         productTxService.putOnSale(id);
-
-        rabbitTemplate.convertAndSend("product.spec.exchange","new",id,message -> {
-            MessageProperties props = message.getMessageProperties();
-            props.setMessageId(UUID.randomUUID().toString());
-            props.setDeliveryMode(MessageDeliveryMode.PERSISTENT);
-            return message;
+        TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronization() {
+            @Override
+            public void afterCompletion(int status) {
+                if (status == TransactionSynchronization.STATUS_COMMITTED) {
+                    rabbitTemplate.convertAndSend("product.spec.exchange", "new", id, message -> {
+                        MessageProperties props = message.getMessageProperties();
+                        props.setMessageId(UUID.randomUUID().toString());
+                        props.setDeliveryMode(MessageDeliveryMode.PERSISTENT);
+                        return message;
+                    });
+                }else{
+                    log.warn("事务未提交，截断发送消息");
+                }
+            }
         });
 
         return Result.success(MessageReturn.OPERATION_SUCCESS);

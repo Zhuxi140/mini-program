@@ -5,12 +5,16 @@ import com.zhuxi.Result.Result;
 import com.zhuxi.service.Cache.PayRedisCache;
 import com.zhuxi.service.business.PayService;
 import com.zhuxi.service.Tx.PayTxService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionSynchronization;
+import org.springframework.transaction.support.TransactionSynchronizationManager;
 import src.main.java.com.zhuxi.pojo.DTO.Pay.PayDTO;
 
 
 @Service
+@Slf4j
 public class PayServiceImpl implements PayService {
 
     private final PayTxService payTxService;
@@ -31,7 +35,17 @@ public class PayServiceImpl implements PayService {
             return Result.error(MessageReturn.BODY_NO_MAIN_OR_IS_NULL);
         payDTO.setUserId(userId);
         payTxService.pay(payDTO);
-        payRedisCache.refreshOrder(payDTO.getOrderSn());
+
+        TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronization() {
+            @Override
+            public void afterCompletion(int  status) {
+                if (status == TransactionSynchronization.STATUS_COMMITTED) {
+                    payRedisCache.refreshOrder(payDTO.getOrderSn());
+                }else {
+                    log.warn("事务未提交");
+                }
+            }
+        });
         return Result.success(MessageReturn.OPERATION_SUCCESS);
     }
 

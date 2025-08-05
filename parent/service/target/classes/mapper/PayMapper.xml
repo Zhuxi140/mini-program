@@ -12,5 +12,6 @@
             order_id = #{OrderId}
         AND
             user_id = #{userId}
+        AND status = 0
     </update>
 </mapper>
