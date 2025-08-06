@@ -27,12 +27,10 @@ public class OrderRedisCache {
 
     private final RedisUntil redisUntil;
     private final RedisCacheProperties rCP;
-    private final IdSnowFLake idSnowFLake;
 
-    public OrderRedisCache(RedisUntil redisUntil, RedisCacheProperties rCP, IdSnowFLake idSnowFLake) {
+    public OrderRedisCache(RedisUntil redisUntil, RedisCacheProperties rCP) {
         this.redisUntil = redisUntil;
         this.rCP = rCP;
-        this.idSnowFLake = idSnowFLake;
     }
 
 
@@ -157,7 +155,6 @@ public class OrderRedisCache {
                 Long id = oRDto.getId();
                 LocalDateTime createdAt = oRDto.getCreatedAt();
                 int status = oRDto.getStatus();
-                idSnowFLake.getIdInt();
                 long epochMilli = createdAt.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
                 String orderSn = oRDto.getOrderSn();
                 String orderDetailKey = getOrderDetailKey(orderSn);

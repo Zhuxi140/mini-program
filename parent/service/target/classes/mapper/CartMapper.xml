@@ -7,14 +7,15 @@
         UPDATE cart
         <set>
             <if test="cUDto.quantity != null">
-                quantity = #{quantity},
+                quantity = quantity + #{cUDto.quantity},
             </if>
             <if test="cUDto.specId != null">
                 spec_id = #{cUDto.specId},
             </if>
         </set>
-        WHERE id = #{cUDto.cartId}
+        WHERE id = #{cUDto.cartId} AND user_id = #{userId}
     </update>
+
 
 
 </mapper>

@@ -21,4 +21,6 @@ redis:
       OrderDetailHashPrefix: order:detail
       OrderGroupPrefix: order:group
       OrderStatusPrefix: order:status
+    CartCache:
+      CartPrefix: cart:userId
 

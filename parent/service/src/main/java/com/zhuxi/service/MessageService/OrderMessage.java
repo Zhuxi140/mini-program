@@ -65,7 +65,7 @@ public class OrderMessage {
                                 "spring_returned_message_correlation",
                                 correlationData
                         );
-                        props.setHeader("x-delay", 10000);
+                        props.setHeader("x-delay", 30*60*1000); // 延迟30分钟
                         msg.getMessageProperties().setDeliveryMode(MessageDeliveryMode.PERSISTENT);
                         return msg;
                     },

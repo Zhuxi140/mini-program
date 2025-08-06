@@ -12,6 +12,7 @@ spring:
 #    username: root
 #    password: 123456
     url: jdbc:mysql://rm-bp1hc14ug996jtc22ko.mysql.rds.aliyuncs.com:3306/mini_program?rewriteBatchedStatements=true
+
     username: Zhu
     password: Zhu123456
 

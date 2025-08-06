@@ -167,7 +167,11 @@ public interface OrderMapper {
 
     List<OrderRedisDTO> getOrderRedisList(Long userId,Long lastId,int pageSize);
 
-    @Select("SELECT id FROM user WHERE id > #{lastId} ORDER BY id LIMIT #{pageSize}")
+    @Select("""
+    SELECT DISTINCT user.id
+    FROM user JOIN `order` ON  user.id = `order`.user_id
+    WHERE user.id > #{lastId} ORDER BY user.id LIMIT #{pageSize}
+    """)
     List<Long> getUserIds(Long lastId,int pageSize);
 
 

@@ -9,7 +9,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.web.bind.annotation.*;
-import src.main.java.com.zhuxi.pojo.DTO.Car.CarAddDTO;
+import src.main.java.com.zhuxi.pojo.DTO.Car.CartAddDTO;
 import src.main.java.com.zhuxi.pojo.DTO.Car.CartUpdateDTO;
 import src.main.java.com.zhuxi.pojo.VO.Car.CartNewVO;
 import src.main.java.com.zhuxi.pojo.VO.Car.CartVO;
@@ -61,11 +61,11 @@ public class CarController {
             description = "添加购物车商品，即从第一次加入购物车的商品"
     )
     public Result<Void> addCart(
-            @RequestBody CarAddDTO carAddDTO,
+            @RequestBody CartAddDTO cartAddDTO,
             @Parameter(description = "用户id",hidden = true)
             @CurrentUserId Long userId
     ){
-        return cartService.add(carAddDTO,userId );
+        return cartService.add(cartAddDTO,userId );
     }
 
 

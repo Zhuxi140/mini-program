@@ -8,21 +8,21 @@ public class CartVO {
 
     @Schema(description = "购物车id")
     private Long id;
-    @Schema(description = "商品id")
-    private Long productId;
-    @Schema(description = "规格id")
-    private Long specId;
+    @Schema(description = "商品号")
+    private Long productSnowflake;
+    @Schema(description = "规格号")
+    private Long specSnowflake;
     @Schema(description = "购买数量")
     private Integer quantity;
     @Schema(description = "商品主名")
     private String name;
     @Schema(description = "规格名")
     private String spec;
-    @Schema(description = "库存(若其小于5，前端对应在商品旁侧提示)")
+    @Schema(description = "库存")
     private Integer stock;
     @Schema(description = "商品单价")
     private BigDecimal price;
-    @Schema(description = "商品状态(1为上架,2为下架。若为下架，前端应对应提示并限制购买)")
+    @Schema(description = "商品状态",hidden = true)
     private Integer status;
     @Schema(description = "商品主图url")
     private String coverUrl;
@@ -31,10 +31,10 @@ public class CartVO {
     public CartVO() {
     }
 
-    public CartVO(Long id, Long productId, Long specId, Integer quantity, String name, String spec, Integer stock, BigDecimal price, Integer status, String coverUrl) {
+    public CartVO(Long id,Long productSnowflake,Long specSnowflake, Integer quantity, String name, String spec, Integer stock, BigDecimal price, Integer status, String coverUrl) {
         this.id = id;
-        this.productId = productId;
-        this.specId = specId;
+        this.productSnowflake = productSnowflake;
+        this.specSnowflake = specSnowflake;
         this.quantity = quantity;
         this.name = name;
         this.spec = spec;
@@ -52,20 +52,20 @@ public class CartVO {
         this.id = id;
     }
 
-    public Long getProductId() {
-        return productId;
+    public Long getProductSnowflake() {
+        return productSnowflake;
     }
 
-    public void setProductId(Long productId) {
-        this.productId = productId;
+    public void setProductSnowflake(Long productSnowflake) {
+        this.productSnowflake = productSnowflake;
     }
 
-    public Long getSpecId() {
-        return specId;
+    public Long getSpecSnowflake() {
+        return specSnowflake;
     }
 
-    public void setSpecId(Long specId) {
-        this.specId = specId;
+    public void setSpecSnowflake(Long specSnowflake) {
+        this.specSnowflake = specSnowflake;
     }
 
     public Integer getQuantity() {

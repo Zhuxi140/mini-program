@@ -80,4 +80,5 @@ public class MessageReturn {
     public static final String EXISTS_ERROR_SPEC = "价格为空或库存为空";
     public static final String NO_PRODUCT = "无商品记录";
     public static final String REAL_STOCK_UPDATE_ERROR = "订单已预占，当前服务器繁忙，请稍后重试";
+    public static final String CART_IS_OVER_LIMIT = "购物车商品最多添加至300个";
 }

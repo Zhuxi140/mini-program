@@ -5,17 +5,20 @@ import io.swagger.v3.oas.annotations.media.Schema;
 public class CartUpdateDTO {
     @Schema(description = "购物车id",requiredMode = Schema.RequiredMode.REQUIRED)
     private Long cartId ;
-    @Schema(description = "规格id",requiredMode = Schema.RequiredMode.NOT_REQUIRED)
+    @Schema(description = "规格id",hidden = true)
     private Long specId;
+    @Schema(description = "规格号",requiredMode = Schema.RequiredMode.NOT_REQUIRED)
+    private Long specSnowflake;
     @Schema(description = "数量（若为第一次加入购物车，不需填写）",requiredMode = Schema.RequiredMode.NOT_REQUIRED)
     private Integer quantity = 1;
 
     public CartUpdateDTO() {
     }
 
-    public CartUpdateDTO(Long cartId, Long specId, Integer quantity) {
+    public CartUpdateDTO(Long cartId, Long specId, Long specSnowflake, Integer quantity) {
         this.cartId = cartId;
         this.specId = specId;
+        this.specSnowflake = specSnowflake;
         this.quantity = quantity;
     }
 
@@ -41,5 +44,13 @@ public class CartUpdateDTO {
 
     public void setQuantity(Integer quantity) {
         this.quantity = quantity;
+    }
+
+    public Long getSpecSnowflake() {
+        return specSnowflake;
+    }
+
+    public void setSpecSnowflake(Long specSnowflake) {
+        this.specSnowflake = specSnowflake;
     }
 }
