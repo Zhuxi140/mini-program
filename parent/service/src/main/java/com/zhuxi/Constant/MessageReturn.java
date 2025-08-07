@@ -81,4 +81,9 @@ public class MessageReturn {
     public static final String NO_PRODUCT = "无商品记录";
     public static final String REAL_STOCK_UPDATE_ERROR = "订单已预占，当前服务器繁忙，请稍后重试";
     public static final String CART_IS_OVER_LIMIT = "购物车商品最多添加至300个";
+    public static final String CODE_IS_NULL = "code is null or empty";
+    public static final String OPEN_ID_IS_NULL = "openId is null or empty";
+    public static final String SESSION_KEY_IS_NULL = "session_key is null or empty";
+    public static final String LOGOUT_SUCCESS = "退出成功";
+    public static final String LOGIN_ALREADY_USELESS = "登录已失效";
 }

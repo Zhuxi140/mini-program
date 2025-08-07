@@ -3,8 +3,9 @@ package com.zhuxi.config;
 import com.zhuxi.Interceptor.JwtInterceptor;
 import com.zhuxi.Interceptor.JwtInterceptorProperties;
 import com.zhuxi.handler.UserIdArgumentResolver;
+import com.zhuxi.service.Cache.LoginRedisCache;
+import com.zhuxi.service.Tx.WechatAuthTxService;
 import com.zhuxi.utils.JwtUtils;
-import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
@@ -19,15 +20,19 @@ public class WebMvcConfig implements WebMvcConfigurer {
 
     private final JwtInterceptorProperties jwtInterceptorProperties;
     private final JwtUtils jwtUtils;
+    private final WechatAuthTxService wechatAuthTxService;
+    private final LoginRedisCache loginRedisCache;
 
-    public WebMvcConfig(JwtInterceptorProperties jwtInterceptorProperties, JwtUtils jwtUtils) {
+    public WebMvcConfig(JwtInterceptorProperties jwtInterceptorProperties, JwtUtils jwtUtils, WechatAuthTxService wechatAuthTxService, LoginRedisCache loginRedisCache) {
         this.jwtInterceptorProperties = jwtInterceptorProperties;
         this.jwtUtils = jwtUtils;
+        this.wechatAuthTxService = wechatAuthTxService;
+        this.loginRedisCache = loginRedisCache;
     }
 
     @Bean
     public JwtInterceptor jwtInterceptor() {
-        return new JwtInterceptor(jwtInterceptorProperties, jwtUtils);
+        return new JwtInterceptor(jwtInterceptorProperties, jwtUtils, loginRedisCache);
     }
 
     @Override
@@ -47,7 +52,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
 
     @Override
     public void addArgumentResolvers(List<HandlerMethodArgumentResolver> resolvers) {
-        resolvers.add(new UserIdArgumentResolver(jwtUtils));
+        resolvers.add(new UserIdArgumentResolver(jwtUtils, wechatAuthTxService,loginRedisCache));
     }
 
 

@@ -69,7 +69,7 @@ public class CartRedisCache {
                 data.put("quantity", cartRedisDTO.getQuantity());
                 String key = cartKeys.get(i);
                 hash.putAll(key, data);
-                hash.expiration(key, 7, TimeUnit.DAYS);
+                p.expire(key,7, TimeUnit.DAYS);
                 data.clear();
             }
         });

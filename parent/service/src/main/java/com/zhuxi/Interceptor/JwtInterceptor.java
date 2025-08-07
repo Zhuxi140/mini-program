@@ -4,6 +4,7 @@ package com.zhuxi.Interceptor;
 
 import com.zhuxi.Constant.MessageReturn;
 import com.zhuxi.Exception.JwtException;
+import com.zhuxi.service.Cache.LoginRedisCache;
 import com.zhuxi.utils.JwtUtils;
 import io.jsonwebtoken.Claims;
 import jakarta.servlet.http.HttpServletRequest;
@@ -17,10 +18,12 @@ public class JwtInterceptor implements HandlerInterceptor {
 
     private final JwtInterceptorProperties jwtInterceptorProperties;
     private final JwtUtils jwtUtils;
+    private final LoginRedisCache loginRedisCache;
 
-    public JwtInterceptor(JwtInterceptorProperties jwtInterceptorProperties, JwtUtils jwtUtils) {
+    public JwtInterceptor(JwtInterceptorProperties jwtInterceptorProperties, JwtUtils jwtUtils, LoginRedisCache loginRedisCache) {
         this.jwtInterceptorProperties = jwtInterceptorProperties;
         this.jwtUtils = jwtUtils;
+        this.loginRedisCache = loginRedisCache;
     }
 
 
@@ -53,14 +56,22 @@ public class JwtInterceptor implements HandlerInterceptor {
         }
 
         Claims claims = jwtUtils.parseToken(token);
+        String id = claims.getId();
+        if (id == null){
+            throw new JwtException(MessageReturn.JWT_ERROR);
+        }
+        String tokenValue = loginRedisCache.getTokenValue(token);
+        if (tokenValue != null) {
+            if (tokenValue.equals(id)) {
+                throw new JwtException(MessageReturn.LOGIN_ALREADY_USELESS);
+            }
+        }
         // 获取时间戳
         long timestamp = claims.getExpiration().getTime();
         long timeNow = System.currentTimeMillis();
         if( timeNow > timestamp){
             throw new JwtException(MessageReturn.JWT_IS_OVER_TIME);
         }
-
-
         return true;
     }
 }

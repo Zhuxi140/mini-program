@@ -368,7 +368,7 @@ public class ProductRedisCache {
         redisUntil.delete(getProductDetailKey(product));
         redisUntil.deleteZSetOneFiled(getSortPriceKey(),productId);
         redisUntil.deleteZSetOneFiled(getSortCreateDesc(),productId);
-        redisUntil.hDelete(getMapSpecProductKey(),product);
+        Long llll = redisUntil.hDelete(getMapSpecProductKey(), product);
         for(int i =0; i < specNumbers.size(); i++){
             Long specSnowFlake = specNumbers.get(i);
             redisUntil.delete(getSpecDetailKey(specSnowFlake));

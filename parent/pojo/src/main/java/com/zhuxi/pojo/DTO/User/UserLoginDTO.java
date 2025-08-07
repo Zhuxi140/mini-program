@@ -11,7 +11,7 @@ public class UserLoginDTO {
     private String openId;
     @Schema(description = "权限",requiredMode = Schema.RequiredMode.NOT_REQUIRED)
     private Role role;
-    @Schema(description = "jwt-token(含用户id和权限)",requiredMode = Schema.RequiredMode.NOT_REQUIRED)
+    @Schema(description = "jwt-token",requiredMode = Schema.RequiredMode.NOT_REQUIRED)
     private String token;
 
     public UserLoginDTO() {

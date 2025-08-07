@@ -1,6 +1,9 @@
 server:
   port: 8080
 
+wechat-miniProgram:
+  appId: ${APP_ID}
+  appSecret: ${APP_SECRET}
 
 spring:
   #数据源配置
@@ -20,6 +23,7 @@ spring:
     resources:
       static-locations:
         - classpath:/META-INF/resources/
+        - static/**
   # 环境配置
   profiles:
     active: dev
@@ -94,6 +98,7 @@ jwt-properties:
     - /swagger-ui.html/**
     - /swagger-ui/**
     - /v3/api-docs/**
+    - /wechatAuth/login
 
 
 # aliyun oss配置
@@ -125,5 +130,7 @@ springdoc:
 
 init-Data:
   page-size: 500   #  初始化数据的分页查询页大小
+
+
 
 

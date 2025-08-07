@@ -4,6 +4,7 @@ package com.zhuxi.utils;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.zhuxi.Exception.JsonException;
 import jakarta.annotation.PostConstruct;
@@ -74,5 +75,13 @@ public class JacksonUtils {
    public static Map<String, Object> filterNullFields(Object obj){
         objectMapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
         return objectMapper.convertValue(obj, new TypeReference<Map<String, Object>>(){});
+   }
+
+   public static JsonNode jsonToJsonNode(String jsonRaw){
+       try {
+           return objectMapper.readTree(jsonRaw);
+       } catch (JsonProcessingException e) {
+           throw new JsonException(e.getMessage());
+       }
    }
 }

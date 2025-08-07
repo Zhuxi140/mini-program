@@ -2,6 +2,9 @@ package com.zhuxi.handler;
 
 
 import com.zhuxi.annotation.CurrentUserId;
+import com.zhuxi.mapper.WechatAuthServiceMapper;
+import com.zhuxi.service.Cache.LoginRedisCache;
+import com.zhuxi.service.Tx.WechatAuthTxService;
 import com.zhuxi.utils.JwtUtils;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
@@ -17,9 +20,13 @@ import org.springframework.web.method.support.ModelAndViewContainer;
 public class UserIdArgumentResolver implements HandlerMethodArgumentResolver {
 
     private JwtUtils jwtUtils;
+    private WechatAuthTxService wechatAuthTxService;
+    private LoginRedisCache loginRedisCache;
 
-    public UserIdArgumentResolver(JwtUtils jwtUtils) {
+    public UserIdArgumentResolver(JwtUtils jwtUtils, WechatAuthTxService wechatAuthTxService, LoginRedisCache loginRedisCache) {
         this.jwtUtils = jwtUtils;
+        this.wechatAuthTxService = wechatAuthTxService;
+        this.loginRedisCache = loginRedisCache;
     }
 
     public UserIdArgumentResolver() {
@@ -48,11 +55,16 @@ public class UserIdArgumentResolver implements HandlerMethodArgumentResolver {
         if (claims == null){
             throw new JwtException("token error");
         }
-        Long id = claims.get("id", Long.class);
-        if (id == null){
+        String openid = claims.get("openid", String.class);
+        if (openid == null){
             throw new JwtException("token data error");
         }
-        return id;
+        Long userId = loginRedisCache.getUserId(openid);
+        if (userId == null){
+            Long userId1 = wechatAuthTxService.getUserId(openid);
+            loginRedisCache.saveUserId(openid,userId1);
+        }
+        return userId;
     }
 
 

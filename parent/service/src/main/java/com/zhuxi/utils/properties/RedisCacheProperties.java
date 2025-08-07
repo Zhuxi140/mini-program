@@ -19,6 +19,7 @@ public class RedisCacheProperties {
     private AddressCache addressCache = new AddressCache();
     private OrderCache orderCache = new OrderCache();
     private CartCache cartCache = new CartCache();
+    private UserCache userCache = new UserCache();
 
     private int maxAttempts;
     private long baseWaitMs;
@@ -253,6 +254,45 @@ public class RedisCacheProperties {
         public void setCartPrefix(String cartPrefix) {
             CartPrefix = cartPrefix;
         }
+    }
+
+    public static class UserCache{
+        private String SessionKey;
+        private String UserInfoPrefix;
+        private String logoutPrefix;
+
+        public String getUserInfoPrefix() {
+            return UserInfoPrefix;
+        }
+
+        public void setUserInfoPrefix(String userInfoPrefix) {
+            UserInfoPrefix = userInfoPrefix;
+        }
+
+        public String getSessionKey() {
+            return SessionKey;
+        }
+
+        public void setSessionKey(String sessionKey) {
+            SessionKey = sessionKey;
+        }
+
+        public String getLogoutPrefix() {
+            return logoutPrefix;
+        }
+
+        public void setLogoutPrefix(String logoutPrefix) {
+            this.logoutPrefix = logoutPrefix;
+        }
+    }
+
+
+    public UserCache getUserCache() {
+        return userCache;
+    }
+
+    public void setUserCache(UserCache userCache) {
+        this.userCache = userCache;
     }
 
     public ProductCache getProductCache() {

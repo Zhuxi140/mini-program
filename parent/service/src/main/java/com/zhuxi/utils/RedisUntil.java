@@ -69,8 +69,8 @@ public class RedisUntil {
         return HashOperations.get(key, hashKey);
     }
 
-    public void hDelete(String key,String hashKey){
-        HashOperations.delete(key,hashKey);
+    public Long hDelete(String key,Object... hashKey){
+        return HashOperations.delete(key, hashKey);
     }
 
     // 设置过期时间

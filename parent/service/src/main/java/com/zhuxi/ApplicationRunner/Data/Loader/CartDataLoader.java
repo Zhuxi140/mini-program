@@ -51,7 +51,6 @@ public class CartDataLoader {
     public void getCarList(List<Long> userIds){
         for (Long userId : userIds) {
             List<CartRedisDTO> listCartOne = cartTxService.getListCartOne(userId);
-            log.info("用户:{}的购物车数据:{}", userId, listCartOne);
             if (listCartOne.isEmpty()){
                 continue;
             }

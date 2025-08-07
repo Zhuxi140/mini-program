@@ -45,4 +45,11 @@ public class GlobalExceptionHandler {
         log.warn("{}",e.getMessage());
         return Result.error("Defense error :" + e.getMessage());
     }
+
+    @ExceptionHandler(LoginException.class)
+    public Result<Void> handlerLoginException(LoginException e){
+        log.warn("---- Login error ----");
+        log.warn("{}",e.getMessage());
+        return Result.error("Login error :" + e.getMessage());
+    }
 }

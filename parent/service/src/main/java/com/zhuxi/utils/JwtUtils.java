@@ -15,7 +15,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.Date;
 import java.util.Map;
-
+import java.util.UUID;
 
 
 @Slf4j
@@ -40,6 +40,7 @@ public class JwtUtils {
     public String createToken(Map<String,Object> claims){
         return Jwts.builder()
                 .claims(claims)
+                .id(UUID.randomUUID().toString())
                 .issuedAt(new Date(System.currentTimeMillis()))
                 .expiration(new Date(System.currentTimeMillis() + jwtProperties.getExpirationTime() * 1000))  //
                 .signWith(jwtProperties.getSecretKey())
