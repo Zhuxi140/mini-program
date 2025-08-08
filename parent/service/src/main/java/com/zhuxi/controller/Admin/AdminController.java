@@ -1,18 +1,27 @@
 package com.zhuxi.controller.Admin;
 
 
+import com.zhuxi.Constant.MessageReturn;
 import com.zhuxi.Result.Result;
 import com.zhuxi.annotation.RequireRole;
 import com.zhuxi.service.business.AdminService;
+import com.zhuxi.utils.JwtUtils;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.web.bind.annotation.*;
+import src.main.java.com.zhuxi.pojo.DTO.Admin.AdminLoginDTO;
 import src.main.java.com.zhuxi.pojo.DTO.Admin.AdminUpdateDTO;
+import src.main.java.com.zhuxi.pojo.VO.Admin.AdminLoginVO;
 import src.main.java.com.zhuxi.pojo.VO.Admin.AdminVO;
 import src.main.java.com.zhuxi.pojo.entity.Admin;
 import src.main.java.com.zhuxi.pojo.entity.Role;
+
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/admins")
@@ -20,10 +29,16 @@ import java.util.List;
 public class AdminController {
 
     private final AdminService adminService;
+    private final JwtUtils jwtUtils;
 
-    public AdminController(AdminService adminService) {
+    public AdminController(AdminService adminService, JwtUtils jwtUtils) {
         this.adminService = adminService;
+        this.jwtUtils = jwtUtils;
     }
+
+
+
+
 
     /**
      * 注册管理员接口
@@ -39,6 +54,34 @@ public class AdminController {
     ){
 
         return adminService.registerAdmin(admin);
+    }
+
+
+    /**
+     * 管理员登录
+     */
+    @Operation(
+            summary = "管理员登录",
+            description = "根据提供的账号密码登录"
+    )
+    @PostMapping("/login")
+    public Result<AdminLoginVO> loginAdmin(@RequestBody AdminLoginDTO adminLogin){
+
+        Result<AdminLoginVO> login = adminService.login(adminLogin.getUsername(), adminLogin.getPassword());
+
+        if(login.getCode() == 500)
+            return login;
+
+        AdminLoginVO data = login.getData();
+        Map<String, Object> claims = new HashMap<String, Object>();
+
+        claims.put("id",data.getId());
+//        claims.put("username",data.getUsername());
+        claims.put("role",data.getRole().name());
+        String token = jwtUtils.createToken(claims);
+        data.setToken(token);
+
+        return Result.success(MessageReturn.LOGIN_SUCCESS,data);
     }
 
 
@@ -100,6 +143,25 @@ public class AdminController {
             @Parameter(description = "管理员id", required = true)
             @PathVariable Integer id){
         return adminService.deleteAdmin(id);
+    }
+
+
+    @GetMapping("/logout")
+    @Operation(
+            summary = "管理员登出接口",
+            description = "管理员登出接口"
+    )
+    @RequireRole(Role.ADMIN)
+    public Result<Void> logout(
+            @Parameter(hidden = true)
+            @RequestHeader("Authorization")
+            String token,
+            @Parameter(hidden = true)
+            HttpServletRequest request,
+            @Parameter(hidden = true)
+            HttpServletResponse response
+    ){
+        return adminService.logout(token, request, response);
     }
 
 

@@ -1,18 +1,11 @@
 package com.zhuxi.utils;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.zhuxi.utils.properties.JwtProperties;
-import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.*;
 import com.zhuxi.Exception.JwtException;
-import io.jsonwebtoken.JwtParser;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.jackson.io.JacksonDeserializer;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
-import java.nio.charset.StandardCharsets;
-import java.util.Base64;
 import java.util.Date;
 import java.util.Map;
 import java.util.UUID;
@@ -51,7 +44,6 @@ public class JwtUtils {
      * 解析token
      */
     public Claims parseToken(String token){
-        try {
             int dotCount = 0;
             for (int i = 0; i < token.length(); i++) {
                 if (token.charAt(i) == '.')
@@ -60,18 +52,16 @@ public class JwtUtils {
 
             if (dotCount != 2)
                 throw new MalformedJwtException("token格式有误");
-
-            String headerBase64 = token.split("\\.")[0];
-            String headerJson = new String(Base64.getDecoder().decode(headerBase64), StandardCharsets.UTF_8);
-
-            ObjectMapper objectMapper = new ObjectMapper();
-
-                objectMapper.readTree(headerJson);
-
+            token = token.replaceAll("\\s", "");
+    try {
             return jwtParser
                     .parseSignedClaims(token)
                     .getPayload();
-    } catch (io.jsonwebtoken.JwtException | JsonProcessingException e) {
+    } catch (MalformedJwtException e) {
+        throw new JwtException("Token格式有误--:" + e.getMessage());
+    }catch (ExpiredJwtException e){
+        throw new JwtException("Token过期--:" + e.getMessage());
+    }catch (Exception e){
         throw new JwtException(e.getMessage());
     }
     }
@@ -81,14 +71,25 @@ public class JwtUtils {
      * 验证token合法性
      */
     public boolean verifyToken(String token){
-        try {
             parseToken(token);
             return true;
-        }catch (JwtException e){
-            return false;
-        }
     }
 
+
+
+
+    /**
+     * 计算字符在字符串中出现的次数
+     */
+    private int countOccurrences(String str, char c) {
+        int count = 0;
+        for (int i = 0; i < str.length(); i++) {
+            if (str.charAt(i) == c) {
+                count++;
+            }
+        }
+        return count;
+    }
 
 
 

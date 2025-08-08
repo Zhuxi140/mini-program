@@ -1,6 +1,8 @@
 package com.zhuxi.service.business;
 
 import com.zhuxi.Result.Result;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import src.main.java.com.zhuxi.pojo.DTO.Admin.AdminUpdateDTO;
 import src.main.java.com.zhuxi.pojo.VO.Admin.AdminLoginVO;
 import src.main.java.com.zhuxi.pojo.VO.Admin.AdminVO;
@@ -28,6 +30,10 @@ public interface AdminService {
 
     // 删除管理员
     Result<Void> deleteAdmin(Integer id);
+
+
+    //登出
+    Result<Void> logout(String token, HttpServletRequest request, HttpServletResponse response);
 
 
 }

@@ -31,4 +31,10 @@ public class OssTokenDTO {
     public void setObjectName(String objectName) {
         this.objectName = objectName;
     }
+
+
+    public void clear(){
+        url = null;
+        objectName = null;
+    }
 }

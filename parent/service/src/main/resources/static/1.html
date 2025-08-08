@@ -1,0 +1,828 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OSS文件上传工具（Token格式修复版）</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://gosspublic.alicdn.com/aliyun-oss-sdk-6.18.0.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #1a6bff 0%, #07C160 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+        }
+
+        header {
+            text-align: center;
+            padding: 20px 0;
+            color: white;
+            width: 100%;
+            max-width: 800px;
+        }
+
+        header h1 {
+            font-size: 2.2rem;
+            margin-bottom: 10px;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .container {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
+            width: 100%;
+            max-width: 800px;
+            overflow: hidden;
+            margin-top: 20px;
+        }
+
+        .tabs {
+            display: flex;
+            background: #f5f7fa;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .tab {
+            flex: 1;
+            padding: 15px;
+            text-align: center;
+            cursor: pointer;
+            font-weight: 600;
+            color: #4a5568;
+            transition: all 0.3s;
+        }
+
+        .tab.active {
+            color: #1a6bff;
+            border-bottom: 3px solid #1a6bff;
+            background: white;
+        }
+
+        .tab-content {
+            padding: 30px;
+        }
+
+        .panel {
+            display: none;
+        }
+
+        .panel.active {
+            display: block;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #2d3748;
+            font-size: 0.95rem;
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #cbd5e0;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border 0.3s;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: #1a6bff;
+            box-shadow: 0 0 0 3px rgba(26, 107, 255, 0.2);
+        }
+
+        textarea {
+            min-height: 120px;
+            resize: vertical;
+            font-family: monospace;
+            font-size: 0.9rem;
+        }
+
+        .jwt-info {
+            background: #f8fafc;
+            border: 1px dashed #cbd5e0;
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 10px;
+            font-size: 0.85rem;
+            color: #4a5568;
+        }
+
+        .jwt-info ul {
+            padding-left: 20px;
+            margin-top: 10px;
+        }
+
+        .jwt-info li {
+            margin-bottom: 5px;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background: #1a6bff;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 14px 25px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            width: 100%;
+        }
+
+        .btn:hover {
+            background: #0d5bd9;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(26, 107, 255, 0.3);
+        }
+
+        .btn i {
+            margin-right: 10px;
+        }
+
+        .btn-secondary {
+            background: #07C160;
+        }
+
+        .btn-secondary:hover {
+            background: #06a553;
+        }
+
+        .btn:disabled {
+            background: #a0aec0;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .status {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            font-size: 0.95rem;
+        }
+
+        .status.pending {
+            background: #fff8e6;
+            color: #e6a700;
+        }
+
+        .status.success {
+            background: #edf7ed;
+            color: #4caf50;
+        }
+
+        .status.error {
+            background: #fdeded;
+            color: #e53e3e;
+        }
+
+        .file-preview {
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .file-preview img {
+            max-width: 100%;
+            max-height: 200px;
+            border-radius: 8px;
+            border: 1px solid #e2e8f0;
+            display: none;
+        }
+
+        .progress-container {
+            margin-top: 20px;
+            height: 6px;
+            background: #e2e8f0;
+            border-radius: 3px;
+            overflow: hidden;
+            display: none;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: #1a6bff;
+            width: 0%;
+            transition: width 0.3s;
+        }
+
+        .result-card {
+            margin-top: 20px;
+            padding: 20px;
+            background: #f8fafc;
+            border-radius: 12px;
+            border-left: 4px solid #1a6bff;
+            display: none;
+        }
+
+        .result-card h3 {
+            margin-bottom: 10px;
+            color: #1a6bff;
+        }
+
+        .result-card p {
+            margin-bottom: 5px;
+            font-size: 0.95rem;
+        }
+
+        .result-card code {
+            background: #e2e8f0;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: monospace;
+            word-break: break-all;
+            display: inline-block;
+            margin-top: 5px;
+        }
+
+        .token-format {
+            font-size: 0.8rem;
+            color: #718096;
+            margin-top: 5px;
+        }
+
+        .help-text {
+            font-size: 0.85rem;
+            color: #718096;
+            margin-top: 5px;
+        }
+
+        .step-indicator {
+            display: flex;
+            justify-content: space-between;
+            margin: 20px 0;
+            position: relative;
+        }
+
+        .step-indicator::before {
+            content: '';
+            position: absolute;
+            top: 20px;
+            left: 10%;
+            width: 80%;
+            height: 2px;
+            background: #e2e8f0;
+            z-index: 1;
+        }
+
+        .step {
+            text-align: center;
+            position: relative;
+            z-index: 2;
+            flex: 1;
+        }
+
+        .step-icon {
+            width: 40px;
+            height: 40px;
+            background: white;
+            border: 2px solid #cbd5e0;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 10px;
+            color: #a0aec0;
+            font-weight: bold;
+        }
+
+        .step.active .step-icon {
+            background: #1a6bff;
+            border-color: #1a6bff;
+            color: white;
+        }
+
+        .step-text {
+            font-size: 0.8rem;
+            color: #4a5568;
+            font-weight: 500;
+        }
+
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 1.8rem;
+            }
+
+            .tab-content {
+                padding: 20px;
+            }
+        }
+
+        .debug-card {
+            background: #f0f9ff;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+            border-left: 4px solid #1a6bff;
+        }
+
+        .debug-card h3 {
+            margin-bottom: 10px;
+            color: #1a6bff;
+        }
+
+        .debug-card pre {
+            background: #e2e8f0;
+            padding: 15px;
+            border-radius: 8px;
+            font-family: monospace;
+            font-size: 0.85rem;
+            overflow-x: auto;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+    </style>
+</head>
+<body>
+<header>
+    <h1><i class="fas fa-cloud-upload-alt"></i> OSS文件上传工具</h1>
+    <p>Token格式修复版 - 解决控制字符问题</p>
+</header>
+
+<div class="container">
+    <div class="tabs">
+        <div class="tab active" data-tab="upload">上传文件</div>
+        <div class="tab" data-tab="token">Token调试工具</div>
+    </div>
+
+    <div class="tab-content">
+        <!-- 上传面板 -->
+        <div class="panel active" id="upload-panel">
+            <div class="step-indicator">
+                <div class="step active" id="step1">
+                    <div class="step-icon">1</div>
+                    <div class="step-text">配置信息</div>
+                </div>
+                <div class="step" id="step2">
+                    <div class="step-icon">2</div>
+                    <div class="step-text">选择文件</div>
+                </div>
+                <div class="step" id="step3">
+                    <div class="step-icon">3</div>
+                    <div class="step-text">上传验证</div>
+                </div>
+                <div class="step" id="step4">
+                    <div class="step-icon">4</div>
+                    <div class="step-text">完成</div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="jwtInput">JWT Token <span class="token-format">(格式: header.payload.signature)</span></label>
+                <input type="text" id="jwtInput" placeholder="例如：eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...">
+                <p class="help-text">请输入有效的JWT Token，注意不要包含多余空格</p>
+            </div>
+
+            <div class="form-group">
+                <label for="categorySelect">文件分类</label>
+                <select id="categorySelect">
+                    <option value="product_coverurl">产品封面</option>
+                    <option value="article_coverurl">文章封面</option>
+                    <option value="spec_coverurl">规格图片</option>
+                    <option value="user_avatar">用户头像</option>
+                    <option value="document">文档</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="dynamicIdInput">动态ID（产品/文章ID）</label>
+                <input type="text" id="dynamicIdInput" placeholder="例如：123">
+            </div>
+
+            <div class="form-group">
+                <label for="fileInput">选择文件</label>
+                <input type="file" id="fileInput" accept="image/*, .pdf, .doc, .docx, .xls, .xlsx">
+                <div class="file-preview">
+                    <img id="previewImage" src="" alt="文件预览">
+                </div>
+            </div>
+
+            <button id="uploadBtn" class="btn">
+                <i class="fas fa-upload"></i> 上传文件
+            </button>
+
+            <div class="progress-container" id="progressContainer">
+                <div class="progress-bar" id="progressBar"></div>
+            </div>
+
+            <div id="status" class="status pending">等待操作...</div>
+
+            <div class="result-card" id="resultCard">
+                <h3><i class="fas fa-check-circle"></i> 上传成功</h3>
+                <p><strong>文件路径：</strong></p>
+                <code id="filePath">-</code>
+                <p><strong>OSS访问URL：</strong></p>
+                <code id="ossUrl">-</code>
+                <p><strong>上传耗时：</strong> <span id="uploadTime">-</span> 秒</p>
+            </div>
+        </div>
+
+        <!-- Token调试面板 -->
+        <div class="panel" id="token-panel">
+            <h2 style="margin-bottom: 20px; color: #1a6bff;"><i class="fas fa-bug"></i> Token调试工具</h2>
+
+            <div class="form-group">
+                <label for="rawTokenInput">原始Token（粘贴问题Token）</label>
+                <textarea id="rawTokenInput" placeholder="粘贴有问题的Token..."></textarea>
+            </div>
+
+            <div class="form-group">
+                <button id="analyzeBtn" class="btn">
+                    <i class="fas fa-search"></i> 分析Token问题
+                </button>
+            </div>
+
+            <div class="debug-card">
+                <h3>诊断结果</h3>
+                <div id="diagnosisResult" class="status" style="margin-top: 10px; text-align: left;">
+                    等待分析...
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="cleanedToken">清理后的Token</label>
+                <textarea id="cleanedToken" readonly></textarea>
+                <button id="copyBtn" class="btn btn-secondary">
+                    <i class="fas fa-copy"></i> 复制清理后的Token
+                </button>
+            </div>
+
+            <div class="jwt-info">
+                <p><strong>Token格式问题说明：</strong></p>
+                <ul>
+                    <li>问题原因：Token中包含非法控制字符（如CTRL-CHAR）</li>
+                    <li>常见来源：从某些编辑器或文档中复制时带入不可见字符</li>
+                    <li>解决方法：使用下方工具清理Token中的非法字符</li>
+                    <li>预防措施：避免从富文本编辑器复制Token，直接从控制台复制</li>
+                </ul>
+
+                <p style="margin-top: 15px;"><strong>修复方案：</strong></p>
+                <ul>
+                    <li>步骤1：粘贴有问题的Token到上方输入框</li>
+                    <li>步骤2：点击"分析Token问题"按钮</li>
+                    <li>步骤3：复制清理后的Token用于上传</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        // DOM元素
+        const tabs = document.querySelectorAll('.tab');
+        const panels = document.querySelectorAll('.panel');
+        const uploadBtn = document.getElementById('uploadBtn');
+        const fileInput = document.getElementById('fileInput');
+        const categorySelect = document.getElementById('categorySelect');
+        const dynamicIdInput = document.getElementById('dynamicIdInput');
+        const jwtInput = document.getElementById('jwtInput');
+        const status = document.getElementById('status');
+        const previewImage = document.getElementById('previewImage');
+        const progressContainer = document.getElementById('progressContainer');
+        const progressBar = document.getElementById('progressBar');
+        const resultCard = document.getElementById('resultCard');
+        const filePath = document.getElementById('filePath');
+        const ossUrl = document.getElementById('ossUrl');
+        const uploadTime = document.getElementById('uploadTime');
+        const steps = document.querySelectorAll('.step');
+
+        // Token调试元素
+        const rawTokenInput = document.getElementById('rawTokenInput');
+        const analyzeBtn = document.getElementById('analyzeBtn');
+        const diagnosisResult = document.getElementById('diagnosisResult');
+        const cleanedToken = document.getElementById('cleanedToken');
+        const copyBtn = document.getElementById('copyBtn');
+
+        // 当前激活的步骤
+        let currentStep = 1;
+
+        // 切换标签页
+        tabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                // 移除所有active类
+                tabs.forEach(t => t.classList.remove('active'));
+                panels.forEach(p => p.classList.remove('active'));
+
+                // 添加active类到当前标签
+                tab.classList.add('active');
+                document.getElementById(`${tab.dataset.tab}-panel`).classList.add('active');
+            });
+        });
+
+        // 文件预览功能
+        fileInput.addEventListener('change', function() {
+            const file = this.files[0];
+            if (!file) return;
+
+            // 图片预览
+            if (file.type.startsWith('image/')) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    previewImage.src = e.target.result;
+                    previewImage.style.display = 'block';
+                }
+                reader.readAsDataURL(file);
+            } else {
+                previewImage.style.display = 'none';
+            }
+
+            // 更新步骤
+            updateStep(2);
+        });
+
+        // 上传按钮事件
+        uploadBtn.addEventListener('click', async () => {
+            // 获取输入值
+            const file = fileInput.files[0];
+            const categoryId = categorySelect.value;
+            const dynamicId = dynamicIdInput.value.trim();
+            const rawToken = jwtInput.value.trim();
+
+            // 清理Token（关键修复）
+            const jwtToken = cleanToken(rawToken);
+
+            // 验证JWT格式
+            if (!validateJwtFormat(jwtToken)) {
+                status.textContent = 'JWT格式无效，请检查Token结构';
+                status.className = 'status error';
+                return;
+            }
+
+            // 验证其他输入
+            if (!file) {
+                status.textContent = '请选择文件！';
+                status.className = 'status error';
+                return;
+            }
+
+            if (!dynamicId) {
+                status.textContent = '请输入动态ID！';
+                status.className = 'status error';
+                return;
+            }
+
+            // 更新状态
+            status.textContent = '正在获取OSS凭证...';
+            status.className = 'status pending';
+            updateStep(3);
+
+            try {
+                // 显示进度条
+                progressContainer.style.display = 'block';
+                progressBar.style.width = '10%';
+
+                // 获取OSS凭证
+                const ossToken = await getOssToken(jwtToken, categoryId, dynamicId);
+
+                // 更新进度
+                progressBar.style.width = '30%';
+                status.textContent = '准备上传文件...';
+
+                // 上传文件到OSS
+                const startTime = Date.now();
+                const fileName = `${Date.now()}-${file.name}`;
+                const fileKey = ossToken.path + fileName;
+
+                // 上传到阿里云OSS
+                const ossUrlResult = await uploadToOss(file, fileKey, ossToken);
+
+                // 计算耗时
+                const endTime = Date.now();
+                const duration = ((endTime - startTime) / 1000).toFixed(2);
+
+                // 显示结果
+                progressBar.style.width = '100%';
+                status.textContent = '上传成功！';
+                status.className = 'status success';
+
+                // 显示结果卡片
+                filePath.textContent = fileKey;
+                ossUrl.textContent = ossUrlResult;
+                uploadTime.textContent = duration;
+                resultCard.style.display = 'block';
+
+                // 更新步骤
+                updateStep(4);
+
+            } catch (error) {
+                // 错误处理
+                status.textContent = `上传失败：${error.message}`;
+                status.className = 'status error';
+                progressBar.style.width = '0%';
+                resultCard.style.display = 'none';
+                console.error('详细错误：', error);
+
+                // 重置步骤
+                updateStep(1);
+            }
+        });
+
+        // Token分析按钮事件
+        analyzeBtn.addEventListener('click', () => {
+            const token = rawTokenInput.value.trim();
+            if (!token) {
+                diagnosisResult.textContent = '请输入Token进行分析';
+                diagnosisResult.className = 'status error';
+                return;
+            }
+
+            // 清理Token
+            const cleaned = cleanToken(token);
+            cleanedToken.value = cleaned;
+
+            // 分析Token问题
+            analyzeToken(token);
+        });
+
+        // 复制清理后的Token
+        copyBtn.addEventListener('click', () => {
+            cleanedToken.select();
+            document.execCommand('copy');
+            diagnosisResult.innerHTML = '<i class="fas fa-check-circle"></i> 清理后的Token已复制到剪贴板';
+            diagnosisResult.className = 'status success';
+        });
+
+        // 更新步骤指示器
+        function updateStep(step) {
+            currentStep = step;
+            steps.forEach((s, index) => {
+                if (index < step) {
+                    s.classList.add('active');
+                } else {
+                    s.classList.remove('active');
+                }
+            });
+        }
+
+        // Token清理函数（关键修复）
+        function cleanToken(token) {
+            // 1. 移除所有空白字符
+            let cleaned = token.replace(/\s/g, '');
+
+            // 2. 移除所有控制字符（ASCII 0-31 和 127）
+            cleaned = cleaned.replace(/[\x00-\x1F\x7F]/g, '');
+
+            // 3. 移除非JWT字符（只保留字母、数字、-、_、.）
+            cleaned = cleaned.replace(/[^\w.-]/g, '');
+
+            // 4. 确保点号数量正确
+            const parts = cleaned.split('.');
+            if (parts.length > 3) {
+                // 如果有多余的点号，保留前三个部分
+                cleaned = parts.slice(0, 3).join('.');
+            }
+
+            return cleaned;
+        }
+
+        // JWT格式验证函数
+        function validateJwtFormat(token) {
+            if (!token) return false;
+
+            // 检查点号数量
+            const dotCount = token.split('.').length - 1;
+            if (dotCount !== 2) return false;
+
+            // 检查各部分长度
+            const parts = token.split('.');
+            if (parts.length !== 3) return false;
+            if (parts.some(part => part.length === 0)) return false;
+
+            return true;
+        }
+
+        // 分析Token问题
+        function analyzeToken(token) {
+            // 检查控制字符
+            const controlChars = token.match(/[\x00-\x1F\x7F]/g);
+
+            // 检查非法字符
+            const illegalChars = token.match(/[^\w.-]/g);
+
+            // 检查空格
+            const spaces = token.match(/\s/g);
+
+            // 检查点号数量
+            const dotCount = token.split('.').length - 1;
+
+            let resultHTML = '<ul>';
+
+            if (controlChars && controlChars.length > 0) {
+                resultHTML += `<li><strong>发现控制字符：</strong> ${controlChars.length} 个</li>`;
+            }
+
+            if (illegalChars && illegalChars.length > 0) {
+                resultHTML += `<li><strong>发现非法字符：</strong> ${illegalChars.join('')}</li>`;
+            }
+
+            if (spaces && spaces.length > 0) {
+                resultHTML += `<li><strong>发现空格：</strong> ${spaces.length} 个</li>`;
+            }
+
+            if (dotCount !== 2) {
+                resultHTML += `<li><strong>点号数量错误：</strong> 发现 ${dotCount} 个点号（应为2个）</li>`;
+            }
+
+            if (!controlChars && !illegalChars && !spaces && dotCount === 2) {
+                resultHTML += '<li>未发现问题，Token格式正常</li>';
+            }
+
+            resultHTML += '</ul>';
+
+            diagnosisResult.innerHTML = resultHTML;
+            diagnosisResult.className = 'status';
+        }
+
+        // 获取OSS凭证
+        async function getOssToken(jwtToken, categoryId, dynamicId) {
+            try {
+                // 在真实环境中，这里应该调用您的后端API
+                // 以下代码模拟API调用
+                await new Promise(resolve => setTimeout(resolve, 800));
+
+                return {
+                    accessKeyId: 'STS.' + Math.random().toString(36).substr(2, 20).toUpperCase(),
+                    accessKeySecret: Math.random().toString(36).substr(2, 40),
+                    securityToken: 'CAIS' + Math.random().toString(36).substr(2, 100).toUpperCase(),
+                    bucket: 'mini-programm',
+                    endpoint: 'oss-cn-beijing.aliyuncs.com',
+                    path: `uploads/${categoryId}/${dynamicId}/`
+                };
+
+            } catch (error) {
+                throw new Error(`获取OSS凭证时出错: ${error.message}`);
+            }
+        }
+
+        // 上传到阿里云OSS
+        async function uploadToOss(file, fileKey, ossToken) {
+            return new Promise((resolve, reject) => {
+                try {
+                    // 创建OSS客户端
+                    const client = new OSS({
+                        region: 'oss-cn-beijing',
+                        accessKeyId: ossToken.accessKeyId,
+                        accessKeySecret: ossToken.accessKeySecret,
+                        stsToken: ossToken.securityToken,
+                        bucket: 'mini-programm',
+                        endpoint: 'mini-programm.oss-cn-beijing.aliyuncs.com'
+                    });
+
+                    // 上传文件
+                    client.put(fileKey, file, {
+                        progress: (p) => {
+                            const percentage = Math.round(p * 100);
+                            progressBar.style.width = `${percentage}%`;
+                            status.textContent = `上传中: ${percentage}%`;
+                        }
+                    }).then(result => {
+                        if (result.res.status === 200) {
+                            resolve(`https://mini-programm.oss-cn-beijing.aliyuncs.com/${fileKey}`);
+                        } else {
+                            reject(new Error(`上传失败，状态码: ${result.res.status}`));
+                        }
+                    }).catch(error => {
+                        reject(new Error(`OSS上传错误: ${error.message}`));
+                    });
+
+                } catch (error) {
+                    reject(new Error(`初始化OSS客户端失败: ${error.message}`));
+                }
+            });
+        }
+
+        // 初始步骤
+        updateStep(1);
+    });
+</script>
+</body>
+</html>

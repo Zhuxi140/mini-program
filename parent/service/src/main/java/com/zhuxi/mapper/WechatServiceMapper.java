@@ -15,6 +15,9 @@ public interface WechatServiceMapper {
     @Select("SELECT COUNT(*) FROM user WHERE openid = #{openId}")
     int isExist(String openId);
 
+    @Select("SELECT status FROM user WHERE openid = #{openId}")
+    int isBan(String openId);
+
     @Insert("""
     INSERT user(snowflake_id, openid) VALUE (#{snowflakeId},#{openId})
     """)

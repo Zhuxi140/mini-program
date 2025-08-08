@@ -29,6 +29,15 @@ public class WechatAuthTxService {
         return false;
     }
 
+    public boolean isBan(String openId){
+        int ban = wechatServiceMapper.isBan(openId);
+        if (ban == 1){
+            return false;
+        }else{
+            return true;
+        }
+    }
+
     @Transactional(rollbackFor = transactionalException.class)
     public void InsertPhone(String phoneNumber, Long userId){
         int insert = wechatServiceMapper.InsertPhone(phoneNumber, userId);

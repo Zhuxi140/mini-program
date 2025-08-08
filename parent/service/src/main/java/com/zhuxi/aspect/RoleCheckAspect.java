@@ -43,7 +43,7 @@ public class RoleCheckAspect {
 
         Claims claims = jwtUtils.parseToken(token);
         if(claims == null){
-            log.warn("Role error1 :{} ",claims);
+            log.warn("claims error1 : claims ={} ",claims);
             return Result.error(MessageReturn.JWT_ERROR);
         }
 
@@ -60,8 +60,8 @@ public class RoleCheckAspect {
                 return joinPoint.proceed();
 
         }catch (JwtException e){
-            log.warn("Role error2 :{} ",e.getMessage());
-            return Result.error(MessageReturn.JWT_ERROR);
+            log.warn("Role error :{} ",e.getMessage());
+            return Result.error(MessageReturn.ROLE_ERROR);
         }
 
         if(role.equals(requireRole.value()))

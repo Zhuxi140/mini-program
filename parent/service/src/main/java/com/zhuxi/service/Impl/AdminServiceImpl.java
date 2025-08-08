@@ -2,11 +2,17 @@ package com.zhuxi.service.Impl;
 
 import com.zhuxi.Constant.MessageReturn;
 import com.zhuxi.Result.Result;
+import com.zhuxi.service.Cache.AdminCache;
 import com.zhuxi.service.business.AdminService;
 import com.zhuxi.service.Tx.AdminTxService;
 import com.zhuxi.utils.BCryptUtils;
 import com.zhuxi.utils.JwtUtils;
+import io.jsonwebtoken.Claims;
 import io.micrometer.common.util.StringUtils;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
@@ -20,7 +26,9 @@ import src.main.java.com.zhuxi.pojo.entity.Admin;
 import java.security.SecureRandom;
 import java.time.LocalDateTime;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 @Service
 @Log4j2
@@ -28,10 +36,14 @@ public class AdminServiceImpl implements AdminService {
 
     private final BCryptUtils bCryptUtils;
     private final AdminTxService adminTxService;
+    private final JwtUtils jwtUtils;
+    private final AdminCache adminCache;
 
-    public AdminServiceImpl(AdminTxService adminTxService, BCryptUtils bCryptUtils, JwtUtils jwtUtils) {
+    public AdminServiceImpl(AdminTxService adminTxService, BCryptUtils bCryptUtils, JwtUtils jwtUtils, JwtUtils jwtUtils1, AdminCache adminCache) {
         this.adminTxService = adminTxService;
         this.bCryptUtils = bCryptUtils;
+        this.jwtUtils = jwtUtils1;
+        this.adminCache = adminCache;
     }
 
     /**
@@ -114,6 +126,34 @@ public class AdminServiceImpl implements AdminService {
        adminTxService.deleteAdmin( id);
 
        return Result.success(MessageReturn.OPERATION_SUCCESS);
+    }
+
+    @Override
+    public Result<Void> logout(String token, HttpServletRequest request, HttpServletResponse response) {
+
+        Claims claims = jwtUtils.parseToken(token);
+        Date expiration = claims.getExpiration();
+        String jit = claims.getId();
+        long ttl = TimeUnit.MILLISECONDS.toSeconds(expiration.getTime() - System.currentTimeMillis());
+        if (ttl > 0){
+            adminCache.saveLogOutToken(token,jit,ttl,TimeUnit.SECONDS);
+        }
+
+        HttpSession session = request.getSession(false);
+        if (session != null){
+            session.invalidate();
+        }
+
+        Cookie[] cookies = request.getCookies();
+        if (cookies != null){
+            Arrays.stream( cookies)
+                    .filter(cookie->"AUTH_TOKEN".equals(cookie.getName()) || "JSESSIONID".equals(cookie.getName()))
+                    .forEach(cookie-> {
+                        cookie.setMaxAge(0);
+                        response.addCookie(cookie);
+                    });
+        }
+        return Result.success(MessageReturn.LOGOUT_SUCCESS);
     }
 
     /**

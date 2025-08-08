@@ -19,11 +19,11 @@ spring:
     username: Zhu
     password: Zhu123456
 
-  web:
-    resources:
-      static-locations:
-        - classpath:/META-INF/resources/
-        - static/**
+#  web:
+#    resources:
+#      static-locations:
+#        - classpath:/META-INF/resources/
+#        - static/**
   # 环境配置
   profiles:
     active: dev
@@ -90,15 +90,16 @@ jwt:
 # jwt拦截器放行接口
 jwt-properties:
   exclude-paths:
-    - /login/user
-    - /login/admin
     - /oss/upload
-    - /
     - /error
     - /swagger-ui.html/**
     - /swagger-ui/**
     - /v3/api-docs/**
+    - /admins/login
     - /wechatAuth/login
+    - /
+    - /1.html
+
 
 
 # aliyun oss配置
@@ -109,6 +110,8 @@ oss:
   callback-url: http://localhost:8080/oss/upload   #回调地址
   endpoint: mini-programm.oss-cn-beijing.aliyuncs.com  # 存储空间
   expire-time: 3600 # 签名过期时间 默认1小时
+
+OSS-Prefix: https://mini-programm.oss-cn-beijing.aliyuncs.com/
 
 #BCrypt配置
 bcrypt:

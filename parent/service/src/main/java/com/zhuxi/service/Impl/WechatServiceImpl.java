@@ -50,6 +50,9 @@ public class WechatServiceImpl implements WechatService {
         this.wechatRequest = wechatRequest;
     }
 
+    /**
+     * 登录
+     */
     @Override
     @Transactional
     public Result<UserBasicVO> login(String code) {
@@ -71,6 +74,9 @@ public class WechatServiceImpl implements WechatService {
         boolean isSave = false;
         try {
             if (wechatAuthTxService.isExist(openId)) {
+                if (wechatAuthTxService.isBan(openId)){
+                    return Result.error(MessageReturn.ACCOUNT_IS_BANING);
+                }
                 userBasicVO = loginRedisCache.getUserInfo(openId);
                 if (userBasicVO == null) {
                     isSave=true;
@@ -146,7 +152,6 @@ public class WechatServiceImpl implements WechatService {
      */
     @Override
     public Result<Void> logout(String token, HttpServletRequest request, HttpServletResponse response) {
-        log.info("impl token : {}", token);
         Claims claims = jwtUtils.parseToken(token);
         Date expiration = claims.getExpiration();
         String jit = claims.getId();

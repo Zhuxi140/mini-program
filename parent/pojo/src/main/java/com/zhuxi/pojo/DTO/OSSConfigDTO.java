@@ -7,8 +7,8 @@ public class OSSConfigDTO {
     allowableValues = {"product","spec","article","avatar"})
     private String category;
 
-    @Schema(description = "上传文件类型(product(cover、images),spec(cover),article(cover、content、contentImages),avatar(avatar)",requiredMode = Schema.RequiredMode.REQUIRED,
-    allowableValues = {"cover","images","content","contentImages","avatar"})
+    @Schema(description = "上传文件类型(product(coverUrl、images),spec(coverUrl),article(coverUrl、content、images),avatar(avatar)",requiredMode = Schema.RequiredMode.REQUIRED,
+    allowableValues = {"coverUrl","images","content","avatar"})
     private String type;
 
     @Schema(description = "文件后缀名(jpg、png、txt、html等)",requiredMode = Schema.RequiredMode.REQUIRED)

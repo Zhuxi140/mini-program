@@ -5,12 +5,15 @@ import ch.qos.logback.core.util.StringUtil;
 import com.aliyun.oss.HttpMethod;
 import com.aliyun.oss.OSS;
 import com.aliyun.oss.OSSClientBuilder;
+import com.zhuxi.Exception.OSSException;
 import com.aliyun.oss.model.GeneratePresignedUrlRequest;
 import com.zhuxi.Constant.MessageReturn;
 import com.zhuxi.Result.Result;
+import com.zhuxi.service.Cache.LoginRedisCache;
 import com.zhuxi.service.Tx.ArticleTxService;
 import com.zhuxi.service.Tx.ProductTxService;
 import com.zhuxi.service.Tx.UserTxService;
+import com.zhuxi.service.Tx.WechatAuthTxService;
 import com.zhuxi.utils.JwtUtils;
 import io.jsonwebtoken.Claims;
 import io.swagger.v3.oas.annotations.Operation;
@@ -37,6 +40,7 @@ import java.nio.charset.StandardCharsets;
 import java.security.PublicKey;
 import java.security.Signature;
 import java.util.*;
+import java.util.stream.Stream;
 
 @Slf4j
 @RestController
@@ -47,6 +51,8 @@ public class OSSController {
     private final ProductTxService productTxService;
     private final UserTxService userTxService;
     private final ArticleTxService articleTxService;
+    private final LoginRedisCache loginRedisCache;
+    private final WechatAuthTxService wechatAuthTxService;
     private final Map<String, PublicKey> publicKeyCache = new HashMap<>();
 
     @Value("${oss.access-key-id}")
@@ -67,11 +73,16 @@ public class OSSController {
     @Value("${oss.callback-url}")
     private String callbackUrl;
 
-    public OSSController(JwtUtils jwtUtils,UserTxService userTxService, ProductTxService productTxService, ArticleTxService articleTxService) {
+    @Value("${OSS-Prefix}")
+    private String ossPrefix;
+
+    public OSSController(JwtUtils jwtUtils, UserTxService userTxService, ProductTxService productTxService, ArticleTxService articleTxService, LoginRedisCache loginRedisCache, WechatAuthTxService wechatAuthTxService) {
         this.jwtUtils = jwtUtils;
         this.userTxService = userTxService;
         this.productTxService = productTxService;
         this.articleTxService = articleTxService;
+        this.loginRedisCache = loginRedisCache;
+        this.wechatAuthTxService = wechatAuthTxService;
     }
 
 
@@ -88,7 +99,6 @@ public class OSSController {
         if (claims == null)
             throw new RuntimeException(MessageReturn.JWT_IS_NULL);
 
-
         //返回
         return categoryDeal( claims,configs);
 
@@ -96,12 +106,10 @@ public class OSSController {
 
 
     @PostMapping("/oss/upload")
-    @Operation(summary = "上传回调（供阿里云OSS后台使用用 可忽略）")
+    @Operation(hidden = true)
     public Result<Void> uploadCallback(
-            @Parameter(description = "请求头组",hidden = true)
             @RequestHeader
             Map<String,String> mapHeaders,
-            @Parameter(description = "请求体组",hidden = true)
             @RequestBody
             Map<String,String> mapBody
     ){
@@ -149,21 +157,21 @@ public class OSSController {
 
             }
                 break;
-            case "product_cover": {
+            case "product_coverurl": {
                 log.info("product_cover________________执行中");
-                /*productTxService.addBasePics(callbackData.objectName, callbackData.images, callbackData.productId);*/
+//                productTxService.addBasePics(callbackData.objectName, callbackData., callbackData.productId);
             }
                 break;
             case "product_images": {
                 log.info("product_images________________执行中");
             }
                 break;
-            case "article_cover": {
+            case "article_coverurl": {
                 log.info("article_cover________________执行中");
             }
                 break;
-            case "article_contentImages":{
-                log.info("article_contentImages________________执行中");
+            case "article_images":{
+                log.info("article_images________________执行中");
             }
                 break;
             case "article_content":{
@@ -272,30 +280,53 @@ public class OSSController {
 
     // 分类处理
     private List<OssTokenDTO> categoryDeal(Claims  claims, List<OSSConfigDTO> configs) {
-        Long id = claims.get("id", Long.class);
+        Long id = null;
         String s = claims.get("role", String.class);
-        Map<String,String> map = new HashMap<>();
+        // 转为小写
+        String role = s.toLowerCase();
+        if ("user".equals(role)){
+            id = loginRedisCache.getUserId(claims.get("openid", String.class));
+            if (id == null){
+                id = wechatAuthTxService.getUserId(claims.get("openid", String.class));
+                loginRedisCache.saveUserId(claims.get("openid", String.class),id);
+            }
+        }
+        if("admin".equals(role) || "super_admin".equals(role)){
+            id = claims.get("id", Long.class);
+        }
+        Map<String,String> map;
         OssTokenDTO ossTokenDTO = new OssTokenDTO();
         List<OssTokenDTO> ossTokenDTOS = new ArrayList<>();
         for(OSSConfigDTO config : configs) {
-            checkType(config.getFileType());
-            switch (config.getCategory().toLowerCase()) {
+            if (id == null){
+                throw new OSSException(MessageReturn.JWT_DATA_ERROR);
+            }
+            checkId(config);
+            String fileType = config.getFileType();
+            checkFileType(fileType);
+            String category = config.getCategory();
+            checkCategory(category);
+            String type = config.getType();
+            checkType(type);
+            switch (category.toLowerCase()) {
                 case "avatar": {
                     if (!(s).equalsIgnoreCase("user"))
                         throw new RuntimeException(MessageReturn.ROLE_ERROR);
-                    String s1 = generateObjectName(config.getType(), config.getCategory(), config.getFileType(), id, config.getProductId(), config.getArticleId(), config.getSpecId());
-                    map = generateUrl(s1, config.getFileType(), config.getCategory(), config.getType(), id, config.getProductId(), config.getArticleId(), config.getSpecId());
+                    String s1 = generateObjectName(type, category, fileType, id, config.getProductId(), config.getArticleId(), config.getSpecId());
+                    map = generateUrl(s1, fileType, category, type, id, config.getProductId(), config.getArticleId(), config.getSpecId());
                     ossTokenDTO.setUrl(map.get("url"));
                     ossTokenDTO.setObjectName(map.get("objectName"));
                     ossTokenDTOS.add(ossTokenDTO);
+                    ossTokenDTO.clear();
                 } break;
-                case "product", "article": {
+                case "product", "article", "spec": {
                     checkRole(s);
-                    String s1 = generateObjectName(config.getType(), config.getCategory(), config.getFileType(), id, config.getProductId(), config.getArticleId(), config.getSpecId());
+                    String s1 = generateObjectName(type, config.getCategory(), config.getFileType(), id, config.getProductId(), config.getArticleId(), config.getSpecId());
                     map = generateUrl(s1, config.getFileType(), config.getCategory(), config.getType(), id, config.getProductId(), config.getArticleId(), config.getSpecId());
                     ossTokenDTO.setUrl(map.get("url"));
                     ossTokenDTO.setObjectName(map.get("objectName"));
                     ossTokenDTOS.add(ossTokenDTO);
+                    ossTokenDTO.clear();
                 } break;
                 default:
                     throw new RuntimeException(MessageReturn.NO_CATEGORY);
@@ -308,14 +339,14 @@ public class OSSController {
     // 生成objectName
     private String generateObjectName(String type,String category,String fileType,Long id,Long productId,Long articleId,Long specId){
         String Path = switch ( category + "_" + type){
-            case "product_cover" -> "product/Id" +  productId + "/admin" + id + "/cover/";
+            case "product_coverurl" -> "product/Id" +  productId + "/admin" + id + "/coverUrl/";
             case "product_images" -> "productId/Id" +  productId + "/admin" + id + "/images/";
-            case "product_spec" ->   "product/Id" +  productId + "/admin" + id + "/spec" + specId + "/";
-            case "article_cover" -> "article/Id" + articleId + "/admin" + id + "/cover/";
+            case "spec_coverurl" ->   "product/Id" +  productId + "/admin" + id + "/spec" + specId + "/";
+            case "article_coverurl" -> "article/Id" + articleId + "/admin" + id + "/coverUrl/";
             case "article_content" -> "article/Id" + articleId + "/admin" + id + "/content/";
-            case "article_contentImages" -> "article/Id" +articleId + "/admin" + id + "/contentImages/";
+            case "article_images" -> "article/Id" +articleId + "/admin" + id + "/images/";
             case "avatar_avatar" -> "avatar/user" + id + "/";
-            default -> throw new RuntimeException(MessageReturn.CATEGORY_FIT_ERROR);
+            default -> throw new OSSException(MessageReturn.CATEGORY_FIT_ERROR);
         };
 
         String s = String.valueOf(System.currentTimeMillis());
@@ -325,19 +356,51 @@ public class OSSController {
     }
 
     // 检查文件的合法性
-    private void checkType(String fileType){
+    private void checkFileType(String fileType){
         switch ( fileType.toLowerCase()){
             case "jpg", "jpeg", "webp", "png", "html", "txt":
                 break;
             default:
-                throw new RuntimeException(MessageReturn.FILE_TYPE_ERROR);
+                throw new OSSException(MessageReturn.FILE_TYPE_ERROR);
+        }
+    }
+
+    private void checkCategory(String category){
+        switch (category.toLowerCase()){
+            case "product", "article", "avatar","spec":
+                break;
+            default:
+                throw new OSSException(MessageReturn.NO_CATEGORY);
+        }
+    }
+
+    private void checkType(String type){
+        switch (type.toLowerCase()){
+            case "coverurl", "images", "content", "avatar":
+                break;
+            default:
+                throw new OSSException(MessageReturn.CATEGORY_TYPE_ERROR);
+        }
+    }
+
+    private void checkId(OSSConfigDTO config){
+        Long articleId = config.getArticleId();
+        Long productId = config.getProductId();
+        Long specId = config.getSpecId();
+
+        long count = Stream.of(articleId, productId, specId)
+                .filter(Objects::nonNull)
+                .count();
+
+        if (count == 0){
+            throw new OSSException(MessageReturn.BODY_NO_MAIN_OR_IS_NULL);
         }
     }
 
     // 检查角色
     private void checkRole(String role){
         if(!(role).equalsIgnoreCase("admin") && !(role).equalsIgnoreCase("super_admin"))
-            throw new RuntimeException(MessageReturn.ROLE_ERROR);
+            throw new OSSException(MessageReturn.ROLE_ERROR);
     }
 
     // 生成带签名的url
@@ -351,22 +414,6 @@ public class OSSController {
         request.setExpiration(new Date(System.currentTimeMillis() + expireTime));
         String mimeType = getMimeType(fileType);
         request.setContentType(mimeType);
-        log.info(" mimeType : {}", mimeType );
-
-       /* Callback callback = new Callback();
-        callback.setCallbackUrl(callbackUrl);
-        callback.setCalbackBodyType(Callback.CalbackBodyType.URL); // 设置回调类型为URL
-        callback.addCallbackVar("x:id", id.toString());
-        callback.addCallbackVar("x:categoryType", category + "_" + type);
-
-        String callbackBody = """
-                bucket=${bucket}&object=${object}&size=${size}&mimeType=${mimeType}&id=${x:id}&categoryType=${x:categoryType}
-                """;
-        callback.setCallbackBody(callbackBody);
-
-        Map<String, String> callbackParams = new HashMap<>();
-        callbackParams.put("callback", callback.buildCallbackJSONString());
-        request.setCallback(callbackParams);*/
 
         Map<String,String> callbackMap = new HashMap<>();
         callbackMap.put("callback", callbackUrl);
@@ -379,7 +426,6 @@ public class OSSController {
         callbackMap.put("x:articleId", articleId.toString());
         callbackMap.put("x:specId", specId.toString());
         callbackMap.put("x:categoryType", category + "_" + type);
-
 
 
         // 构建JSON对象

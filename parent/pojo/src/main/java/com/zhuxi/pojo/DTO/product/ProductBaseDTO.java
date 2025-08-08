@@ -1,20 +1,26 @@
 package src.main.java.com.zhuxi.pojo.DTO.product;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonView;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 public class ProductBaseDTO {
 
-    @Schema(description = "商品id(在更新信息中需要给予id，添加中不需要给予)",requiredMode = Schema.RequiredMode.NOT_REQUIRED)
+    @Schema(description = "商品id",hidden = true)
     private Long id;
+
     @Schema(description = "商品名称",requiredMode = Schema.RequiredMode.REQUIRED)
     private String name;
+
     @Schema(description = "商品编号",requiredMode = Schema.RequiredMode.NOT_REQUIRED)
     private Long productNumber;
+
     @Schema(description = "商品描述",requiredMode = Schema.RequiredMode.NOT_REQUIRED)
     private String description;
+
     @Schema(description = "商品产地(默认为河南省新乡市封丘县)",requiredMode = Schema.RequiredMode.NOT_REQUIRED)
     private String origin = "河南省新乡市封丘县";
+
     @Schema(description = "商品状态(0下架,1上架)",requiredMode = Schema.RequiredMode.NOT_REQUIRED)
     @JsonIgnore
     private Integer status = 0;

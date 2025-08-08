@@ -9,16 +9,64 @@
   <component name="ChangeListManager">
     <list default="true" id="372da862-f7c4-4fa2-93c3-bf2ac1fe9e6e" name="更改" comment="feat(wechat): 实现微信登录和获取用户手机号功能&#10;&#10;-重构微信相关服务接口和实现类，优化代码结构&#10;- 新增获取用户手机号功能&#10;- 优化微信登录流程，增加用户信息缓存&#10;- 调整异常处理，提高系统稳定性">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/controller/User/WechatAuthController.java" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/controller/User/WechatAuthController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/parent/src/main/java/com/zhuxi/pojo/DTO/Admin/AdminLoginDTO.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/parent/src/main/java/com/zhuxi/pojo/DTO/Admin/AdminLoginDTO.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/parent/src/main/java/com/zhuxi/pojo/DTO/OSSConfigDTO.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/parent/src/main/java/com/zhuxi/pojo/DTO/OSSConfigDTO.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/parent/src/main/java/com/zhuxi/pojo/DTO/OssTokenDTO.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/parent/src/main/java/com/zhuxi/pojo/DTO/OssTokenDTO.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/parent/src/main/java/com/zhuxi/pojo/DTO/product/ProductBaseDTO.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/parent/src/main/java/com/zhuxi/pojo/DTO/product/ProductBaseDTO.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/parent/src/main/java/com/zhuxi/pojo/entity/Admin.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/parent/src/main/java/com/zhuxi/pojo/entity/Admin.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/parent/pojo/src/main/java/com/zhuxi/pojo/DTO/Admin/AdminLoginDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/parent/pojo/src/main/java/com/zhuxi/pojo/DTO/Admin/AdminLoginDTO.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/parent/pojo/src/main/java/com/zhuxi/pojo/DTO/OSSConfigDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/parent/pojo/src/main/java/com/zhuxi/pojo/DTO/OSSConfigDTO.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/parent/pojo/src/main/java/com/zhuxi/pojo/DTO/OssTokenDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/parent/pojo/src/main/java/com/zhuxi/pojo/DTO/OssTokenDTO.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/parent/pojo/src/main/java/com/zhuxi/pojo/DTO/product/ProductBaseDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/parent/pojo/src/main/java/com/zhuxi/pojo/DTO/product/ProductBaseDTO.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/parent/pojo/src/main/java/com/zhuxi/pojo/entity/Admin.java" beforeDir="false" afterPath="$PROJECT_DIR$/parent/pojo/src/main/java/com/zhuxi/pojo/entity/Admin.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/Constant/MessageReturn.java" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/Constant/MessageReturn.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/Interceptor/JwtInterceptor.java" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/Interceptor/JwtInterceptor.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/aspect/RoleCheckAspect.java" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/aspect/RoleCheckAspect.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/config/WebMvcConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/config/WebMvcConfig.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/controller/Admin/AdminController.java" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/controller/Admin/AdminController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/controller/Admin/AdminProductController.java" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/controller/Admin/AdminProductController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/controller/LoginController.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/controller/OSSController.java" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/controller/OSSController.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/handler/GlobalExceptionHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/handler/GlobalExceptionHandler.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/handler/UserIdArgumentResolver.java" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/handler/UserIdArgumentResolver.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/mapper/WechatAuthServiceMapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/mapper/WechatServiceMapper.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/service/Cache/LoginRedisCache.java" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/service/Cache/LoginRedisCache.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/service/Impl/WechatAuthServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/service/Impl/WechatServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/mapper/WechatServiceMapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/mapper/WechatServiceMapper.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/service/Impl/AdminServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/service/Impl/AdminServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/service/Impl/WechatServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/service/Impl/WechatServiceImpl.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/service/Tx/WechatAuthTxService.java" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/service/Tx/WechatAuthTxService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/service/business/WechatAuthService.java" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/service/business/WechatService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/service/business/AdminService.java" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/service/business/AdminService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/utils/JwtUtils.java" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/utils/JwtUtils.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/utils/properties/RedisCacheProperties.java" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/utils/properties/RedisCacheProperties.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/parent/service/src/main/resources/Spring.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/parent/service/src/main/resources/application.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/src/main/resources/application.yaml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/parent/service/src/main/resources/redis-cache.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/src/main/resources/redis-cache.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/parent/service/target/classes/application.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/target/classes/application.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/Constant/MessageReturn.class" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/Constant/MessageReturn.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/Interceptor/JwtInterceptor.class" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/Interceptor/JwtInterceptor.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/aspect/RoleCheckAspect.class" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/aspect/RoleCheckAspect.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/config/WebMvcConfig.class" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/config/WebMvcConfig.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/controller/Admin/AdminController.class" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/controller/Admin/AdminController.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/controller/Admin/AdminProductController.class" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/controller/Admin/AdminProductController.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/controller/LoginController.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/controller/OSSController$CallbackData.class" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/controller/OSSController$CallbackData.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/controller/OSSController.class" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/controller/OSSController.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/controller/User/WechatAuthController.class" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/controller/User/WechatAuthController.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/handler/GlobalExceptionHandler.class" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/handler/GlobalExceptionHandler.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/handler/UserIdArgumentResolver.class" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/handler/UserIdArgumentResolver.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/mapper/WechatAuthServiceMapper.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/service/Cache/LoginRedisCache.class" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/service/Cache/LoginRedisCache.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/service/Impl/AdminServiceImpl.class" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/service/Impl/AdminServiceImpl.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/service/Impl/WechatAuthServiceImpl$1.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/service/Impl/WechatAuthServiceImpl$2.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/service/Impl/WechatAuthServiceImpl.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/service/Tx/WechatAuthTxService.class" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/service/Tx/WechatAuthTxService.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/service/business/AdminService.class" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/service/business/AdminService.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/service/business/WechatAuthService.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/utils/properties/RedisCacheProperties$AddressCache.class" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/utils/properties/RedisCacheProperties$AddressCache.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/utils/properties/RedisCacheProperties$CartCache.class" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/utils/properties/RedisCacheProperties$CartCache.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/utils/properties/RedisCacheProperties$OrderCache.class" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/utils/properties/RedisCacheProperties$OrderCache.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/utils/properties/RedisCacheProperties$ProductCache.class" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/utils/properties/RedisCacheProperties$ProductCache.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/utils/properties/RedisCacheProperties$UserCache.class" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/utils/properties/RedisCacheProperties$UserCache.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/utils/properties/RedisCacheProperties.class" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/utils/properties/RedisCacheProperties.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/parent/service/target/classes/redis-cache.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/target/classes/redis-cache.yaml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -31,9 +79,9 @@
         <option value="Enum" />
         <option value="Mybatis Mapper" />
         <option value="AnnotationType" />
+        <option value="Class" />
         <option value="Interface" />
         <option value="Exception" />
-        <option value="Class" />
       </list>
     </option>
   </component>
@@ -299,7 +347,7 @@
       <workItem from="1754530393489" duration="11394000" />
       <workItem from="1754547700986" duration="13432000" />
       <workItem from="1754561596832" duration="775000" />
-      <workItem from="1754613413257" duration="10982000" />
+      <workItem from="1754613413257" duration="31627000" />
     </task>
     <task id="LOCAL-00001" summary="d">
       <option name="closed" value="true" />
@@ -653,7 +701,15 @@
       <option name="project" value="LOCAL" />
       <updated>1754561520338</updated>
     </task>
-    <option name="localTasksCounter" value="45" />
+    <task id="LOCAL-00045" summary="feat(wechat): 实现微信登录和获取用户手机号功能&#10;&#10;-重构微信相关服务接口和实现类，优化代码结构&#10;- 新增获取用户手机号功能&#10;- 优化微信登录流程，增加用户信息缓存&#10;- 调整异常处理，提高系统稳定性">
+      <option name="closed" value="true" />
+      <created>1754625540069</created>
+      <option name="number" value="00045" />
+      <option name="presentableId" value="LOCAL-00045" />
+      <option name="project" value="LOCAL" />
+      <updated>1754625540070</updated>
+    </task>
+    <option name="localTasksCounter" value="46" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">

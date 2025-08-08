@@ -4,13 +4,13 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import src.main.java.com.zhuxi.pojo.entity.Role;
 
 public class AdminLoginDTO {
-    @Schema(description = "管理员id",requiredMode = Schema.RequiredMode.NOT_REQUIRED)
+    @Schema(description = "管理员id",hidden = true)
     private Integer  id;
     @Schema(description = "用户名",requiredMode = Schema.RequiredMode.REQUIRED)
     private String username;
     @Schema(description = "密码",requiredMode = Schema.RequiredMode.REQUIRED)
     private String password;
-    @Schema(description = "权限",requiredMode = Schema.RequiredMode.NOT_REQUIRED)
+    @Schema(description = "权限(ADMIN 或 SUPER_ADMIN)", hidden = true)
     private Role role;
 
     public AdminLoginDTO() {

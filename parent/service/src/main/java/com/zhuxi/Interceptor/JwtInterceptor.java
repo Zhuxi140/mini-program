@@ -4,6 +4,7 @@ package com.zhuxi.Interceptor;
 
 import com.zhuxi.Constant.MessageReturn;
 import com.zhuxi.Exception.JwtException;
+import com.zhuxi.service.Cache.AdminCache;
 import com.zhuxi.service.Cache.LoginRedisCache;
 import com.zhuxi.utils.JwtUtils;
 import io.jsonwebtoken.Claims;
@@ -16,14 +17,14 @@ import org.springframework.web.servlet.HandlerInterceptor;
 @Log4j2
 public class JwtInterceptor implements HandlerInterceptor {
 
-    private final JwtInterceptorProperties jwtInterceptorProperties;
     private final JwtUtils jwtUtils;
     private final LoginRedisCache loginRedisCache;
+    private final AdminCache adminCache;
 
-    public JwtInterceptor(JwtInterceptorProperties jwtInterceptorProperties, JwtUtils jwtUtils, LoginRedisCache loginRedisCache) {
-        this.jwtInterceptorProperties = jwtInterceptorProperties;
+    public JwtInterceptor(JwtUtils jwtUtils, LoginRedisCache loginRedisCache, AdminCache adminCache) {
         this.jwtUtils = jwtUtils;
         this.loginRedisCache = loginRedisCache;
+        this.adminCache = adminCache;
     }
 
 
@@ -61,8 +62,14 @@ public class JwtInterceptor implements HandlerInterceptor {
             throw new JwtException(MessageReturn.JWT_ERROR);
         }
         String tokenValue = loginRedisCache.getTokenValue(token);
+        String logOutValue = adminCache.getLogOutValue(token);
         if (tokenValue != null) {
             if (tokenValue.equals(id)) {
+                throw new JwtException(MessageReturn.LOGIN_ALREADY_USELESS);
+            }
+        }
+        if (logOutValue != null) {
+            if (logOutValue.equals(id)) {
                 throw new JwtException(MessageReturn.LOGIN_ALREADY_USELESS);
             }
         }

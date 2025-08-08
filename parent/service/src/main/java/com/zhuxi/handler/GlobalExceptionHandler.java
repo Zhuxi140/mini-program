@@ -15,41 +15,20 @@ public class GlobalExceptionHandler {
     @ExceptionHandler({transactionalException.class})
     public Result<Void> handleException(transactionalException e) {
         String message = e.getMessage();
+        log.warn("error : {}",message);
         return Result.error(message);
     }
 
-    @ExceptionHandler({JwtException.class})
-    public Result<Void> handleJwtException(JwtException e){
-        log.warn("---- Jwt error ----");
-        log.warn("{}",e.getMessage());
-        return Result.error("Jwt error :" + e.getMessage());
+    @ExceptionHandler({JsonException.class,LoginException.class,WechatException.class,OSSException.class})
+    public Result<Void> handleOtherException(Exception e){
+        log.warn("error :{}",e.getMessage());
+        return Result.error("error :" + e.getMessage());
+    }
+    @ExceptionHandler({BloomFilterRejectException.class,DefenseException.class,JwtException.class})
+    public Result<Void> handlerSafeException(Exception e){
+        log.warn("error : {}",e.getMessage());
+        return Result.error("safe error :" + e.getMessage());
     }
 
-    @ExceptionHandler(JsonException.class)
-    public Result<Void> handlerJsonException(JsonException e){
-        log.warn("---- Json error ----");
-        log.warn("{}",e.getMessage());
-        return Result.error("Json error :" + e.getMessage());
-    }
 
-    @ExceptionHandler(BloomFilterRejectException.class)
-    public Result<Void> handlerBloomFilterRejectException(BloomFilterRejectException e){
-        log.warn("---- BloomFilterReject Hinder ----");
-        log.warn("{}",e.getMessage());
-        return Result.error("BloomFilterReject error :" + e.getMessage());
-    }
-
-    @ExceptionHandler(DefenseException.class)
-    public Result<Void> handlerDefenseException(DefenseException e){
-        log.warn("---- Defense Hinder ----");
-        log.warn("{}",e.getMessage());
-        return Result.error("Defense error :" + e.getMessage());
-    }
-
-    @ExceptionHandler({LoginException.class,WechatException.class})
-    public Result<Void> handlerLoginException(Exception e){
-        log.warn("----  error ----");
-        log.warn("{}",e.getMessage());
-        return Result.error(" error :" + e.getMessage());
-    }
 }

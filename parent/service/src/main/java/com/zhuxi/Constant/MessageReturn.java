@@ -35,6 +35,7 @@ public class MessageReturn {
     public static final String ARTICLE_ID_IS_NULL = "文章id为空";
     public static final String FILE_TYPE_ERROR = "文件类型错误";
     public static final String NO_CATEGORY = "暂无此分类";
+    public static final String CATEGORY_TYPE_ERROR = "分类类型错误";
     public static final String CATEGORY_FIT_ERROR = "文件目录匹配失败";
     public static final String INVALID_PUBLIC_KEY_URL = "公钥URL错误";
     public static final String CALLBACK_IS_NULL = "回调为空";
@@ -86,4 +87,5 @@ public class MessageReturn {
     public static final String SESSION_KEY_IS_NULL = "session_key is null or empty";
     public static final String LOGOUT_SUCCESS = "退出成功";
     public static final String LOGIN_ALREADY_USELESS = "登录已失效";
+    public static final String ACCOUNT_IS_BANING = "账号被封禁";
 }

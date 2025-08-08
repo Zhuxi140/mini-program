@@ -3,6 +3,7 @@ package com.zhuxi.config;
 import com.zhuxi.Interceptor.JwtInterceptor;
 import com.zhuxi.Interceptor.JwtInterceptorProperties;
 import com.zhuxi.handler.UserIdArgumentResolver;
+import com.zhuxi.service.Cache.AdminCache;
 import com.zhuxi.service.Cache.LoginRedisCache;
 import com.zhuxi.service.Tx.WechatAuthTxService;
 import com.zhuxi.utils.JwtUtils;
@@ -22,17 +23,20 @@ public class WebMvcConfig implements WebMvcConfigurer {
     private final JwtUtils jwtUtils;
     private final WechatAuthTxService wechatAuthTxService;
     private final LoginRedisCache loginRedisCache;
+    private final AdminCache adminCache;
 
-    public WebMvcConfig(JwtInterceptorProperties jwtInterceptorProperties, JwtUtils jwtUtils, WechatAuthTxService wechatAuthTxService, LoginRedisCache loginRedisCache) {
+    public WebMvcConfig(JwtInterceptorProperties jwtInterceptorProperties, JwtUtils jwtUtils, WechatAuthTxService wechatAuthTxService, LoginRedisCache loginRedisCache, AdminCache adminCache) {
         this.jwtInterceptorProperties = jwtInterceptorProperties;
         this.jwtUtils = jwtUtils;
         this.wechatAuthTxService = wechatAuthTxService;
         this.loginRedisCache = loginRedisCache;
+
+        this.adminCache = adminCache;
     }
 
     @Bean
     public JwtInterceptor jwtInterceptor() {
-        return new JwtInterceptor(jwtInterceptorProperties, jwtUtils, loginRedisCache);
+        return new JwtInterceptor(jwtUtils, loginRedisCache, adminCache);
     }
 
     @Override
