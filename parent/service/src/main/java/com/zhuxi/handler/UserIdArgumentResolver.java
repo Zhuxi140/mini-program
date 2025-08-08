@@ -2,13 +2,11 @@ package com.zhuxi.handler;
 
 
 import com.zhuxi.annotation.CurrentUserId;
-import com.zhuxi.mapper.WechatAuthServiceMapper;
 import com.zhuxi.service.Cache.LoginRedisCache;
 import com.zhuxi.service.Tx.WechatAuthTxService;
 import com.zhuxi.utils.JwtUtils;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.MethodParameter;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.support.WebDataBinderFactory;

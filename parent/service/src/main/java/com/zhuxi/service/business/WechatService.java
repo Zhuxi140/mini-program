@@ -6,7 +6,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import src.main.java.com.zhuxi.pojo.DTO.User.UserBasicDTO;
 import src.main.java.com.zhuxi.pojo.VO.User.UserBasicVO;
 
-public interface WechatAuthService {
+public interface WechatService {
 
     // 微信登录
     Result<UserBasicVO> login(String code);
@@ -16,4 +16,7 @@ public interface WechatAuthService {
 
     //退出登陆
     Result<Void> logout(String token, HttpServletRequest request, HttpServletResponse response);
+
+    //获取用户手机号
+    Result<Void> getUserPhone(String code,Long userId);
 }

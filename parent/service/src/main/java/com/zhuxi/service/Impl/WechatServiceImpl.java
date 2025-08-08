@@ -2,35 +2,30 @@ package com.zhuxi.service.Impl;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.zhuxi.Constant.MessageReturn;
-import com.zhuxi.Exception.LoginException;
+import com.zhuxi.Exception.WechatException;
 import com.zhuxi.Exception.transactionalException;
 import com.zhuxi.Result.Result;
+import com.zhuxi.Result.wechat.PhoneInfoResult;
+import com.zhuxi.Result.wechat.PhoneResult;
 import com.zhuxi.service.Cache.LoginRedisCache;
 import com.zhuxi.service.Tx.WechatAuthTxService;
-import com.zhuxi.service.business.WechatAuthService;
+import com.zhuxi.service.business.WechatService;
 import com.zhuxi.utils.IdSnowFLake;
-import com.zhuxi.utils.JacksonUtils;
 import com.zhuxi.utils.JwtUtils;
+import com.zhuxi.utils.WechatRequest;
 import io.jsonwebtoken.Claims;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.http.HttpEntity;
-import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClients;
-import org.apache.http.util.EntityUtils;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.TransactionSynchronization;
 import org.springframework.transaction.support.TransactionSynchronizationManager;
 import src.main.java.com.zhuxi.pojo.DTO.User.UserBasicDTO;
 import src.main.java.com.zhuxi.pojo.VO.User.UserBasicVO;
-
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
@@ -38,22 +33,21 @@ import java.util.concurrent.TimeUnit;
 
 @Slf4j
 @Service
-public class WechatAuthServiceImpl implements WechatAuthService {
+public class WechatServiceImpl implements WechatService {
 
     private final IdSnowFLake idSnowFLake;
     private final WechatAuthTxService wechatAuthTxService;
     private final LoginRedisCache loginRedisCache;
     private final JwtUtils jwtUtils;
-    @Value("${wechat-miniProgram.appId}")
-    private String appId;
-    @Value("${wechat-miniProgram.appSecret}")
-    private String appSecret;
+    private final WechatRequest wechatRequest;
 
-    public WechatAuthServiceImpl(IdSnowFLake idSnowFLake, WechatAuthTxService wechatAuthTxService, LoginRedisCache loginRedisCache, JwtUtils jwtUtils) {
+
+    public WechatServiceImpl(IdSnowFLake idSnowFLake, WechatAuthTxService wechatAuthTxService, LoginRedisCache loginRedisCache, JwtUtils jwtUtils, WechatRequest wechatRequest) {
         this.idSnowFLake = idSnowFLake;
         this.wechatAuthTxService = wechatAuthTxService;
         this.loginRedisCache = loginRedisCache;
         this.jwtUtils = jwtUtils;
+        this.wechatRequest = wechatRequest;
     }
 
     @Override
@@ -64,7 +58,7 @@ public class WechatAuthServiceImpl implements WechatAuthService {
             return Result.error(MessageReturn.CODE_IS_NULL);
         }
 
-        JsonNode userInfo = getUserInfo(code);
+        JsonNode userInfo = wechatRequest.getUserInfo(code);
         String openId = userInfo.get("openid").asText();
         if (openId == null){
             return Result.error(MessageReturn.OPEN_ID_IS_NULL);
@@ -74,10 +68,12 @@ public class WechatAuthServiceImpl implements WechatAuthService {
             return Result.error(MessageReturn.SESSION_KEY_IS_NULL);
         }
         UserBasicVO userBasicVO;
+        boolean isSave = false;
         try {
             if (wechatAuthTxService.isExist(openId)) {
                 userBasicVO = loginRedisCache.getUserInfo(openId);
                 if (userBasicVO == null) {
+                    isSave=true;
                     userBasicVO = wechatAuthTxService.getUserBasicInfo(openId, true);
                     userBasicVO.setOpenid(openId);
                 }
@@ -85,10 +81,19 @@ public class WechatAuthServiceImpl implements WechatAuthService {
                 wechatAuthTxService.insert(idSnowFLake.getIdInt(), openId);
                 userBasicVO = new UserBasicVO(null, null, null, openId);
             }
+            boolean finalIsSave = isSave;
+            UserBasicVO finalUserBasicVO = userBasicVO;
             TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronization(){
                 @Override
                 public void afterCommit() {
                     loginRedisCache.saveSessionKey(openId, sessionKey);
+                    if (finalIsSave){
+                        UserBasicDTO userBasicDTO = new UserBasicDTO();
+                        userBasicDTO.setName(finalUserBasicVO.getName());
+                        userBasicDTO.setAvatar(finalUserBasicVO.getAvatar());
+                        userBasicDTO.setOpenId(openId);
+                        loginRedisCache.initUserBasic(userBasicDTO);
+                    }
                 }
             });
             return Result.success(MessageReturn.LOGIN_SUCCESS,userBasicVO);
@@ -98,6 +103,9 @@ public class WechatAuthServiceImpl implements WechatAuthService {
         }
     }
 
+    /**
+     * 获取用户信息
+     */
     @Override
     @Transactional
     public Result<Void> getUserBasicInfo(String token,UserBasicDTO userBasicDTO) {
@@ -133,6 +141,9 @@ public class WechatAuthServiceImpl implements WechatAuthService {
         }
     }
 
+    /**
+     * 登出
+     */
     @Override
     public Result<Void> logout(String token, HttpServletRequest request, HttpServletResponse response) {
         log.info("impl token : {}", token);
@@ -161,36 +172,22 @@ public class WechatAuthServiceImpl implements WechatAuthService {
         return Result.success(MessageReturn.LOGOUT_SUCCESS);
     }
 
-
-    /**
-     * 向微信服务器发送请求获取用户信息
-     */
-    public JsonNode getUserInfo(String code){
-        String url = String.format("https://api.weixin.qq.com/sns/jscode2session?" +
-                        "appid=%s&secret=%s&js_code=%s&grant_type=authorization_code",
-                appId,
-                appSecret,
-                code
-        );
-
-        try(CloseableHttpClient httpClient = HttpClients.createDefault()){
-            HttpGet httpGet = new HttpGet(url);
-            try(CloseableHttpResponse response = httpClient.execute(httpGet)){
-                HttpEntity entity = response.getEntity();
-                String responseStr = EntityUtils.toString(entity,"UTF-8");
-                JsonNode result = JacksonUtils.jsonToJsonNode(responseStr);
-                if (result == null){
-                    throw new LoginException(" wx returns result which is null");
-                }
-
-                if (result.has("errcode")&& result.get("errcode").asInt() != 0){
-                    String errMsg = result.get("errmsg").asText();
-                    throw new LoginException("登录失败" + errMsg + "(errcode:" + result.get("errcode").asInt() + ")");
-                }
-                return result;
-            }
-        } catch (Exception e) {
-            throw new LoginException(e.getMessage());
+    @Override
+    public Result<Void> getUserPhone(String code,Long userId) {
+        if (code==null || code.isEmpty()){
+            return Result.error(MessageReturn.CODE_IS_NULL);
         }
+        PhoneResult userPhone = wechatRequest.getUserPhone(code);
+        PhoneInfoResult phoneInfo = userPhone.getPhoneInfo();
+        String phoneNumber = phoneInfo.getPhoneNumber();
+        if (phoneNumber == null){
+            throw new WechatException("phone number is null");
+        }
+        wechatAuthTxService.InsertPhone(phoneNumber, userId);
+
+        return Result.success(MessageReturn.OPERATION_SUCCESS);
     }
+
+
+
 }

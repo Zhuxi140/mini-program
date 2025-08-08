@@ -27,4 +27,6 @@ redis:
       SessionKey: SessionKey:user
       UserInfoPrefix: user:info
       logoutPrefix: token:logout
+    WechatCache:
+      AccessTokenPrefix: wechat:accessToken
 

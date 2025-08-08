@@ -53,6 +53,7 @@ public class LoginRedisCache {
         data.put("name", user.getName());
         data.put("avatar", user.getAvatar());
         redisUntil.hPutMap(getUserInfoKey(openId),data);
+        redisUntil.expire(getUserInfoKey(openId),7,TimeUnit.DAYS);
     }
 
     public Long deleteUser(String openId){

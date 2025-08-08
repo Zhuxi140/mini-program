@@ -18,7 +18,7 @@ public class GlobalExceptionHandler {
         return Result.error(message);
     }
 
-    @ExceptionHandler({JwtException.class, JsonProcessingException.class })
+    @ExceptionHandler({JwtException.class})
     public Result<Void> handleJwtException(JwtException e){
         log.warn("---- Jwt error ----");
         log.warn("{}",e.getMessage());
@@ -46,10 +46,10 @@ public class GlobalExceptionHandler {
         return Result.error("Defense error :" + e.getMessage());
     }
 
-    @ExceptionHandler(LoginException.class)
-    public Result<Void> handlerLoginException(LoginException e){
-        log.warn("---- Login error ----");
+    @ExceptionHandler({LoginException.class,WechatException.class})
+    public Result<Void> handlerLoginException(Exception e){
+        log.warn("----  error ----");
         log.warn("{}",e.getMessage());
-        return Result.error("Login error :" + e.getMessage());
+        return Result.error(" error :" + e.getMessage());
     }
 }

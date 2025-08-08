@@ -20,6 +20,7 @@ public class RedisCacheProperties {
     private OrderCache orderCache = new OrderCache();
     private CartCache cartCache = new CartCache();
     private UserCache userCache = new UserCache();
+    private WechatCache wechatCache = new WechatCache();
 
     private int maxAttempts;
     private long baseWaitMs;
@@ -286,6 +287,25 @@ public class RedisCacheProperties {
         }
     }
 
+    public static class WechatCache{
+        private String AccessTokenPrefix;
+
+        public String getAccessTokenPrefix() {
+            return AccessTokenPrefix;
+        }
+
+        public void setAccessTokenPrefix(String accessTokenPrefix) {
+            AccessTokenPrefix = accessTokenPrefix;
+        }
+    }
+
+    public WechatCache getWechatCache() {
+        return wechatCache;
+    }
+
+    public void setWechatCache(WechatCache wechatCache) {
+        this.wechatCache = wechatCache;
+    }
 
     public UserCache getUserCache() {
         return userCache;

@@ -3,13 +3,14 @@ package com.zhuxi.mapper;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.Update;
 import src.main.java.com.zhuxi.pojo.DTO.User.UserBasicDTO;
 import src.main.java.com.zhuxi.pojo.VO.User.UserBasicVO;
 
 import java.util.List;
 
 @Mapper
-public interface WechatAuthServiceMapper {
+public interface WechatServiceMapper {
 
     @Select("SELECT COUNT(*) FROM user WHERE openid = #{openId}")
     int isExist(String openId);
@@ -40,4 +41,8 @@ public interface WechatAuthServiceMapper {
 
     @Select("SELECT id FROM user WHERE openid = #{openid}")
     Long getUserId(String openid);
+
+    @Update("UPDATE user SET phone = #{phone} WHERE id = #{userId}")
+    int InsertPhone(String phone, Long userId);
+
 }
