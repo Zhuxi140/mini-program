@@ -59,6 +59,8 @@ public class CartServiceImpl implements CartService {
     @Transactional
     public Result<Void> add(CartAddDTO cartAddDTO, Long userId) {
 
+
+
         if(cartAddDTO == null)
             return Result.error(MessageReturn.BODY_NO_MAIN_OR_IS_NULL);
         Long specSnowflake = cartAddDTO.getSpecSnowflake();
@@ -83,11 +85,11 @@ public class CartServiceImpl implements CartService {
         boolean exist = cartTxService.isExist(specId, userId);
         if (!exist){
             cartTxService.insert(cartAddDTO,userId);
-            return Result.error(MessageReturn.OPERATION_SUCCESS);
+            return Result.success(MessageReturn.OPERATION_SUCCESS);
         }
         cartTxService.updateCartStock(specId,userId,quantity);
 
-        return Result.error(MessageReturn.OPERATION_SUCCESS);
+        return Result.success(MessageReturn.OPERATION_SUCCESS);
     }
 
 

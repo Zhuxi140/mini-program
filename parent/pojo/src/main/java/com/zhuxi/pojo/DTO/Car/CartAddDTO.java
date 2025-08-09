@@ -6,7 +6,7 @@ public class CartAddDTO {
 
     @Schema(description = "商品id",hidden = true)
     private Long productSnowflake ;
-    @Schema(description = "规格id",requiredMode = Schema.RequiredMode.REQUIRED)
+    @Schema(description = "规格号",requiredMode = Schema.RequiredMode.REQUIRED)
     private Long specSnowflake;
     @Schema(description = "数量（后台默认添加数量为1）",requiredMode = Schema.RequiredMode.REQUIRED)
     private Integer quantity = 1;

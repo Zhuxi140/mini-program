@@ -6,7 +6,6 @@ import org.springframework.data.redis.core.HashOperations;
 import org.springframework.stereotype.Service;
 import src.main.java.com.zhuxi.pojo.DTO.User.UserBasicDTO;
 import src.main.java.com.zhuxi.pojo.VO.User.UserBasicVO;
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -14,8 +13,8 @@ import java.util.concurrent.TimeUnit;
 @Service
 public class LoginRedisCache {
 
-    private RedisCacheProperties rCP;
-    private RedisUntil redisUntil;
+    private final RedisCacheProperties rCP;
+    private final RedisUntil redisUntil;
 
     public LoginRedisCache(RedisCacheProperties rCP, RedisUntil redisUntil) {
         this.rCP = rCP;

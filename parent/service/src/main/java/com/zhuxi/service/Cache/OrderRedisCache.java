@@ -117,13 +117,16 @@ public class OrderRedisCache {
     }
 
 
-/*
-    public boolean getStockAndValidate(Long specSnowflake,Integer quantity){
+    public Integer getStockAndValidate(Long specSnowflake){
         String specDetailKey = rCP.getProductCache().getStockPrefix() + ":" + specSnowflake;
         String stringValue = redisUntil.getStringValue(specDetailKey);
-        return
+        return stringValue == null ? null : Integer.valueOf(stringValue);
     }
-*/
+
+    public void saveStock(Long specSnowflake,Integer stock){
+        String specDetailKey = rCP.getProductCache().getStockPrefix() + ":" + specSnowflake;
+        redisUntil.setStringValue(specDetailKey, String.valueOf(stock),10,TimeUnit.MILLISECONDS);
+    }
 
     /**
      * 预加载订单数据到Redis中

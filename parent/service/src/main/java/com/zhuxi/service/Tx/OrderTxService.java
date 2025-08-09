@@ -5,6 +5,10 @@ import com.zhuxi.Exception.MQException;
 import com.zhuxi.Exception.transactionalException;
 import com.zhuxi.mapper.OrderMapper;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.ibatis.executor.BatchResult;
+import org.apache.ibatis.session.ExecutorType;
+import org.apache.ibatis.session.SqlSession;
+import org.apache.ibatis.session.SqlSessionFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -13,6 +17,7 @@ import src.main.java.com.zhuxi.pojo.DTO.Order.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -22,10 +27,12 @@ public class OrderTxService {
 
     private final OrderMapper orderMapper;
     private final TransactionTemplate transactionTemplate;
+    private final SqlSessionFactory sqlSessionFactory;
 
-    public OrderTxService(OrderMapper orderMapper, TransactionTemplate transactionTemplate) {
+    public OrderTxService(OrderMapper orderMapper, TransactionTemplate transactionTemplate, SqlSessionFactory sqlSessionFactory) {
         this.orderMapper = orderMapper;
         this.transactionTemplate = transactionTemplate;
+        this.sqlSessionFactory = sqlSessionFactory;
     }
 
 
@@ -310,7 +317,7 @@ public class OrderTxService {
                 }
     }
 
-    @Transactional(readOnly = true)
+    @Transactional(readOnly = true,propagation = Propagation.SUPPORTS)
     public List<Long> getOrderIdList(Long groupId){
         List<Long> orderIdList = orderMapper.getOrderIdList(groupId);
         if(orderIdList == null || orderIdList.isEmpty()) {
@@ -320,21 +327,30 @@ public class OrderTxService {
         return orderIdList;
     }
 
-    @Transactional(rollbackFor = transactionalException.class)
-    public void concealOrderList(List<Long> orderIds){
-        int i = orderMapper.cancelOrderList(orderIds);
-        if(i !=  orderIds.size()) {
-            throw new transactionalException(MessageReturn.ORDER_CONCEAL_ERROR);
-        }
-        i = orderMapper.cancelPaymentList(orderIds);
-        if(i !=  orderIds.size()) {
-            throw new transactionalException(MessageReturn.PAY_CONCEAL_ERROR);
-        }
-        i = orderMapper.releaseInventoryLockList(orderIds);
-        if(i !=  orderIds.size()) {
-            throw new transactionalException(MessageReturn.LOCK_CONCEAL_ERROR);
-        }
+    public void concealOrderList(List<Long> orderIds) {
+        final int BATCH_SIZE = 50;
+        try (SqlSession sqlSession = sqlSessionFactory.openSession(ExecutorType.BATCH)) {
+            OrderMapper mapper = sqlSession.getMapper(OrderMapper.class);
+            int totalBatches = (orderIds.size() + BATCH_SIZE - 1) / BATCH_SIZE;
 
+            for (int i = 0; i < totalBatches; i++) {
+                List<Long> batch = orderIds.subList(i * BATCH_SIZE,
+                        Math.min((i + 1) * BATCH_SIZE, orderIds.size()));
+
+                mapper.cancelOrderList(batch);
+                mapper.cancelPaymentList(batch);
+                mapper.releaseInventoryLockList(batch);
+
+                if (i % 10 == 0) {
+                    sqlSession.flushStatements();
+                }
+            }
+            List<BatchResult> batchResults = sqlSession.flushStatements();
+            validateBatchResults(batchResults, orderIds.size());
+            sqlSession.commit();
+        } catch (Exception e) {
+            throw new transactionalException("批处理失败--:" + e.getMessage());
+        }
     }
 
     @Transactional(rollbackFor = transactionalException.class)
@@ -410,6 +426,31 @@ public class OrderTxService {
         }
     }
 
+
+
+    private void validateBatchResults(List<BatchResult> batchResults, int expected) {
+        if (batchResults.isEmpty()) {
+            throw new transactionalException("无批处理结果");
+        }
+
+        int totalUpdateCountsOrder = 0;
+        int totalUpdateCountsPayment = 0;
+        int totalUpdateCountsInventory = 0;
+
+        for (BatchResult br : batchResults) {
+            int[] counts = br.getUpdateCounts();
+            if (counts == null || counts.length != 3) {
+                throw new transactionalException("批处理操作数量异常");
+            }
+            totalUpdateCountsOrder += counts[0];
+            totalUpdateCountsPayment += counts[1];
+            totalUpdateCountsInventory += counts[2];
+        }
+
+        if (totalUpdateCountsOrder > expected || totalUpdateCountsPayment > expected || totalUpdateCountsInventory > expected) {
+            throw new transactionalException("更新行数超过预期");
+        }
+    }
 
 
 }

@@ -26,6 +26,11 @@ public class RedisUntil {
     }
 
 
+    public boolean hsaKey(String key){
+        return Boolean.TRUE.equals(redisTemplate.hasKey(key));
+    }
+
+
 
     //redis String类型操作
     public String getStringValue(String key){

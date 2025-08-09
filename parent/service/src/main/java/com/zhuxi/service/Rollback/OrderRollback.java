@@ -26,7 +26,6 @@ public class OrderRollback {
         log.info("rollbackOrder________________执行中");
         Integer quantity = orderRedisCache.getOrderLock(orderSn);
         if (quantity == null || quantity <= 0){
-            // 订单无redis记录 即订单无库存锁
             return;
         }
         orderTxService.releaseProductSaleStock(specId, quantity);
@@ -37,5 +36,15 @@ public class OrderRollback {
 
     public void deleteKey(String key){
         orderRedisCache.deleteLockKey(key);
+    }
+
+    public Integer gerSpecStock(Long specId, Long specSnowflake){
+        Integer stock = orderRedisCache.getStockAndValidate(specSnowflake);
+        if (stock == null){
+            stock =  orderTxService.getProductSaleStock(specId);
+            orderRedisCache.saveStock(specSnowflake,stock);
+        }
+
+
     }
 }

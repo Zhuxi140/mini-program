@@ -61,6 +61,7 @@ public class MessageReturn {
     public static final String ORDER_USER_ID_IS_NULL = "订单号或用户id为空";
     public static final String GROUP_ID_IS_NULL = "订单组号为空";
     public static final String ORDER_CONCEAL_ERROR = "订单取消失败或已取消";
+    public static final String LIST_ORDER_CONCEAL_ERROR = "订单号组取消有错，请稍后再试";
     public static final String PAY_CONCEAL_ERROR = "支付取消失败";
     public static final String LOCK_CONCEAL_ERROR = "预占取消失败";
     public static final String REDUCE_SALE_STOCK_ERROR = "可售库存减少失败(锁定库存失败)";

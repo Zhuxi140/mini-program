@@ -11,6 +11,10 @@ import java.util.List;
 @Mapper
 public interface OrderMapper {
 
+
+    @Select("SELECT @@DB_LAST_UPDATED_COUNT")
+    int[] getLastBatchUpdateCounts();
+
 // ---------------------------------单一商品订单区域--------------------------------------
     // 添加订单
     int insert(OrderAddDTO orderAddDTO);

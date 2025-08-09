@@ -14,9 +14,9 @@ spring:
 #    url: jdbc:mysql://localhost:3306/mini_program?rewriteBatchedStatements=true
 #    username: root
 #    password: 123456
-    url: jdbc:mysql://rm-bp174c3vs31q6c5z9po.mysql.rds.aliyuncs.com:3306/mini_program?rewriteBatchedStatements=true
-    username: xcy0808
-    password: +xcy123456
+    url: jdbc:mysql://rm-bp174c3vs31q6c5z9po.mysql.rds.aliyuncs.com:3306/mini_program?rewriteBatchedStatements=true&useServerPrepStmts=true
+    username: Xu
+    password: Xu1234567
 
 #  web:
 #    resources:

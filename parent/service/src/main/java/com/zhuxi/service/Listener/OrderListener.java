@@ -5,6 +5,7 @@ import com.rabbitmq.client.Channel;
 import com.zhuxi.Exception.MQException;
 import com.zhuxi.service.Cache.OrderRedisCache;
 import com.zhuxi.service.Tx.OrderTxService;
+import com.zhuxi.utils.RedisUntil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.annotation.*;
 import org.springframework.amqp.support.AmqpHeaders;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.support.TransactionTemplate;
 
 import java.io.IOException;
+import java.util.concurrent.TimeUnit;
 
 
 @Component
@@ -22,11 +24,13 @@ public class OrderListener {
     private final OrderTxService orderTxService;
     private final OrderRedisCache orderRedisCache;
     private final TransactionTemplate transactionTemplate;
+    private final RedisUntil redisUntil;
 
-    public OrderListener(OrderTxService orderTxService, OrderRedisCache orderRedisCache, TransactionTemplate transactionTemplate) {
+    public OrderListener(OrderTxService orderTxService, OrderRedisCache orderRedisCache, TransactionTemplate transactionTemplate, RedisUntil redisUntil) {
         this.orderTxService = orderTxService;
         this.orderRedisCache = orderRedisCache;
         this.transactionTemplate = transactionTemplate;
+        this.redisUntil = redisUntil;
     }
 
 
@@ -42,11 +46,20 @@ public class OrderListener {
     ),
             containerFactory = "manual"
     )
-    public void orderNew(String orderSn,Channel channel,
+    public void orderNew(String orderSn,Channel channel,@Header(AmqpHeaders.MESSAGE_ID) String messageId,
                          @Header(AmqpHeaders.DELIVERY_TAG) long tag)    {
+        if (redisUntil.hsaKey("messageId:"+ messageId)){
+            log.error("重复消息-----messageId:{}",messageId);
+            return;
+        }
 
-        log.info("订单延迟消息处理开始");
         try {
+            if (orderSn == null || orderSn.isEmpty()){
+                log.error("orderSn is null or empty");
+                throw new MQException("orderSn is null or empty");
+            }
+
+
             String orderSn1 = orderSn.trim().replaceAll("^\"|\"$", "");
             Boolean execute = transactionTemplate.execute(status -> {
                     try {
@@ -70,6 +83,7 @@ public class OrderListener {
             if (Boolean.TRUE.equals(execute)) {
                 log.info("订单延迟消息处理成功");
                 orderRedisCache.syncOrderStatus(orderSn1,4);
+                redisUntil.setStringValue("messageId:"+ messageId,"1",24, TimeUnit.HOURS);
                 try {
                     channel.basicAck(tag, false);
                 } catch (IOException e) {

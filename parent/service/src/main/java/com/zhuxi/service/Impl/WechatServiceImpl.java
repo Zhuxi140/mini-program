@@ -19,15 +19,20 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.amqp.core.MessageDeliveryMode;
+import org.springframework.amqp.core.MessageProperties;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.TransactionSynchronization;
 import org.springframework.transaction.support.TransactionSynchronizationManager;
+import src.main.java.com.zhuxi.pojo.DTO.User.LoginMQDTO;
 import src.main.java.com.zhuxi.pojo.DTO.User.UserBasicDTO;
 import src.main.java.com.zhuxi.pojo.VO.User.UserBasicVO;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 
@@ -40,14 +45,16 @@ public class WechatServiceImpl implements WechatService {
     private final LoginRedisCache loginRedisCache;
     private final JwtUtils jwtUtils;
     private final WechatRequest wechatRequest;
+    private final RabbitTemplate rabbitTemplate;
 
 
-    public WechatServiceImpl(IdSnowFLake idSnowFLake, WechatAuthTxService wechatAuthTxService, LoginRedisCache loginRedisCache, JwtUtils jwtUtils, WechatRequest wechatRequest) {
+    public WechatServiceImpl(IdSnowFLake idSnowFLake, WechatAuthTxService wechatAuthTxService, LoginRedisCache loginRedisCache, JwtUtils jwtUtils, WechatRequest wechatRequest, RabbitTemplate rabbitTemplate) {
         this.idSnowFLake = idSnowFLake;
         this.wechatAuthTxService = wechatAuthTxService;
         this.loginRedisCache = loginRedisCache;
         this.jwtUtils = jwtUtils;
         this.wechatRequest = wechatRequest;
+        this.rabbitTemplate = rabbitTemplate;
     }
 
     /**
@@ -92,14 +99,19 @@ public class WechatServiceImpl implements WechatService {
             TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronization(){
                 @Override
                 public void afterCommit() {
-                    loginRedisCache.saveSessionKey(openId, sessionKey);
+                    LoginMQDTO loginMQDTO = new LoginMQDTO();
+                    loginMQDTO.setOpenId(openId);
+                    loginMQDTO.setSessionKey(sessionKey);
                     if (finalIsSave){
-                        UserBasicDTO userBasicDTO = new UserBasicDTO();
-                        userBasicDTO.setName(finalUserBasicVO.getName());
-                        userBasicDTO.setAvatar(finalUserBasicVO.getAvatar());
-                        userBasicDTO.setOpenId(openId);
-                        loginRedisCache.initUserBasic(userBasicDTO);
+                        loginMQDTO.setName(finalUserBasicVO.getName());
+                        loginMQDTO.setAvatar(finalUserBasicVO.getAvatar());
                     }
+                    rabbitTemplate.convertAndSend("wechat.Exchange","login",loginMQDTO,message -> {
+                        MessageProperties props = message.getMessageProperties();
+                        props.setMessageId(UUID.randomUUID().toString());
+                        props.setDeliveryMode(MessageDeliveryMode.PERSISTENT);
+                        return message;
+                    });
                 }
             });
             return Result.success(MessageReturn.LOGIN_SUCCESS,userBasicVO);
@@ -177,6 +189,9 @@ public class WechatServiceImpl implements WechatService {
         return Result.success(MessageReturn.LOGOUT_SUCCESS);
     }
 
+    /**
+     * 获取用户手机号
+     */
     @Override
     public Result<Void> getUserPhone(String code,Long userId) {
         if (code==null || code.isEmpty()){

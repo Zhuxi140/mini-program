@@ -118,6 +118,23 @@ public class OrderSyncService {
         return Result.success(MessageReturn.OPERATION_SUCCESS);
     }
 
+    @Transactional
+    public Result<String> deductStoddckWithLock(Long specId, Integer productQuantity){
+
+        boolean success = orderTxService.reduceProductSaleStock(specId, productQuantity);
+        if (!success){
+            // 验证够购买数量 是否超出可售库存
+            Integer productSaleStock = orderTxService.getProductSaleStock(specId);
+            if(productQuantity > productSaleStock){
+                return Result.error(MessageReturn.QUANTITY_OVER_SALE_STOCK);
+            }
+            return Result.error(MessageReturn.BUSY_TRY_AGAIN_LATER);
+        }
+
+        return Result.success(MessageReturn.OPERATION_SUCCESS);
+    }
+
+
 
 
 }

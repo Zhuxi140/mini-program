@@ -206,7 +206,6 @@ public class OrderServiceImpl implements OrderService {
      * 取消订单组
      */
     @Override
-    @Transactional
     public Result<Void> cancelOrderGroup(Long groupId, Long userId) {
         if (groupId == null)
             return Result.error(MessageReturn.GROUP_ID_IS_NULL);
