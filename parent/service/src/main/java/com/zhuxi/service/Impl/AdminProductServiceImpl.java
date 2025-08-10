@@ -101,11 +101,14 @@ public class AdminProductServiceImpl implements AdminProductService {
     public Result<Void> delete(Long id) {
         if (id == null)
             return Result.error(MessageReturn.PRODUCT_ID_IS_NULL);
+
+        // 检查是否存在库存余量
+        productTxService.checkStock( id);
+
         PSsnowFlake pSsnowFlake = new PSsnowFlake();
         pSsnowFlake.setProductSnowflake(productTxService.getProductSnowFlakeById(id));
         pSsnowFlake.setSpecSnowflake(productTxService.getSpecSnowFlakeByIdList(id));
         productTxService.delete(id);
-
 
         TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronization() {
             @Override
@@ -118,7 +121,7 @@ public class AdminProductServiceImpl implements AdminProductService {
                         return message;
                     });
                 }else{
-                    log.warn("事务未提交，截断发送消息");
+                    log.warn("事务未提交，截断发送消息---{删除商品:{}}", id);
                 }
             }
         });
@@ -157,12 +160,41 @@ public class AdminProductServiceImpl implements AdminProductService {
                         return message;
                     });
                 }else{
-                    log.warn("事务未提交，截断发送消息");
+                    log.warn("事务未提交，截断发送消息---{上架商品:{}}", id);
                 }
             }
         });
 
         return Result.success(MessageReturn.OPERATION_SUCCESS);
+    }
+
+    /**
+     * 下架商品
+     */
+    @Override
+    public Result<Void> stopSale(Long id) {
+        if (id == null)
+            return Result.error(MessageReturn.PRODUCT_ID_IS_NULL);
+        productTxService.stopSale(id);
+
+        TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronization() {
+            @Override
+            public void afterCompletion(int status) {
+                if (status == TransactionSynchronization.STATUS_COMMITTED) {
+                    rabbitTemplate.convertAndSend("product.spec.exchange", "stopSale", id, message -> {
+                        MessageProperties props = message.getMessageProperties();
+                        props.setMessageId(UUID.randomUUID().toString());
+                        props.setDeliveryMode(MessageDeliveryMode.PERSISTENT);
+                        return message;
+                    });
+                }else{
+                    log.warn("事务未提交，截断发送消息---{下架商品:{}}", id);
+                }
+            }
+        });
+
+
+        return null;
     }
 
     /**
@@ -186,9 +218,12 @@ public class AdminProductServiceImpl implements AdminProductService {
         if (productId == null)
             return Result.error(MessageReturn.PRODUCT_ID_IS_NULL + "或" + MessageReturn.BODY_NO_MAIN_OR_IS_NULL);
 
+        List<Long> specIds = null;
         if (spec != null) {
             for (ProductSpecUpdateDTO productSpecUpdateDTO : spec) {
-                if (productSpecUpdateDTO.getId() == null)
+                Long specId = productSpecUpdateDTO.getId();
+                specIds.add(specId);
+                if (specId == null)
                     return Result.error(MessageReturn.PRODUCT_SPEC_ID_IS_NULL);
                 if (productSpecUpdateDTO.getStock() != null){
                     Integer realStock = productTxService.getRealStock(productId, productSpecUpdateDTO.getId());
@@ -203,23 +238,29 @@ public class AdminProductServiceImpl implements AdminProductService {
         }
 
         if (status == 1){
+            Long finalProductId = productId;
             TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronization() {
                 @Override
                 public void afterCompletion(int status) {
-                    MessagePostProcessor headerProcessor =  message -> {
-                        MessageProperties props = message.getMessageProperties();
-                        props.setDeliveryMode(MessageDeliveryMode.PERSISTENT);
-                        props.setMessageId(UUID.randomUUID().toString());
-                        Map<String, Object> headers = new HashMap<>();
-                        headers.put("spec-is-null", spec == null || spec.isEmpty());
-                        return MessageBuilder.fromMessage(message)
-                                .copyHeaders(headers)
-                                .build();
-                    };
-                    rabbitTemplate.convertAndSend("product.spec.exchange","Already",productUpdateDTO,headerProcessor);
+                    if (status == TransactionSynchronization.STATUS_COMMITTED) {
+                        MessagePostProcessor headerProcessor = message -> {
+                            MessageProperties props = message.getMessageProperties();
+                            props.setDeliveryMode(MessageDeliveryMode.PERSISTENT);
+                            props.setMessageId(UUID.randomUUID().toString());
+                            Map<String, Object> headers = new HashMap<>();
+                            headers.put("spec-is-null", spec == null || spec.isEmpty());
+                            return MessageBuilder.fromMessage(message)
+                                    .copyHeaders(headers)
+                                    .build();
+                        };
+                        rabbitTemplate.convertAndSend("product.spec.exchange", "Already", productUpdateDTO, headerProcessor);
+                    }else{
+                        log.warn("事务未提交，截断发送消息---{修改商品---product:{}--spec:{}}", finalProductId, specIds);
+                    }
                 }
             });
         }
+
         return Result.success(MessageReturn.OPERATION_SUCCESS);
     }
 

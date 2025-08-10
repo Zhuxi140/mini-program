@@ -1,9 +1,9 @@
 package com.zhuxi.mapper;
 
 import org.apache.ibatis.annotations.*;
-import src.main.java.com.zhuxi.pojo.DTO.Car.CartAddDTO;
-import src.main.java.com.zhuxi.pojo.DTO.Car.CartRedisDTO;
-import src.main.java.com.zhuxi.pojo.DTO.Car.CartUpdateDTO;
+import src.main.java.com.zhuxi.pojo.DTO.Cart.CartAddDTO;
+import src.main.java.com.zhuxi.pojo.DTO.Cart.CartRedisDTO;
+import src.main.java.com.zhuxi.pojo.DTO.Cart.CartUpdateDTO;
 import src.main.java.com.zhuxi.pojo.VO.Car.CartNewVO;
 import src.main.java.com.zhuxi.pojo.VO.Car.CartVO;
 
@@ -48,15 +48,16 @@ public interface CartMapper {
           cart.quantity,
           product.name,
           spec.spec,
-          spec.stock,
           spec.price,
           product.status,
           product.cover_url
        FROM cart JOIN product ON cart.product_id = product.id
        JOIN spec ON cart.spec_id = spec.id
-       WHERE cart.user_id = #{userId}
+       WHERE cart.user_id = #{userId} AND cart.id < #{lastId}
+       ORDER BY cart.id DESC
+       LIMIT #{pageSize}
        """)
-    List<CartVO> getListCar(Long userId);
+    List<CartVO> getListCar(Long lastId, int pageSize, Long userId);
 
     @Select("""
         SELECT

@@ -49,14 +49,19 @@ public class ProductListener {
             log.error("重复消息-----messageId:{}",messageId);
             return;
         }
-        redisUntil.setStringValue("messageId:"+ messageId,"1",24, TimeUnit.HOURS);
-
-        ProductDetailVO product = productTxService.getListProductMQ(productId);
-        productRedisCache.syncProductOne(product);
-        Long saleProductSnowFlake = productTxService.getSaleProductIdOne(productId);
-        List<SpecRedisDTO> spec = productTxService.getSpec(List.of(productId));
-        PIdSnowFlake pIdSnowFlake = new PIdSnowFlake(saleProductSnowFlake, saleProductSnowFlake);
-        productRedisCache.syncSpecInit(spec,List.of(pIdSnowFlake));
+        try {
+            ProductDetailVO product = productTxService.getListProductMQ(productId);
+            productRedisCache.syncProductOne(product);
+            Long saleProductSnowFlake = productTxService.getSaleProductIdOne(productId);
+            List<SpecRedisDTO> spec = productTxService.getSpec(List.of(productId));
+            PIdSnowFlake pIdSnowFlake = new PIdSnowFlake(saleProductSnowFlake, saleProductSnowFlake);
+            productRedisCache.syncSpecInit(spec, List.of(pIdSnowFlake));
+            redisUntil.setStringValue("messageId:" + messageId, "1", 24, TimeUnit.HOURS);
+        }catch (Exception  e){
+            // 删除幂等标记 防止重试被直接拒绝
+            redisUntil.delete("messageId:" + messageId);
+            throw new MQException(e.getMessage());
+        }
     }
 
     @RabbitListener(bindings = @QueueBinding(
@@ -80,37 +85,41 @@ public class ProductListener {
             log.error("重复消息-----messageId:{}",messageId);
             return;
         }
-
-        redisUntil.setStringValue("messageId:"+ messageId,"1",24, TimeUnit.HOURS);
-        ProductBaseUpdateDTO base = productUpdateDTO.getBase();
-        Long productId = base.getId();
-        if (productId == null){
-            throw new MQException(MessageReturn.PRODUCT_ID_IS_NULL);
-        }
-        Long snowFlakeById = productTxService.getProductSnowFlakeById(productId);
-        Map<String, Object> Map = JacksonUtils.filterNullFields(base);
-        Map.remove("id");
-        Map.remove("supplierId");
-        productRedisCache.SyncProductMQ(Map,snowFlakeById);
-
-        if (!specIsNull){
-            List<ProductSpecUpdateDTO> spec = productUpdateDTO.getSpec();
-            for (ProductSpecUpdateDTO specD : spec){
-                Long id = specD.getId();
-                if (id == null){
-                    throw new MQException(MessageReturn.PRODUCT_SPEC_ID_IS_NULL);
-                }
-                Long specSnowFlakeById = productTxService.getSpecSnowFlakeById(id);
-                Map<String, Object> Mapp;
-                Integer stock = null;
-                Mapp = JacksonUtils.filterNullFields(specD);
-                if (Mapp.containsKey("stock")){
-                    stock = (Integer) Mapp.get("stock");
-                    Mapp.remove("stock");
-                }
-                Mapp.remove("id");
-                productRedisCache.SyncSpecMQ(Mapp,specSnowFlakeById,stock);
+        try {
+            ProductBaseUpdateDTO base = productUpdateDTO.getBase();
+            Long productId = base.getId();
+            if (productId == null) {
+                throw new MQException(MessageReturn.PRODUCT_ID_IS_NULL);
             }
+            Long snowFlakeById = productTxService.getProductSnowFlakeById(productId);
+            Map<String, Object> Map = JacksonUtils.filterNullFields(base);
+            Map.remove("id");
+            Map.remove("supplierId");
+            productRedisCache.SyncProductMQ(Map, snowFlakeById);
+
+            if (!specIsNull) {
+                List<ProductSpecUpdateDTO> spec = productUpdateDTO.getSpec();
+                for (ProductSpecUpdateDTO specD : spec) {
+                    Long id = specD.getId();
+                    if (id == null) {
+                        throw new MQException(MessageReturn.PRODUCT_SPEC_ID_IS_NULL);
+                    }
+                    Long specSnowFlakeById = productTxService.getSpecSnowFlakeById(id);
+                    Map<String, Object> Mapp;
+                    Integer stock = null;
+                    Mapp = JacksonUtils.filterNullFields(specD);
+                    if (Mapp.containsKey("stock")) {
+                        stock = (Integer) Mapp.get("stock");
+                        Mapp.remove("stock");
+                    }
+                    Mapp.remove("id");
+                    productRedisCache.SyncSpecMQ(Mapp, specSnowFlakeById, stock);
+                }
+            }
+        redisUntil.setStringValue("messageId:" + messageId, "1", 24, TimeUnit.HOURS);
+        }catch (Exception e){
+            redisUntil.delete("messageId:" + messageId);
+            throw new MQException(e.getMessage());
         }
 
     }
@@ -120,11 +129,11 @@ public class ProductListener {
             value = @Queue(name = "product.spec.delete.queue", durable = "true",
                     arguments = {
                             @Argument(name = "x-dead-letter-exchange",value = "dead.queue.product.exchange"),
-                            @Argument(name = "x-dead-letter-routing-key",value = "delete")
+                            @Argument(name = "x-dead-letter-routing-key",value = "delete.stopSale")
                     }
             ),
             exchange = @Exchange(name = "product.spec.exchange"),
-            key = "delete"
+            key = {"delete","stopSale"}
     ),
             containerFactory = "auto"
     )
@@ -134,9 +143,13 @@ public class ProductListener {
             log.error("重复消息-----messageId:{}",messageId);
             return;
         }
-
-        redisUntil.setStringValue("messageId:"+ messageId,"1",24, TimeUnit.HOURS);
+        try{
         productRedisCache.deleteProduct(pSsnowFlake.getProductSnowflake(),pSsnowFlake.getSpecSnowflake());
+        redisUntil.setStringValue("messageId:"+ messageId,"1",24, TimeUnit.HOURS);
+        }catch (Exception e){
+            redisUntil.delete("messageId:" + messageId);
+            throw new MQException(e.getMessage());
+        }
     }
 
 
@@ -170,7 +183,7 @@ public class ProductListener {
             bindings = @QueueBinding(
                     value = @Queue(name = "dead.queue.product.delete", durable = "true"),
                     exchange = @Exchange(name = "dead.queue.product.exchange"),
-                    key = "delete"
+                    key = "delete.stopSale"
             )
     )
     public void handleDeleteDeadLetter(Long productId){

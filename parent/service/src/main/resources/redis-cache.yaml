@@ -2,7 +2,8 @@
 redis:
   cache:
     maxAttempts: 5
-    baseWaitMs: 500
+    baseWaitMs: 100
+    maxWaitMs: 1000
     ProductCache:
       ZSetPrefix: product:sort
       HashPrefix: product:detail
@@ -22,6 +23,7 @@ redis:
       OrderGroupPrefix: order:group
       OrderStatusPrefix: order:status
     CartCache:
+      sSetPrefix: cart:desc
       CartPrefix: cart:userId
     UserCache:
       SessionKey: SessionKey:user

@@ -17,7 +17,6 @@ import src.main.java.com.zhuxi.pojo.DTO.Order.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -248,11 +247,16 @@ public class OrderTxService {
         }
     }
 
+
     @Transactional(rollbackFor = transactionalException.class)
     public Long concealOrder(Long orderId,String orderSn,boolean isHit){
         if (!isHit){
             orderId = orderMapper.getOrderId(orderSn);
+            if (orderId == null || orderId <= 0){
+                throw new transactionalException(MessageReturn.SELECT_ERROR);
+            }
         }
+
         int i1 = orderMapper.cancelOrder(orderId);
         if(i1 !=  1) {
             throw new transactionalException(MessageReturn.ORDER_CONCEAL_ERROR);

@@ -89,4 +89,7 @@ public class MessageReturn {
     public static final String LOGOUT_SUCCESS = "退出成功";
     public static final String LOGIN_ALREADY_USELESS = "登录已失效";
     public static final String ACCOUNT_IS_BANING = "账号被封禁";
+    public static final String PRODUCT_HAVE_STOCK = "商品还有库存余量，建议下架处理";
+    public static final String STOP_SALE_ERROR = "下架失败";
+    public static final String REDIS_KEY_DELETE_ERROR = "redis key delete error";
 }

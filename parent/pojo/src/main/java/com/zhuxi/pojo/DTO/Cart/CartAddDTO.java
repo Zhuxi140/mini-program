@@ -1,4 +1,4 @@
-package src.main.java.com.zhuxi.pojo.DTO.Car;
+package src.main.java.com.zhuxi.pojo.DTO.Cart;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 

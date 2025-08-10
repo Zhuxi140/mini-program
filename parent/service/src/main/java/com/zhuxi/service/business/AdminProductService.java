@@ -23,5 +23,7 @@ public interface AdminProductService {
     //上架
     Result<Void> putOnSale(Long id);
 
+    Result<Void> stopSale(Long id);
+
 
 }

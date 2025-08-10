@@ -1,6 +1,7 @@
 package com.zhuxi.controller.User;
 
 
+import com.zhuxi.Result.PageResult;
 import com.zhuxi.Result.Result;
 import com.zhuxi.annotation.CurrentUserId;
 import com.zhuxi.annotation.RequireRole;
@@ -9,13 +10,11 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.web.bind.annotation.*;
-import src.main.java.com.zhuxi.pojo.DTO.Car.CartAddDTO;
-import src.main.java.com.zhuxi.pojo.DTO.Car.CartUpdateDTO;
+import src.main.java.com.zhuxi.pojo.DTO.Cart.CartAddDTO;
+import src.main.java.com.zhuxi.pojo.DTO.Cart.CartUpdateDTO;
 import src.main.java.com.zhuxi.pojo.VO.Car.CartNewVO;
 import src.main.java.com.zhuxi.pojo.VO.Car.CartVO;
 import src.main.java.com.zhuxi.pojo.entity.Role;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/cart")
@@ -80,10 +79,11 @@ public class CarController {
     )
     public Result<Void> deleteCart(
             @Parameter(description = "购物车id", required = true)
-            Long cartId
+            Long cartId,
+            @CurrentUserId Long userId
     ){
 
-        return cartService.delete(cartId);
+        return cartService.delete(cartId, userId);
     }
 
 
@@ -96,11 +96,16 @@ public class CarController {
             summary = "获取购物车列表",
             description = "获取购物车列表"
     )
-    public Result<List<CartVO>> getCartList(
+    public Result<PageResult<CartVO, Long>> getCartList(
             @Parameter(description = "用户token",hidden = true)
-            @CurrentUserId Long userId
+            @CurrentUserId Long userId,
+            @Parameter(description = "上一页游标", required = true)
+            Long lastId,
+            @Parameter(description = "分页大小", required = true)
+            @RequestParam(defaultValue = "10")
+            int pageSize
     ){
-        return cartService.getList(userId);
+        return cartService.getList(userId,lastId, pageSize);
     }
 
 

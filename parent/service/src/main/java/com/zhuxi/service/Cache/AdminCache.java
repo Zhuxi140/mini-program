@@ -29,7 +29,7 @@ public class AdminCache {
 
     public String getLogOutValue(String token){
         String logOutKey = getLogOutKey(token);
-        return redisUntil.getStringValue(logOutKey);
+        return (String) redisUntil.getStringValue(logOutKey);
     }
 
 

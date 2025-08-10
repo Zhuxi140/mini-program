@@ -145,6 +145,9 @@ public interface ProductMapper {
     @Update("UPDATE product SET status = 1 WHERE product.id = #{id} ")
     int putOnSale(Long id);
 
+    @Update("UPDATE product SET status = 0 WHERE product.id = #{id} ")
+    int stopSale(Long id);
+
     @Select("""
     SELECT NOT EXISTS(
     SELECT 1 FROM spec s 
@@ -211,5 +214,11 @@ public interface ProductMapper {
     LIMIT #{pageSize}
     """)
     List<snowFlakeMap> getSnowFlakeMap(Long lastId,int pageSize);
+
+    @Select("SELECT stock FROM real_stock WHERE product_id = #{productId}")
+    List< Integer> getRealStockList(Long productId);
+
+    @Select("SELECT stock FROM spec WHERE product_id = #{productId}")
+    List<Integer> getSpecStockList(Long productId);
 
 }

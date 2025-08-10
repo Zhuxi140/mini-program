@@ -28,7 +28,7 @@ public class WechatCache {
     }
 
     public String getAccessionToken(){
-        return redisUntil.getStringValue(getAccessionTokenKey());
+        return (String) redisUntil.getStringValue(getAccessionTokenKey());
     }
 
 

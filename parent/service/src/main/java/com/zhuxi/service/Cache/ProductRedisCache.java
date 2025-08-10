@@ -363,11 +363,11 @@ public class ProductRedisCache {
         return (Long) redisUntil.hGet(productDetailKey, "id");
     }
 
-    public void deleteProduct(Long productId,List<Long> specNumbers) {
-        String product = productId.toString();
+    public void deleteProduct(Long productSnowflake,List<Long> specNumbers) {
+        String product = productSnowflake.toString();
         redisUntil.delete(getProductDetailKey(product));
-        redisUntil.deleteZSetOneFiled(getSortPriceKey(),productId);
-        redisUntil.deleteZSetOneFiled(getSortCreateDesc(),productId);
+        redisUntil.deleteZSetOneFiled(getSortPriceKey(),productSnowflake);
+        redisUntil.deleteZSetOneFiled(getSortCreateDesc(),productSnowflake);
         Long llll = redisUntil.hDelete(getMapSpecProductKey(), product);
         for(int i =0; i < specNumbers.size(); i++){
             Long specSnowFlake = specNumbers.get(i);

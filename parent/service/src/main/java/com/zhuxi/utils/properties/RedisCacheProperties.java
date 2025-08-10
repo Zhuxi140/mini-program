@@ -6,6 +6,8 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+
 
 @Component
 @ConfigurationProperties(prefix = "redis.cache")
@@ -22,9 +24,13 @@ public class RedisCacheProperties {
     private UserCache userCache = new UserCache();
     private WechatCache wechatCache = new WechatCache();
     private AdminCache adminCache = new AdminCache();
-
+    // 最大重试次数
     private int maxAttempts;
+    // 基础等待时间(毫秒)
     private long baseWaitMs;
+    // 最大等待时间(毫秒)
+    private long maxWaitMs;
+
 
 
 
@@ -248,6 +254,7 @@ public class RedisCacheProperties {
 
     public static class CartCache{
         private String CartPrefix;
+        private String sSetPrefix;
 
         public String getCartPrefix() {
             return CartPrefix;
@@ -255,6 +262,14 @@ public class RedisCacheProperties {
 
         public void setCartPrefix(String cartPrefix) {
             CartPrefix = cartPrefix;
+        }
+
+        public String getsSetPrefix() {
+            return sSetPrefix;
+        }
+
+        public void setsSetPrefix(String sSetPrefix) {
+            this.sSetPrefix = sSetPrefix;
         }
     }
 
@@ -383,4 +398,16 @@ public class RedisCacheProperties {
     public void setCartCache(CartCache cartCache) {
         this.cartCache = cartCache;
     }
+
+    public long getMaxWaitMs() {
+        return maxWaitMs;
+    }
+
+    public void setMaxWaitMs(long maxWaitMs) {
+        this.maxWaitMs = maxWaitMs;
+    }
+
+
+
+
 }

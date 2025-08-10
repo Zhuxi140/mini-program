@@ -98,6 +98,6 @@ public class LoginRedisCache {
     }
 
     public String getTokenValue(String token){
-        return redisUntil.getStringValue(getLogOutKey(token));
+        return (String) redisUntil.getStringValue(getLogOutKey(token));
     }
 }

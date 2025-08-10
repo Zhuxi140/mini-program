@@ -14,6 +14,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.ZSetOperations;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionSynchronization;
+import org.springframework.transaction.support.TransactionSynchronizationManager;
 import src.main.java.com.zhuxi.pojo.DTO.Order.*;
 import src.main.java.com.zhuxi.pojo.VO.Order.OrderRealShowVO;
 import java.math.BigDecimal;
@@ -191,14 +193,21 @@ public class OrderServiceImpl implements OrderService {
             return Result.error(MessageReturn.ORDER_USER_ID_IS_NULL);
 
         Long orderId = orderRedisCache.getOrderIdBySn(orderSn);
-        boolean isHit = true;
-        if (orderId == null){
-            isHit = false;
+        if (orderId ==  null){
+            orderId = orderTxService.getOrderId(orderSn);
         }
-        Long orderIdd = orderTxService.concealOrder(orderId,orderSn,isHit);
+
+        Long orderIdd = orderTxService.concealOrder(orderId,orderSn,true);
         orderTxService.releaseLockStock(orderIdd);
 
-        orderRedisCache.syncOrderStatus(orderSn,4);
+        TransactionSynchronizationManager.registerSynchronization(
+                new TransactionSynchronization() {
+                    @Override
+                    public void afterCommit() {
+                        orderRedisCache.syncOrderStatus(orderSn,4);
+                    }
+                }
+        );
         return Result.success(MessageReturn.OPERATION_SUCCESS);
     }
 

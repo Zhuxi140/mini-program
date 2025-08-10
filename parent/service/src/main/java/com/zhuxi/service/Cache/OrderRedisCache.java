@@ -119,8 +119,7 @@ public class OrderRedisCache {
 
     public Integer getStockAndValidate(Long specSnowflake){
         String specDetailKey = rCP.getProductCache().getStockPrefix() + ":" + specSnowflake;
-        String stringValue = redisUntil.getStringValue(specDetailKey);
-        return stringValue == null ? null : Integer.valueOf(stringValue);
+        return (Integer) redisUntil.getStringValue(specDetailKey);
     }
 
     public void saveStock(Long specSnowflake,Integer stock){

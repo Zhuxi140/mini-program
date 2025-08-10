@@ -14,9 +14,9 @@ spring:
 #    url: jdbc:mysql://localhost:3306/mini_program?rewriteBatchedStatements=true
 #    username: root
 #    password: 123456
-    url: jdbc:mysql://rm-bp174c3vs31q6c5z9po.mysql.rds.aliyuncs.com:3306/mini_program?rewriteBatchedStatements=true
-    username: xcy0808
-    password: +xcy123456
+    url: jdbc:mysql://rm-bp174c3vs31q6c5z9po.mysql.rds.aliyuncs.com:3306/mini_program?rewriteBatchedStatements=true&useServerPrepStmts=true
+    username: Xu
+    password: Xu1234567
 
 #  web:
 #    resources:
@@ -29,19 +29,27 @@ spring:
 # redis配置
   data:
     redis:
+      timeout: 3000
       lettuce:
         pool:
+          enabled:  true
           max-idle: 50 # 最大空闲连接数
-          max-wait: 50
-          max-active: 100
+          max-wait: 500ms
+          max-active: 200
           min-idle: 20 # 最小空闲连接数
           time-between-eviction-runs: 30 # 连接空闲时间
-        shutdown-timeout: 100   # 关闭连接等待时间
+
+        shutdown-timeout: 1000  # 销毁线程等待时间
+        cluster:
+          refresh:
+            adaptive: false
       host: r-bp1j86kgker8z46dxmpd.redis.rds.aliyuncs.com
       port: 6379
       password: qwEr123456
       username: r-bp1j86kgker8z46dxm
-#      host: 192.168.186.128
+      ssl:
+        enabled: false
+  #      host: 192.168.186.128
 #      password: 123456
 
 # mq配置

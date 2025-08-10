@@ -100,7 +100,7 @@ public class AdminProductController {
             description = "删除商品"
     )
     public Result<Void> delete(
-            @Parameter(description = "商品id", required = true)
+            @Parameter(description = "商品号", required = true)
             @PathVariable
             Long id
     ){
@@ -119,5 +119,19 @@ public class AdminProductController {
             Long id
     ){
         return adminProductService.putOnSale(id);
+    }
+
+    @PutMapping("/stopSale/{id}")
+    @RequireRole(Role.ADMIN)
+    @Operation(
+            summary = "商品下架",
+            description = "商品下架"
+    )
+    public Result<Void> stopSale(
+            @Parameter(description = "商品id", required = true)
+            @PathVariable
+            Long id
+    ){
+        return adminProductService.stopSale(id);
     }
 }

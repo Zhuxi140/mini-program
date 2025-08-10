@@ -8,9 +8,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-import src.main.java.com.zhuxi.pojo.DTO.Car.CartAddDTO;
-import src.main.java.com.zhuxi.pojo.DTO.Car.CartRedisDTO;
-import src.main.java.com.zhuxi.pojo.DTO.Car.CartUpdateDTO;
+import src.main.java.com.zhuxi.pojo.DTO.Cart.CartAddDTO;
+import src.main.java.com.zhuxi.pojo.DTO.Cart.CartRedisDTO;
+import src.main.java.com.zhuxi.pojo.DTO.Cart.CartUpdateDTO;
 import src.main.java.com.zhuxi.pojo.VO.Car.CartNewVO;
 import src.main.java.com.zhuxi.pojo.VO.Car.CartVO;
 
@@ -35,8 +35,8 @@ public class CartTxService {
     }
 
     @Transactional(readOnly = true,propagation = Propagation.SUPPORTS)
-    public List<CartVO> getListCart(Long userId){
-        List<CartVO> listCar = cartMapper.getListCar(userId);
+    public List<CartVO> getListCart(Long lastId,int pageSize,Long userId){
+        List<CartVO> listCar = cartMapper.getListCar(lastId,pageSize,userId);
         if(listCar == null)
             throw new transactionalException(MessageReturn.SELECT_ERROR);
 
@@ -126,6 +126,7 @@ public class CartTxService {
             if ( !delete)
                throw new transactionalException(MessageReturn.DELETE_ERROR);
     }
+
 
     @Transactional(rollbackFor = transactionalException.class)
     public void deleteAll(Long userId){

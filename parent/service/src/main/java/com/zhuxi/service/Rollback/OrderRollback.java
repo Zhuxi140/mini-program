@@ -38,7 +38,7 @@ public class OrderRollback {
         orderRedisCache.deleteLockKey(key);
     }
 
-    public Integer gerSpecStock(Long specId, Long specSnowflake){
+   /* public Integer gerSpecStock(Long specId, Long specSnowflake){
         Integer stock = orderRedisCache.getStockAndValidate(specSnowflake);
         if (stock == null){
             stock =  orderTxService.getProductSaleStock(specId);
@@ -46,5 +46,5 @@ public class OrderRollback {
         }
 
 
-    }
+    }*/
 }

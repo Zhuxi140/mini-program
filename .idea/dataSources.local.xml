@@ -18,14 +18,15 @@
         </introspection-scope>
       </schema-mapping>
     </data-source>
-    <data-source name="@rm-bp1hc14ug996jtc22ko.mysql.rds.aliyuncs.com" uuid="cb0cf253-b8ed-44e1-b847-d170a50191d6">
+    <data-source name="@rm-bp174c3vs31q6c5z9po.mysql.rds.aliyuncs.com" uuid="b42a7732-a8a8-435b-b349-6f9f6e04249d">
       <database-info product="MySQL" version="8.0.36" jdbc-version="4.2" driver-name="MySQL Connector/J" driver-version="mysql-connector-j-8.2.0 (Revision: 06a1f724497fd81c6a659131fda822c9e5085b6c)" dbms="MYSQL" exact-version="8.0.36" exact-driver-version="8.2">
         <extra-name-characters>#@</extra-name-characters>
         <identifier-quote-string>`</identifier-quote-string>
+        <jdbc-catalog-is-schema>true</jdbc-catalog-is-schema>
       </database-info>
       <case-sensitivity plain-identifiers="lower" quoted-identifiers="lower" />
       <secret-storage>master_key</secret-storage>
-      <user-name>zhuxi140</user-name>
+      <user-name>Xu</user-name>
       <schema-mapping>
         <introspection-scope>
           <node kind="schema">

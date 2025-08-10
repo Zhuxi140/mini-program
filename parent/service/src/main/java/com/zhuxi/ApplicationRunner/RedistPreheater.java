@@ -71,10 +71,5 @@ public class RedistPreheater {
         return false;
     }
 
-    public boolean isRedisReady(){
-        return redisReady;
-    }
-
-
 
 }

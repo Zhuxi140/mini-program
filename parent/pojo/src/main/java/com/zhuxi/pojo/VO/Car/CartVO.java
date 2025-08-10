@@ -1,5 +1,6 @@
 package src.main.java.com.zhuxi.pojo.VO.Car;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 import java.math.BigDecimal;
@@ -8,6 +9,8 @@ public class CartVO {
 
     @Schema(description = "购物车id")
     private Long id;
+    @JsonIgnore
+    private Long userId;
     @Schema(description = "商品号")
     private Long productSnowflake;
     @Schema(description = "规格号")
@@ -18,11 +21,9 @@ public class CartVO {
     private String name;
     @Schema(description = "规格名")
     private String spec;
-    @Schema(description = "库存")
-    private Integer stock;
     @Schema(description = "商品单价")
     private BigDecimal price;
-    @Schema(description = "商品状态",hidden = true)
+    @Schema(description = "商品状态")
     private Integer status;
     @Schema(description = "商品主图url")
     private String coverUrl;
@@ -31,14 +32,14 @@ public class CartVO {
     public CartVO() {
     }
 
-    public CartVO(Long id,Long productSnowflake,Long specSnowflake, Integer quantity, String name, String spec, Integer stock, BigDecimal price, Integer status, String coverUrl) {
+    public CartVO(Long id, Long userId, Long productSnowflake, Long specSnowflake, Integer quantity, String name, String spec, BigDecimal price, Integer status, String coverUrl) {
         this.id = id;
+        this.userId = userId;
         this.productSnowflake = productSnowflake;
         this.specSnowflake = specSnowflake;
         this.quantity = quantity;
         this.name = name;
         this.spec = spec;
-        this.stock = stock;
         this.price = price;
         this.status = status;
         this.coverUrl = coverUrl;
@@ -116,11 +117,12 @@ public class CartVO {
         this.status = status;
     }
 
-    public Integer getStock() {
-        return stock;
+
+    public Long getUserId() {
+        return userId;
     }
 
-    public void setStock(Integer stock) {
-        this.stock = stock;
+    public void setUserId(Long userId) {
+        this.userId = userId;
     }
 }

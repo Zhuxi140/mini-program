@@ -54,6 +54,20 @@ public class ProductTxService {
         return snowFlakeById;
     }
 
+    @Transactional(readOnly = true)
+    public void checkStock(Long productId){
+        List<Integer> realStockList = productMapper.getRealStockList(productId);
+        for (Integer realStock : realStockList){
+            if (realStock > 0)
+                throw new MQException(MessageReturn.PRODUCT_HAVE_STOCK);
+        }
+        List<Integer> specStockList = productMapper.getSpecStockList(productId);
+        for (Integer specStock : specStockList){
+            if (specStock > 0)
+                throw new MQException(MessageReturn.PRODUCT_HAVE_STOCK);
+        }
+    }
+
     @Transactional(readOnly = true,propagation = Propagation.SUPPORTS)
     public Long getSpecSnowFlakeById(Long id) {
         Long snowFlakeById = productMapper.getSpecSnowFlakeById(id);
@@ -80,6 +94,13 @@ public class ProductTxService {
         int i = productMapper.putOnSale(productId);
         if(i != 1)
             throw new transactionalException(MessageReturn.PUT_SALE_ERROR);
+    }
+
+    @Transactional(rollbackFor = transactionalException.class)
+    public void stopSale(Long productId){
+        int i = productMapper.stopSale(productId);
+        if(i != 1)
+            throw new transactionalException(MessageReturn.STOP_SALE_ERROR);
     }
 
 
