@@ -6,8 +6,8 @@ import com.zhuxi.mapper.WechatServiceMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-import src.main.java.com.zhuxi.pojo.DTO.User.UserBasicDTO;
-import src.main.java.com.zhuxi.pojo.VO.User.UserBasicVO;
+import com.zhuxi.pojo.DTO.User.UserBasicDTO;
+import com.zhuxi.pojo.VO.User.UserBasicVO;
 
 import java.util.List;
 

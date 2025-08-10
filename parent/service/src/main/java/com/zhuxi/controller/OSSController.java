@@ -27,9 +27,9 @@ import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
-import src.main.java.com.zhuxi.pojo.DTO.OSSConfigDTO;
-import src.main.java.com.zhuxi.pojo.DTO.OssRecord;
-import src.main.java.com.zhuxi.pojo.DTO.OssTokenDTO;
+import com.zhuxi.pojo.DTO.OSSConfigDTO;
+import com.zhuxi.pojo.DTO.OssRecord;
+import com.zhuxi.pojo.DTO.OssTokenDTO;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;

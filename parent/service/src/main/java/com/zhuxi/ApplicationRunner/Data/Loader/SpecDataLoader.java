@@ -4,8 +4,8 @@ import com.zhuxi.service.Cache.ProductRedisCache;
 import com.zhuxi.service.Tx.ProductTxService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-import src.main.java.com.zhuxi.pojo.DTO.product.PIdSnowFlake;
-import src.main.java.com.zhuxi.pojo.DTO.product.SpecRedisDTO;
+import com.zhuxi.pojo.DTO.product.PIdSnowFlake;
+import com.zhuxi.pojo.DTO.product.SpecRedisDTO;
 
 import java.util.List;
 

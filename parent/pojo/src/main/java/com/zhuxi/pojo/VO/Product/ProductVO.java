@@ -1,4 +1,4 @@
-package src.main.java.com.zhuxi.pojo.VO.Product;
+package com.zhuxi.pojo.VO.Product;
 
 import java.math.BigDecimal;
 import java.util.List;

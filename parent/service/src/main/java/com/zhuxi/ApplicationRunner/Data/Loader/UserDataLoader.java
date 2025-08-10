@@ -5,7 +5,7 @@ import com.zhuxi.service.Cache.LoginRedisCache;
 import com.zhuxi.service.Tx.WechatAuthTxService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-import src.main.java.com.zhuxi.pojo.DTO.User.UserBasicDTO;
+import com.zhuxi.pojo.DTO.User.UserBasicDTO;
 
 import java.util.List;
 

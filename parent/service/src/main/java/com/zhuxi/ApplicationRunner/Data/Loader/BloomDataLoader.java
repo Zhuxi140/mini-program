@@ -7,9 +7,8 @@ import com.zhuxi.service.Tx.ProductTxService;
 import com.zhuxi.service.Tx.UserTxService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-import src.main.java.com.zhuxi.pojo.DTO.Order.BloomOrderDTO;
+import com.zhuxi.pojo.DTO.Order.BloomOrderDTO;
 
 import java.util.List;
 

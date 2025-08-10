@@ -49,8 +49,9 @@ public class RedisUntil {
 
     //清空对应key
     public Boolean delete(String key){
-         return stringValueOperations.getOperations().hasKey(key);
+         return redisTemplate.delete(key);
     }
+
 
 
 

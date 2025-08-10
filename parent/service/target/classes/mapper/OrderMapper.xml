@@ -171,7 +171,7 @@
 
         </select>
 
-    <select id="getOrderList" resultType="src.main.java.com.zhuxi.pojo.DTO.Order.OrderRedisDTO">
+    <select id="getOrderList" resultType="com.zhuxi.pojo.DTO.Order.OrderRedisDTO">
     <![CDATA[
         SELECT o.id,
                 o.order_sn,
@@ -192,7 +192,7 @@
          LIMIT #{pageSize}
     ]]>
     </select>
-    <select id="getOrderRedisList" resultType="src.main.java.com.zhuxi.pojo.DTO.Order.OrderRedisDTO">
+    <select id="getOrderRedisList" resultType="com.zhuxi.pojo.DTO.Order.OrderRedisDTO">
     <![CDATA[
     WITH LatestOrder AS(
         SELECT MAX(created_at) AS latest_time

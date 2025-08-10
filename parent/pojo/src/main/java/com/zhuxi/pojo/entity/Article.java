@@ -1,4 +1,4 @@
-package src.main.java.com.zhuxi.pojo.entity;
+package com.zhuxi.pojo.entity;
 
 import java.time.LocalDateTime;
 import java.util.List;

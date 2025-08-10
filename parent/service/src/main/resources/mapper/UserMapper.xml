@@ -3,7 +3,7 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.zhuxi.mapper.UserMapper">
-    <select id="getListUserDESC" resultType="src.main.java.com.zhuxi.pojo.VO.Admin.AdminUserVO">
+    <select id="getListUserDESC" resultType="com.zhuxi.pojo.VO.Admin.AdminUserVO">
         <![CDATA[
         SELECT
             id,
@@ -21,7 +21,7 @@
     </select>
 
 
-    <select id="getListUserASC" resultType="src.main.java.com.zhuxi.pojo.VO.Admin.AdminUserVO">
+    <select id="getListUserASC" resultType="com.zhuxi.pojo.VO.Admin.AdminUserVO">
         SELECT
             id,
             display_name,
@@ -37,7 +37,7 @@
     </select>
 
 
-    <update id="updateUser" parameterType="src.main.java.com.zhuxi.pojo.DTO.User.UserUpdateDTO">
+    <update id="updateUser" parameterType="com.zhuxi.pojo.DTO.User.UserUpdateDTO">
         UPDATE user
         <set>
             <if test="nickName != null">

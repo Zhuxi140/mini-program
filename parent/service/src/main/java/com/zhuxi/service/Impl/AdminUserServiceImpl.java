@@ -7,7 +7,7 @@ import com.zhuxi.service.business.AdminUserService;
 import com.zhuxi.service.Tx.AdminUserTxService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import src.main.java.com.zhuxi.pojo.VO.Admin.AdminUserVO;
+import com.zhuxi.pojo.VO.Admin.AdminUserVO;
 
 import java.util.List;
 

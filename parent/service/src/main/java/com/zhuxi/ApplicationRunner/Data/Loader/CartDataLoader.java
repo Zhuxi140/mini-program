@@ -5,7 +5,7 @@ import com.zhuxi.service.Tx.CartTxService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-import src.main.java.com.zhuxi.pojo.DTO.Cart.CartRedisDTO;
+import com.zhuxi.pojo.DTO.Cart.CartRedisDTO;
 
 import java.util.List;
 

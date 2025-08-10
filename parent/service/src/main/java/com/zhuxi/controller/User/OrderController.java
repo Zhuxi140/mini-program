@@ -10,8 +10,8 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.web.bind.annotation.*;
-import src.main.java.com.zhuxi.pojo.DTO.Order.OrderAddDTO;
-import src.main.java.com.zhuxi.pojo.entity.Role;
+import com.zhuxi.pojo.DTO.Order.OrderAddDTO;
+import com.zhuxi.pojo.entity.Role;
 
 import java.util.List;
 

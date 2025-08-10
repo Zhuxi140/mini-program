@@ -15,7 +15,7 @@ import org.springframework.stereotype.Component;
 import com.zhuxi.annotation.RequireRole;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
-import src.main.java.com.zhuxi.pojo.entity.Role;
+import com.zhuxi.pojo.entity.Role;
 
 @Aspect
 @Component

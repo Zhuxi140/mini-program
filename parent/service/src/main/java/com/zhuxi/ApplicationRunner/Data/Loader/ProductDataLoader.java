@@ -5,7 +5,7 @@ import com.zhuxi.service.Tx.ProductTxService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-import src.main.java.com.zhuxi.pojo.VO.Product.ProductDetailVO;
+import com.zhuxi.pojo.VO.Product.ProductDetailVO;
 import java.util.List;
 
 @Component

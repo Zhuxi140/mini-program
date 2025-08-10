@@ -1,6 +1,6 @@
-package src.main.java.com.zhuxi.pojo.VO.User;
+package com.zhuxi.pojo.VO.User;
 
-import src.main.java.com.zhuxi.pojo.VO.Admin.AdminUserVO;
+import com.zhuxi.pojo.VO.Admin.AdminUserVO;
 
 public class UserLoginVO {
     private String token;

@@ -2,9 +2,9 @@ package com.zhuxi.service.business;
 
 import com.zhuxi.Result.PageResult;
 import com.zhuxi.Result.Result;
-import src.main.java.com.zhuxi.pojo.DTO.product.ProductAddDTO;
-import src.main.java.com.zhuxi.pojo.DTO.product.ProductUpdateDTO;
-import src.main.java.com.zhuxi.pojo.VO.Product.ProductSpecDetailVO;
+import com.zhuxi.pojo.DTO.product.ProductAddDTO;
+import com.zhuxi.pojo.DTO.product.ProductUpdateDTO;
+import com.zhuxi.pojo.VO.Product.ProductSpecDetailVO;
 
 import java.util.List;
 

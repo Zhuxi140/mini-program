@@ -1,6 +1,5 @@
-package src.main.java.com.zhuxi.pojo.DTO.Cart;
+package com.zhuxi.pojo.DTO.Cart;
 
-import java.time.LocalDateTime;
 
 public class CartRedisDTO {
 

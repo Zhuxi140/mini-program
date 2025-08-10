@@ -4,8 +4,8 @@ import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
-import src.main.java.com.zhuxi.pojo.DTO.User.UserBasicDTO;
-import src.main.java.com.zhuxi.pojo.VO.User.UserBasicVO;
+import com.zhuxi.pojo.DTO.User.UserBasicDTO;
+import com.zhuxi.pojo.VO.User.UserBasicVO;
 
 import java.util.List;
 

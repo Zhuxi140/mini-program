@@ -1,4 +1,4 @@
-package src.main.java.com.zhuxi.pojo.entity;
+package com.zhuxi.pojo.entity;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;

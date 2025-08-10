@@ -2,13 +2,13 @@ package com.zhuxi.mapper;
 
 
 import org.apache.ibatis.annotations.*;
-import src.main.java.com.zhuxi.pojo.DTO.RealStock.RealStockDTO;
-import src.main.java.com.zhuxi.pojo.DTO.product.*;
-import src.main.java.com.zhuxi.pojo.VO.Admin.AdminProductVO;
-import src.main.java.com.zhuxi.pojo.VO.Product.ProductDetailVO;
-import src.main.java.com.zhuxi.pojo.VO.Product.ProductOverviewVO;
-import src.main.java.com.zhuxi.pojo.VO.Product.ProductSpecDetailVO;
-import src.main.java.com.zhuxi.pojo.VO.Product.ProductSpecVO;
+import com.zhuxi.pojo.DTO.RealStock.RealStockDTO;
+import com.zhuxi.pojo.DTO.product.*;
+import com.zhuxi.pojo.VO.Admin.AdminProductVO;
+import com.zhuxi.pojo.VO.Product.ProductDetailVO;
+import com.zhuxi.pojo.VO.Product.ProductOverviewVO;
+import com.zhuxi.pojo.VO.Product.ProductSpecDetailVO;
+import com.zhuxi.pojo.VO.Product.ProductSpecVO;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;

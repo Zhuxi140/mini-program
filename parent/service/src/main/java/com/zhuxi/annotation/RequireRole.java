@@ -1,7 +1,7 @@
 package com.zhuxi.annotation;
 
 
-import src.main.java.com.zhuxi.pojo.entity.Role;
+import com.zhuxi.pojo.entity.Role;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;

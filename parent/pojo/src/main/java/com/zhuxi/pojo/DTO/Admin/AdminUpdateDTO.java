@@ -1,7 +1,7 @@
-package src.main.java.com.zhuxi.pojo.DTO.Admin;
+package com.zhuxi.pojo.DTO.Admin;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import src.main.java.com.zhuxi.pojo.entity.Role;
+import com.zhuxi.pojo.entity.Role;
 
 
 public class AdminUpdateDTO {

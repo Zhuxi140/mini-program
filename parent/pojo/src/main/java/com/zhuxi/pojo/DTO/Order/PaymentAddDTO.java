@@ -1,4 +1,4 @@
-package src.main.java.com.zhuxi.pojo.DTO.Order;
+package com.zhuxi.pojo.DTO.Order;
 
 import java.math.BigDecimal;
 

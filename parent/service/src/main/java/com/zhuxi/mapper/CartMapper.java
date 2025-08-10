@@ -1,11 +1,11 @@
 package com.zhuxi.mapper;
 
 import org.apache.ibatis.annotations.*;
-import src.main.java.com.zhuxi.pojo.DTO.Cart.CartAddDTO;
-import src.main.java.com.zhuxi.pojo.DTO.Cart.CartRedisDTO;
-import src.main.java.com.zhuxi.pojo.DTO.Cart.CartUpdateDTO;
-import src.main.java.com.zhuxi.pojo.VO.Car.CartNewVO;
-import src.main.java.com.zhuxi.pojo.VO.Car.CartVO;
+import  com.zhuxi.pojo.DTO.Cart.CartAddDTO;
+import  com.zhuxi.pojo.DTO.Cart.CartRedisDTO;
+import  com.zhuxi.pojo.DTO.Cart.CartUpdateDTO;
+import  com.zhuxi.pojo.VO.Car.CartNewVO;
+import com.zhuxi.pojo.VO.Car.CartVO;
 
 import java.util.List;
 
@@ -36,7 +36,7 @@ public interface CartMapper {
 
     // 删除
     @Delete("DELETE FROM cart WHERE id = #{cartId}")
-    Boolean delete(Long cartId);
+    int delete(Long cartId);
 
 
     // 查询

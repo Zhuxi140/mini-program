@@ -3,7 +3,7 @@ package com.zhuxi.mapper;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
-import src.main.java.com.zhuxi.pojo.DTO.Pay.PayDTO;
+import com.zhuxi.pojo.DTO.Pay.PayDTO;
 
 @Mapper
 public interface PayMapper {

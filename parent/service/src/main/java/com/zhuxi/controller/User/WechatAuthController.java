@@ -13,9 +13,9 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
-import src.main.java.com.zhuxi.pojo.DTO.User.UserBasicDTO;
-import src.main.java.com.zhuxi.pojo.VO.User.UserBasicVO;
-import src.main.java.com.zhuxi.pojo.entity.Role;
+import com.zhuxi.pojo.DTO.User.UserBasicDTO;
+import com.zhuxi.pojo.VO.User.UserBasicVO;
+import com.zhuxi.pojo.entity.Role;
 
 import java.util.HashMap;
 

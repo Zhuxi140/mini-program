@@ -12,12 +12,12 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.web.bind.annotation.*;
-import src.main.java.com.zhuxi.pojo.DTO.Admin.AdminLoginDTO;
-import src.main.java.com.zhuxi.pojo.DTO.Admin.AdminUpdateDTO;
-import src.main.java.com.zhuxi.pojo.VO.Admin.AdminLoginVO;
-import src.main.java.com.zhuxi.pojo.VO.Admin.AdminVO;
-import src.main.java.com.zhuxi.pojo.entity.Admin;
-import src.main.java.com.zhuxi.pojo.entity.Role;
+import com.zhuxi.pojo.DTO.Admin.AdminLoginDTO;
+import com.zhuxi.pojo.DTO.Admin.AdminUpdateDTO;
+import com.zhuxi.pojo.VO.Admin.AdminLoginVO;
+import com.zhuxi.pojo.VO.Admin.AdminVO;
+import com.zhuxi.pojo.entity.Admin;
+import com.zhuxi.pojo.entity.Role;
 
 import java.util.HashMap;
 import java.util.List;

@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.TransactionSynchronization;
 import org.springframework.transaction.support.TransactionSynchronizationManager;
-import src.main.java.com.zhuxi.pojo.DTO.Pay.PayDTO;
+import com.zhuxi.pojo.DTO.Pay.PayDTO;
 
 
 @Service

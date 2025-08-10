@@ -7,10 +7,10 @@ import com.zhuxi.mapper.AdminMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-import src.main.java.com.zhuxi.pojo.DTO.Admin.AdminLoginDTO;
-import src.main.java.com.zhuxi.pojo.DTO.Admin.AdminUpdateDTO;
-import src.main.java.com.zhuxi.pojo.VO.Admin.AdminVO;
-import src.main.java.com.zhuxi.pojo.entity.Admin;
+import com.zhuxi.pojo.DTO.Admin.AdminLoginDTO;
+import com.zhuxi.pojo.DTO.Admin.AdminUpdateDTO;
+import com.zhuxi.pojo.VO.Admin.AdminVO;
+import com.zhuxi.pojo.entity.Admin;
 
 import java.time.LocalDateTime;
 import java.util.List;

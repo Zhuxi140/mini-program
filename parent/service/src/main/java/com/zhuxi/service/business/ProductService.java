@@ -2,9 +2,9 @@ package com.zhuxi.service.business;
 
 import com.zhuxi.Result.ProductPageResult;
 import com.zhuxi.Result.Result;
-import src.main.java.com.zhuxi.pojo.VO.Product.ProductDetailVO;
-import src.main.java.com.zhuxi.pojo.VO.Product.ProductOverviewVO;
-import src.main.java.com.zhuxi.pojo.VO.Product.ProductSpecVO;
+import com.zhuxi.pojo.VO.Product.ProductDetailVO;
+import com.zhuxi.pojo.VO.Product.ProductOverviewVO;
+import com.zhuxi.pojo.VO.Product.ProductSpecVO;
 import java.util.List;
 
 public interface ProductService {

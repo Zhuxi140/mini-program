@@ -1,10 +1,10 @@
 package com.zhuxi.mapper;
 
 import org.apache.ibatis.annotations.*;
-import src.main.java.com.zhuxi.pojo.DTO.article.ArticleInsertOrUpdateDTO;
-import src.main.java.com.zhuxi.pojo.DTO.article.ArticleOssUpdateDTO;
-import src.main.java.com.zhuxi.pojo.VO.Article.ArticleDetailVO;
-import src.main.java.com.zhuxi.pojo.VO.Article.ArticleVO;
+import com.zhuxi.pojo.DTO.article.ArticleInsertOrUpdateDTO;
+import com.zhuxi.pojo.DTO.article.ArticleOssUpdateDTO;
+import com.zhuxi.pojo.VO.Article.ArticleDetailVO;
+import com.zhuxi.pojo.VO.Article.ArticleVO;
 
 import java.util.List;
 

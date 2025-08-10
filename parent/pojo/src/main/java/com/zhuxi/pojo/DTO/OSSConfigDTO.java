@@ -1,4 +1,4 @@
-package src.main.java.com.zhuxi.pojo.DTO;
+package com.zhuxi.pojo.DTO;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 

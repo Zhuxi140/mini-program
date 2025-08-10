@@ -7,8 +7,8 @@ import com.zhuxi.mapper.UserAddressMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-import src.main.java.com.zhuxi.pojo.DTO.User.UserAddressDTO;
-import src.main.java.com.zhuxi.pojo.VO.User.UserAddressVO;
+import com.zhuxi.pojo.DTO.User.UserAddressDTO;
+import com.zhuxi.pojo.VO.User.UserAddressVO;
 
 import java.util.List;
 

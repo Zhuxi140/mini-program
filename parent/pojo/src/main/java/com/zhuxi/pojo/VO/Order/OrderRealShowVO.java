@@ -1,4 +1,4 @@
-package src.main.java.com.zhuxi.pojo.VO.Order;
+package com.zhuxi.pojo.VO.Order;
 
 
 import io.swagger.v3.oas.annotations.media.Schema;

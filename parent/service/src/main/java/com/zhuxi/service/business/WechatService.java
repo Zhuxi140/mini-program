@@ -3,8 +3,8 @@ package com.zhuxi.service.business;
 import com.zhuxi.Result.Result;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import src.main.java.com.zhuxi.pojo.DTO.User.UserBasicDTO;
-import src.main.java.com.zhuxi.pojo.VO.User.UserBasicVO;
+import com.zhuxi.pojo.DTO.User.UserBasicDTO;
+import com.zhuxi.pojo.VO.User.UserBasicVO;
 
 public interface WechatService {
 

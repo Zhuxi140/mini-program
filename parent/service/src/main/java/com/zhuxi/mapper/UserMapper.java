@@ -5,9 +5,9 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
-import src.main.java.com.zhuxi.pojo.DTO.User.UserLoginDTO;
-import src.main.java.com.zhuxi.pojo.DTO.User.UserUpdateDTO;
-import src.main.java.com.zhuxi.pojo.VO.Admin.AdminUserVO;
+import com.zhuxi.pojo.DTO.User.UserLoginDTO;
+import com.zhuxi.pojo.DTO.User.UserUpdateDTO;
+import com.zhuxi.pojo.VO.Admin.AdminUserVO;
 
 import java.util.List;
 

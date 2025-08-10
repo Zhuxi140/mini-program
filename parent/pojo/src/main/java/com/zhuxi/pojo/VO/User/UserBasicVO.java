@@ -1,4 +1,4 @@
-package src.main.java.com.zhuxi.pojo.VO.User;
+package com.zhuxi.pojo.VO.User;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 

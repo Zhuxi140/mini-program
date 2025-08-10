@@ -3,7 +3,7 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.zhuxi.mapper.ProductMapper">
-    <select id="getListProductByCreate"  resultType="src.main.java.com.zhuxi.pojo.VO.Product.ProductOverviewVO">
+    <select id="getListProductByCreate"  resultType="com.zhuxi.pojo.VO.Product.ProductOverviewVO">
     <![CDATA[
         SELECT
             id,
@@ -22,7 +22,7 @@
     </select>
 
     <select id="getListProductByPriceDESC"
-            resultType="src.main.java.com.zhuxi.pojo.VO.Product.ProductOverviewVO">
+            resultType="com.zhuxi.pojo.VO.Product.ProductOverviewVO">
          <![CDATA[
         SELECT
             id,
@@ -41,7 +41,7 @@
     </select>
 
     <select id="getListProductByPriceASC"
-            resultType="src.main.java.com.zhuxi.pojo.VO.Product.ProductOverviewVO">
+            resultType="com.zhuxi.pojo.VO.Product.ProductOverviewVO">
              <![CDATA[
         SELECT
             id,
@@ -59,7 +59,7 @@
         ]]>
     </select>
 
-    <select id="getListProduct" resultType="src.main.java.com.zhuxi.pojo.VO.Product.ProductDetailVO">
+    <select id="getListProduct" resultType="com.zhuxi.pojo.VO.Product.ProductDetailVO">
         <![CDATA[
         SELECT
             id,
@@ -81,7 +81,7 @@
         ]]>
     </select>
 
-    <select id="getListAdminProductsDESC" resultType="src.main.java.com.zhuxi.pojo.VO.Admin.AdminProductVO">
+    <select id="getListAdminProductsDESC" resultType="com.zhuxi.pojo.VO.Admin.AdminProductVO">
       <![CDATA[
         SELECT
             product.id,
@@ -105,7 +105,7 @@
     </select>
 
 
-    <select id="getListAdminProductsASC" resultType="src.main.java.com.zhuxi.pojo.VO.Admin.AdminProductVO">
+    <select id="getListAdminProductsASC" resultType="com.zhuxi.pojo.VO.Admin.AdminProductVO">
         <![CDATA[
         SELECT
             product.id,
@@ -128,7 +128,7 @@
         ]]>
     </select>
 
-    <select id="getSpec" resultType="src.main.java.com.zhuxi.pojo.DTO.product.SpecRedisDTO">
+    <select id="getSpec" resultType="com.zhuxi.pojo.DTO.product.SpecRedisDTO">
         SELECT
             spec.id,
             spec.product_id,

@@ -9,8 +9,8 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.web.bind.annotation.*;
-import src.main.java.com.zhuxi.pojo.DTO.Pay.PayDTO;
-import src.main.java.com.zhuxi.pojo.entity.Role;
+import com.zhuxi.pojo.DTO.Pay.PayDTO;
+import com.zhuxi.pojo.entity.Role;
 
 @RestController
 @RequestMapping("/pay")

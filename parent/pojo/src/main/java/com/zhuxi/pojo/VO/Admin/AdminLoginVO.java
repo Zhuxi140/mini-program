@@ -1,8 +1,8 @@
-package src.main.java.com.zhuxi.pojo.VO.Admin;
+package com.zhuxi.pojo.VO.Admin;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.v3.oas.annotations.media.Schema;
-import src.main.java.com.zhuxi.pojo.entity.Role;
+import com.zhuxi.pojo.entity.Role;
 
 import java.time.LocalDateTime;
 

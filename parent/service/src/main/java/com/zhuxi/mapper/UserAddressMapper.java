@@ -1,9 +1,8 @@
 package com.zhuxi.mapper;
 
-import io.swagger.v3.oas.annotations.Operation;
 import org.apache.ibatis.annotations.*;
-import src.main.java.com.zhuxi.pojo.DTO.User.UserAddressDTO;
-import src.main.java.com.zhuxi.pojo.VO.User.UserAddressVO;
+import com.zhuxi.pojo.DTO.User.UserAddressDTO;
+import com.zhuxi.pojo.VO.User.UserAddressVO;
 
 import java.util.List;
 

@@ -11,8 +11,8 @@ import org.springframework.amqp.support.AmqpHeaders;
 import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Component;
-import src.main.java.com.zhuxi.pojo.DTO.Cart.MQdelete;
-import src.main.java.com.zhuxi.pojo.VO.Car.CartVO;
+import com.zhuxi.pojo.DTO.Cart.MQdelete;
+import com.zhuxi.pojo.VO.Car.CartVO;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -66,7 +66,8 @@ public class CartListener {
                             @Argument(name = "x-dead-letter-routing-key", value = "deleteAll")
                     }
             ),
-            exchange = @Exchange(name = "cart.exchange")
+            exchange = @Exchange(name = "cart.exchange"),
+            key = "deleteAll"
     ),
             containerFactory = "auto"
     )

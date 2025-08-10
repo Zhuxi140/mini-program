@@ -1,7 +1,6 @@
-package src.main.java.com.zhuxi.pojo.DTO.product;
+package com.zhuxi.pojo.DTO.product;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonView;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 public class ProductBaseDTO {

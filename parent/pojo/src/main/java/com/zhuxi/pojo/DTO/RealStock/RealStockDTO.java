@@ -1,4 +1,4 @@
-package src.main.java.com.zhuxi.pojo.DTO.RealStock;
+package com.zhuxi.pojo.DTO.RealStock;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 

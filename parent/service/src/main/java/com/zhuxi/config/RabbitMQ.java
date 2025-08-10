@@ -80,6 +80,7 @@ public class RabbitMQ {
     @Bean("auto")
     public SimpleRabbitListenerContainerFactory autoFactory(ConnectionFactory cf) {
         SimpleRabbitListenerContainerFactory factory = new SimpleRabbitListenerContainerFactory();
+        factory.setMessageConverter(jackson2JsonMessageConverter());
         factory.setConnectionFactory(cf);
         factory.setAcknowledgeMode(AcknowledgeMode.AUTO);
         factory.setPrefetchCount(10);

@@ -3,10 +3,10 @@ package com.zhuxi.service.business;
 import com.zhuxi.Result.Result;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import src.main.java.com.zhuxi.pojo.DTO.Admin.AdminUpdateDTO;
-import src.main.java.com.zhuxi.pojo.VO.Admin.AdminLoginVO;
-import src.main.java.com.zhuxi.pojo.VO.Admin.AdminVO;
-import src.main.java.com.zhuxi.pojo.entity.Admin;
+import com.zhuxi.pojo.DTO.Admin.AdminUpdateDTO;
+import com.zhuxi.pojo.VO.Admin.AdminLoginVO;
+import com.zhuxi.pojo.VO.Admin.AdminVO;
+import com.zhuxi.pojo.entity.Admin;
 
 import java.util.List;
 

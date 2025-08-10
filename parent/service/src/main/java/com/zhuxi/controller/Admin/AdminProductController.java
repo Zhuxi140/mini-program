@@ -10,10 +10,10 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.web.bind.annotation.*;
-import src.main.java.com.zhuxi.pojo.DTO.product.ProductAddDTO;
-import src.main.java.com.zhuxi.pojo.DTO.product.ProductUpdateDTO;
-import src.main.java.com.zhuxi.pojo.VO.Product.ProductSpecDetailVO;
-import src.main.java.com.zhuxi.pojo.entity.Role;
+import com.zhuxi.pojo.DTO.product.ProductAddDTO;
+import com.zhuxi.pojo.DTO.product.ProductUpdateDTO;
+import com.zhuxi.pojo.VO.Product.ProductSpecDetailVO;
+import com.zhuxi.pojo.entity.Role;
 
 import java.util.List;
 

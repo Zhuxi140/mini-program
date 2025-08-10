@@ -1,4 +1,4 @@
-package src.main.java.com.zhuxi.pojo.DTO.Cart;
+package com.zhuxi.pojo.DTO.Cart;
 
 public class MQdelete {
     private Long cartId;

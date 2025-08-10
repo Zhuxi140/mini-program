@@ -5,7 +5,7 @@ import com.zhuxi.service.Tx.OrderTxService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-import src.main.java.com.zhuxi.pojo.DTO.Order.OrderRedisDTO;
+import com.zhuxi.pojo.DTO.Order.OrderRedisDTO;
 import java.util.List;
 
 @Slf4j

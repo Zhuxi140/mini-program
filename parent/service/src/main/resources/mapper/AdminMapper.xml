@@ -3,7 +3,7 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.zhuxi.mapper.AdminMapper">
-    <update id="updateAdmin" parameterType="src.main.java.com.zhuxi.pojo.VO.Admin.AdminVO">
+    <update id="updateAdmin" parameterType="com.zhuxi.pojo.VO.Admin.AdminVO">
         UPDATE admin
         <set>
             <if test="status != null">
@@ -18,7 +18,7 @@
         </set>
         WHERE id = #{id}
     </update>
-    <select id="queryAdminList" resultType="src.main.java.com.zhuxi.pojo.VO.Admin.AdminVO">
+    <select id="queryAdminList" resultType="com.zhuxi.pojo.VO.Admin.AdminVO">
         SELECT
             id,
             username,

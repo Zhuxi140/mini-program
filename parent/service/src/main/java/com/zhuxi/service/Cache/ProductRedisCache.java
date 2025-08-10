@@ -12,12 +12,12 @@ import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.data.redis.core.ZSetOperations;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
-import src.main.java.com.zhuxi.pojo.DTO.product.PIdSnowFlake;
-import src.main.java.com.zhuxi.pojo.DTO.product.SpecRedisDTO;
-import src.main.java.com.zhuxi.pojo.DTO.product.snowFlakeMap;
-import src.main.java.com.zhuxi.pojo.VO.Product.ProductDetailVO;
-import src.main.java.com.zhuxi.pojo.VO.Product.ProductOverviewVO;
-import src.main.java.com.zhuxi.pojo.VO.Product.ProductSpecVO;
+import com.zhuxi.pojo.DTO.product.PIdSnowFlake;
+import com.zhuxi.pojo.DTO.product.SpecRedisDTO;
+import com.zhuxi.pojo.DTO.product.snowFlakeMap;
+import com.zhuxi.pojo.VO.Product.ProductDetailVO;
+import com.zhuxi.pojo.VO.Product.ProductOverviewVO;
+import com.zhuxi.pojo.VO.Product.ProductSpecVO;
 
 import java.math.BigDecimal;
 import java.time.Instant;

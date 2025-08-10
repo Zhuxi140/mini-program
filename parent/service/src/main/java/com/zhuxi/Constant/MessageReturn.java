@@ -27,7 +27,7 @@ public class MessageReturn {
     public static final String USER_ADDRESS_NOT_EXIST="用户地址不存在";
     public static final String INSERT_ERROR="插入错误";
     public static final String UPDATE_ERROR = "更新错误";
-    public static final String DELETE_ERROR = "删除错误";
+    public static final String CART_NO_RECORD_OR_ERROR = "无订单记录或操作失败";
     public static final String SELECT_ERROR = "查询错误";
     public static final String NO_USER_ADDRESS = "暂无用户地址";
     public static final String ADDRESS_ID_IS_NULL_OR_LESS_THAN_ONE = "用户地址id为空或小于1";
@@ -92,4 +92,5 @@ public class MessageReturn {
     public static final String PRODUCT_HAVE_STOCK = "商品还有库存余量，建议下架处理";
     public static final String STOP_SALE_ERROR = "下架失败";
     public static final String REDIS_KEY_DELETE_ERROR = "redis key delete error";
+    public static final String DELETE_ERROR = "删除失败";
 }

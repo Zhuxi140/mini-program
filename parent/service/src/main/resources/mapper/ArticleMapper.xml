@@ -4,7 +4,7 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.zhuxi.mapper.ArticleMapper">
-    <select id="getListArticle" resultType="src.main.java.com.zhuxi.pojo.VO.Article.ArticleVO">
+    <select id="getListArticle" resultType="com.zhuxi.pojo.VO.Article.ArticleVO">
         SELECT
             id,
             title,
@@ -21,7 +21,7 @@
 
     </select>
 
-    <select id="getListArticleDESC" resultType="src.main.java.com.zhuxi.pojo.VO.Article.ArticleVO">
+    <select id="getListArticleDESC" resultType="com.zhuxi.pojo.VO.Article.ArticleVO">
         SELECT
             id,
             title,
@@ -42,7 +42,7 @@
         LIMIT #{pageSize}
     </select>
 
-    <update id="updateArticle" parameterType="src.main.java.com.zhuxi.pojo.DTO.article.ArticleInsertOrUpdateDTO">
+    <update id="updateArticle" parameterType="com.zhuxi.pojo.DTO.article.ArticleInsertOrUpdateDTO">
         UPDATE article
             <set>
                 <if test="aIOUDto.title != null">

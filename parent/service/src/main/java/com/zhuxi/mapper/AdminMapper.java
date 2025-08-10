@@ -2,10 +2,10 @@ package com.zhuxi.mapper;
 
 
 import org.apache.ibatis.annotations.*;
-import src.main.java.com.zhuxi.pojo.DTO.Admin.AdminLoginDTO;
-import src.main.java.com.zhuxi.pojo.DTO.Admin.AdminUpdateDTO;
-import src.main.java.com.zhuxi.pojo.VO.Admin.AdminVO;
-import src.main.java.com.zhuxi.pojo.entity.Admin;
+import com.zhuxi.pojo.DTO.Admin.AdminLoginDTO;
+import com.zhuxi.pojo.DTO.Admin.AdminUpdateDTO;
+import com.zhuxi.pojo.VO.Admin.AdminVO;
+import com.zhuxi.pojo.entity.Admin;
 
 import java.time.LocalDateTime;
 import java.util.List;

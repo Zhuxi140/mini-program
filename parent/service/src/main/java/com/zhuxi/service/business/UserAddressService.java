@@ -1,8 +1,8 @@
 package com.zhuxi.service.business;
 
 import com.zhuxi.Result.Result;
-import src.main.java.com.zhuxi.pojo.DTO.User.UserAddressDTO;
-import src.main.java.com.zhuxi.pojo.VO.User.UserAddressVO;
+import com.zhuxi.pojo.DTO.User.UserAddressDTO;
+import com.zhuxi.pojo.VO.User.UserAddressVO;
 
 import java.util.List;
 

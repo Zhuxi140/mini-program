@@ -1,4 +1,4 @@
-package src.main.java.com.zhuxi.pojo.VO.Car;
+package com.zhuxi.pojo.VO.Car;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 

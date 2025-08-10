@@ -1,8 +1,7 @@
 package com.zhuxi.mapper;
 
 import org.apache.ibatis.annotations.*;
-import src.main.java.com.zhuxi.pojo.DTO.Order.*;
-import src.main.java.com.zhuxi.pojo.VO.Order.OrderShowVO;
+import com.zhuxi.pojo.DTO.Order.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;

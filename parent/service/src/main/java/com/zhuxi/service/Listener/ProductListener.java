@@ -11,8 +11,8 @@ import org.springframework.amqp.rabbit.annotation.*;
 import org.springframework.amqp.support.AmqpHeaders;
 import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.stereotype.Component;
-import src.main.java.com.zhuxi.pojo.DTO.product.*;
-import src.main.java.com.zhuxi.pojo.VO.Product.ProductDetailVO;
+import com.zhuxi.pojo.DTO.product.*;
+import com.zhuxi.pojo.VO.Product.ProductDetailVO;
 
 import java.util.List;
 import java.util.Map;

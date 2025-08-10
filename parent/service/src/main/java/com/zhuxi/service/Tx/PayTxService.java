@@ -7,7 +7,7 @@ import com.zhuxi.mapper.PayMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import src.main.java.com.zhuxi.pojo.DTO.Pay.PayDTO;
+import com.zhuxi.pojo.DTO.Pay.PayDTO;
 
 @Slf4j
 @Service
