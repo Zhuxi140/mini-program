@@ -100,7 +100,7 @@ public class AdminProductController {
             description = "删除商品"
     )
     public Result<Void> delete(
-            @Parameter(description = "商品号", required = true)
+            @Parameter(description = "商品id", required = true)
             @PathVariable
             Long id
     ){

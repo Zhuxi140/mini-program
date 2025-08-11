@@ -19,7 +19,7 @@ public class AdminUserTxService {
         this.userMapper = userMapper;
     }
 
-    @Transactional(readOnly = true)
+    @Transactional(readOnly = true,propagation = Propagation.SUPPORTS)
     public void isUserExist(Long id){
         boolean userExist = userMapper.isUserExistById(id);
         if(!userExist)

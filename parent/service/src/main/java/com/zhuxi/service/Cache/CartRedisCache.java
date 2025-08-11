@@ -1,5 +1,8 @@
 package com.zhuxi.service.Cache;
 
+import com.zhuxi.pojo.DTO.Cart.CartAddDTO;
+import com.zhuxi.pojo.DTO.Cart.CartUpdateDTO;
+import com.zhuxi.pojo.VO.Car.CartNewVO;
 import com.zhuxi.utils.RedisUntil;
 import com.zhuxi.utils.properties.RedisCacheProperties;
 import lombok.extern.slf4j.Slf4j;
@@ -245,6 +248,46 @@ public class CartRedisCache {
         });
 
         return cartVos;
+    }
+
+
+    public CartNewVO getNewCar(Long specSnowFlake){
+        String specKey = rCP.getProductCache().getSpecDetailPrefix() + ":" + specSnowFlake;
+        List<Object> result = redisUntil.hMultiGet(specKey, List.of("spec", "salePrice"));
+        CartNewVO cartNewVO = new CartNewVO();
+        cartNewVO.setSpec((String) result.get(0));
+        cartNewVO.setPrice(BigDecimal.valueOf((Double)result.get(1)));
+        return cartNewVO;
+    }
+
+    public void addCartOne(CartAddDTO cartAddDTO,Long productSnowflake){
+        String cartKey = getCartKey(cartAddDTO.getUserId(), cartAddDTO.getCartId());
+        String sortKey = getSortKey(cartAddDTO.getUserId());
+
+        redisUntil.hPutMap(cartKey, Map.of(
+                "productSnowflake", productSnowflake,
+                "specSnowflake", cartAddDTO.getSpecSnowflake(),
+                "quantity", cartAddDTO.getQuantity()
+        ));
+
+        redisUntil.ZSetAdd(sortKey, cartAddDTO.getCartId(), Double.valueOf(cartAddDTO.getCartId()));
+    }
+
+    public void addLackOne(CartAddDTO cartAddDTO){
+        String cartKey = getCartKey(cartAddDTO.getUserId(), cartAddDTO.getCartId());
+        Object quantity = redisUntil.hGet(cartKey, "quantity");
+        quantity = cartAddDTO.getQuantity() + (Integer) quantity;
+        redisUntil.hPutMap(cartKey, Map.of(
+                "quantity",quantity
+        ));
+    }
+
+    public void updateCart(CartUpdateDTO cartUpdateDTO){
+        String cartKey = getCartKey(cartUpdateDTO.getUserId(), cartUpdateDTO.getCartId());
+        redisUntil.hPutMap(cartKey, Map.of(
+                "specSnowflake", cartUpdateDTO.getSpecSnowflake(),
+                "quantity", cartUpdateDTO.getQuantity()
+        ));
     }
 
 

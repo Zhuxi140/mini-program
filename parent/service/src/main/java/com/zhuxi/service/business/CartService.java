@@ -28,5 +28,5 @@ public interface CartService {
     Result<PageResult<CartVO, Long>> getList(Long userId, Long lastId, int pageSize);
 
     //获得局部更新的商品信息
-    Result<CartNewVO> getNewCar(Long productId, Long specId);
+    Result<CartNewVO> getNewCar(Long productSnowflake, Long specSnowflake);
 }

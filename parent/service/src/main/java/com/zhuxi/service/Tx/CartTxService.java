@@ -51,7 +51,10 @@ public class CartTxService {
         return listCarOne;
     }
 
-    @Transactional(readOnly = true)
+
+
+
+    @Transactional(readOnly = true,propagation = Propagation.SUPPORTS)
     public Integer getStock(Long productId, Long specId){
         Integer stock = cartMapper.getStock(productId, specId);
         if(stock == null)
@@ -59,7 +62,7 @@ public class CartTxService {
 
         return stock;
     }
-    @Transactional(readOnly = true)
+    @Transactional(readOnly = true,propagation = Propagation.SUPPORTS)
     public Long getProductIdBySnowFlake(Long specSnowFlake){
         Long productId = cartMapper.getProductIdBySnowFlake(specSnowFlake);
         if(productId == null || productId < 0) {
@@ -68,7 +71,26 @@ public class CartTxService {
         return productId;
     }
 
-    @Transactional(readOnly = true)
+
+    @Transactional(readOnly = true,propagation = Propagation.SUPPORTS)
+    public Long getProductSnowFlakeById(Long productId){
+        Long ProductSnowFlake = cartMapper.getProductSnowFlakeById(productId);
+        if(productId == null || productId < 0) {
+            throw new transactionalException(MessageReturn.SELECT_ERROR);
+        }
+        return ProductSnowFlake;
+    }
+
+    @Transactional(readOnly = true,propagation = Propagation.SUPPORTS)
+    public Long getCartIdByUS(Long userId, Long specId){
+        Long cartIdByUS = cartMapper.getCartIdByUS(userId, specId);
+        if(cartIdByUS == null || cartIdByUS < 0) {
+            throw new transactionalException(MessageReturn.SELECT_ERROR);
+        }
+        return cartIdByUS;
+    }
+
+    @Transactional(readOnly = true,propagation = Propagation.SUPPORTS)
     public Long getSpecBySnowFlake(Long specSnowFlake){
         Long specId = cartMapper.getSpecIdBySnowFlake(specSnowFlake);
         if(specId == null || specId < 0) {
@@ -111,13 +133,13 @@ public class CartTxService {
         }
     }
 
-    @Transactional(readOnly = true)
+    @Transactional(readOnly = true,propagation = Propagation.SUPPORTS)
     public boolean isExist(Long sepcId, Long userId){
         Integer cartCount = cartMapper.getCartCount(sepcId, userId);
         if (cartCount == null || cartCount <= 0){
-            return false;
+            return true;
         }
-        return true;
+        return false;
     }
 
     @Transactional(rollbackFor = transactionalException.class)

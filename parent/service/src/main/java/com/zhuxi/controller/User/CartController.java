@@ -133,12 +133,12 @@ public class CartController {
             description = "用于购物车商品更改规格后，局部获取最新信息"
     )
     public Result<CartNewVO> getNewProductInfo(
-            @Parameter(description = "商品id", required = true)
-            Long productId,
-            @Parameter(description = "商品规格id", required = true)
-            Long specId
+            @Parameter(description = "商品号", required = true)
+            Long productNumber,
+            @Parameter(description = "商品规格号", required = true)
+            Long specNumber
     ){
-        return cartService.getNewCar(productId, specId);
+        return cartService.getNewCar(productNumber, specNumber);
     }
 
 }

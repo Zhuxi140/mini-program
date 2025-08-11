@@ -32,7 +32,7 @@ public interface WechatServiceMapper {
            avatar,
            openid
     FROM user
-    WHERE id > #{lastId}
+    WHERE id > #{lastId} AND last_time >= DATE_SUB(NOW(),INTERVAL 30 DAY)
     ORDER BY id
     LIMIT #{pageSize}
     """)

@@ -15,7 +15,9 @@ public interface CartMapper {
     @Select("""
     SELECT DISTINCT user.id
     FROM user JOIN cart ON user.id = cart.user_id
-    WHERE user.id > #{lastId} ORDER BY user.id LIMIT #{pageSize}
+    WHERE user.id > #{lastId} AND user.last_time >= DATE_SUB(NOW(),INTERVAL 30 DAY)
+    ORDER BY user.id
+    LIMIT #{pageSize}
     """)
     List<Long> getUserIds(Long lastId, int pageSize);
 
@@ -32,6 +34,7 @@ public interface CartMapper {
     insert into cart(user_id,spec_id, product_id, quantity)
     values(#{userId},#{cUDto.specId},#{cUDto.productId}, #{cUDto.quantity})
     """)
+    @Options(useGeneratedKeys = true, keyColumn = "id", keyProperty = "cUDto.cartId")
     Boolean insert(@Param("cUDto") CartAddDTO cartAddDTO, @Param("userId")Long userId);
 
     // 删除
@@ -74,8 +77,7 @@ public interface CartMapper {
     @Select("""
     SELECT
           spec.spec,
-          spec.price,
-          spec.stock
+          spec.price
     FROM spec
     WHERE spec.product_id = #{productId} AND spec.id= #{specId}
     """)
@@ -86,9 +88,12 @@ public interface CartMapper {
     @Delete("DELETE FROM cart WHERE user_id = #{userId}")
     Boolean deleteAll(Long userId);
 
+    @Select("SELECT snowflake_id FROM product WHERE id = #{productId}")
+    Long getProductSnowFlakeById(Long productId);
+
 
     @Select("SELECT product_id FROM spec WHERE snowflake_id = #{snowflakeId}")
-    Long getProductIdBySnowFlake(Long specSnowFlake);
+    Long getProductIdBySnowFlake(Long SnowFlake);
 
     @Select("SELECT id FROM spec WHERE snowflake_id = #{snowflakeId}")
     Long getSpecIdBySnowFlake(Long specSnowFlake);
@@ -102,5 +107,9 @@ public interface CartMapper {
 
     @Select("SELECT COUNT(*) FROM cart WHERE user_id = #{userId} ")
     Integer getSumCount(Long userId);
+
+
+    @Select("SELECT id FROM cart WHERE cart.user_id = #{userId} AND cart.spec_id = #{specId}")
+    Long getCartIdByUS(Long userId, Long specId);
 
 }

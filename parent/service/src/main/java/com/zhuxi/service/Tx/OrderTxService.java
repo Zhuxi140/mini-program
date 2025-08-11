@@ -35,7 +35,7 @@ public class OrderTxService {
     }
 
 
-    @Transactional(readOnly = true)
+    @Transactional(readOnly = true,propagation = Propagation.SUPPORTS)
     public Long getOrderId(String orderSn) {
         Long orderId = orderMapper.getOrderId(orderSn);
         if(orderId == null || orderId < 0) {
@@ -44,7 +44,7 @@ public class OrderTxService {
         return orderId;
     }
 
-    @Transactional(readOnly = true)
+    @Transactional(readOnly = true,propagation = Propagation.SUPPORTS)
     public Long getOrderIdDelete(String orderSn) {
         Long orderId = orderMapper.getOrderIdDelete(orderSn);
         if(orderId == null || orderId < 0) {
@@ -53,7 +53,7 @@ public class OrderTxService {
         return orderId;
     }
 
-    @Transactional(readOnly = true)
+    @Transactional(readOnly = true,propagation = Propagation.SUPPORTS)
     public Long getProductIdBySnowFlake(Long specSnowFlake){
         Long productId = orderMapper.getProductIdBySnowFlake(specSnowFlake);
         if(productId == null || productId < 0) {
@@ -62,7 +62,7 @@ public class OrderTxService {
         return productId;
     }
 
-    @Transactional(readOnly = true)
+    @Transactional(readOnly = true,propagation = Propagation.SUPPORTS)
     public Long getSpecBySnowFlake(Long specSnowFlake){
         Long specId = orderMapper.getSpecIdBySnowFlake(specSnowFlake);
         if(specId == null || specId < 0) {

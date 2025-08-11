@@ -11,16 +11,13 @@ public class CartNewVO {
     private String spec;
     @Schema(description = "商品价格")
     private BigDecimal price;
-    @Schema(description = "商品库存")
-    private Integer stock;
 
     public CartNewVO() {
     }
 
-    public CartNewVO(String spec, BigDecimal price,Integer stock) {
+    public CartNewVO(String spec, BigDecimal price) {
         this.spec = spec;
         this.price = price;
-        this.stock = stock;
     }
 
     public String getSpec() {
@@ -39,11 +36,4 @@ public class CartNewVO {
         this.price = price;
     }
 
-    public Integer getStock() {
-        return stock;
-    }
-
-    public void setStock(Integer stock) {
-        this.stock = stock;
-    }
 }

@@ -26,15 +26,15 @@ public class BloomFilterConfig {
         );
     }
 
-    // 用户过滤器
-    @Bean("userBloomFilter")
-    public BloomFilter<Long> userBloomFilter() {
-        return BloomFilter.create(
-                Funnels.longFunnel(),
-                userConfig.expectedElements,
-                userConfig.fpp
-        );
-    }
+//    // 用户过滤器
+//    @Bean("userBloomFilter")
+//    public BloomFilter<Long> userBloomFilter() {
+//        return BloomFilter.create(
+//                Funnels.longFunnel(),
+//                userConfig.expectedElements,
+//                userConfig.fpp
+//        );
+//    }
 
     // 订单过滤器
     @Bean("orderBloomFilter")

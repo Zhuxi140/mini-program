@@ -20,7 +20,7 @@ public class WechatAuthTxService {
         this.wechatServiceMapper = wechatServiceMapper;
     }
 
-    @Transactional(readOnly = true)
+    @Transactional(readOnly = true,propagation = Propagation.SUPPORTS)
     public boolean isExist(String openId){
         int exist = wechatServiceMapper.isExist(openId);
         if (exist > 0){
@@ -29,6 +29,7 @@ public class WechatAuthTxService {
         return false;
     }
 
+    @Transactional(readOnly = true,propagation = Propagation.SUPPORTS)
     public boolean isBan(String openId){
         int ban = wechatServiceMapper.isBan(openId);
         if (ban == 1){
@@ -71,7 +72,7 @@ public class WechatAuthTxService {
         return userInfo;
     }
 
-    @Transactional(readOnly = true)
+    @Transactional(readOnly = true,propagation = Propagation.SUPPORTS)
     public UserBasicVO getUserBasicInfo(String openid,boolean isExist){
         UserBasicVO userBasicInfo = wechatServiceMapper.getUserBasicInfo(openid);
         if(isExist && userBasicInfo == null){

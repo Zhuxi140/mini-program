@@ -96,6 +96,10 @@ public class RedisUntil {
         return zSetOperations.rangeByScoreWithScores(key,lastScored,Double.POSITIVE_INFINITY,offset,count);
     }
 
+    public Boolean ZSetAdd(String key,Object value,Double score){
+        return zSetOperations.add(key, value, score);
+    }
+
     public Long deleteZSetOneFiled(String key,Object value){
         return zSetOperations.remove(key, value);
     }

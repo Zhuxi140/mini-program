@@ -25,7 +25,7 @@ public class AdminTxService {
     }
 
 
-    @Transactional(readOnly = true)
+    @Transactional(readOnly = true,propagation = Propagation.SUPPORTS)
     public AdminLoginDTO getPasswordByUsername(String username) {
         AdminLoginDTO passwordByUsername = adminMapper.getPasswordByUsername(username);
         if(passwordByUsername != null)
@@ -35,14 +35,14 @@ public class AdminTxService {
     }
 
 
-    @Transactional(readOnly = true)
+    @Transactional(readOnly = true,propagation = Propagation.SUPPORTS)
     public void isExists(String username){
         if (adminMapper.isExists(username)) {
             throw new transactionalException(MessageReturn.USER_EXIST);
         }
     }
 
-    @Transactional(readOnly = true)
+    @Transactional(readOnly = true,propagation = Propagation.SUPPORTS)
     public void isExistsById(Integer id){
         if (adminMapper.isExistsById(id)) {
             throw new transactionalException(MessageReturn.USER_EXIST);
@@ -58,7 +58,7 @@ public class AdminTxService {
         throw new transactionalException(MessageReturn.USER_NOT_EXIST);
     }
 
-    @Transactional(readOnly = true)
+    @Transactional(readOnly = true,propagation = Propagation.SUPPORTS)
     public List<AdminVO> queryAdminList(){
         List<AdminVO> adminVOS = adminMapper.queryAdminList();
         if(adminVOS != null)

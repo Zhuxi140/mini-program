@@ -54,7 +54,7 @@ public class ProductTxService {
         return snowFlakeById;
     }
 
-    @Transactional(readOnly = true)
+    @Transactional(readOnly = true,propagation = Propagation.SUPPORTS)
     public void checkStock(Long productId){
         List<Integer> realStockList = productMapper.getRealStockList(productId);
         for (Integer realStock : realStockList){

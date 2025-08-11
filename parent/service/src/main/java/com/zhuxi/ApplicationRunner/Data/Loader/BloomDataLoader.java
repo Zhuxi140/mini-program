@@ -9,7 +9,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 import com.zhuxi.pojo.DTO.Order.BloomOrderDTO;
-
 import java.util.List;
 
 @Slf4j
@@ -21,7 +20,7 @@ public class BloomDataLoader {
     private final OrderTxService orderTxService;
     private final BloomFilterManager bloomFilterManager;
     private final BloomFilter<Long> productBloomFilter;
-    private final BloomFilter<Long> userBloomFilter;
+//    private final BloomFilter<Long> userBloomFilter;
     private final BloomFilter<String> orderBloomFilter;
 
 
@@ -31,7 +30,7 @@ public class BloomDataLoader {
             OrderTxService orderTxService,
             BloomFilterManager bloomFilterManager,
             @Qualifier("productBloomFilter") BloomFilter<Long> productBloomFilter,
-            @Qualifier("userBloomFilter") BloomFilter<Long> userBloomFilter,
+//            @Qualifier("userBloomFilter") BloomFilter<Long> userBloomFilter,
             @Qualifier("orderBloomFilter") BloomFilter<String> orderBloomFilter
             )
 
@@ -42,14 +41,14 @@ public class BloomDataLoader {
         this.productBloomFilter = productBloomFilter;
         this.bloomFilterManager = bloomFilterManager;
         this.orderBloomFilter = orderBloomFilter;
-        this.userBloomFilter = userBloomFilter;
+//        this.userBloomFilter = userBloomFilter;
     }
 
     public void loadData() {
         loadProductData();
         loadOrderData();
-        loadUserData();
-        log.debug("所有布隆过滤器加载完成");
+//        loadUserData();
+        log.info("所有布隆过滤器加载完成");
     }
 
     private void loadProductData(){
@@ -74,7 +73,7 @@ public class BloomDataLoader {
 
     }
 
-    private void loadUserData(){
+ /*   private void loadUserData(){
         bloomFilterManager.addFilterLong("user",userBloomFilter);
         int pageSize = 1000;
         Long lastId = 0L;
@@ -93,7 +92,7 @@ public class BloomDataLoader {
                 bloomFilterManager.putLong("user",p);
             });
         }
-    }
+    }*/
 
 
     private void loadOrderData(){
@@ -103,8 +102,8 @@ public class BloomDataLoader {
         while(true){
             List<BloomOrderDTO> allOrderId = orderTxService.getAllOrderId(lastId, pageSize+1);
             if(allOrderId.size() == pageSize + 1){
+                lastId = allOrderId.get(pageSize).getId();
                 allOrderId = allOrderId.subList(0, pageSize);
-                lastId = allOrderId.get(allOrderId.size() - 1).getId();
             }else{
                 allOrderId.forEach( p-> {
                     String orderSn = p.getOrderSn();
@@ -121,5 +120,10 @@ public class BloomDataLoader {
             });
         }
     }
+
+/*    public UserTxService getUserTxService() {
+        return userTxService;
+    }*/
+
 
 }

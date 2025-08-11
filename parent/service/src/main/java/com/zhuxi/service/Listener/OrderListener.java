@@ -3,17 +3,20 @@ package com.zhuxi.service.Listener;
 
 import com.rabbitmq.client.Channel;
 import com.zhuxi.Exception.MQException;
+import com.zhuxi.pojo.DTO.Order.OrderRedisDTO;
 import com.zhuxi.service.Cache.OrderRedisCache;
 import com.zhuxi.service.Tx.OrderTxService;
 import com.zhuxi.utils.RedisUntil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.annotation.*;
 import org.springframework.amqp.support.AmqpHeaders;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.support.TransactionTemplate;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 
@@ -25,6 +28,8 @@ public class OrderListener {
     private final OrderRedisCache orderRedisCache;
     private final TransactionTemplate transactionTemplate;
     private final RedisUntil redisUntil;
+    @Value("${init-Data.page-size}")
+    private int batchSize;
 
     public OrderListener(OrderTxService orderTxService, OrderRedisCache orderRedisCache, TransactionTemplate transactionTemplate, RedisUntil redisUntil) {
         this.orderTxService = orderTxService;
@@ -109,12 +114,57 @@ public class OrderListener {
 
 
     @RabbitListener(bindings = @QueueBinding(
+            value = @Queue(value = "order.sync.queue", durable = "true"),
+            exchange = @Exchange(value = "order.exchange"),
+            key = "sync"
+    ),
+        containerFactory = "auto"
+    )
+    public void orderSync(Long userId,@Header(AmqpHeaders.MESSAGE_ID) String messageId) {
+        if (redisUntil.hsaKey("messageId:" + messageId)) {
+            log.error("重复消息-----messageId:{}", messageId);
+            return;
+        }
+
+        try {
+            Long orderId = 0L;
+            while (true) {
+                List<OrderRedisDTO> listOrder = orderTxService.getOrderRedisList(userId, orderId, batchSize + 1);
+                if (listOrder.isEmpty()) {
+                    break;
+                } else if (listOrder.size() <= batchSize) {
+                    orderRedisCache.syncOrderData(listOrder, userId);
+                    break;
+                } else {
+                    orderId = listOrder.get(listOrder.size() - 1).getId();
+                    listOrder = listOrder.subList(0, batchSize);
+                    orderRedisCache.syncOrderData(listOrder, userId);
+                }
+            }
+                redisUntil.setStringValue("messageId:" + messageId, "1", 24, TimeUnit.HOURS);
+            }catch(Exception e){
+                redisUntil.delete("messageId:" + messageId);
+                throw new MQException(e.getMessage());
+            }
+    }
+
+// ___________________________________________________死信监听器_______________________________________________________________
+    @RabbitListener(bindings = @QueueBinding(
             value = @Queue(value = "dead.auto.order.queue", durable = "true"),
             exchange = @Exchange(value = "dead.order.exchange"),
             key = "new"
     ))
     public void deadOrderNew(String orderSn) {
         log.info("死信---orderSn: {}", orderSn);
+    }
+
+    @RabbitListener(bindings = @QueueBinding(
+            value = @Queue(value = "dead.sync.order.queue", durable = "true"),
+            exchange = @Exchange(value = "dead.order.exchange"),
+            key = "sync"
+    ))
+    public void deadOrderSync(Long userId) {
+        log.info("死信---userId: {}", userId);
     }
 }
 

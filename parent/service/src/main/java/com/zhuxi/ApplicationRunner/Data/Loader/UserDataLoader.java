@@ -12,8 +12,8 @@ import java.util.List;
 @Component
 public class UserDataLoader {
 
-    private WechatAuthTxService wechatAuthTxService;
-    private LoginRedisCache loginRedisCache;
+    private final WechatAuthTxService wechatAuthTxService;
+    private final LoginRedisCache loginRedisCache;
     @Value("${init-Data.page-size}")
     private int pageSize;
 

@@ -4,6 +4,7 @@ import com.zhuxi.Constant.MessageReturn;
 import com.zhuxi.Result.PageResult;
 import com.zhuxi.Result.Result;
 import com.zhuxi.service.Cache.CartRedisCache;
+import com.zhuxi.service.Cache.OrderRedisCache;
 import com.zhuxi.service.business.CartService;
 import com.zhuxi.service.Tx.CartTxService;
 import lombok.extern.slf4j.Slf4j;
@@ -21,10 +22,11 @@ import com.zhuxi.pojo.DTO.Cart.CartUpdateDTO;
 import com.zhuxi.pojo.DTO.Cart.MQdelete;
 import com.zhuxi.pojo.VO.Car.CartNewVO;
 import com.zhuxi.pojo.VO.Car.CartVO;
-
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
+
+import static io.lettuce.core.pubsub.PubSubOutput.Type.message;
 
 @Service
 @Slf4j
@@ -61,7 +63,25 @@ public class CartServiceImpl implements CartService {
         }
         cartUpdateDTO.setSpecId(specId);
         cartTxService.updateQuantityOrSpec(cartUpdateDTO,userId);
-
+        cartUpdateDTO.setUserId(userId);
+        TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronization() {
+            @Override
+            public void afterCompletion(int status) {
+                TransactionSynchronization.super.afterCompletion(status);
+                if (status == TransactionSynchronization.STATUS_COMMITTED){
+                    rabbitTemplate.convertAndSend("cart.exchange", "update", cartUpdateDTO,
+                            message -> {
+                                MessageProperties props = message.getMessageProperties();
+                                props.setMessageId(UUID.randomUUID().toString());
+                                props.setDeliveryMode(MessageDeliveryMode.PERSISTENT);
+                                return message;
+                            }
+                    );
+                }else{
+                    log.warn("事务未提交，截断发送消息---{修改购物车商品:{}}", cartUpdateDTO.getCartId());
+                }
+            }
+        });
         return Result.success(MessageReturn.OPERATION_SUCCESS);
 
     }
@@ -93,14 +113,32 @@ public class CartServiceImpl implements CartService {
         cartAddDTO.setProductId(productId);
         cartAddDTO.setSpecId(specId);
 
+        cartAddDTO.setUserId(userId);
         Integer quantity = cartAddDTO.getQuantity();
         boolean exist = cartTxService.isExist(specId, userId);
-        if (!exist){
+        if (exist){
             cartTxService.insert(cartAddDTO,userId);
             return Result.success(MessageReturn.OPERATION_SUCCESS);
+        }else{
+            cartTxService.updateCartStock(specId,userId,quantity);
         }
-        cartTxService.updateCartStock(specId,userId,quantity);
 
+        TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronization() {
+            @Override
+            public void afterCompletion(int status) {
+                if (status == TransactionSynchronization.STATUS_COMMITTED){
+                    rabbitTemplate.convertAndSend("cart.exchange", "add", cartAddDTO,
+                            message -> {
+                                MessageProperties props = message.getMessageProperties();
+                                props.setMessageId(UUID.randomUUID().toString());
+                                props.setHeader("isExist", exist);
+                                props.setDeliveryMode(MessageDeliveryMode.PERSISTENT);
+                                return message;
+                            }
+                    );
+                }
+            }
+        });
         return Result.success(MessageReturn.OPERATION_SUCCESS);
     }
 
@@ -203,11 +241,9 @@ public class CartServiceImpl implements CartService {
             cartVO = cartVO.subList(0, pageSize);
             hasMore = true;
         }
+        cartRedisCache.syncCartLack(cartVO);
 
-        for (CartVO cartVO1 : cartVO){
-            cartVO1.setUserId(userId);
-        }
-        rabbitTemplate.convertAndSend("cart.exchange", "lack", cartVO,
+        rabbitTemplate.convertAndSend("cart.exchange", "lack", userId,
                 Message->{
                     MessageProperties props = Message.getMessageProperties();
                     props.setMessageId(UUID.randomUUID().toString());
@@ -223,10 +259,26 @@ public class CartServiceImpl implements CartService {
 
 
     @Override
-    public Result<CartNewVO> getNewCar(Long productId, Long specId) {
+    public Result<CartNewVO> getNewCar(Long productSnowflake, Long specSnowflake) {
 
-        if (productId == null || specId == null)
+        if (productSnowflake == null || specSnowflake == null)
             return Result.error(MessageReturn.PRODUCT_ID_IS_NULL + "或" + MessageReturn.SPEC_ID_IS_NULL);
+
+        CartNewVO newCar = cartRedisCache.getNewCar(specSnowflake);
+        if (newCar != null){
+            return Result.success(MessageReturn.OPERATION_SUCCESS, newCar);
+        }
+        List<Long> idBySnowflake = cartRedisCache.getIdBySnowflake(specSnowflake);
+        Long productId = idBySnowflake.get(0);
+        Long specId = idBySnowflake.get(1);
+        if (productId == null){
+            productId = cartTxService.getProductIdBySnowFlake(specSnowflake);
+            cartRedisCache.saveProductId(specSnowflake,productId);
+        }
+        if (specId == null){
+            specId = cartTxService.getSpecBySnowFlake(specSnowflake);
+            cartRedisCache.saveSpecId(specSnowflake,specId);
+        }
 
         CartNewVO cartVO = cartTxService.getNewCar(productId, specId);
 

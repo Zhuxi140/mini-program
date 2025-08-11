@@ -164,7 +164,13 @@ public interface OrderMapper {
     int deleteOrder(Long id, Long userId);
 
 
-    @Select("SELECT id,order_sn,user_id FROM `order` WHERE id > #{lastId}  ORDER BY id LIMIT #{pageSize}")
+    @Select("""
+    SELECT o.id,order_sn,user_id
+    FROM `order` o JOIN user ON o.user_id = user.id
+    WHERE o.id > #{lastId} AND last_time >= DATE_SUB(NOW(),INTERVAL 30 DAY)
+    ORDER BY o.id
+    LIMIT #{pageSize}
+    """)
     List<BloomOrderDTO> getAllOrderId(Long lastId, int pageSize);
 
 
@@ -173,7 +179,9 @@ public interface OrderMapper {
     @Select("""
     SELECT DISTINCT user.id
     FROM user JOIN `order` ON  user.id = `order`.user_id
-    WHERE user.id > #{lastId} ORDER BY user.id LIMIT #{pageSize}
+    WHERE user.id > #{lastId} AND last_time >= DATE_SUB(NOW(),INTERVAL 30 DAY)
+    ORDER BY user.id
+    LIMIT #{pageSize}
     """)
     List<Long> getUserIds(Long lastId,int pageSize);
 

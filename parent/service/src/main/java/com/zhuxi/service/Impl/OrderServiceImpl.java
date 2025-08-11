@@ -11,6 +11,9 @@ import com.zhuxi.service.Sync.OrderSyncService;
 import com.zhuxi.service.Tx.OrderTxService;
 import com.zhuxi.utils.IdSnowFLake;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.amqp.core.MessageDeliveryMode;
+import org.springframework.amqp.core.MessageProperties;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.data.redis.core.ZSetOperations;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -33,12 +36,14 @@ public class OrderServiceImpl implements OrderService {
     private final IdSnowFLake idSnowFLake;
     private final OrderRedisCache orderRedisCache;
     private final OrderSyncService orderSyncService;
+    private final RabbitTemplate rabbitTemplate;
 
-    public OrderServiceImpl(OrderTxService orderTxService, IdSnowFLake idSnowFLake, OrderRedisCache orderRedisCache, OrderSyncService orderSyncService) {
+    public OrderServiceImpl(OrderTxService orderTxService, IdSnowFLake idSnowFLake, OrderRedisCache orderRedisCache, OrderSyncService orderSyncService, RabbitTemplate rabbitTemplate) {
         this.orderTxService = orderTxService;
         this.idSnowFLake = idSnowFLake;
         this.orderRedisCache = orderRedisCache;
         this.orderSyncService = orderSyncService;
+        this.rabbitTemplate = rabbitTemplate;
     }
 
     /**
@@ -353,6 +358,18 @@ public class OrderServiceImpl implements OrderService {
             lastScore = orderList.get(pageSize).getCreatedAt().atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
             orderList = orderList.subList(0, pageSize);
         }
+
+        orderRedisCache.syncOrderData(orderList,userId);
+
+        rabbitTemplate.convertAndSend("order.exchange","sync",userId,
+                message -> {
+                    MessageProperties props =  message.getMessageProperties();
+                    props.setMessageId(UUID.randomUUID().toString());
+                    props.setDeliveryMode(MessageDeliveryMode.PERSISTENT);
+                    return message;
+                }
+                );
+
         return new PageResult(orderList, lastScore, false, next);
     }
 

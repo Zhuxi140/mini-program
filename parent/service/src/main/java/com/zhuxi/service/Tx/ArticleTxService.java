@@ -22,7 +22,7 @@ public class ArticleTxService {
         this.articleMapper = articleMapper;
     }
 
-    @Transactional(readOnly = true)
+    @Transactional(readOnly = true,propagation = Propagation.SUPPORTS)
     public void isExist(Long id) {
         if(articleMapper.isExist(id) <= 0)
             throw new transactionalException(MessageReturn.ARTICLE_IS_NOT_EXIST);

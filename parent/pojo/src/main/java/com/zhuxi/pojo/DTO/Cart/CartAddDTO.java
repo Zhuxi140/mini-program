@@ -4,26 +4,32 @@ import io.swagger.v3.oas.annotations.media.Schema;
 
 public class CartAddDTO {
 
-    @Schema(description = "商品id",hidden = true)
+    @Schema(hidden = true)
+    private Long cartId;
+    @Schema(hidden = true)
     private Long productSnowflake ;
     @Schema(description = "规格号",requiredMode = Schema.RequiredMode.REQUIRED)
     private Long specSnowflake;
     @Schema(description = "数量（后台默认添加数量为1）",requiredMode = Schema.RequiredMode.REQUIRED)
     private Integer quantity = 1;
-    @Schema(description = "商品id",hidden = true)
+    @Schema(hidden = true)
     private Long productId;
-    @Schema(description = "规格id",hidden = true)
+    @Schema(hidden = true)
     private Long specId;
+    @Schema(hidden = true)
+    private Long userId;
 
     public CartAddDTO() {
     }
 
-    public CartAddDTO(Long productSnowflake, Long specSnowflake, Integer quantity, Long productId, Long specId) {
+    public CartAddDTO(Long cartId, Long productSnowflake, Long specSnowflake, Integer quantity, Long productId, Long specId, Long userId) {
+        this.cartId = cartId;
         this.productSnowflake = productSnowflake;
         this.specSnowflake = specSnowflake;
         this.quantity = quantity;
         this.productId = productId;
         this.specId = specId;
+        this.userId = userId;
     }
 
     public Long getProductId() {
@@ -64,5 +70,21 @@ public class CartAddDTO {
 
     public void setSpecSnowflake(Long specSnowflake) {
         this.specSnowflake = specSnowflake;
+    }
+
+    public Long getUserId() {
+        return userId;
+    }
+
+    public void setUserId(Long userId) {
+        this.userId = userId;
+    }
+
+    public Long getCartId() {
+        return cartId;
+    }
+
+    public void setCartId(Long cartId) {
+        this.cartId = cartId;
     }
 }

@@ -22,7 +22,7 @@ public class UserAddressTxService {
     }
 
 
-    @Transactional(readOnly =  true)
+    @Transactional(readOnly =  true,propagation = Propagation.SUPPORTS)
     public int  isExist(Long userId){
         return userAddressMapper.isExist(userId);
     }
@@ -32,13 +32,13 @@ public class UserAddressTxService {
         return userAddressMapper.getList(userId);
     }
 
-    @Transactional(readOnly =  true)
+    @Transactional(readOnly =  true,propagation = Propagation.SUPPORTS)
     public Long getDefaultAddressId(Long userId) {
         return userAddressMapper.getDefaultAddressId(userId);
     }
 
 
-    @Transactional(readOnly =  true)
+    @Transactional(readOnly =  true,propagation = Propagation.SUPPORTS)
     public Boolean isExistAddressId(Long addressId) {
         return !userAddressMapper.isExistAddressId(addressId);
     }
