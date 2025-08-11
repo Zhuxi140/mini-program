@@ -34,7 +34,7 @@
 | SpringSecurity思想 + JWT        | 认证,防注入等安全       |
 | Spring task| 自定义自动任务|
 | webSocket| 实时通信（聊天模块）|
-| RabbitMQ| |解耦数据库和redis，削峰，提高吞吐量|
+| RabbitMQ| 解耦数据库和redis，削峰，提高吞吐量|
 | Swagger                     | 接口文档       |
 | 阿里云OSS/腾讯云OSS         | 存储商品图片等 |
 | 华为云Flexus应用服务器L实例 | 部署服务器     |
