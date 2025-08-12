@@ -2,10 +2,14 @@ package com.zhuxi.service.Listener;
 
 
 import com.zhuxi.Exception.MQException;
+import com.zhuxi.pojo.DTO.DeadMessage.DeadMessageAddDTO;
 import com.zhuxi.service.Cache.LoginRedisCache;
+import com.zhuxi.service.Tx.DeadMessageTXService;
+import com.zhuxi.utils.JacksonUtils;
 import com.zhuxi.utils.RedisUntil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.AmqpException;
+import org.springframework.amqp.AmqpRejectAndDontRequeueException;
 import org.springframework.amqp.rabbit.annotation.*;
 import org.springframework.amqp.support.AmqpHeaders;
 import org.springframework.messaging.handler.annotation.Header;
@@ -14,6 +18,8 @@ import org.springframework.stereotype.Component;
 import com.zhuxi.pojo.DTO.User.LoginMQDTO;
 import com.zhuxi.pojo.DTO.User.UserBasicDTO;
 
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 @Component
@@ -21,10 +27,14 @@ import java.util.concurrent.TimeUnit;
 public class WechatListener {
     private final LoginRedisCache loginRedisCache;
     private final RedisUntil redisUntil;
+    private final DeadMessageTXService deadMessageTXService;
+    private final String deadKey = "deadMessageId:wechat:";
+    private final String value = "messageId:dead:wechat:";
 
-    public WechatListener(LoginRedisCache loginRedisCache, RedisUntil redisUntil) {
+    public WechatListener(LoginRedisCache loginRedisCache, RedisUntil redisUntil, DeadMessageTXService deadMessageTXService) {
         this.loginRedisCache = loginRedisCache;
         this.redisUntil = redisUntil;
+        this.deadMessageTXService = deadMessageTXService;
     }
 
     @RabbitListener(bindings = @QueueBinding(
@@ -47,28 +57,33 @@ public class WechatListener {
             throw new MQException("openId is null or empty");
         }
 
-        if (redisUntil.hsaKey("messageId:"+ messageId)){
+        if (redisUntil.hsaKey("messageId:wechat:login:"+ messageId)){
             log.error("重复消息-----messageId:{}",messageId);
             return;
         }
 
-        redisUntil.setStringValue("messageId:"+ messageId,"1",24, TimeUnit.HOURS);
-        UserBasicDTO userBasicDTO = new UserBasicDTO();
-        userBasicDTO.setOpenId(openId);
-        userBasicDTO.setName(loginMQDTO.getName());
-        userBasicDTO.setAvatar(loginMQDTO.getAvatar());
-        loginRedisCache.initUserBasic(userBasicDTO);
-        String sessionKey = loginMQDTO.getSessionKey();
-        if (sessionKey == null || sessionKey.isEmpty()){
-            log.error("sessionKey is null or empty");
-            throw new MQException("sessionKey is null or empty");
-        }else{
-            loginRedisCache.saveSessionKey(openId,sessionKey);
+        try {
+            UserBasicDTO userBasicDTO = new UserBasicDTO();
+            userBasicDTO.setOpenId(openId);
+            userBasicDTO.setName(loginMQDTO.getName());
+            userBasicDTO.setAvatar(loginMQDTO.getAvatar());
+            loginRedisCache.initUserBasic(userBasicDTO);
+            String sessionKey = loginMQDTO.getSessionKey();
+            if (sessionKey == null || sessionKey.isEmpty()) {
+                log.error("sessionKey is null or empty");
+                throw new MQException("sessionKey is null or empty");
+            } else {
+                loginRedisCache.saveSessionKey(openId, sessionKey);
+            }
+            redisUntil.setStringValue("messageId:wechat:login:" + messageId, "1", 1, TimeUnit.HOURS);
+        } catch (MQException e) {
+            redisUntil.setStringValue(deadKey + "login:" + messageId, "type=MQException---{" + e.getMessage() + "}", 24, TimeUnit.HOURS);
+            throw new MQException("微信登录异常");
+        }catch (Exception e){
+            redisUntil.setStringValue(deadKey + "login:" + messageId, "type=other Exception---{" + e.getMessage() + "}", 24, TimeUnit.HOURS);
+            throw new AmqpRejectAndDontRequeueException(e.getMessage());
         }
     }
-
-
-
 
 
     // ---------------------------------------------死信----------------------------------------------------
@@ -79,8 +94,85 @@ public class WechatListener {
                     key = "login"
             )
     )
-    public void handleLoginDeadLetter(@Payload LoginMQDTO loginMQDTO, @Header(AmqpHeaders.MESSAGE_ID) String messageId) {
-        log.error("死信队列接收到微信登录消息：{}",messageId);
+    public void handleLoginDeadLetter(@Payload LoginMQDTO loginMQDTO,
+                                      @Header(AmqpHeaders.MESSAGE_ID) String messageId,
+                                      @Header(name = "x-death", required = false) List<Map<String, ?>> xDeath
+                                      ) {
+        String dead = deadKey + "login:";
+        String valuee = value + "login:";
+        if (redisUntil.hsaKey(valuee + messageId)){
+            log.error("重复消息-----dead---messageId:{}",messageId);
+            return;
+        }
+        try {
+            durableDate(xDeath,messageId,loginMQDTO,dead,valuee);
+        } catch (Exception e){
+            log.error("----死信记录失败----日志兜底---- 死信记录错误{}",e.getMessage());
+            HandlerException(xDeath,messageId,loginMQDTO,dead,valuee);
+            throw new AmqpRejectAndDontRequeueException(e.getMessage());
+        }
+    }
+
+
+    private String getQueue(List<Map<String, ?>> xDeath){
+        if (xDeath != null &&  !xDeath.isEmpty()){
+            return (String) xDeath.get(0).get("queue");
+        }
+        return null;
+    }
+
+    private String getExchange(List<Map<String, ?>> xDeath){
+        if (xDeath != null &&  !xDeath.isEmpty()){
+            return (String) xDeath.get(0).get("exchange");
+        }
+        return null;
+    }
+
+    private String getRoutingKey(List<Map<String, ?>> xDeath){
+        if (xDeath != null &&  !xDeath.isEmpty()){
+            List<String> routingKeys = (List<String>) xDeath.get(0).get("routing-keys");
+            if (routingKeys != null && !routingKeys.isEmpty()){
+                return routingKeys.get(0);
+            }
+        }
+        return null;
+    }
+
+
+    private void durableDate(List<Map<String, ?>> xDeath, String messageId, Object body,String dead, String Valuee){
+        Object failureDetails = redisUntil.getStringValue(dead + messageId);
+        DeadMessageAddDTO deadd = new DeadMessageAddDTO();
+        deadd.setMessageId(messageId);
+        deadd.setMessageBody(JacksonUtils.objectToJson( body));
+        deadd.setRoutineKey(getRoutingKey(xDeath));
+        deadd.setExchange(getExchange(xDeath));
+        deadd.setOriginalQueue(getQueue(xDeath));
+        deadd.setFailureReason((String) failureDetails);
+        deadMessageTXService.insert(deadd);
+        redisUntil.setStringValue(Valuee+ messageId,"1",1, TimeUnit.HOURS);
+        redisUntil.delete(dead + messageId);
+        log.warn("已记录----死信::----messageId = " + messageId);
+    }
+
+    private void HandlerException(List<Map<String, ?>> xDeath, String messageId, Object body,String dead, String Valuee){
+        log.error(
+                """
+                messageId--{},
+                FailureReason--{},
+                exchange--{}，
+                OriginalQueue--{},
+                RoutineKey--{},
+                MessageBody--{}，
+                """,
+                messageId,
+                redisUntil.getStringValue(dead + messageId),
+                getExchange(xDeath),
+                getQueue(xDeath),
+                getRoutingKey(xDeath),
+                JacksonUtils.objectToJson(body)
+        );
+        redisUntil.delete(Valuee + messageId);
+        redisUntil.delete(dead + messageId);
     }
 
 

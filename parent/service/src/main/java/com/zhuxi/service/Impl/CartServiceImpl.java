@@ -55,13 +55,15 @@ public class CartServiceImpl implements CartService {
         if( cartUpdateDTO.getQuantity() == null && specSnowflake == null)
             return Result.error(MessageReturn.BODY_NO_MAIN_OR_IS_NULL);
 
-        List<Long> idBySnowflake = cartRedisCache.getIdBySnowflake(specSnowflake);
-        Long specId = idBySnowflake.get(1);
-        if (specId == null){
-            specId = cartTxService.getSpecBySnowFlake(specSnowflake);
-            cartRedisCache.saveSpecId(specSnowflake,specId);
+        if (specSnowflake != null){
+            List<Long> idBySnowflake = cartRedisCache.getIdBySnowflake(specSnowflake);
+            Long specId = idBySnowflake.get(1);
+            if (specId == null){
+                specId = cartTxService.getSpecBySnowFlake(specSnowflake);
+                cartRedisCache.saveSpecId(specSnowflake,specId);
+            }
+            cartUpdateDTO.setSpecId(specId);
         }
-        cartUpdateDTO.setSpecId(specId);
         cartTxService.updateQuantityOrSpec(cartUpdateDTO,userId);
         cartUpdateDTO.setUserId(userId);
         TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronization() {
@@ -118,7 +120,6 @@ public class CartServiceImpl implements CartService {
         boolean exist = cartTxService.isExist(specId, userId);
         if (exist){
             cartTxService.insert(cartAddDTO,userId);
-            return Result.success(MessageReturn.OPERATION_SUCCESS);
         }else{
             cartTxService.updateCartStock(specId,userId,quantity);
         }

@@ -284,10 +284,20 @@ public class CartRedisCache {
 
     public void updateCart(CartUpdateDTO cartUpdateDTO){
         String cartKey = getCartKey(cartUpdateDTO.getUserId(), cartUpdateDTO.getCartId());
-        redisUntil.hPutMap(cartKey, Map.of(
-                "specSnowflake", cartUpdateDTO.getSpecSnowflake(),
-                "quantity", cartUpdateDTO.getQuantity()
-        ));
+        if (cartUpdateDTO.getSpecSnowflake() == null || cartUpdateDTO.getQuantity() != null){
+            redisUntil.hPutMap(cartKey, Map.of(
+                    "quantity", cartUpdateDTO.getQuantity()
+            ));
+        }else if (cartUpdateDTO.getSpecSnowflake() != null || cartUpdateDTO.getQuantity() == null){
+            redisUntil.hPutMap(cartKey, Map.of(
+                    "specSnowflake", cartUpdateDTO.getSpecSnowflake()
+            ));
+        }else{
+            redisUntil.hPutMap(cartKey, Map.of(
+                    "specSnowflake", cartUpdateDTO.getSpecSnowflake(),
+                    "quantity", cartUpdateDTO.getQuantity()
+            ));
+        }
     }
 
 

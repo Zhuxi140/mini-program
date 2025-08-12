@@ -7,7 +7,6 @@ import com.zhuxi.pojo.DTO.Cart.CartUpdateDTO;
 import com.zhuxi.pojo.VO.Car.CartNewVO;
 import com.zhuxi.pojo.VO.Car.CartVO;
 
-import java.util.List;
 
 public interface CartService {
 

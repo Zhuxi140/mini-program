@@ -93,4 +93,5 @@ public class MessageReturn {
     public static final String STOP_SALE_ERROR = "下架失败";
     public static final String REDIS_KEY_DELETE_ERROR = "redis key delete error";
     public static final String DELETE_ERROR = "删除失败";
+    public static final String UNKNOWN_ERROR = "未知错误";
 }

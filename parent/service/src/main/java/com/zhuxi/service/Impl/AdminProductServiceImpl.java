@@ -172,6 +172,7 @@ public class AdminProductServiceImpl implements AdminProductService {
      * 下架商品
      */
     @Override
+    @Transactional
     public Result<Void> stopSale(Long id) {
         if (id == null)
             return Result.error(MessageReturn.PRODUCT_ID_IS_NULL);
@@ -194,7 +195,7 @@ public class AdminProductServiceImpl implements AdminProductService {
         });
 
 
-        return null;
+        return Result.success(MessageReturn.OPERATION_SUCCESS);
     }
 
     /**

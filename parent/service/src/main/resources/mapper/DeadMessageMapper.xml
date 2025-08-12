@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhuxi.mapper.DeadMessageMapper">
+    <insert id="insert">
+        INSERt INTO dead_letter_message
+        (message_id, original_queue, exchange, routine_key, message_body, failure_reason)
+        VALUES
+            (#{messageId}, #{originalQueue}, #{exchange}, #{routineKey}, #{messageBody}, #{failureReason})
+    </insert>
+</mapper>

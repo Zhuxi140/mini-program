@@ -2,18 +2,21 @@ package com.zhuxi.service.Listener;
 
 import com.zhuxi.Constant.MessageReturn;
 import com.zhuxi.Exception.MQException;
+import com.zhuxi.pojo.DTO.DeadMessage.DeadMessageAddDTO;
+import com.zhuxi.pojo.VO.Product.ProductDetailVO;
 import com.zhuxi.service.Cache.ProductRedisCache;
+import com.zhuxi.service.Tx.DeadMessageTXService;
 import com.zhuxi.service.Tx.ProductTxService;
 import com.zhuxi.utils.JacksonUtils;
 import com.zhuxi.utils.RedisUntil;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.amqp.AmqpRejectAndDontRequeueException;
+import org.springframework.amqp.core.Message;
 import org.springframework.amqp.rabbit.annotation.*;
 import org.springframework.amqp.support.AmqpHeaders;
 import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.stereotype.Component;
 import com.zhuxi.pojo.DTO.product.*;
-import com.zhuxi.pojo.VO.Product.ProductDetailVO;
-
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
@@ -24,11 +27,15 @@ public class ProductListener {
     private final ProductRedisCache productRedisCache;
     private final ProductTxService productTxService;
     private final RedisUntil redisUntil;
+    private final DeadMessageTXService deadMessageTXService;
+    private String deadKey = "deadMessage:product.spec:";
+    private String value = "messageId:dead:product.spec:";
 
-    public ProductListener(ProductRedisCache productRedisCache, ProductTxService productTxService, RedisUntil redisUntil) {
+    public ProductListener(ProductRedisCache productRedisCache, ProductTxService productTxService, RedisUntil redisUntil, DeadMessageTXService deadMessageTXService) {
         this.productRedisCache = productRedisCache;
         this.productTxService = productTxService;
         this.redisUntil = redisUntil;
+        this.deadMessageTXService = deadMessageTXService;
     }
 
 
@@ -44,8 +51,11 @@ public class ProductListener {
             key = "new"
     ),
             containerFactory = "auto")
-    public void NewProductSpecListener(Long productId,@Header(AmqpHeaders.MESSAGE_ID) String messageId){
-        if (redisUntil.hsaKey("messageId:"+ messageId)) {
+    public void NewProductSpecListener(Long productId,
+                                       @Header(AmqpHeaders.MESSAGE_ID) String messageId
+    ){
+
+        if (redisUntil.hsaKey("messageId:product.spec:new:"+ messageId)) {
             log.error("重复消息-----messageId:{}",messageId);
             return;
         }
@@ -56,13 +66,17 @@ public class ProductListener {
             List<SpecRedisDTO> spec = productTxService.getSpec(List.of(productId));
             PIdSnowFlake pIdSnowFlake = new PIdSnowFlake(saleProductSnowFlake, saleProductSnowFlake);
             productRedisCache.syncSpecInit(spec, List.of(pIdSnowFlake));
-            redisUntil.setStringValue("messageId:" + messageId, "1", 24, TimeUnit.HOURS);
-        }catch (Exception  e){
-            // 删除幂等标记 防止重试被直接拒绝
-            redisUntil.delete("messageId:" + messageId);
+            redisUntil.setStringValue("messageId:product.spec:new:" + messageId, "1", 1, TimeUnit.HOURS);
+        }catch(MQException e){
+            redisUntil.setStringValue((deadKey + "new:" + messageId), "type=MQException---{" + e.getMessage() + "}", 24, TimeUnit.HOURS);
+            throw new MQException(e.getMessage());
+        }catch(Exception e){
+            redisUntil.setStringValue((deadKey + "new:" + messageId), "type=other Exception---{" + e.getMessage() + "}", 24, TimeUnit.HOURS);
             throw new MQException(e.getMessage());
         }
     }
+
+
 
     @RabbitListener(bindings = @QueueBinding(
             value = @Queue(name = "product.spec.Already.queue", durable = "true",
@@ -81,7 +95,7 @@ public class ProductListener {
                                            @Header(AmqpHeaders.MESSAGE_ID) String messageId
                                            ){
 
-        if (redisUntil.hsaKey("messageId:"+ messageId)) {
+        if (redisUntil.hsaKey("messageId:product.spec:Already:"+ messageId)) {
             log.error("重复消息-----messageId:{}",messageId);
             return;
         }
@@ -116,9 +130,12 @@ public class ProductListener {
                     productRedisCache.SyncSpecMQ(Mapp, specSnowFlakeById, stock);
                 }
             }
-        redisUntil.setStringValue("messageId:" + messageId, "1", 24, TimeUnit.HOURS);
+        redisUntil.setStringValue("messageId:product.spec:Already:" + messageId, "1", 1, TimeUnit.HOURS);
+        }catch (MQException e){
+            redisUntil.setStringValue((deadKey + "Already:" + messageId), "type=MQException---{" + e.getMessage() + "}", 24, TimeUnit.HOURS);
+            throw new MQException(e.getMessage());
         }catch (Exception e){
-            redisUntil.delete("messageId:" + messageId);
+            redisUntil.setStringValue((deadKey + "Already:" + messageId), "type=other Exception---{" + e.getMessage() + "}", 24, TimeUnit.HOURS);
             throw new MQException(e.getMessage());
         }
 
@@ -137,21 +154,30 @@ public class ProductListener {
     ),
             containerFactory = "auto"
     )
-    public void deleteProductSpecListener(PSsnowFlake pSsnowFlake,@Header(AmqpHeaders.MESSAGE_ID) String messageId){
+    public void deleteProductSpecListener(Object data,@Header(AmqpHeaders.MESSAGE_ID) String messageId){
 
-        if (redisUntil.hsaKey("messageId:"+ messageId)) {
+        if (redisUntil.hsaKey("messageId:product.spec:delete.stopSale:"+ messageId)) {
             log.error("重复消息-----messageId:{}",messageId);
             return;
         }
         try{
-        productRedisCache.deleteProduct(pSsnowFlake.getProductSnowflake(),pSsnowFlake.getSpecSnowflake());
-        redisUntil.setStringValue("messageId:"+ messageId,"1",24, TimeUnit.HOURS);
+            if (data instanceof PSsnowFlake pSsnowFlake){
+                productRedisCache.deleteProduct(pSsnowFlake.getProductSnowflake(),pSsnowFlake.getSpecSnowflake());
+            }else if(data instanceof Long id){
+                PSsnowFlake pSsnowFlake = new PSsnowFlake();
+                pSsnowFlake.setProductSnowflake(productTxService.getProductSnowFlakeById(id));
+                pSsnowFlake.setSpecSnowflake(productTxService.getSpecSnowFlakeByIdList(id));
+                productRedisCache.deleteProduct(pSsnowFlake.getProductSnowflake(),pSsnowFlake.getSpecSnowflake());
+            }
+        redisUntil.setStringValue("messageId:product.spec:delete.stopSale:"+ messageId,"1",1, TimeUnit.HOURS);
+        }catch (MQException e){
+            redisUntil.setStringValue((deadKey + "dS:" + messageId), "type=MQException---{" + e.getMessage() + "}", 24, TimeUnit.HOURS);
+            throw new MQException(e.getMessage());
         }catch (Exception e){
-            redisUntil.delete("messageId:" + messageId);
+            redisUntil.setStringValue((deadKey + "dS:" + messageId), "type=other Exception---{" + e.getMessage() + "}", 24, TimeUnit.HOURS);
             throw new MQException(e.getMessage());
         }
     }
-
 
 //  ______________________________----------------死信队列监听器------------------------______________________________
 //  ______________________________----------------死信队列监听器------------------------______________________________
@@ -162,8 +188,24 @@ public class ProductListener {
                     key = "new"
             )
     )
-    public void handleAlreadyDeadLetter(Long productId){
-        System.out.println("死信队列提示:::::----productId = " + productId);
+    public void handleAlreadyDeadLetter(Long productId,
+                                        @Header(AmqpHeaders.MESSAGE_ID) String messageId,
+                                        @Header(name = "x-death", required = false) List<Map<String, ?>> xDeath
+    ){
+        String dead = deadKey + "new:";
+        String valuee = value + "new:";
+        if (redisUntil.hsaKey(valuee + messageId)){
+            log.error("重复消息-----dead---messageId:{}",messageId);
+            return;
+        }
+
+        try {
+            durableDate(xDeath,messageId,productId,dead,valuee);
+        }catch (Exception e){
+            log.error("----死信记录失败----日志兜底---- 死信记录错误{}",e.getMessage());
+            HandlerException(xDeath,messageId,productId,dead,valuee);
+            throw new AmqpRejectAndDontRequeueException(e.getMessage());
+        }
     }
 
     @RabbitListener(
@@ -174,8 +216,24 @@ public class ProductListener {
             )
     )
     public void handleNewDeadLetter(ProductUpdateDTO productUpdateDTO,
-                                    @Header("spec-is-null") boolean specIsNull){
-        System.out.println("死信队列提示:::::----productUpdateDTO = " + productUpdateDTO);
+                                    @Header(AmqpHeaders.MESSAGE_ID) String messageId,
+                                    @Header(name = "x-death", required = false) List<Map<String, ?>> xDeath
+    ){
+        String dead = deadKey  + "Already:";
+        String valuee = value + "Already:";
+
+        if (redisUntil.hsaKey(valuee + messageId)){
+            log.error("重复消息-----dead---messageId:{}",messageId);
+            return;
+        }
+
+        try{
+            durableDate(xDeath,messageId,productUpdateDTO,dead,valuee);
+        }catch (Exception e){
+            log.error("----死信记录失败----日志兜底---- 死信记录错误{}",e.getMessage());
+            HandlerException(xDeath,messageId,productUpdateDTO,dead, valuee);
+            throw new AmqpRejectAndDontRequeueException(e.getMessage());
+        }
     }
 
 
@@ -186,7 +244,87 @@ public class ProductListener {
                     key = "delete.stopSale"
             )
     )
-    public void handleDeleteDeadLetter(Long productId){
-        System.out.println("死信队列提示:::::----productId = " + productId);
+    public void handleDeleteDeadLetter(Long productId,
+                                       @Header(AmqpHeaders.MESSAGE_ID) String messageId,
+                                       @Header(name = "x-death", required = false) List<Map<String, ?>> xDeath
+                                       ){
+        String dead = deadKey + "dS:";
+        String valuee = value + "dS:";
+        if (redisUntil.hsaKey(valuee + messageId)){
+            log.error("重复消息-----dead---messageId:{}",messageId);
+            return;
+        }
+
+        try{
+            durableDate(xDeath,messageId,productId,dead,valuee);
+        }catch (Exception e){
+            log.error("----死信记录失败----日志兜底---- 死信记录错误{}",e.getMessage());
+            HandlerException(xDeath,messageId,productId,dead,valuee);
+            throw new AmqpRejectAndDontRequeueException(e.getMessage());
+        }
     }
+
+
+
+    private String getQueue(List<Map<String, ?>> xDeath){
+        if (xDeath != null &&  !xDeath.isEmpty()){
+            return (String) xDeath.get(0).get("queue");
+        }
+        return null;
+    }
+
+    private String getExchange(List<Map<String, ?>> xDeath){
+        if (xDeath != null &&  !xDeath.isEmpty()){
+            return (String) xDeath.get(0).get("exchange");
+        }
+        return null;
+    }
+
+    private String getRoutingKey(List<Map<String, ?>> xDeath){
+        if (xDeath != null &&  !xDeath.isEmpty()){
+            List<String> routingKeys = (List<String>) xDeath.get(0).get("routing-keys");
+            if (routingKeys != null && !routingKeys.isEmpty()){
+                return routingKeys.get(0);
+            }
+        }
+        return null;
+    }
+
+
+    private void durableDate(List<Map<String, ?>> xDeath, String messageId, Object body,String dead, String Valuee){
+        Object failureDetails = redisUntil.getStringValue(dead + messageId);
+        DeadMessageAddDTO deadd = new DeadMessageAddDTO();
+        deadd.setMessageId(messageId);
+        deadd.setMessageBody(JacksonUtils.objectToJson( body));
+        deadd.setRoutineKey(getRoutingKey(xDeath));
+        deadd.setExchange(getExchange(xDeath));
+        deadd.setOriginalQueue(getQueue(xDeath));
+        deadd.setFailureReason((String) failureDetails);
+        deadMessageTXService.insert(deadd);
+        redisUntil.setStringValue(Valuee+ messageId,"1",1, TimeUnit.HOURS);
+        redisUntil.delete(dead + messageId);
+        log.warn("已记录----死信::----messageId = " + messageId);
+    }
+
+    private void HandlerException(List<Map<String, ?>> xDeath, String messageId, Object body,String dead, String Valuee){
+        log.error(
+                """
+                messageId--{},
+                FailureReason--{},
+                exchange--{}，
+                OriginalQueue--{},
+                RoutineKey--{},
+                MessageBody--{}，
+                """,
+                messageId,
+                redisUntil.getStringValue(dead + messageId),
+                getExchange(xDeath),
+                getQueue(xDeath),
+                getRoutingKey(xDeath),
+                JacksonUtils.objectToJson(body)
+        );
+        redisUntil.delete(Valuee + messageId);
+        redisUntil.delete(dead + messageId);
+    }
+
 }

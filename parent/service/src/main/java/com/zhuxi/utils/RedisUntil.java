@@ -47,7 +47,6 @@ public class RedisUntil {
         stringValueOperations.set(key,value,time, unit);
     }
 
-    //清空对应key
     public Boolean delete(String key){
          return redisTemplate.delete(key);
     }
