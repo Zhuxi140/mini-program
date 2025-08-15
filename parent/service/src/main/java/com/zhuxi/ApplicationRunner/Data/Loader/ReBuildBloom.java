@@ -4,10 +4,7 @@ import com.google.common.hash.BloomFilter;
 import com.zhuxi.handler.BloomFilterManager;
 import com.zhuxi.service.Tx.OrderTxService;
 import com.zhuxi.service.Tx.ProductTxService;
-import com.zhuxi.service.Tx.UserTxService;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 import com.zhuxi.pojo.DTO.Order.BloomOrderDTO;
 import java.util.List;
@@ -15,38 +12,26 @@ import java.util.List;
 @Slf4j
 @Component
 @SuppressWarnings("UnstableApiUsage")
-public class BloomDataLoader {
+public class ReBuildBloom {
     private final ProductTxService productTxService;
     private final OrderTxService orderTxService;
     private final BloomFilterManager bloomFilterManager;
-    private final BloomFilter<Long> productBloomFilter;
-    private final BloomFilter<String> orderBloomFilter;
+    private BloomFilter<Long> productBloomFilter;
+    private BloomFilter<String> orderBloomFilter;
 
 
-    @Autowired
-    public BloomDataLoader(
+    public ReBuildBloom(
             ProductTxService productTxService,
             OrderTxService orderTxService,
-            BloomFilterManager bloomFilterManager,
-            @Qualifier("productBloomFilter") BloomFilter<Long> productBloomFilter,
-            @Qualifier("orderBloomFilter") BloomFilter<String> orderBloomFilter
-            )
+            BloomFilterManager bloomFilterManager
+    )
     {
         this.productTxService = productTxService;
         this.orderTxService = orderTxService;
-        this.productBloomFilter = productBloomFilter;
         this.bloomFilterManager = bloomFilterManager;
-        this.orderBloomFilter = orderBloomFilter;
     }
 
-
-    public void loadData() {
-        loadProductData();
-        loadOrderData();
-        log.info("所有布隆过滤器加载完成");
-    }
-
-    private void loadProductData(){
+    public void loadProductData(){
         bloomFilterManager.addFilterLong("product",productBloomFilter);
         int pageSize = 1000;
         Long lastId = 0L;
@@ -70,7 +55,7 @@ public class BloomDataLoader {
 
 
 
-    private void loadOrderData(){
+    public void loadOrderData(){
         bloomFilterManager.addFilterString("order",orderBloomFilter);
         int pageSize = 1000;
         Long lastId = 0L;
@@ -96,4 +81,15 @@ public class BloomDataLoader {
         }
     }
 
+    public BloomFilter<Long> getProductBloomFilter() {
+        return productBloomFilter;
+    }
+
+    public void setProductBloomFilter(BloomFilter<Long> productBloomFilter) {
+        this.productBloomFilter = productBloomFilter;
+    }
+
+    public void setOrderBloomFilter(BloomFilter<String> orderBloomFilter) {
+        this.orderBloomFilter = orderBloomFilter;
+    }
 }

@@ -2,9 +2,13 @@ package com.zhuxi.config;
 
 import com.google.common.hash.BloomFilter;
 import com.google.common.hash.Funnels;
+import com.zhuxi.handler.BloomFilterFactory;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Scope;
+import org.springframework.context.annotation.ScopedProxyMode;
 
 import java.nio.charset.StandardCharsets;
 
@@ -18,6 +22,7 @@ public class BloomFilterConfig {
 
     // 商品过滤器
     @Bean("productBloomFilter")
+    @Scope(value = "prototype",proxyMode = ScopedProxyMode.TARGET_CLASS)
     public BloomFilter<Long> productBloomFilter() {
         return BloomFilter.create(
                 Funnels.longFunnel(),
@@ -26,24 +31,21 @@ public class BloomFilterConfig {
         );
     }
 
-//    // 用户过滤器
-//    @Bean("userBloomFilter")
-//    public BloomFilter<Long> userBloomFilter() {
-//        return BloomFilter.create(
-//                Funnels.longFunnel(),
-//                userConfig.expectedElements,
-//                userConfig.fpp
-//        );
-//    }
 
     // 订单过滤器
     @Bean("orderBloomFilter")
+    @Scope(value = "prototype",proxyMode = ScopedProxyMode.TARGET_CLASS)
     public BloomFilter<String> orderBloomFilter() {
         return BloomFilter.create(
                 Funnels.stringFunnel(StandardCharsets.UTF_8),
                 orderConfig.expectedElements,
                 orderConfig.fpp
         );
+    }
+
+    @Bean
+    public BloomFilterFactory bloomFilterFactory(ApplicationContext context) {
+        return new BloomFilterFactory(context);
     }
 
 
