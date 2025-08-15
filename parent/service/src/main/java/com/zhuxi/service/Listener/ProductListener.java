@@ -3,6 +3,7 @@ package com.zhuxi.service.Listener;
 import com.zhuxi.Constant.MessageReturn;
 import com.zhuxi.Exception.MQException;
 import com.zhuxi.pojo.DTO.DeadMessage.DeadMessageAddDTO;
+import com.zhuxi.pojo.DTO.DeadMessage.DeadMessageUpdate;
 import com.zhuxi.pojo.VO.Product.ProductDetailVO;
 import com.zhuxi.service.Cache.ProductRedisCache;
 import com.zhuxi.service.Tx.DeadMessageTXService;
@@ -66,7 +67,7 @@ public class ProductListener {
             List<SpecRedisDTO> spec = productTxService.getSpec(List.of(productId));
             PIdSnowFlake pIdSnowFlake = new PIdSnowFlake(saleProductSnowFlake, saleProductSnowFlake);
             productRedisCache.syncSpecInit(spec, List.of(pIdSnowFlake));
-            redisUntil.setStringValue("messageId:product.spec:new:" + messageId, "1", 1, TimeUnit.HOURS);
+            redisUntil.setStringValue("messageId:product.spec:new:" + messageId, "1", 5, TimeUnit.MILLISECONDS);
         }catch(MQException e){
             redisUntil.setStringValue((deadKey + "new:" + messageId), "type=MQException---{" + e.getMessage() + "}", 24, TimeUnit.HOURS);
             throw new MQException(e.getMessage());
@@ -130,7 +131,7 @@ public class ProductListener {
                     productRedisCache.SyncSpecMQ(Mapp, specSnowFlakeById, stock);
                 }
             }
-        redisUntil.setStringValue("messageId:product.spec:Already:" + messageId, "1", 1, TimeUnit.HOURS);
+        redisUntil.setStringValue("messageId:product.spec:Already:" + messageId, "1", 5, TimeUnit.MILLISECONDS);
         }catch (MQException e){
             redisUntil.setStringValue((deadKey + "Already:" + messageId), "type=MQException---{" + e.getMessage() + "}", 24, TimeUnit.HOURS);
             throw new MQException(e.getMessage());
@@ -293,19 +294,28 @@ public class ProductListener {
 
     private void durableDate(List<Map<String, ?>> xDeath, String messageId, Object body,String dead, String Valuee){
         Object failureDetails = redisUntil.getStringValue(dead + messageId);
+        String boddy = JacksonUtils.objectToJson(body);
+        if (deadMessageTXService.isExist(messageId)){
+            Long version = deadMessageTXService.getVersion(messageId);
+            DeadMessageUpdate deadMessageUpdate = new DeadMessageUpdate();
+            deadMessageUpdate.setMessageId(messageId);
+            deadMessageUpdate.setMessageBody(boddy);
+            deadMessageUpdate.setFailureReason((String) failureDetails);
+            deadMessageTXService.update(deadMessageUpdate, version);
+            return;
+        }
         DeadMessageAddDTO deadd = new DeadMessageAddDTO();
         deadd.setMessageId(messageId);
-        deadd.setMessageBody(JacksonUtils.objectToJson( body));
+        deadd.setMessageBody(boddy);
         deadd.setRoutineKey(getRoutingKey(xDeath));
         deadd.setExchange(getExchange(xDeath));
         deadd.setOriginalQueue(getQueue(xDeath));
         deadd.setFailureReason((String) failureDetails);
         deadMessageTXService.insert(deadd);
-        redisUntil.setStringValue(Valuee+ messageId,"1",1, TimeUnit.HOURS);
+        redisUntil.setStringValue(Valuee+ messageId,"1",5, TimeUnit.MILLISECONDS);
         redisUntil.delete(dead + messageId);
         log.warn("已记录----死信::----messageId = " + messageId);
     }
-
     private void HandlerException(List<Map<String, ?>> xDeath, String messageId, Object body,String dead, String Valuee){
         log.error(
                 """

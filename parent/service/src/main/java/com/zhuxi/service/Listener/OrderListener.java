@@ -4,6 +4,7 @@ package com.zhuxi.service.Listener;
 import com.rabbitmq.client.Channel;
 import com.zhuxi.Exception.MQException;
 import com.zhuxi.pojo.DTO.DeadMessage.DeadMessageAddDTO;
+import com.zhuxi.pojo.DTO.DeadMessage.DeadMessageUpdate;
 import com.zhuxi.pojo.DTO.Order.OrderRedisDTO;
 import com.zhuxi.service.Cache.OrderRedisCache;
 import com.zhuxi.service.Tx.DeadMessageTXService;
@@ -241,15 +242,25 @@ public class OrderListener {
 
     private void durableDate(List<Map<String, ?>> xDeath, String messageId, Object body,String dead, String Valuee){
         Object failureDetails = redisUntil.getStringValue(dead + messageId);
+        String boddy = JacksonUtils.objectToJson(body);
+        if (deadMessageTXService.isExist(messageId)){
+            Long version = deadMessageTXService.getVersion(messageId);
+            DeadMessageUpdate deadMessageUpdate = new DeadMessageUpdate();
+            deadMessageUpdate.setMessageId(messageId);
+            deadMessageUpdate.setMessageBody(boddy);
+            deadMessageUpdate.setFailureReason((String) failureDetails);
+            deadMessageTXService.update(deadMessageUpdate, version);
+            return;
+        }
         DeadMessageAddDTO deadd = new DeadMessageAddDTO();
         deadd.setMessageId(messageId);
-        deadd.setMessageBody(JacksonUtils.objectToJson( body));
+        deadd.setMessageBody(boddy);
         deadd.setRoutineKey(getRoutingKey(xDeath));
         deadd.setExchange(getExchange(xDeath));
         deadd.setOriginalQueue(getQueue(xDeath));
         deadd.setFailureReason((String) failureDetails);
         deadMessageTXService.insert(deadd);
-        redisUntil.setStringValue(Valuee+ messageId,"1",1, TimeUnit.HOURS);
+        redisUntil.setStringValue(Valuee+ messageId,"1",5, TimeUnit.MILLISECONDS);
         redisUntil.delete(dead + messageId);
         log.warn("已记录----死信::----messageId = " + messageId);
     }

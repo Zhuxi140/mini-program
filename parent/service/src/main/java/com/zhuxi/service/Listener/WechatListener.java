@@ -3,6 +3,7 @@ package com.zhuxi.service.Listener;
 
 import com.zhuxi.Exception.MQException;
 import com.zhuxi.pojo.DTO.DeadMessage.DeadMessageAddDTO;
+import com.zhuxi.pojo.DTO.DeadMessage.DeadMessageUpdate;
 import com.zhuxi.service.Cache.LoginRedisCache;
 import com.zhuxi.service.Tx.DeadMessageTXService;
 import com.zhuxi.utils.JacksonUtils;
@@ -75,7 +76,7 @@ public class WechatListener {
             } else {
                 loginRedisCache.saveSessionKey(openId, sessionKey);
             }
-            redisUntil.setStringValue("messageId:wechat:login:" + messageId, "1", 1, TimeUnit.HOURS);
+            redisUntil.setStringValue("messageId:wechat:login:" + messageId, "1", 5, TimeUnit.MINUTES);
         } catch (MQException e) {
             redisUntil.setStringValue(deadKey + "login:" + messageId, "type=MQException---{" + e.getMessage() + "}", 24, TimeUnit.HOURS);
             throw new MQException("微信登录异常");
@@ -141,15 +142,25 @@ public class WechatListener {
 
     private void durableDate(List<Map<String, ?>> xDeath, String messageId, Object body,String dead, String Valuee){
         Object failureDetails = redisUntil.getStringValue(dead + messageId);
+        String boddy = JacksonUtils.objectToJson(body);
+        if (deadMessageTXService.isExist(messageId)){
+            Long version = deadMessageTXService.getVersion(messageId);
+            DeadMessageUpdate deadMessageUpdate = new DeadMessageUpdate();
+            deadMessageUpdate.setMessageId(messageId);
+            deadMessageUpdate.setMessageBody(boddy);
+            deadMessageUpdate.setFailureReason((String) failureDetails);
+            deadMessageTXService.update(deadMessageUpdate, version);
+            return;
+        }
         DeadMessageAddDTO deadd = new DeadMessageAddDTO();
         deadd.setMessageId(messageId);
-        deadd.setMessageBody(JacksonUtils.objectToJson( body));
+        deadd.setMessageBody(boddy);
         deadd.setRoutineKey(getRoutingKey(xDeath));
         deadd.setExchange(getExchange(xDeath));
         deadd.setOriginalQueue(getQueue(xDeath));
         deadd.setFailureReason((String) failureDetails);
         deadMessageTXService.insert(deadd);
-        redisUntil.setStringValue(Valuee+ messageId,"1",1, TimeUnit.HOURS);
+        redisUntil.setStringValue(Valuee+ messageId,"1",5, TimeUnit.MINUTES);
         redisUntil.delete(dead + messageId);
         log.warn("已记录----死信::----messageId = " + messageId);
     }

@@ -2,6 +2,7 @@ package com.zhuxi.config;
 
 import com.zhuxi.Interceptor.JwtInterceptor;
 import com.zhuxi.Interceptor.JwtInterceptorProperties;
+import com.zhuxi.handler.AdminIdArgumentResolver;
 import com.zhuxi.handler.UserIdArgumentResolver;
 import com.zhuxi.service.Cache.AdminCache;
 import com.zhuxi.service.Cache.LoginRedisCache;
@@ -56,8 +57,11 @@ public class WebMvcConfig implements WebMvcConfigurer {
 
     @Override
     public void addArgumentResolvers(List<HandlerMethodArgumentResolver> resolvers) {
+        resolvers.add(new AdminIdArgumentResolver(jwtUtils));
         resolvers.add(new UserIdArgumentResolver(jwtUtils, wechatAuthTxService,loginRedisCache));
     }
+
+
 
 
 

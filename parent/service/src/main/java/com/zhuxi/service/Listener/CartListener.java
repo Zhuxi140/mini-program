@@ -7,6 +7,7 @@ import com.zhuxi.pojo.DTO.Cart.CartAddDTO;
 import com.zhuxi.pojo.DTO.Cart.CartRedisDTO;
 import com.zhuxi.pojo.DTO.Cart.CartUpdateDTO;
 import com.zhuxi.pojo.DTO.DeadMessage.DeadMessageAddDTO;
+import com.zhuxi.pojo.DTO.DeadMessage.DeadMessageUpdate;
 import com.zhuxi.service.Cache.CartRedisCache;
 import com.zhuxi.service.Tx.CartTxService;
 import com.zhuxi.service.Tx.DeadMessageTXService;
@@ -20,7 +21,6 @@ import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Component;
 import com.zhuxi.pojo.DTO.Cart.MQdelete;
-import com.zhuxi.pojo.VO.Car.CartVO;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
@@ -66,7 +66,7 @@ public class CartListener {
             if (!b){
                 throw new MQException(MessageReturn.REDIS_KEY_DELETE_ERROR);
             }
-            redisUntil.setStringValue("messageId:cart:delete:" + messageId, "1", 1, TimeUnit.HOURS);
+            redisUntil.setStringValue("messageId:cart:delete:" + messageId, "1", 5, TimeUnit.MINUTES);
         }catch (MQException e){
             redisUntil.setStringValue((cartKey + "delete:" + messageId), "type=MQException---{" + e.getMessage() + "}", 24, TimeUnit.HOURS);
             throw new MQException(e.getMessage());
@@ -96,7 +96,7 @@ public class CartListener {
         }
         try {
             cartRedisCache.deleteAllCart(userId);
-            redisUntil.setStringValue("messageId:cart:deleteAll:" + messageId, "1", 1, TimeUnit.HOURS);
+            redisUntil.setStringValue("messageId:cart:deleteAll:" + messageId, "1", 5, TimeUnit.MINUTES);
         }catch (MQException e){
             redisUntil.setStringValue((cartKey + "deleteAll:" + messageId), "type=MQException---{" + e.getMessage() + "}", 24, TimeUnit.HOURS);
             throw new MQException(e.getMessage());
@@ -128,7 +128,7 @@ public class CartListener {
         try{
             List<CartRedisDTO> listCartOne = cartTxService.getListCartOne(userId);
             cartRedisCache.syncCartInit(listCartOne,userId);
-            redisUntil.setStringValue("messageId:cart:lack:" + messageId, "1", 1, TimeUnit.HOURS);
+            redisUntil.setStringValue("messageId:cart:lack:" + messageId, "1", 5, TimeUnit.MINUTES);
         }catch (MQException e){
             redisUntil.setStringValue((cartKey + "lack:" + messageId), "type=MQException---{" + e.getMessage() + "}", 24, TimeUnit.HOURS);
             throw new AmqpRejectAndDontRequeueException(e.getMessage());
@@ -171,7 +171,7 @@ public class CartListener {
                 cartAddDTO.setCartId(cartIdByUS);
                 cartRedisCache.addLackOne(cartAddDTO);
             }
-            redisUntil.setStringValue("messageId:cart:add:" + messageId, "1", 24, TimeUnit.HOURS);
+            redisUntil.setStringValue("messageId:cart:add:" + messageId, "1", 5, TimeUnit.MINUTES);
         }catch (MQException e){
             redisUntil.setStringValue((cartKey + "add:" + messageId), "type=MQException---{" + e.getMessage() + "}", 24, TimeUnit.HOURS);
             throw new MQException(e.getMessage());
@@ -202,7 +202,7 @@ public class CartListener {
 
         try{
              cartRedisCache.updateCart(cartUpdateDTO);
-             redisUntil.setStringValue("messageId:cart:update:" + messageId, "1", 24, TimeUnit.HOURS);
+             redisUntil.setStringValue("messageId:cart:update:" + messageId, "1", 5, TimeUnit.MINUTES);
         }catch (MQException e){
             redisUntil.setStringValue((cartKey + "update:" + messageId), "type=MQException---{" + e.getMessage() + "}", 24, TimeUnit.HOURS);
             throw new MQException(e.getMessage());
@@ -230,6 +230,7 @@ public class CartListener {
             log.error("重复消息-----dead---messageId:{}",messageId);
             return;
         }
+
 
         try{
             durableDate(xDeath,messageId,mQdelete.getUserId(),deadKey,valuee);
@@ -370,15 +371,25 @@ public class CartListener {
 
     private void durableDate(List<Map<String, ?>> xDeath, String messageId, Object body,String dead, String Valuee){
         Object failureDetails = redisUntil.getStringValue(dead + messageId);
+        String boddy = JacksonUtils.objectToJson(body);
+        if (deadMessageTXService.isExist(messageId)){
+            Long version = deadMessageTXService.getVersion(messageId);
+            DeadMessageUpdate deadMessageUpdate = new DeadMessageUpdate();
+            deadMessageUpdate.setMessageId(messageId);
+            deadMessageUpdate.setMessageBody(boddy);
+            deadMessageUpdate.setFailureReason((String) failureDetails);
+            deadMessageTXService.update(deadMessageUpdate, version);
+            return;
+        }
         DeadMessageAddDTO deadd = new DeadMessageAddDTO();
         deadd.setMessageId(messageId);
-        deadd.setMessageBody(JacksonUtils.objectToJson( body));
+        deadd.setMessageBody(boddy);
         deadd.setRoutineKey(getRoutingKey(xDeath));
         deadd.setExchange(getExchange(xDeath));
         deadd.setOriginalQueue(getQueue(xDeath));
         deadd.setFailureReason((String) failureDetails);
         deadMessageTXService.insert(deadd);
-        redisUntil.setStringValue(Valuee+ messageId,"1",1, TimeUnit.HOURS);
+        redisUntil.setStringValue(Valuee+ messageId,"1",5, TimeUnit.MINUTES);
         redisUntil.delete(dead + messageId);
         log.warn("已记录----死信::----messageId = " + messageId);
     }

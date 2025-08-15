@@ -1,8 +1,8 @@
 package com.zhuxi.handler;
 
 
+import com.zhuxi.annotation.CurrentAdminId;
 import com.zhuxi.annotation.CurrentUserId;
-import com.zhuxi.annotation.RequireRole;
 import com.zhuxi.service.Cache.LoginRedisCache;
 import com.zhuxi.service.Tx.WechatAuthTxService;
 import com.zhuxi.utils.JwtUtils;
@@ -15,55 +15,53 @@ import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
 
+import java.util.HashMap;
+import java.util.Map;
+
 @Component
-public class UserIdArgumentResolver implements HandlerMethodArgumentResolver {
+public class AdminIdArgumentResolver implements HandlerMethodArgumentResolver {
 
     private JwtUtils jwtUtils;
-    private WechatAuthTxService wechatAuthTxService;
-    private LoginRedisCache loginRedisCache;
 
-    public UserIdArgumentResolver(JwtUtils jwtUtils, WechatAuthTxService wechatAuthTxService, LoginRedisCache loginRedisCache) {
+    public AdminIdArgumentResolver(JwtUtils jwtUtils) {
         this.jwtUtils = jwtUtils;
-        this.wechatAuthTxService = wechatAuthTxService;
-        this.loginRedisCache = loginRedisCache;
     }
 
-    public UserIdArgumentResolver() {
+    public AdminIdArgumentResolver() {
     }
 
     @Override
     public boolean supportsParameter(MethodParameter parameter) {
-        return parameter.hasParameterAnnotation(CurrentUserId.class);
+        return parameter.hasParameterAnnotation(CurrentAdminId.class);
     }
 
     @Override
-    public Object resolveArgument(
+    public Map<String, Object> resolveArgument(
             MethodParameter parameter,
             ModelAndViewContainer mavContainer,
             NativeWebRequest webRequest,
             WebDataBinderFactory binderFactory) throws Exception
     {
         String token = webRequest.getHeader("Authorization");
-        return getUserId( token);
+        return getParams( token);
     }
 
-    private Long getUserId(String token)
+    private Map<String, Object> getParams(String token)
     {
         Claims claims = jwtUtils.parseToken(token);
 
         if (claims == null){
             throw new JwtException("token error");
         }
-        String openid = claims.get("openid", String.class);
-        if (openid == null){
+        String id = claims.get("id", String.class);
+        String userName = claims.get("userName", String.class);
+        if (id == null || userName == null || userName.isEmpty()){
             throw new JwtException("token data error");
         }
-        Long userId = loginRedisCache.getUserId(openid);
-        if (userId == null){
-            Long userId1 = wechatAuthTxService.getUserId(openid);
-            loginRedisCache.saveUserId(openid,userId1);
-        }
-        return userId;
+        Map<String, Object> data = new HashMap<>();
+        data.put("id", id);
+        data.put("userName", userName);
+        return data;
     }
 
 

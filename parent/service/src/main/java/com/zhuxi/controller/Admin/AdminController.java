@@ -76,7 +76,7 @@ public class AdminController {
         Map<String, Object> claims = new HashMap<String, Object>();
 
         claims.put("id",data.getId());
-//        claims.put("username",data.getUsername());
+        claims.put("username",data.getUsername());
         claims.put("role",data.getRole().name());
         String token = jwtUtils.createToken(claims);
         data.setToken(token);

@@ -7,28 +7,12 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="372da862-f7c4-4fa2-93c3-bf2ac1fe9e6e" name="更改" comment="feat(cart): 实现购物车消息队列处理并优化大部分消息队列逻辑&#10;&#10;- 新增购物车初始化、添加、更新商品的消息队列处理逻辑&#10;- 优化购物车商品信息获取流程，增加缓存支持&#10;- 调整数据库查询，限制用户数据查询时间范围&#10;- 移除用户布隆过滤器相关代码&#10;- 采用冷加载，对预加载部分逻辑进行优化">
-      <change beforePath="$PROJECT_DIR$/.idea/dataSources/b42a7732-a8a8-435b-b349-6f9f6e04249d.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources/b42a7732-a8a8-435b-b349-6f9f6e04249d.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/Constant/MessageReturn.java" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/Constant/MessageReturn.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/service/Cache/CartRedisCache.java" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/service/Cache/CartRedisCache.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/service/Impl/AdminProductServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/service/Impl/AdminProductServiceImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/service/Impl/CartServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/service/Impl/CartServiceImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/service/Listener/CartListener.java" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/service/Listener/CartListener.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/service/Listener/OrderListener.java" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/service/Listener/OrderListener.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/service/Listener/ProductListener.java" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/service/Listener/ProductListener.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/service/Listener/WechatListener.java" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/service/Listener/WechatListener.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/service/business/CartService.java" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/service/business/CartService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/utils/RedisUntil.java" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/utils/RedisUntil.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/service/Cache/CartRedisCache.class" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/service/Cache/CartRedisCache.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/service/Impl/CartServiceImpl$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/service/Impl/CartServiceImpl$1.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/service/Impl/CartServiceImpl$2.class" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/service/Impl/CartServiceImpl$2.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/service/Impl/CartServiceImpl$3.class" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/service/Impl/CartServiceImpl$3.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/service/Impl/CartServiceImpl$4.class" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/service/Impl/CartServiceImpl$4.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/service/Impl/CartServiceImpl.class" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/service/Impl/CartServiceImpl.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/service/Listener/CartListener.class" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/service/Listener/CartListener.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/utils/RedisUntil$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/utils/RedisUntil$1.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/utils/RedisUntil.class" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/utils/RedisUntil.class" afterDir="false" />
+    <list default="true" id="372da862-f7c4-4fa2-93c3-bf2ac1fe9e6e" name="更改" comment="feat(service): 增加死信处理机制并优化购物车逻辑&#10;&#10;- 在 CartListener 和 OrderListener 中添加死信处理逻辑&#10;- 优化购物车更新逻辑，支持部分字段更新&#10;- 修复订单同步中的异常处理&#10;- 优化日志记录和错误处理">
+      <change beforePath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/Constant/MessageReturn.class" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/Constant/MessageReturn.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/service/Impl/AdminProductServiceImpl$3.class" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/service/Impl/AdminProductServiceImpl$3.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/service/Impl/AdminProductServiceImpl$4.class" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/service/Impl/AdminProductServiceImpl$4.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/service/Impl/AdminProductServiceImpl.class" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/service/Impl/AdminProductServiceImpl.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/service/Listener/ProductListener.class" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/service/Listener/ProductListener.class" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -40,9 +24,9 @@
       <list>
         <option value="Enum" />
         <option value="Mybatis Mapper" />
-        <option value="AnnotationType" />
         <option value="Exception" />
         <option value="Interface" />
+        <option value="AnnotationType" />
         <option value="Class" />
       </list>
     </option>
@@ -94,46 +78,46 @@
     <option name="showLibraryContents" value="true" />
     <option name="showScratchesAndConsoles" value="false" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "JUnit.ServiceApplicationTests.contextLoads.executor": "Run",
-    "JUnit.ServiceApplicationTests.executor": "Run",
-    "JUnit.service中的com.zhuxi.Interceptor.executor": "Run",
-    "Notification.DisplayName-DoNotAsk-Database detector": "数据库检测器",
-    "Notification.DoNotAsk-Database detector": "true",
-    "RequestMappingsPanelOrder0": "0",
-    "RequestMappingsPanelOrder1": "1",
-    "RequestMappingsPanelWidth0": "75",
-    "RequestMappingsPanelWidth1": "75",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
-    "Spring Boot.ParentApplication.executor": "Run",
-    "Spring Boot.ServiceApplication.executor": "Run",
-    "git-widget-placeholder": "main",
-    "jdk.selected.JAVA_MODULE": "17",
-    "last_opened_file_path": "D:/IDEA/mini-program",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "project.structure.last.edited": "模块",
-    "project.structure.proportion": "0.15527344",
-    "project.structure.side.proportion": "0.5173611",
-    "run.configurations.included.in.services": "true",
-    "service.view.auto.scroll.to.source": "true",
-    "settings.editor.selected.configurable": "reference.projectsettings.compiler.javacompiler",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;JUnit.ServiceApplicationTests.contextLoads.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.ServiceApplicationTests.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.service中的com.zhuxi.Interceptor.executor&quot;: &quot;Run&quot;,
+    &quot;Notification.DisplayName-DoNotAsk-Database detector&quot;: &quot;数据库检测器&quot;,
+    &quot;Notification.DoNotAsk-Database detector&quot;: &quot;true&quot;,
+    &quot;RequestMappingsPanelOrder0&quot;: &quot;0&quot;,
+    &quot;RequestMappingsPanelOrder1&quot;: &quot;1&quot;,
+    &quot;RequestMappingsPanelWidth0&quot;: &quot;75&quot;,
+    &quot;RequestMappingsPanelWidth1&quot;: &quot;75&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
+    &quot;Spring Boot.ParentApplication.executor&quot;: &quot;Run&quot;,
+    &quot;Spring Boot.ServiceApplication.executor&quot;: &quot;Run&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
+    &quot;jdk.selected.JAVA_MODULE&quot;: &quot;17&quot;,
+    &quot;last_opened_file_path&quot;: &quot;D:/IDEA/mini-program&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;project.structure.last.edited&quot;: &quot;模块&quot;,
+    &quot;project.structure.proportion&quot;: &quot;0.15527344&quot;,
+    &quot;project.structure.side.proportion&quot;: &quot;0.5173611&quot;,
+    &quot;run.configurations.included.in.services&quot;: &quot;true&quot;,
+    &quot;service.view.auto.scroll.to.source&quot;: &quot;true&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.pluginManager&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   },
-  "keyToStringList": {
-    "DatabaseDriversLRU": [
-      "mysql"
+  &quot;keyToStringList&quot;: {
+    &quot;DatabaseDriversLRU&quot;: [
+      &quot;mysql&quot;
     ],
-    "com.intellij.ide.scratch.LRUPopupBuilder$1/SQL 方言": [
-      "MySQL"
+    &quot;com.intellij.ide.scratch.LRUPopupBuilder$1/SQL 方言&quot;: [
+      &quot;MySQL&quot;
     ]
   }
-}]]></component>
+}</component>
   <component name="ReactorSettings">
     <option name="notificationShown" value="true" />
   </component>
@@ -319,15 +303,13 @@
       <workItem from="1754875460048" duration="620000" />
       <workItem from="1754876104534" duration="516000" />
       <workItem from="1754876727710" duration="15988000" />
-      <workItem from="1754959134191" duration="28632000" />
-    </task>
-    <task id="LOCAL-00003" summary="完善管理端模块&#10;添加权限限制模块&#10;添加完整的jwt&#10;添加客户端的框架">
-      <option name="closed" value="true" />
-      <created>1750333446753</created>
-      <option name="number" value="00003" />
-      <option name="presentableId" value="LOCAL-00003" />
-      <option name="project" value="LOCAL" />
-      <updated>1750333446753</updated>
+      <workItem from="1754959134191" duration="28745000" />
+      <workItem from="1755137635885" duration="3581000" />
+      <workItem from="1755222118179" duration="42000" />
+      <workItem from="1755222262687" duration="8247000" />
+      <workItem from="1755232539440" duration="121000" />
+      <workItem from="1755232669632" duration="389000" />
+      <workItem from="1755233071339" duration="21000" />
     </task>
     <task id="LOCAL-00004" summary="添加并完善购物车模块&#10;修正部分消息提示问题&#10;规整部分目录分类">
       <option name="closed" value="true" />
@@ -713,7 +695,15 @@
       <option name="project" value="LOCAL" />
       <updated>1754901777137</updated>
     </task>
-    <option name="localTasksCounter" value="52" />
+    <task id="LOCAL-00052" summary="feat(service): 增加死信处理机制并优化购物车逻辑&#10;&#10;- 在 CartListener 和 OrderListener 中添加死信处理逻辑&#10;- 优化购物车更新逻辑，支持部分字段更新&#10;- 修复订单同步中的异常处理&#10;- 优化日志记录和错误处理">
+      <option name="closed" value="true" />
+      <created>1754989861777</created>
+      <option name="number" value="00052" />
+      <option name="presentableId" value="LOCAL-00052" />
+      <option name="project" value="LOCAL" />
+      <updated>1754989861778</updated>
+    </task>
+    <option name="localTasksCounter" value="53" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -731,7 +721,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="perf(service): 优化 Redis 连接池配置&#10;&#10;- 修改 Redis连接池参数，提高最大空闲连接数和最大活跃连接数&#10;- 增加连接空闲时间和关闭连接等待时间配置- 调整日志级别为 info&#10;- 创建商品Redis模块&#10;- 为获取商品列表添加Redis缓存 并添加兜底逻辑&#10;- 构建冷启动模块 预加载数据到Redis" />
     <MESSAGE value="refactor(product): 重构商品列表查询逻辑&#10;&#10;- 修改了 ProductController 中的参数接收方式，增加了 isLast 参数&#10;- 重构了 ProductService 接口，更新了 getListProducts 方法签名&#10;- 实现了 ProductServiceImpl 中的列表查询逻辑，包括缓存命中和兜底查询- 更新了 ProductMapper 接口和 XML 文件中的 SQL 查询&#10;- 优化了 RedisCache 相关操作，增加了 lastScore 和 type 参数" />
     <MESSAGE value="feat(service): 增加布隆过滤器支持&#10;&#10;- 在 application.yaml 中添加布隆过滤器配置&#10;- 新增布隆过滤器异常处理逻辑&#10;- 修改产品数据加载和缓存逻辑，支持布隆过滤器&#10;- 优化 Redis 缓存序列化方式&#10;- 调整安全配置，引入 Google Guava 库" />
     <MESSAGE value="- 修复因名称输入错误 导致布隆过滤器100%拦截&#10;- 优化自定义的ApplicationRunner逻辑 启用异步执行&#10;- 优化部分逻辑结构" />
@@ -756,7 +745,8 @@
     <MESSAGE value="feat(service): 为购物车添加MQ,对购物车接口全面进行优化&#10;&#10;- 重写 OSS 文件上传逻辑，解决所有已知问题&#10;- 添加 OSS 配置信息和使用指南- 新增文件大小计算和显示功能&#10;- 优化错误处理和提示信息&#10;- 移除 Token 调试工具，简化界面&#10;- 为购物车接口添加异步MQ&#10;- 优化部分Redis操作 提高性能" />
     <MESSAGE value="refactor(pojos): 重构 POJO 类路径和命名&#10;&#10;- 更新了多个文件的包路径&#10;- 修正了部分文件的导入路径，使用新的包路径&#10;- 重命名了部分类名&#10;- 更新了部分方法参数名" />
     <MESSAGE value="feat(cart): 实现购物车消息队列处理并优化大部分消息队列逻辑&#10;&#10;- 新增购物车初始化、添加、更新商品的消息队列处理逻辑&#10;- 优化购物车商品信息获取流程，增加缓存支持&#10;- 调整数据库查询，限制用户数据查询时间范围&#10;- 移除用户布隆过滤器相关代码&#10;- 采用冷加载，对预加载部分逻辑进行优化" />
-    <option name="LAST_COMMIT_MESSAGE" value="feat(cart): 实现购物车消息队列处理并优化大部分消息队列逻辑&#10;&#10;- 新增购物车初始化、添加、更新商品的消息队列处理逻辑&#10;- 优化购物车商品信息获取流程，增加缓存支持&#10;- 调整数据库查询，限制用户数据查询时间范围&#10;- 移除用户布隆过滤器相关代码&#10;- 采用冷加载，对预加载部分逻辑进行优化" />
+    <MESSAGE value="feat(service): 增加死信处理机制并优化购物车逻辑&#10;&#10;- 在 CartListener 和 OrderListener 中添加死信处理逻辑&#10;- 优化购物车更新逻辑，支持部分字段更新&#10;- 修复订单同步中的异常处理&#10;- 优化日志记录和错误处理" />
+    <option name="LAST_COMMIT_MESSAGE" value="feat(service): 增加死信处理机制并优化购物车逻辑&#10;&#10;- 在 CartListener 和 OrderListener 中添加死信处理逻辑&#10;- 优化购物车更新逻辑，支持部分字段更新&#10;- 修复订单同步中的异常处理&#10;- 优化日志记录和错误处理" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
