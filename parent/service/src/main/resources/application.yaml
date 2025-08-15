@@ -38,15 +38,13 @@ spring:
           max-active: 200
           min-idle: 20 # 最小空闲连接数
           time-between-eviction-runs: 30 # 连接空闲时间
-
         shutdown-timeout: 1000  # 销毁线程等待时间
         cluster:
           refresh:
             adaptive: false
-      host: r-bp1j86kgker8z46dxmpd.redis.rds.aliyuncs.com
+      host: localhost
       port: 6379
-      password: qwEr123456
-      username: r-bp1j86kgker8z46dxm
+      password: zxcvbnm
       ssl:
         enabled: false
   #      host: 192.168.186.128

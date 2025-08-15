@@ -22,7 +22,7 @@ public class BloomFilterConfig {
 
     // 商品过滤器
     @Bean("productBloomFilter")
-    @Scope(value = "prototype",proxyMode = ScopedProxyMode.TARGET_CLASS)
+    @Scope(value = "prototype")
     public BloomFilter<Long> productBloomFilter() {
         return BloomFilter.create(
                 Funnels.longFunnel(),
@@ -34,7 +34,7 @@ public class BloomFilterConfig {
 
     // 订单过滤器
     @Bean("orderBloomFilter")
-    @Scope(value = "prototype",proxyMode = ScopedProxyMode.TARGET_CLASS)
+    @Scope(value = "prototype")
     public BloomFilter<String> orderBloomFilter() {
         return BloomFilter.create(
                 Funnels.stringFunnel(StandardCharsets.UTF_8),

@@ -5,6 +5,7 @@ import com.zhuxi.handler.BloomFilterManager;
 import com.zhuxi.service.Tx.OrderTxService;
 import com.zhuxi.service.Tx.ProductTxService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 import com.zhuxi.pojo.DTO.Order.BloomOrderDTO;
 import java.util.List;
@@ -23,7 +24,7 @@ public class ReBuildBloom {
     public ReBuildBloom(
             ProductTxService productTxService,
             OrderTxService orderTxService,
-            BloomFilterManager bloomFilterManager
+            @Lazy BloomFilterManager bloomFilterManager
     )
     {
         this.productTxService = productTxService;

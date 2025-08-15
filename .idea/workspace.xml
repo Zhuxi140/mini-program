@@ -8,13 +8,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="372da862-f7c4-4fa2-93c3-bf2ac1fe9e6e" name="更改" comment="feat(service): 增加布隆过滤器重建机制并优化相关逻辑&#10;&#10;- 新增 ReBuildBloom 类用于重建布隆过滤器数据&#10;- 在 BloomFilterManager 中添加重建布隆过滤器的方法- 创建 BloomFilterFactory 用于生成新的布隆过滤器实例&#10;- 添加定时任务 BloomTask，定期重建布隆过滤器&#10;- 优化了部分代码结构，移除了冗余的用户布隆过滤器相关代码">
-      <change afterPath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/ApplicationRunner/Data/Loader/ReBuildBloom.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/handler/BloomFilterFactory.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/task/BloomTask.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/ApplicationRunner/Data/Loader/BloomDataLoader.java" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/ApplicationRunner/Data/Loader/BloomDataLoader.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/ApplicationRunner/Data/Loader/ReBuildBloom.java" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/ApplicationRunner/Data/Loader/ReBuildBloom.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/config/BloomFilterConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/config/BloomFilterConfig.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/handler/BloomFilterManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/handler/BloomFilterManager.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/parent/service/src/main/resources/application.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/src/main/resources/application.yaml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -312,15 +310,7 @@
       <workItem from="1755232539440" duration="121000" />
       <workItem from="1755232669632" duration="389000" />
       <workItem from="1755233071339" duration="21000" />
-      <workItem from="1755233099623" duration="11165000" />
-    </task>
-    <task id="LOCAL-00005" summary="feat(database): 更新数据库模型&#10;&#10;- 新增 article、order、order_item、user_address 表&#10;- 更新 admin、cart、product、user表的结构&#10;- 添加新的视图 cart_view、product_stock_status、user_summary&#10;- 调整表和字段的注释&#10;- 更新字段类型和约束&#10;- 完善各个模块&#10;- 添加用户地址模块">
-      <option name="closed" value="true" />
-      <created>1750580415761</created>
-      <option name="number" value="00005" />
-      <option name="presentableId" value="LOCAL-00005" />
-      <option name="project" value="LOCAL" />
-      <updated>1750580415761</updated>
+      <workItem from="1755233099623" duration="13324000" />
     </task>
     <task id="LOCAL-00006" summary="refactor(service): 重构服务层逻辑&#10;&#10;- 优化事务管理，提高数据一致性&#10;- 优化代码结构，提高可维护性- 改进错误处理，提升用户体验&#10;- 新增功能： - 购物车清空功能&#10;  - 用户地址相关接口&#10;  - 文章相关错误提示&#10;  -构建文章模块基础骨架">
       <option name="closed" value="true" />
@@ -706,7 +696,15 @@
       <option name="project" value="LOCAL" />
       <updated>1755233220236</updated>
     </task>
-    <option name="localTasksCounter" value="54" />
+    <task id="LOCAL-00054" summary="feat(service): 增加布隆过滤器重建机制并优化相关逻辑&#10;&#10;- 新增 ReBuildBloom 类用于重建布隆过滤器数据&#10;- 在 BloomFilterManager 中添加重建布隆过滤器的方法- 创建 BloomFilterFactory 用于生成新的布隆过滤器实例&#10;- 添加定时任务 BloomTask，定期重建布隆过滤器&#10;- 优化了部分代码结构，移除了冗余的用户布隆过滤器相关代码">
+      <option name="closed" value="true" />
+      <created>1755259710231</created>
+      <option name="number" value="00054" />
+      <option name="presentableId" value="LOCAL-00054" />
+      <option name="project" value="LOCAL" />
+      <updated>1755259710231</updated>
+    </task>
+    <option name="localTasksCounter" value="55" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">

@@ -32,7 +32,7 @@ public class BloomFilterManager {
     private static final double CAPACITY_THRESHOLD = 0.8;
 
     @Autowired
-    public BloomFilterManager(BloomDataLoader bloomDataLoader, ReBuildBloom reBuildBloom, BloomFilterConfig bloomFilterConfig, BloomFilterFactory bloomFilterFactory) {
+    public BloomFilterManager(ReBuildBloom reBuildBloom, BloomFilterConfig bloomFilterConfig, BloomFilterFactory bloomFilterFactory) {
         this.reBuildBloom = reBuildBloom;
         this.bloomFilterConfig = bloomFilterConfig;
         this.bloomFilterFactory = bloomFilterFactory;
