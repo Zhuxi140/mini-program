@@ -47,8 +47,7 @@ spring:
       password: zxcvbnm
       ssl:
         enabled: false
-  #      host: 192.168.186.128
-#      password: 123456
+
 
 # mq配置
   rabbitmq:
@@ -104,6 +103,12 @@ jwt-properties:
     - /wechatAuth/login
     - /
     - /1.html
+
+user-access-paths:
+  paths:
+    - /Order/**
+
+
 
 
 

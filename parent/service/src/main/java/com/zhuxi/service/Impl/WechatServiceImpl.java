@@ -42,16 +42,14 @@ public class WechatServiceImpl implements WechatService {
     private final IdSnowFLake idSnowFLake;
     private final WechatAuthTxService wechatAuthTxService;
     private final LoginRedisCache loginRedisCache;
-    private final JwtUtils jwtUtils;
     private final WechatRequest wechatRequest;
     private final RabbitTemplate rabbitTemplate;
 
 
-    public WechatServiceImpl(IdSnowFLake idSnowFLake, WechatAuthTxService wechatAuthTxService, LoginRedisCache loginRedisCache, JwtUtils jwtUtils, WechatRequest wechatRequest, RabbitTemplate rabbitTemplate) {
+    public WechatServiceImpl(IdSnowFLake idSnowFLake, WechatAuthTxService wechatAuthTxService, LoginRedisCache loginRedisCache,  WechatRequest wechatRequest, RabbitTemplate rabbitTemplate) {
         this.idSnowFLake = idSnowFLake;
         this.wechatAuthTxService = wechatAuthTxService;
         this.loginRedisCache = loginRedisCache;
-        this.jwtUtils = jwtUtils;
         this.wechatRequest = wechatRequest;
         this.rabbitTemplate = rabbitTemplate;
     }
@@ -125,7 +123,7 @@ public class WechatServiceImpl implements WechatService {
      */
     @Override
     @Transactional
-    public Result<Void> getUserBasicInfo(String token,UserBasicDTO userBasicDTO) {
+    public Result<Void> getUserBasicInfo(HttpServletRequest request,UserBasicDTO userBasicDTO) {
         if (userBasicDTO == null){
             return Result.error(MessageReturn.BODY_NO_MAIN_OR_IS_NULL);
         }
@@ -135,9 +133,11 @@ public class WechatServiceImpl implements WechatService {
             return Result.error(MessageReturn.BODY_NO_MAIN_OR_IS_NULL);
         }
 
-        Claims claims = jwtUtils.parseToken(token);
-        String openid = claims.get("openid", String.class);
-
+        Object userOpenid = request.getAttribute("USER_OPENID");
+        if (userOpenid == null){
+            return Result.error(MessageReturn.JWT_ERROR);
+        }
+        String openid = userOpenid.toString();
         try {
             Long userId = loginRedisCache.getUserId(openid);
             if (userId == null){
@@ -162,8 +162,14 @@ public class WechatServiceImpl implements WechatService {
      * 登出
      */
     @Override
-    public Result<Void> logout(String token, HttpServletRequest request, HttpServletResponse response) {
-        Claims claims = jwtUtils.parseToken(token);
+    public Result<Void> logout(HttpServletRequest request, HttpServletResponse response) {
+        Object jwtToken = request.getAttribute("JWT_TOKEN");
+        Object jwtClaims = request.getAttribute("JWT_CLAIMS");
+        if (jwtToken == null || jwtClaims == null){
+            return Result.error(MessageReturn.JWT_ERROR);
+        }
+        Claims claims = (Claims)jwtClaims;
+        String token = (String)jwtToken;
         Date expiration = claims.getExpiration();
         String jit = claims.getId();
         long ttl = TimeUnit.MILLISECONDS.toSeconds(expiration.getTime() - System.currentTimeMillis());

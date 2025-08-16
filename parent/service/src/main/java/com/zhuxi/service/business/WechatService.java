@@ -12,10 +12,10 @@ public interface WechatService {
     Result<UserBasicVO> login(String code);
 
     // 获取用户微信信息
-    Result<Void> getUserBasicInfo(String userId, UserBasicDTO userBasicDTO);
+    Result<Void> getUserBasicInfo(HttpServletRequest request,UserBasicDTO userBasicDTO);
 
     //退出登陆
-    Result<Void> logout(String token, HttpServletRequest request, HttpServletResponse response);
+    Result<Void> logout(HttpServletRequest request, HttpServletResponse response);
 
     //获取用户手机号
     Result<Void> getUserPhone(String code,Long userId);

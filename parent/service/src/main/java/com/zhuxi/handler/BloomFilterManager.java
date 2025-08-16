@@ -100,12 +100,18 @@ public class BloomFilterManager {
             // 判断是Long类型还是String类型
             if (filters.containsKey(filterName)) {
                 // 创建新的布隆过滤器实例
-                BloomFilter<Long> newFilter = bloomFilterFactory.createDefaultProductBloomFilter();
+                if("product".equals(filterName)){
+                    BloomFilter<Long> newFilter = bloomFilterFactory.createDefaultProductBloomFilter();
+                    reBuildBloom.setProductBloomFilter(newFilter);
+                    reBuildBloom.loadProductData();
+                    filters.put(filterName, newFilter);
+                }else if("user".equals(filterName)){
+                    BloomFilter<Long> newFilter = bloomFilterFactory.createDefaultUserBloomFilter();
+                    reBuildBloom.setUserBloomFilter(newFilter);
+                    reBuildBloom.loadUserData();
+                    filters.put(filterName, newFilter);
+                }
 
-                reBuildBloom.setProductBloomFilter(newFilter);
-                reBuildBloom.loadProductData();
-                // 替换旧的过滤器
-                filters.put(filterName, newFilter);
             } else if (stringFilters.containsKey(filterName)) {
                 // 创建新的布隆过滤器实例
                 BloomFilter<String> newFilter = bloomFilterFactory.createDefaultOrderBloomFilter();

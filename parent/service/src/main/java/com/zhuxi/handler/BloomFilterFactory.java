@@ -18,6 +18,10 @@ public class BloomFilterFactory {
         return (BloomFilter<Long>)applicationContext.getBean("productBloomFilter",BloomFilter.class);
     }
 
+    public BloomFilter<Long> createDefaultUserBloomFilter() {
+        return (BloomFilter<Long>)applicationContext.getBean("userBloomFilter",BloomFilter.class);
+    }
+
     // 使用默认配置创建订单布隆
     public BloomFilter<String> createDefaultOrderBloomFilter() {
         return (BloomFilter<String>)applicationContext.getBean("orderBloomFilter",BloomFilter.class);

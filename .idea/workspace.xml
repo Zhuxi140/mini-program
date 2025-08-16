@@ -7,12 +7,14 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="372da862-f7c4-4fa2-93c3-bf2ac1fe9e6e" name="更改" comment="feat(service): 增加布隆过滤器重建机制并优化相关逻辑&#10;&#10;- 新增 ReBuildBloom 类用于重建布隆过滤器数据&#10;- 在 BloomFilterManager 中添加重建布隆过滤器的方法- 创建 BloomFilterFactory 用于生成新的布隆过滤器实例&#10;- 添加定时任务 BloomTask，定期重建布隆过滤器&#10;- 优化了部分代码结构，移除了冗余的用户布隆过滤器相关代码">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/ApplicationRunner/Data/Loader/ReBuildBloom.java" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/ApplicationRunner/Data/Loader/ReBuildBloom.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/config/BloomFilterConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/config/BloomFilterConfig.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/handler/BloomFilterManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/handler/BloomFilterManager.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/parent/service/src/main/resources/application.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/src/main/resources/application.yaml" afterDir="false" />
+    <list default="true" id="372da862-f7c4-4fa2-93c3-bf2ac1fe9e6e" name="更改" comment="feat(service): 修复启动问题，更新少许yaml配置设置&#10;- 修复因循环依赖导致的不能启动问题">
+      <change beforePath="$PROJECT_DIR$/parent/service/target/classes/application.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/target/classes/application.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/ApplicationRunner/Data/Loader/BloomDataLoader.class" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/ApplicationRunner/Data/Loader/BloomDataLoader.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/config/BloomFilterConfig$OrderConfig.class" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/config/BloomFilterConfig$OrderConfig.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/config/BloomFilterConfig$ProductConfig.class" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/config/BloomFilterConfig$ProductConfig.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/config/BloomFilterConfig$UserConfig.class" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/config/BloomFilterConfig$UserConfig.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/config/BloomFilterConfig.class" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/config/BloomFilterConfig.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/handler/BloomFilterManager.class" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/handler/BloomFilterManager.class" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -310,15 +312,11 @@
       <workItem from="1755232539440" duration="121000" />
       <workItem from="1755232669632" duration="389000" />
       <workItem from="1755233071339" duration="21000" />
-      <workItem from="1755233099623" duration="13324000" />
-    </task>
-    <task id="LOCAL-00006" summary="refactor(service): 重构服务层逻辑&#10;&#10;- 优化事务管理，提高数据一致性&#10;- 优化代码结构，提高可维护性- 改进错误处理，提升用户体验&#10;- 新增功能： - 购物车清空功能&#10;  - 用户地址相关接口&#10;  - 文章相关错误提示&#10;  -构建文章模块基础骨架">
-      <option name="closed" value="true" />
-      <created>1750919468819</created>
-      <option name="number" value="00006" />
-      <option name="presentableId" value="LOCAL-00006" />
-      <option name="project" value="LOCAL" />
-      <updated>1750919468819</updated>
+      <workItem from="1755233099623" duration="13955000" />
+      <workItem from="1755311919936" duration="10539000" />
+      <workItem from="1755325586571" duration="18000" />
+      <workItem from="1755325611677" duration="15000" />
+      <workItem from="1755325634780" duration="10000" />
     </task>
     <task id="LOCAL-00007" summary="refactor(service): 重构服务模块并更新数据库 schema&#10;&#10;- 优化现有结构&#10;- 更新数据库 schema，包括添加新字段和修改现有字段&#10;- 重命名 Admin 相关的控制器类，使其更具模块化&#10;- 删除未使用的 AdminMapper.xml 文件&#10;- 更新应用配置，添加静态资源路径和调整 OSS 配置">
       <option name="closed" value="true" />
@@ -704,7 +702,15 @@
       <option name="project" value="LOCAL" />
       <updated>1755259710231</updated>
     </task>
-    <option name="localTasksCounter" value="55" />
+    <task id="LOCAL-00055" summary="feat(service): 修复启动问题，更新少许yaml配置设置&#10;- 修复因循环依赖导致的不能启动问题">
+      <option name="closed" value="true" />
+      <created>1755263911520</created>
+      <option name="number" value="00055" />
+      <option name="presentableId" value="LOCAL-00055" />
+      <option name="project" value="LOCAL" />
+      <updated>1755263911520</updated>
+    </task>
+    <option name="localTasksCounter" value="56" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -722,7 +728,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="- 修复因名称输入错误 导致布隆过滤器100%拦截&#10;- 优化自定义的ApplicationRunner逻辑 启用异步执行&#10;- 优化部分逻辑结构" />
     <MESSAGE value="feat(service): 调整布隆过滤器逻辑并优化用户认证&#10;&#10;- 在 OrderController、CartController 等控制器中加入布隆过滤器注解&#10;- 优化用户认证流程，使用 CurrentUserId 注解替换 token 参数&#10;-调整 Service 层接口和实现类，支持新的用户认证方式- 更新 BloomFilterConfig 和 BloomFilterManager，支持长整型和字符串过滤器&#10;- 移除冗余代码，优化日志输出" />
     <MESSAGE value="refactor(service): 重构部分订单接口业务逻辑解决添加订单接口高并发问题&#10;- 添加乐观锁  重构添加订单接口 实现先改后查&#10;- 异步执行核心方法、添加兜底退回策略" />
     <MESSAGE value="refactor(service): 重构部分订单接口业务逻辑解决添加订单接口高并发问题&#10;- 添加乐观锁 重构添加订单接口 实现先改后查&#10;- 异步执行核心方法、添加兜底退回策略&#10;- 优化部分接口逻辑&#10;- 优化部分业务逻辑冗余部分" />
@@ -747,7 +752,8 @@
     <MESSAGE value="feat(service): 增加死信处理机制并优化购物车逻辑&#10;&#10;- 在 CartListener 和 OrderListener 中添加死信处理逻辑&#10;- 优化购物车更新逻辑，支持部分字段更新&#10;- 修复订单同步中的异常处理&#10;- 优化日志记录和错误处理" />
     <MESSAGE value="fix(parent): 修复部分错误，完善死信服务类处理逻辑&#10;&#10;- 在创建 JWT 时，将管理员用户名添加到 claims 中&#10;- 移除了对用户名字段的注释，恢复了该功能&#10;- 修改部分redis键TTL设置过长" />
     <MESSAGE value="feat(service): 增加布隆过滤器重建机制并优化相关逻辑&#10;&#10;- 新增 ReBuildBloom 类用于重建布隆过滤器数据&#10;- 在 BloomFilterManager 中添加重建布隆过滤器的方法- 创建 BloomFilterFactory 用于生成新的布隆过滤器实例&#10;- 添加定时任务 BloomTask，定期重建布隆过滤器&#10;- 优化了部分代码结构，移除了冗余的用户布隆过滤器相关代码" />
-    <option name="LAST_COMMIT_MESSAGE" value="feat(service): 增加布隆过滤器重建机制并优化相关逻辑&#10;&#10;- 新增 ReBuildBloom 类用于重建布隆过滤器数据&#10;- 在 BloomFilterManager 中添加重建布隆过滤器的方法- 创建 BloomFilterFactory 用于生成新的布隆过滤器实例&#10;- 添加定时任务 BloomTask，定期重建布隆过滤器&#10;- 优化了部分代码结构，移除了冗余的用户布隆过滤器相关代码" />
+    <MESSAGE value="feat(service): 修复启动问题，更新少许yaml配置设置&#10;- 修复因循环依赖导致的不能启动问题" />
+    <option name="LAST_COMMIT_MESSAGE" value="feat(service): 修复启动问题，更新少许yaml配置设置&#10;- 修复因循环依赖导致的不能启动问题" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

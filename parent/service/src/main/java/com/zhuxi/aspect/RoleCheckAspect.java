@@ -21,11 +21,6 @@ import com.zhuxi.pojo.entity.Role;
 @Component
 @Log4j2
 public class RoleCheckAspect {
-    private final JwtUtils jwtUtils;
-
-    public RoleCheckAspect(JwtUtils jwtUtils) {
-        this.jwtUtils = jwtUtils;
-    }
 
     /**
      * 角色检查
@@ -37,25 +32,14 @@ public class RoleCheckAspect {
         if (request == null)
             return Result.error(MessageReturn.REQUEST_ERROR);
 
-        String token = request.getHeader("Authorization");
-        if(token == null || token.isBlank())
-            return Result.error(MessageReturn.USER_NOT_LOGIN + " or " +  MessageReturn.JWT_ERROR);
-
-        Claims claims = jwtUtils.parseToken(token);
-        if(claims == null){
-            log.warn("claims error1 : claims ={} ",claims);
-            return Result.error(MessageReturn.JWT_ERROR);
-        }
-
-
+        Object userRole = request.getAttribute("USER_ROLE");
         Role role;
         try{
-            String StrRole = claims.get("role",String.class);
+            String StrRole = userRole.toString();
             if(StrRole == null || StrRole.isBlank())
                 return Result.error(MessageReturn.JWT_NO_ROLE);
 
             role = Role.valueOf(StrRole.toUpperCase());
-
             if(role.equals(Role.SUPER_ADMIN) && requireRole.value() != Role.USER)
                 return joinPoint.proceed();
 

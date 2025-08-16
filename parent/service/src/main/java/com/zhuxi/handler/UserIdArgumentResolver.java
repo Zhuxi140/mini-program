@@ -8,14 +8,17 @@ import com.zhuxi.service.Tx.WechatAuthTxService;
 import com.zhuxi.utils.JwtUtils;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.MethodParameter;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.support.WebDataBinderFactory;
 import org.springframework.web.context.request.NativeWebRequest;
+import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
 
 @Component
+@Slf4j
 public class UserIdArgumentResolver implements HandlerMethodArgumentResolver {
 
     private JwtUtils jwtUtils;
@@ -35,7 +38,6 @@ public class UserIdArgumentResolver implements HandlerMethodArgumentResolver {
     public boolean supportsParameter(MethodParameter parameter) {
         return parameter.hasParameterAnnotation(CurrentUserId.class);
     }
-
     @Override
     public Object resolveArgument(
             MethodParameter parameter,
@@ -43,28 +45,16 @@ public class UserIdArgumentResolver implements HandlerMethodArgumentResolver {
             NativeWebRequest webRequest,
             WebDataBinderFactory binderFactory) throws Exception
     {
-        String token = webRequest.getHeader("Authorization");
-        return getUserId( token);
-    }
-
-    private Long getUserId(String token)
-    {
-        Claims claims = jwtUtils.parseToken(token);
-
-        if (claims == null){
-            throw new JwtException("token error");
-        }
-        String openid = claims.get("openid", String.class);
-        if (openid == null){
+        Object jwtOpenid = webRequest.getAttribute("USER_OPENID", RequestAttributes.SCOPE_REQUEST);
+        if (jwtOpenid == null){
             throw new JwtException("token data error");
         }
-        Long userId = loginRedisCache.getUserId(openid);
+        String openId = jwtOpenid.toString();
+        Long userId = loginRedisCache.getUserId(openId);
         if (userId == null){
-            Long userId1 = wechatAuthTxService.getUserId(openid);
-            loginRedisCache.saveUserId(openid,userId1);
+            Long userId1 = wechatAuthTxService.getUserId(openId);
+            loginRedisCache.saveUserId(openId,userId1);
         }
         return userId;
     }
-
-
 }

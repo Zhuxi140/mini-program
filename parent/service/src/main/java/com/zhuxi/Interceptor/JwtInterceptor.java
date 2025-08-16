@@ -38,7 +38,7 @@ public class JwtInterceptor implements HandlerInterceptor {
             Object handler
             )
     throws Exception {
-        String requestURI = request.getRequestURI();
+     /*   String requestURI = request.getRequestURI();*/
 
 //        log.info("--------处理url:{}",requestURI);
 
@@ -79,6 +79,17 @@ public class JwtInterceptor implements HandlerInterceptor {
         if( timeNow > timestamp){
             throw new JwtException(MessageReturn.JWT_IS_OVER_TIME);
         }
+        String openid = claims.get("openid", String.class);
+        Long idd = claims.get("id", Long.class);
+        String role = claims.get("role", String.class);
+        if (role == null){
+            throw new JwtException(MessageReturn.JWT_DATA_ERROR);
+        }
+        request.setAttribute("ADMIN_ID", idd);
+        request.setAttribute("JWT_CLAIMS", claims);
+        request.setAttribute("JWT_TOKEN", token);
+        request.setAttribute("USER_OPENID", openid);
+        request.setAttribute("USER_ROLE", role);
         return true;
     }
 }

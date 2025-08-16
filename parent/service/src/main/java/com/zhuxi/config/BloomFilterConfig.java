@@ -32,6 +32,17 @@ public class BloomFilterConfig {
     }
 
 
+    @Bean("userBloomFilter")
+    @Scope(value = "prototype")
+    public BloomFilter<Long> userBloomFilter() {
+        return BloomFilter.create(
+                Funnels.longFunnel(),
+                userConfig.expectedElements,
+                userConfig.fpp
+        );
+    }
+
+
     // 订单过滤器
     @Bean("orderBloomFilter")
     @Scope(value = "prototype")

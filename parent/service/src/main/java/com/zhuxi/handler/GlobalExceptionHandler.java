@@ -30,5 +30,4 @@ public class GlobalExceptionHandler {
         return Result.error("safe error :" + e.getMessage());
     }
 
-
 }

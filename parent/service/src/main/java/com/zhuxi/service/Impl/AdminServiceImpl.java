@@ -36,13 +36,11 @@ public class AdminServiceImpl implements AdminService {
 
     private final BCryptUtils bCryptUtils;
     private final AdminTxService adminTxService;
-    private final JwtUtils jwtUtils;
     private final AdminCache adminCache;
 
-    public AdminServiceImpl(AdminTxService adminTxService, BCryptUtils bCryptUtils, JwtUtils jwtUtils, JwtUtils jwtUtils1, AdminCache adminCache) {
+    public AdminServiceImpl(AdminTxService adminTxService, BCryptUtils bCryptUtils,AdminCache adminCache) {
         this.adminTxService = adminTxService;
         this.bCryptUtils = bCryptUtils;
-        this.jwtUtils = jwtUtils1;
         this.adminCache = adminCache;
     }
 
@@ -131,7 +129,8 @@ public class AdminServiceImpl implements AdminService {
     @Override
     public Result<Void> logout(String token, HttpServletRequest request, HttpServletResponse response) {
 
-        Claims claims = jwtUtils.parseToken(token);
+        Object jwtClaims = request.getAttribute("JWT_CLAIMS");
+        Claims claims = (Claims) jwtClaims;
         Date expiration = claims.getExpiration();
         String jit = claims.getId();
         long ttl = TimeUnit.MILLISECONDS.toSeconds(expiration.getTime() - System.currentTimeMillis());

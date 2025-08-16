@@ -98,12 +98,28 @@ public class OrderTxService {
         return orderList;
     }
 
+    @Transactional(readOnly = true,propagation = Propagation.SUPPORTS)
     public List<BloomOrderDTO> getAllOrderId(Long lastId, int pageSize){
         return orderMapper.getAllOrderId(lastId,pageSize);
     }
 
+    @Transactional(readOnly = true,propagation = Propagation.SUPPORTS)
+    public List<BloomOrderDTO> getAllOrderIdByOne(Long lastId, int pageSize,Long userId){
+        return orderMapper.getAllOrderIdByOne(lastId,pageSize,userId);
+    }
 
-    @Transactional(readOnly = true)
+
+    @Transactional(readOnly = true,propagation = Propagation.SUPPORTS)
+    public List<Long> getUserIdList(Long lastId,int pageSize) {
+        List<Long> userIds = orderMapper.getUserIdList(lastId, pageSize);
+        if(userIds == null) {
+           throw new transactionalException(MessageReturn.SELECT_ERROR);
+        }
+        return userIds;
+    }
+
+
+    @Transactional(readOnly = true,propagation = Propagation.SUPPORTS)
     public BigDecimal getProductSalePrice(Long productId) {
         BigDecimal productSalePrice = orderMapper.getProductSalePrice(productId);
         if(productSalePrice.compareTo(BigDecimal.ZERO) <= 0) {
@@ -112,7 +128,7 @@ public class OrderTxService {
         return productSalePrice;
     }
 
-    @Transactional(readOnly = true)
+    @Transactional(readOnly = true,propagation = Propagation.SUPPORTS)
     public Long getDefaultAddressId(Long userId) {
         Long defaultAddressId = orderMapper.getDefaultAddressId(userId);
         if(defaultAddressId == null || defaultAddressId < 0) {
@@ -130,7 +146,7 @@ public class OrderTxService {
         return productRealStock;
     }
 
-    @Transactional(readOnly = true)
+    @Transactional(readOnly = true,propagation = Propagation.SUPPORTS)
     public Integer getProductSaleStock(Long specId) {
         Integer productSaleStock = orderMapper.getProductSaleStock(specId);
         if(productSaleStock == null || productSaleStock < 0) {
@@ -139,7 +155,7 @@ public class OrderTxService {
         return productSaleStock;
     }
 
-    @Transactional(readOnly = true)
+    @Transactional(readOnly = true,propagation = Propagation.SUPPORTS)
     public Integer getProductPreStock(Long specId) {
         Integer productPreStock = orderMapper.getProductPreStock(specId);
         if(productPreStock < 0) {
@@ -148,7 +164,7 @@ public class OrderTxService {
         return productPreStock;
     }
 
-    @Transactional(readOnly = true)
+    @Transactional(readOnly = true,propagation = Propagation.SUPPORTS)
     public List<Integer> getProductRealStockList(List<Long> specIds) {
         List<Integer> productRealStockList = orderMapper.getProductRealStockList(specIds);
         if(productRealStockList.size() != specIds.size()) {
@@ -163,7 +179,7 @@ public class OrderTxService {
         return productRealStockList;
     }
 
-    @Transactional(readOnly = true)
+    @Transactional(readOnly = true,propagation = Propagation.SUPPORTS)
     public List<Integer> getProductSaleStockList(List<Long> specIds) {
         List<Integer> productSaleStockList = orderMapper.getProductSaleStockList(specIds);
         if(productSaleStockList.size() != specIds.size()) {
@@ -177,7 +193,7 @@ public class OrderTxService {
         return productSaleStockList;
     }
 
-    @Transactional(readOnly = true)
+    @Transactional(readOnly = true,propagation = Propagation.SUPPORTS)
     public List<Integer> getProductPreStockList(List<Long> specIds) {
         List<Integer> productPreStockList = orderMapper.getProductPreStockList(specIds);
         for (Integer productPreStock : productPreStockList) {

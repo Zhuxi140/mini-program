@@ -224,7 +224,6 @@ public class CartServiceImpl implements CartService {
             List<CartVO> cartVOs = cartRedisCache.getCartInfoOptimized(cartAllIds,userId);
             if (cartVOs.size() == pageSize + 1){
                 lastId = cartVOs.get(pageSize).getId();
-                log.info("lastId:{}", lastId);
                 cartVOs = cartVOs.subList(0, pageSize);
                 hasMore = true;
             }

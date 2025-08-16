@@ -173,6 +173,15 @@ public interface OrderMapper {
     """)
     List<BloomOrderDTO> getAllOrderId(Long lastId, int pageSize);
 
+    @Select("""
+    SELECT o.id,order_sn
+    FROM `order` o JOIN user ON o.user_id = user.id
+    WHERE o.id > #{lastId} AND last_time >= DATE_SUB(NOW(),INTERVAL 30 DAY) AND user_id = #{userId}
+    ORDER BY o.id
+    LIMIT #{pageSize}
+    """)
+    List<BloomOrderDTO> getAllOrderIdByOne(Long lastId, int pageSize,Long userId);
+
 
     List<OrderRedisDTO> getOrderRedisList(Long userId,Long lastId,int pageSize);
 
@@ -184,6 +193,15 @@ public interface OrderMapper {
     LIMIT #{pageSize}
     """)
     List<Long> getUserIds(Long lastId,int pageSize);
+
+    @Select("""
+    SELECT id
+    FROM user
+    WHERE id > #{id} AND last_time >= DATE_SUB(NOW(),INTERVAL 30 DAY)
+    ORDER BY id ASC
+    LIMIT #{pageSize}
+    """)
+    List<Long> getUserIdList(Long id,int pageSize);
 
 
     @Select("SELECT product_id FROM spec WHERE snowflake_id = #{snowflakeId}")

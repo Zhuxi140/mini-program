@@ -16,7 +16,7 @@ import java.util.List;
 @Service
 public class ArticleServiceImpl implements ArticleService {
 
-    private ArticleTxService articleTxService;
+    private final ArticleTxService articleTxService;
 
     public ArticleServiceImpl(ArticleTxService articleTxService) {
         this.articleTxService = articleTxService;

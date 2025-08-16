@@ -1,5 +1,6 @@
 package com.zhuxi.service.Listener;
 
+import com.zhuxi.ApplicationRunner.Data.Loader.ReBuildBloom;
 import com.zhuxi.Constant.MessageReturn;
 import com.zhuxi.Exception.MQException;
 import com.zhuxi.pojo.DTO.DeadMessage.DeadMessageAddDTO;
@@ -29,14 +30,16 @@ public class ProductListener {
     private final ProductTxService productTxService;
     private final RedisUntil redisUntil;
     private final DeadMessageTXService deadMessageTXService;
-    private String deadKey = "deadMessage:product.spec:";
-    private String value = "messageId:dead:product.spec:";
+    private final String deadKey = "deadMessage:product.spec:";
+    private final String value = "messageId:dead:product.spec:";
+    private final ReBuildBloom reBuildBloom;
 
-    public ProductListener(ProductRedisCache productRedisCache, ProductTxService productTxService, RedisUntil redisUntil, DeadMessageTXService deadMessageTXService) {
+    public ProductListener(ProductRedisCache productRedisCache, ProductTxService productTxService, RedisUntil redisUntil, DeadMessageTXService deadMessageTXService, ReBuildBloom reBuildBloom) {
         this.productRedisCache = productRedisCache;
         this.productTxService = productTxService;
         this.redisUntil = redisUntil;
         this.deadMessageTXService = deadMessageTXService;
+        this.reBuildBloom = reBuildBloom;
     }
 
 
@@ -67,6 +70,7 @@ public class ProductListener {
             List<SpecRedisDTO> spec = productTxService.getSpec(List.of(productId));
             PIdSnowFlake pIdSnowFlake = new PIdSnowFlake(saleProductSnowFlake, saleProductSnowFlake);
             productRedisCache.syncSpecInit(spec, List.of(pIdSnowFlake));
+            reBuildBloom.addProductData(productId);
             redisUntil.setStringValue("messageId:product.spec:new:" + messageId, "1", 5, TimeUnit.MILLISECONDS);
         }catch(MQException e){
             redisUntil.setStringValue((deadKey + "new:" + messageId), "type=MQException---{" + e.getMessage() + "}", 24, TimeUnit.HOURS);

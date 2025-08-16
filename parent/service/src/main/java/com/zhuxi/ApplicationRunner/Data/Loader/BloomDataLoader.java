@@ -21,6 +21,7 @@ public class BloomDataLoader {
     private final BloomFilterManager bloomFilterManager;
     private final BloomFilter<Long> productBloomFilter;
     private final BloomFilter<String> orderBloomFilter;
+    private final BloomFilter<Long> userBloomFilter;
 
 
     @Autowired
@@ -29,19 +30,21 @@ public class BloomDataLoader {
             OrderTxService orderTxService,
             BloomFilterManager bloomFilterManager,
             @Qualifier("productBloomFilter") BloomFilter<Long> productBloomFilter,
-            @Qualifier("orderBloomFilter") BloomFilter<String> orderBloomFilter
-            )
+            @Qualifier("orderBloomFilter") BloomFilter<String> orderBloomFilter, BloomFilter<Long> userBloomFilter
+    )
     {
         this.productTxService = productTxService;
         this.orderTxService = orderTxService;
         this.productBloomFilter = productBloomFilter;
         this.bloomFilterManager = bloomFilterManager;
         this.orderBloomFilter = orderBloomFilter;
+        this.userBloomFilter = userBloomFilter;
     }
 
 
     public void loadData() {
         loadProductData();
+        loadUserData();
         loadOrderData();
         log.info("所有布隆过滤器加载完成");
     }
@@ -66,6 +69,27 @@ public class BloomDataLoader {
             });
         }
 
+    }
+
+    public void loadUserData(){
+        bloomFilterManager.addFilterLong("user",userBloomFilter);
+        int pageSize = 1000;
+        Long lastId = 0L;
+        while(true){
+            List<Long> userIdList = orderTxService.getUserIdList(lastId, pageSize + 1);
+            if(userIdList.size() == pageSize + 1){
+                lastId = userIdList.get(pageSize);
+                userIdList = userIdList.subList(0, pageSize);
+            }else{
+                userIdList.forEach( p-> {
+                    bloomFilterManager.putLong("user",p);
+                });
+                break;
+            }
+            userIdList.forEach( p-> {
+                bloomFilterManager.putLong("user",p);
+            });
+        }
     }
 
 

@@ -55,9 +55,9 @@ public class WechatAuthController {
     @Operation(summary = "后台获取用户基础信息，前端在登录后对应请求用户授权获取微信头像和昵称")
     public Result<Void> getUserBasicInfo(
             @Parameter(hidden = true)
-            @RequestHeader("Authorization") String token,
+            HttpServletRequest request,
             @RequestBody UserBasicDTO userBasicDTO) {
-        return wechatService.getUserBasicInfo(token, userBasicDTO);
+        return wechatService.getUserBasicInfo(request, userBasicDTO);
     }
 
     @GetMapping("/logout")
@@ -65,13 +65,10 @@ public class WechatAuthController {
     @Operation(summary = "用户登出")
     public Result<Void> logout(
             @Parameter(hidden = true)
-            @RequestHeader("Authorization") String token,
-            @Parameter(hidden = true)
             HttpServletRequest request,
             @Parameter(hidden = true)
             HttpServletResponse response) {
-        log.info("Controller : token : {}", token);
-        return wechatService.logout(token, request, response);
+        return wechatService.logout(request, response);
     }
 
     @GetMapping("/getPhone")
