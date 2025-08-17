@@ -6,16 +6,16 @@
     <select id="getListUserDESC" resultType="com.zhuxi.pojo.VO.Admin.AdminUserVO">
         <![CDATA[
         SELECT
-            id,
-            display_name,
-            avatar,
-            phone,
-            status,
-            order_count,
-            last_order_time
-        FROM user_summary
-        WHERE id < #{lastId}
-        ORDER BY id DESC
+            user.id,
+            user.name,
+            user.phone,
+            user.status,
+            COUNT(CASE WHEN o.status = 3 THEN 1 END) AS orderCount,
+            user.last_time
+        FROM user JOIN `order` o ON  o.user_id =  user.id
+        WHERE user.id < #{lastId}
+        GROUP BY user.id, user.name, user.phone, user.status
+        ORDER BY user.id DESC
         LIMIT #{pageSize}
         ]]>
     </select>

@@ -171,7 +171,7 @@ public class AdminServiceImpl implements AdminService {
             return Result.error(MessageReturn.AT_LEAST_ONE_FIELD);
         }
         adminTxService.isExistsById(admin.getId());
-        adminTxService.updateAdmin( admin);
+        adminTxService.updateAdmin(admin);
 
         return Result.success(MessageReturn.OPERATION_SUCCESS);
     }

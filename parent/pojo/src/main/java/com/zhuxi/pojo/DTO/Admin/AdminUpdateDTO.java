@@ -7,6 +7,8 @@ import com.zhuxi.pojo.entity.Role;
 public class AdminUpdateDTO {
     @Schema(description = "管理员id",requiredMode = Schema.RequiredMode.REQUIRED)
         private Integer id;
+    @Schema(description = "用户名",requiredMode = Schema.RequiredMode.REQUIRED)
+        private String username;
     @Schema(description = "真实名字",requiredMode = Schema.RequiredMode.REQUIRED)
         private String realName;
     @Schema(description = "权限",requiredMode = Schema.RequiredMode.REQUIRED)
@@ -14,8 +16,9 @@ public class AdminUpdateDTO {
     @Schema(description = "是否启用",requiredMode = Schema.RequiredMode.REQUIRED)
         private Integer status;
 
-    public AdminUpdateDTO(Integer id, String realName, Role role, Integer status) {
+    public AdminUpdateDTO(Integer id, String username, String realName, Role role, Integer status) {
         this.id = id;
+        this.username = username;
         this.realName = realName;
         this.role = role;
         this.status = status;
@@ -59,4 +62,11 @@ public class AdminUpdateDTO {
         }
 
 
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
 }

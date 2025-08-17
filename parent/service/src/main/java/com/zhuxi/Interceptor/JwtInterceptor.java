@@ -44,6 +44,9 @@ public class JwtInterceptor implements HandlerInterceptor {
 
       /*  List<String> excludePaths = jwtInterceptorProperties.getExcludePaths();*/
 
+        if ("OPTIONS".equalsIgnoreCase(request.getMethod())) {
+            return true;
+        }
         String token = request.getHeader("Authorization");
         if(token !=null && !token.isBlank()){
             token  = token.replaceFirst("(?i)Bearer\\s*", "");

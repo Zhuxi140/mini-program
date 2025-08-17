@@ -6,6 +6,9 @@
     <update id="updateAdmin" parameterType="com.zhuxi.pojo.VO.Admin.AdminVO">
         UPDATE admin
         <set>
+            <if test="username != null">
+                username = #{username},
+            </if>
             <if test="status != null">
                 status = #{status},
             </if>

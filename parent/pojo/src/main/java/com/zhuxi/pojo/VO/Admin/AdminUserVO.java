@@ -1,5 +1,6 @@
 package com.zhuxi.pojo.VO.Admin;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 import java.time.LocalDateTime;
@@ -8,33 +9,34 @@ public class AdminUserVO {
 
     @Schema(description = "用户id")
     private Long id;
+    @Schema(description = "昵称")
+    private String name;
     @Schema(description = "手机号")
     private String phone;
-    @Schema(description = "昵称")
-    private String displayName;
-    @Schema(description = "头像url")
-    private String avatar;
-    @Schema(description = "是否启用")
+    @Schema(description = "是否被禁用")
     private Integer status;
     @Schema(description = "订单总量")
     private Long orderCount;
-    @Schema(description = "最后一次订单时间")
-    private LocalDateTime lastOrderTime;
+    @Schema(description = "最后一次登陆时间")
+    private LocalDateTime lastTime;
+    @Schema(description = "头像url")
+    @JsonIgnore
+    private String avatar;
 
-    public AdminUserVO(Long id, String phone, String displayName, String avatar, Integer status, Long orderCount, LocalDateTime lastOrderTime) {
-        this.id = id;
-        this.phone = phone;
-        this.displayName = displayName;
-        this.avatar = avatar;
-        this.status = status;
-        this.orderCount = orderCount;
-        this.lastOrderTime = lastOrderTime;
+    public AdminUserVO() {
     }
 
+    public AdminUserVO(Long id, String name, String phone, Integer status, Long orderCount, LocalDateTime lastTime, String avatar) {
+        this.id = id;
+        this.name = name;
+        this.phone = phone;
+        this.status = status;
+        this.orderCount = orderCount;
+        this.lastTime = lastTime;
+        this.avatar = avatar;
+    }
 
-
-
-   // getter or setter
+    // getter or setter
     public Long getId() {
         return id;
     }
@@ -60,13 +62,6 @@ public class AdminUserVO {
         this.status = status;
     }
 
-    public String getDisplayName() {
-        return displayName;
-    }
-
-    public void setDisplayName(String displayName) {
-        this.displayName = displayName;
-    }
 
     public String getAvatar() {
         return avatar;
@@ -84,11 +79,19 @@ public class AdminUserVO {
         this.orderCount = orderCount;
     }
 
-    public LocalDateTime getLastOrderTime() {
-        return lastOrderTime;
+    public LocalDateTime getLastTime() {
+        return lastTime;
     }
 
-    public void setLastOrderTime(LocalDateTime lastOrderTime) {
-        this.lastOrderTime = lastOrderTime;
+    public void setLastTime(LocalDateTime lastTime) {
+        this.lastTime = lastTime;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 }

@@ -33,6 +33,11 @@ public class UserAccessInterceptor implements HandlerInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
 
+
+        if ("OPTIONS".equalsIgnoreCase(request.getMethod())) {
+            return true;
+        }
+
         Object jwtOpenid = request.getAttribute("USER_OPENID");
         if (jwtOpenid == null){
             throw new JwtException("token data error");

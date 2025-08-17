@@ -4,6 +4,7 @@ package com.zhuxi.service.Tx;
 import com.zhuxi.Constant.MessageReturn;
 import com.zhuxi.Exception.transactionalException;
 import com.zhuxi.mapper.AdminMapper;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -44,8 +45,8 @@ public class AdminTxService {
 
     @Transactional(readOnly = true,propagation = Propagation.SUPPORTS)
     public void isExistsById(Integer id){
-        if (adminMapper.isExistsById(id)) {
-            throw new transactionalException(MessageReturn.USER_EXIST);
+        if (!adminMapper.isExistsById(id)) {
+            throw new transactionalException(MessageReturn.USER_NOT_EXIST);
         }
     }
 
@@ -86,8 +87,12 @@ public class AdminTxService {
     }
 
     @Transactional(rollbackFor = transactionalException.class)
-    public void updateAdmin(AdminUpdateDTO  admin){
-        if (adminMapper.updateAdmin(admin) == 0)
-            throw new transactionalException(MessageReturn.UPDATE_ERROR);
+    public void updateAdmin(AdminUpdateDTO  admin) {
+        try {
+            if (adminMapper.updateAdmin(admin) == 0)
+                throw new transactionalException(MessageReturn.UPDATE_ERROR);
+        }catch (DuplicateKeyException  e){
+            throw new transactionalException("名称已存在");
+        }
     }
 }
