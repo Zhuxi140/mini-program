@@ -93,7 +93,8 @@
             COALESCE(MAX(spec.price),0) AS max_price,
             COALESCE(SUM(real_stock.stock),0) AS total_real_stock,
             COALESCE(SUM(spec.stock),0) AS onSale_stock,
-            MAX(CASE WHEN real_stock.stock < 100 THEN 1 ELSE 0 END) AS stock_status
+            MAX(CASE WHEN real_stock.stock < 100 THEN 1 ELSE 0 END) AS stock_status,
+            product.status
         FROM product JOIN supplier ON product.supplier_id = supplier.id
                      LEFT JOIN spec ON product.id = spec.product_id
                      LEFT JOIN real_stock ON spec.id = real_stock.spec_id
@@ -145,6 +146,118 @@
     </select>
 
 
+    <select id="getDashboardDTO" resultType="com.zhuxi.pojo.DTO.Admin.DashboardDTO">
+        <![CDATA[
+        SELECT
+            IFNULL((SELECT COUNT(id) FROM user),0) AS user_count,
+            IFNULL((SELECT COUNT(id) FROM admin),0) AS admin_count,
+            IFNULL((SELECT COUNT(id) FROM product),0) AS product_count,
+            IFNULL((SELECT COUNT(id) FROM `order` WHERE status = 3),0) AS order_count,
+            IFNULL((SELECT COUNT(id) FROM article),0) AS article_count,
+            IFNULL((SELECT SUM(total_amount) FROM `order` WHERE status = 3),0) AS income_count,
+            IFNULL((SELECT SUM(total_amount) FROM purchase_record),0) AS expense_count,
+            IFNULL(((SELECT SUM(total_amount) FROM `order`) - (SELECT SUM(total_amount) FROM purchase_record)),0) AS profit_count
+        FROM DUAL
+        ]]>
+    </select>
+
+    <select id="getProfitDate">
+
+        SELECT
+        months.month AS `month`,
+        (IFNULL(o.total_sales, 0) - IFNULL(p.total_purchase_amount, 0)) AS total_profit
+        FROM (
+        SELECT DATE_FORMAT(created_at, '%Y-%m') AS month
+        FROM `order`
+        WHERE
+        <if test="targetYear != null">
+            YEAR(created_at) = #{targetYear}
+        </if>
+        <if test="targetYear == null">
+            YEAR(created_at) = YEAR(NOW())
+        </if>
+        UNION
+        SELECT DATE_FORMAT(created_at, '%Y-%m') AS month
+        FROM purchase_record
+        WHERE
+        <if test="targetYear != null">
+            YEAR(created_at) = #{targetYear}
+        </if>
+        <if test="targetYear == null">
+            YEAR(created_at) = YEAR(NOW())
+        </if>
+        ) months
+        LEFT JOIN (
+        SELECT
+        DATE_FORMAT(created_at, '%Y-%m') AS order_month,
+        SUM(total_amount) AS total_sales
+        FROM `order`
+        WHERE
+        status = 3
+        AND
+        <if test="targetYear != null">
+            YEAR(created_at) = #{targetYear}
+        </if>
+        <if test="targetYear == null">
+            YEAR(created_at) = YEAR(NOW())
+        </if>
+        GROUP BY order_month
+        ) o ON months.month = o.order_month
+        LEFT JOIN (
+        SELECT
+        DATE_FORMAT(created_at, '%Y-%m') AS purchase_month,
+        SUM(total_amount) AS total_purchase_amount
+        FROM purchase_record
+        WHERE
+        <if test="targetYear != null">
+            YEAR(created_at) = #{targetYear}
+        </if>
+        <if test="targetYear == null">
+            YEAR(created_at) = YEAR(NOW())
+        </if>
+        GROUP BY purchase_month
+        ) p ON months.month = p.purchase_month
+        ORDER BY months.month ASC;
+
+    </select>
+
+
+    <select id="getYearProfit">
+        SELECT
+        months.month AS `month`,
+        (IFNULL(o.total_sales, 0) - IFNULL(p.total_purchase_amount, 0)) AS total_profit
+        FROM (
+        -- 合并当前传入年份的订单和采购月份
+        SELECT DATE_FORMAT(created_at, '%Y-%m') AS month
+        FROM `order`
+        WHERE YEAR(created_at) = #{targetYear}
+        UNION
+        SELECT DATE_FORMAT(created_at, '%Y-%m') AS month
+        FROM purchase_record
+        WHERE YEAR(created_at) = #{targetYear}
+        ) months
+        LEFT JOIN (
+        SELECT
+        DATE_FORMAT(created_at, '%Y-%m') AS order_month,
+        SUM(total_amount) AS total_sales
+        FROM `order`
+        WHERE
+        status = 3
+        AND YEAR(created_at) = #{targetYear}
+        GROUP BY order_month
+        ) o ON months.month = o.order_month
+        LEFT JOIN (
+        SELECT
+        DATE_FORMAT(created_at, '%Y-%m') AS purchase_month,
+        SUM(total_amount) AS total_purchase_amount
+        FROM purchase_record
+        WHERE YEAR(created_at) = #{targetYear}
+        GROUP BY purchase_month
+        ) p ON months.month = p.purchase_month
+        ORDER BY months.month ASC;
+    </select>
+
+
     <!--    <insert id="addSpec">-->
 <!--    INSERT INTO spec(product_id,spec,price,stock)-->
 <!--    VALUES-->
@@ -165,6 +278,19 @@
             (
             #{rs.productId},
             #{rs.specId},
+            0
+            )
+        </foreach>
+    </insert>
+
+    <insert id="addSpecOnce" useGeneratedKeys="true" keyProperty="id">
+    INSERT INTO spec(snowflake_id,product_id,spec,stock)
+    VALUES
+        <foreach collection="specAddDTO" item="sad" separator=",">
+            (
+            #{sad.snowflakeId},
+            #{sad.productId},
+            #{sad.spec},
             0
             )
         </foreach>

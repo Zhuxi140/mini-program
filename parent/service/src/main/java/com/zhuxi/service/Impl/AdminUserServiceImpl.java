@@ -3,6 +3,7 @@ package com.zhuxi.service.Impl;
 import com.zhuxi.Constant.MessageReturn;
 import com.zhuxi.Result.PageResult;
 import com.zhuxi.Result.Result;
+import com.zhuxi.pojo.VO.Order.OrderShowVO;
 import com.zhuxi.service.business.AdminUserService;
 import com.zhuxi.service.Tx.AdminUserTxService;
 import org.springframework.stereotype.Service;
@@ -10,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.zhuxi.pojo.VO.Admin.AdminUserVO;
 
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class AdminUserServiceImpl implements AdminUserService {
@@ -56,6 +58,43 @@ public class AdminUserServiceImpl implements AdminUserService {
 
         adminUserTxService.updateUserStatus(status, id);
         return Result.success(MessageReturn.OPERATION_SUCCESS);
+    }
+
+    /**
+     * 获取用户订单历史列表（近dys天）
+     */
+    @Override
+    public Result<PageResult> getUserOrder(Long userId,Long lastId, Integer pageSize, Integer days) {
+
+        boolean hasMore = false;
+        boolean first = (lastId == null || lastId <= 0);
+        boolean previous = !first;
+        if ( first){
+            lastId = Long.MAX_VALUE;
+        }
+
+        List<OrderShowVO> result = adminUserTxService.getListOrderByDays(userId, lastId, pageSize + 1, days);
+        if (result.size() == pageSize + 1){
+            hasMore = true;
+            lastId = result.get(pageSize).getId();
+            result = result.subList(0, pageSize);
+        }
+
+        PageResult<OrderShowVO,Long> pageResult = new PageResult<>(result, lastId, previous, hasMore);
+        return Result.success(MessageReturn.OPERATION_SUCCESS, pageResult);
+    }
+
+    /**
+     * 获取用户趋势
+     */
+    @Override
+    public Result<List<Map<String, Integer>>> getUserTrend(Integer targetYear) {
+        if (targetYear != null && targetYear.toString().length() != 4){
+            return Result.error(MessageReturn.YEAR_IS_NOT_4_DIGIT);
+        }
+
+        List<Map<String, Integer>> result = adminUserTxService.getUserTrend(targetYear);
+        return Result.success(MessageReturn.OPERATION_SUCCESS, result);
     }
 
 

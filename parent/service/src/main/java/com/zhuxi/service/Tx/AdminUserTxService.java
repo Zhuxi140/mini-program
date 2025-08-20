@@ -4,12 +4,14 @@ package com.zhuxi.service.Tx;
 import com.zhuxi.Constant.MessageReturn;
 import com.zhuxi.Exception.transactionalException;
 import com.zhuxi.mapper.UserMapper;
+import com.zhuxi.pojo.VO.Order.OrderShowVO;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import com.zhuxi.pojo.VO.Admin.AdminUserVO;
 
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class AdminUserTxService {
@@ -24,6 +26,24 @@ public class AdminUserTxService {
         boolean userExist = userMapper.isUserExistById(id);
         if(!userExist)
             throw new transactionalException(MessageReturn.USER_NOT_EXIST);
+    }
+
+    @Transactional(readOnly = true,propagation = Propagation.SUPPORTS)
+    public List<OrderShowVO> getListOrderByDays(Long userId,Long lastId, Integer pageSize, Integer days){
+        List<OrderShowVO> listOrderByDays = userMapper.getListOrderByDays(userId, lastId, pageSize, days);
+        if(listOrderByDays == null){
+            throw new transactionalException(MessageReturn.NO_DATA);
+        }
+        return listOrderByDays;
+    }
+
+    @Transactional(readOnly = true,propagation = Propagation.SUPPORTS)
+    public List<Map<String, Integer>> getUserTrend(Integer targetYear){
+        List<Map<String, Integer>> userTrend = userMapper.getUserTrend(targetYear);
+        if(userTrend == null){
+            throw new transactionalException(MessageReturn.NO_DATA);
+        }
+        return userTrend;
     }
 
     @Transactional(readOnly = true,propagation = Propagation.SUPPORTS)

@@ -3,6 +3,7 @@ package com.zhuxi.service.Tx;
 import com.zhuxi.Constant.MessageReturn;
 import com.zhuxi.Exception.transactionalException;
 import com.zhuxi.mapper.ArticleMapper;
+import com.zhuxi.pojo.VO.Article.AdminArticleVO;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -36,9 +37,11 @@ public class ArticleTxService {
         return articleDetailById;
     }
 
+
+
     @Transactional(readOnly = true,propagation = Propagation.SUPPORTS)
-    public List<ArticleVO> getListArticle(Integer  type) {
-        List<ArticleVO> listArticle = articleMapper.getListArticle(type);
+    public List<AdminArticleVO> getListArticleByAdmin(Long lastId, Integer pageSize, Integer type) {
+        List<AdminArticleVO> listArticle = articleMapper.getListArticleByAdmin(lastId, pageSize,type);
         if(listArticle.isEmpty())
             throw new transactionalException(MessageReturn.NO_DATA);
         return listArticle;
@@ -47,8 +50,10 @@ public class ArticleTxService {
     @Transactional(readOnly = true,propagation = Propagation.SUPPORTS)
     public List<ArticleVO> getListArticleDESC(Long lastId, Integer pageSize,Integer type) {
         List<ArticleVO> listArticleDESC = articleMapper.getListArticleDESC(lastId, pageSize,type);
-        if(listArticleDESC.isEmpty())
+        if(listArticleDESC.isEmpty()){
             throw new transactionalException(MessageReturn.NO_DATA);
+        }
+
         return listArticleDESC;
     }
 

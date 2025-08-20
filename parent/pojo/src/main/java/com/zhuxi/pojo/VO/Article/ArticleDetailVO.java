@@ -22,6 +22,9 @@ public class ArticleDetailVO {
     @Schema(description = "文章发布时间")
     private LocalDateTime createdAt;
 
+    public ArticleDetailVO() {
+    }
+
     public ArticleDetailVO(Long id, String title, String type, String contentOssKey, List<String> contentImages, LocalDateTime createdAt) {
         this.id = id;
         this.title = title;

@@ -109,6 +109,9 @@ user-access-paths:
     - /Order/**
 
 
+# 限制库存出售阈值（即真实库存-可售库存的差值）
+stock-threshold: 30
+
 
 
 

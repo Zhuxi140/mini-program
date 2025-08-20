@@ -4,23 +4,24 @@ import com.zhuxi.Constant.MessageReturn;
 import com.zhuxi.Exception.MQException;
 import com.zhuxi.Exception.transactionalException;
 import com.zhuxi.mapper.ProductMapper;
+import com.zhuxi.pojo.DTO.Admin.DashboardDTO;
+import com.zhuxi.pojo.VO.Product.*;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.executor.BatchResult;
 import org.mybatis.spring.SqlSessionTemplate;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import com.zhuxi.pojo.DTO.RealStock.RealStockDTO;
 import com.zhuxi.pojo.DTO.product.*;
 import com.zhuxi.pojo.VO.Admin.AdminProductVO;
-import com.zhuxi.pojo.VO.Product.ProductDetailVO;
-import com.zhuxi.pojo.VO.Product.ProductOverviewVO;
-import com.zhuxi.pojo.VO.Product.ProductSpecDetailVO;
-import com.zhuxi.pojo.VO.Product.ProductSpecVO;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 
 @Slf4j
@@ -44,6 +45,48 @@ public class ProductTxService {
             throw new MQException(MessageReturn.SELECT_ERROR);
         return snowFlakeMap;
     }
+
+    @Transactional(readOnly = true,propagation = Propagation.SUPPORTS)
+    public List<SupplierVO> getSupplierList(Integer lastId,Integer pageSize){
+        List<SupplierVO> supplierList = productMapper.getSupplierList(lastId, pageSize);
+        if (supplierList == null){
+            throw new MQException(MessageReturn.SELECT_ERROR);
+        }
+        return supplierList;
+    }
+
+    @Transactional(rollbackFor = transactionalException.class)
+    public void purchase(newProductPurchase New){
+        int purchase = productMapper.purchase(New);
+        if (purchase != 1){
+            throw new transactionalException(MessageReturn.PURCHASE_ERROR);
+        }
+    }
+
+    @Transactional(rollbackFor = transactionalException.class)
+    public void updateRealStock(Long specId, Integer quantity){
+        int updateRealStock = productMapper.updateRealStock(quantity,specId);
+        if (updateRealStock != 1){
+            throw new transactionalException(MessageReturn.UPDATE_ERROR);
+        }
+    }
+
+    @Transactional(rollbackFor = transactionalException.class)
+    public void updateSpec(BigDecimal purchasePrice, Long specId){
+        int updateSpec = productMapper.updateSpec(purchasePrice, specId);
+        if (updateSpec != 1){
+            throw new transactionalException(MessageReturn.UPDATE_ERROR);
+        }
+    }
+
+    @Transactional(readOnly = true,propagation = Propagation.SUPPORTS)
+    public void isExistsSupplier(Integer supplierId){
+        int existsSupplier = productMapper.isExistSupplier(supplierId);
+        if (existsSupplier == 0){
+            throw new MQException(MessageReturn.SUPPLIER_NOT_EXIST);
+        }
+    }
+
 
 
     @Transactional(readOnly = true,propagation = Propagation.SUPPORTS)
@@ -222,7 +265,7 @@ public class ProductTxService {
         return  product;
     }
 
-    @Transactional(readOnly = true)
+    @Transactional(readOnly = true,propagation = Propagation.SUPPORTS)
     public List<AdminProductVO> getListAdminProductsDESC(Long lastId, Integer pageSize){
         List<AdminProductVO> listAdminProductsDESC = productMapper.getListAdminProductsDESC(lastId, pageSize);
         if(listAdminProductsDESC.isEmpty())
@@ -231,7 +274,7 @@ public class ProductTxService {
         return listAdminProductsDESC;
     }
 
-    @Transactional(readOnly = true)
+    @Transactional(readOnly = true,propagation = Propagation.SUPPORTS)
     public List<AdminProductVO> getListAdminProductsASC(Long lastId,Integer pageSize){
         List<AdminProductVO> listAdminProductsASC = productMapper.getListAdminProductsASC(lastId, pageSize);
         if(listAdminProductsASC.isEmpty())
@@ -240,7 +283,7 @@ public class ProductTxService {
         return listAdminProductsASC;
     }
 
-    @Transactional(readOnly = true)
+    @Transactional(readOnly = true,propagation = Propagation.SUPPORTS)
     public List<ProductSpecDetailVO> getProductSpecDetail(Long productId){
         List<ProductSpecDetailVO> productSpecDetail = productMapper.getProductSpecDetail(productId);
         if(productSpecDetail.isEmpty())
@@ -249,7 +292,7 @@ public class ProductTxService {
         return productSpecDetail;
     }
 
-    @Transactional(readOnly = true)
+    @Transactional(readOnly = true,propagation = Propagation.SUPPORTS)
     public Integer getRealStock(Long productId, Long specId){
         Integer realStock = productMapper.getRealStock(productId, specId);
         if(realStock < 0)
@@ -272,13 +315,18 @@ public class ProductTxService {
 
     @Transactional(rollbackFor = transactionalException.class)
     public Integer updateBase(ProductBaseUpdateDTO productBaseUpdateDTO){
-
-        if(productMapper.updateProductBase(productBaseUpdateDTO) <= 0)
+        int exist = productMapper.isExist(productBaseUpdateDTO.getSupplierId());
+        if(exist <= 0){
+            throw new transactionalException(MessageReturn.SUPPLIER_ID_NOT_EXIST);
+        }
+        if(productMapper.updateProductBase(productBaseUpdateDTO) <= 0){
             throw new transactionalException(MessageReturn.UPDATE_ERROR);
+        }
 
         Integer productStatus = productMapper.getProductStatus(productBaseUpdateDTO.getId());
-        if(productStatus == null)
+        if(productStatus == null){
             throw new transactionalException(MessageReturn.NO_PRODUCT);
+        }
         return productStatus;
     }
 
@@ -322,6 +370,59 @@ public class ProductTxService {
                             throw new transactionalException(MessageReturn.INSERT_ERROR);
                 }
             }
+    }
+
+    @Transactional(rollbackFor = transactionalException.class)
+    public void addSpec(List<SpecAddDTO> SpecAddDTO){
+        try {
+            int i = productMapper.addSpecOnce(SpecAddDTO);
+            if (i != 1) {
+                throw new transactionalException(MessageReturn.INSERT_ERROR);
+            }
+        }catch (DuplicateKeyException  e){
+            throw new transactionalException("已存在该规格");
+        }
+
+        List<RealStockDTO> realStockDTOS = new ArrayList<>();
+        for (SpecAddDTO specAddDTO : SpecAddDTO){
+            RealStockDTO realStockDTO = new RealStockDTO();
+            realStockDTO.setProductId(specAddDTO.getProductId());
+            realStockDTO.setSpecId(specAddDTO.getId());
+            realStockDTOS.add(realStockDTO);
+        }
+        Boolean b = productMapper.addRealStock(realStockDTOS);
+        if (!b){
+            throw new transactionalException(MessageReturn.INSERT_ERROR);
+        }
+    }
+
+    @Transactional(readOnly = true,propagation = Propagation.SUPPORTS)
+    public DashboardDTO getDashboardDTO(){
+        DashboardDTO productBase = productMapper.getDashboardDTO();
+        if(productBase == null){
+            throw new transactionalException(MessageReturn.SELECT_ERROR);
+        }
+        return productBase;
+    }
+
+    @Transactional(readOnly = true,propagation = Propagation.SUPPORTS)
+    public List<Map<String,Object>> getProfitData(Integer targetYear){
+        List<Map<String, Object>> profitDate = productMapper.getProfitDate(targetYear);
+        if (profitDate == null){
+            throw new transactionalException(MessageReturn.NO_PROFIT_RECORD);
+        }
+        return profitDate;
+    }
+
+
+
+
+
+    @Transactional(readOnly = true,propagation = Propagation.SUPPORTS)
+    public void isExistsOnSale(Long productId){
+        if(productMapper.getProductStatus(productId) == 1){
+            throw new transactionalException("该商品还在上架状态，请先下架。");
+        }
     }
 
     @Transactional(rollbackFor = transactionalException.class)

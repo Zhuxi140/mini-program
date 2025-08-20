@@ -19,6 +19,10 @@ public class ArticleVO {
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private LocalDateTime createdAt;
 
+
+    public ArticleVO() {
+    }
+
     public ArticleVO(Long id, String title, int type, String coverOss, LocalDateTime createdAt) {
         this.id = id;
         this.title = title;
@@ -66,4 +70,5 @@ public class ArticleVO {
     public void setCreatedAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
     }
+
 }

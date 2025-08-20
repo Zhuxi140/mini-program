@@ -26,11 +26,13 @@ public class AdminProductVO {
     private Long onSaleStock;
     @Schema(description = "库存状态 1为紧张(即低于100) 0为充裕(大于100)")
     private String stockStatus;
+    @Schema(description = "当前状态")
+    private int status;
 
     public AdminProductVO() {
     }
 
-    public AdminProductVO(Long id, String name, String coverUrl, String supplierName, Long specCount, BigDecimal minPrice, BigDecimal maxPrice, Long totalRealStock, Long onSaleStock, String stockStatus) {
+    public AdminProductVO(Long id, String name, String coverUrl, String supplierName, Long specCount, BigDecimal minPrice, BigDecimal maxPrice, Long totalRealStock, Long onSaleStock, String stockStatus, int status) {
         this.id = id;
         this.name = name;
         this.coverUrl = coverUrl;
@@ -41,6 +43,7 @@ public class AdminProductVO {
         this.totalRealStock = totalRealStock;
         this.onSaleStock = onSaleStock;
         this.stockStatus = stockStatus;
+        this.status = status;
     }
 
     public Long getOnSaleStock() {
@@ -122,5 +125,13 @@ public class AdminProductVO {
 
     public void setStockStatus(String stockStatus) {
         this.stockStatus = stockStatus;
+    }
+
+    public int getStatus() {
+        return status;
+    }
+
+    public void setStatus(int status) {
+        this.status = status;
     }
 }

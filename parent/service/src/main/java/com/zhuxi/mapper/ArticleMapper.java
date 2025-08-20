@@ -1,5 +1,6 @@
 package com.zhuxi.mapper;
 
+import com.zhuxi.pojo.VO.Article.AdminArticleVO;
 import org.apache.ibatis.annotations.*;
 import com.zhuxi.pojo.DTO.article.ArticleInsertOrUpdateDTO;
 import com.zhuxi.pojo.DTO.article.ArticleOssUpdateDTO;
@@ -13,10 +14,18 @@ public interface ArticleMapper {
 
 
     @Select("""
-        SELECT id,title,type,content_oss_key,content_images,created_at FROM article WHERE id = #{id} """)
+        SELECT id,
+               title,
+               type,
+               content_oss_key,
+               content_images,
+               created_at
+        FROM article
+        WHERE id = #{id}""")
+    @Result(property = "contentImages", column = "content_images", typeHandler = com.zhuxi.handler.TypeHandler.class)
     ArticleDetailVO getArticleDetailById(Long id);
 
-    List<ArticleVO> getListArticle(Integer type);
+    List<AdminArticleVO> getListArticleByAdmin(Long lastId, Integer pageSize, Integer type);
 
     List<ArticleVO> getListArticleDESC(Long lastId, Integer pageSize, Integer type);
 

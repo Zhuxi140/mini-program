@@ -11,7 +11,7 @@ public class ProductBaseDTO {
     @Schema(description = "商品名称",requiredMode = Schema.RequiredMode.REQUIRED)
     private String name;
 
-    @Schema(description = "商品编号",requiredMode = Schema.RequiredMode.NOT_REQUIRED)
+    @Schema(description = "商品编号",hidden = true)
     private Long productNumber;
 
     @Schema(description = "商品描述",requiredMode = Schema.RequiredMode.NOT_REQUIRED)

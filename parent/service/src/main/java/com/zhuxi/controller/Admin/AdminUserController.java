@@ -11,6 +11,9 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.web.bind.annotation.*;
 import com.zhuxi.pojo.entity.Role;
 
+import java.util.List;
+import java.util.Map;
+
 @RestController
 @RequestMapping("/adminUsers")
 @Tag(name = "管理端接口")
@@ -61,5 +64,41 @@ public class AdminUserController {
    ){
        return userService.disableUser(status, id);
    }
+
+   /**
+    * 获取用户订单列表
+    */
+   @Operation(
+           summary = "获取用户历史订单列表",
+           description = "获取用户订单列表"
+   )
+    @GetMapping("/orders")
+    @RequireRole(Role.ADMIN)
+    public Result<PageResult> getUserOrder(
+            @Parameter(description = "用户id",required = true)
+            Long userId,
+            @Parameter(description = "上一页最后一条数据的id(第一次查询时不需填写，后续需要根据响应数据来填写)")
+            Long lastId,
+            @Parameter(description = "每页数量(后端默认10)")
+            @RequestParam(defaultValue = "10") Integer pageSize,
+            @Parameter(description = "查询天数, 默认为7天",required = true)
+            @RequestParam(defaultValue = "7") Integer days
+    ){
+        return userService.getUserOrder(userId, lastId, pageSize, days);
+    }
+
+
+    @GetMapping("/trend")
+    @Operation(
+            summary = "获取用户增长趋势",
+            description = "获取用户趋势"
+    )
+    @RequireRole(Role.ADMIN)
+    public Result<List<Map<String, Integer>>> getUserTrend(
+            @Parameter(description = "目标年, 默认为当前年")
+            Integer targetYear
+    ){
+        return userService.getUserTrend(targetYear);
+    }
 
 }

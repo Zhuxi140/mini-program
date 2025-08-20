@@ -3,6 +3,7 @@ package com.zhuxi.service.Impl;
 import com.zhuxi.Constant.MessageReturn;
 import com.zhuxi.Result.PageResult;
 import com.zhuxi.Result.Result;
+import com.zhuxi.pojo.VO.Article.AdminArticleVO;
 import com.zhuxi.service.business.ArticleService;
 import com.zhuxi.service.Tx.ArticleTxService;
 import org.springframework.stereotype.Service;
@@ -35,40 +36,52 @@ public class ArticleServiceImpl implements ArticleService {
         return Result.success(MessageReturn.OPERATION_SUCCESS,articleDetailById);
     }
 
-
     /**
      * 获取文章列表
      */
     @Override
-    public Result<List<ArticleVO>> getListArticle(Integer type) {
+    public Result<PageResult<AdminArticleVO, Long>> getListArticleByAdmin(Long lastId, Integer pageSize, Integer type) {
 
-        List<ArticleVO> listArticle = articleTxService.getListArticle(type);
-        return Result.success(MessageReturn.OPERATION_SUCCESS,listArticle);
+        boolean first = (lastId == null || lastId < 0);
+        boolean hasMore = false;
+
+        if ( first)
+            lastId = Long.MAX_VALUE;
+
+        List<AdminArticleVO> listArticle = articleTxService.getListArticleByAdmin(lastId,pageSize + 1,type);
+        boolean hasPrevious = !first;
+        if(listArticle.size() == pageSize + 1){
+            hasMore = true;
+            lastId = listArticle.get(pageSize).getId();
+            listArticle = listArticle.subList(0,pageSize);
+        }
+        PageResult<AdminArticleVO, Long> adminArticle = new PageResult<>(listArticle, lastId, hasPrevious, hasMore);
+        return Result.success(MessageReturn.OPERATION_SUCCESS,adminArticle);
     }
+
 
     /**
      * 获取文章列表(分页+倒序)
      */
     @Override
-    public PageResult<List<ArticleVO>,Long> getListArticleDESC(Long lastId, Integer pageSize, Integer type) {
+    public Result<PageResult<ArticleVO, Long>> getListArticleDESC(Long lastId, Integer pageSize, Integer type) {
         boolean first = (lastId == null || lastId < 0);
         boolean hasMore = false;
 
         if ( first)
-            lastId = 0L;
+            lastId = Long.MAX_VALUE;
 
         List<ArticleVO> listArticleDESC = articleTxService.getListArticleDESC(lastId,pageSize+1,type);
 
         boolean hasPrevious = !first;
-        if(listArticleDESC.size() > pageSize){
+        if(listArticleDESC.size() == pageSize + 1){
             hasMore = true;
+            lastId = listArticleDESC.get(pageSize).getId();
             listArticleDESC = listArticleDESC.subList(0,pageSize);
         }
 
-        if (!listArticleDESC.isEmpty())
-             lastId = listArticleDESC.get(listArticleDESC.size() - 1).getId();
-
-        return new PageResult(listArticleDESC,lastId,hasPrevious,hasMore);
+        PageResult<ArticleVO, Long> pageResult = new PageResult<>(listArticleDESC, lastId, hasPrevious, hasMore);
+        return Result.success(MessageReturn.OPERATION_SUCCESS,pageResult);
     }
 
     /**
@@ -106,8 +119,9 @@ public class ArticleServiceImpl implements ArticleService {
         if ((articleInsertOrUpdateDTO.getTitle() == null || articleInsertOrUpdateDTO.getTitle().isEmpty())
                 && (articleInsertOrUpdateDTO.getType() == null)
                 && (articleInsertOrUpdateDTO.getStatus() == null)
-        )
+        ){
             return Result.error(MessageReturn.AT_LEAST_ONE_FIELD);
+        }
 
         articleTxService.isExist(id);
 

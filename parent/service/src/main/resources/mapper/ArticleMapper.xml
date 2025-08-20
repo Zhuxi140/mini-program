@@ -4,22 +4,25 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.zhuxi.mapper.ArticleMapper">
-    <select id="getListArticle" resultType="com.zhuxi.pojo.VO.Article.ArticleVO">
-        SELECT
+
+        <select id="getListArticleByAdmin" resultType="com.zhuxi.pojo.VO.Article.AdminArticleVO">
+            SELECT
             id,
             title,
             type,
             cover_oss,
+            status,
             created_at
-        FROM article
-        <where>
-            status = 2
-            <if test="type != null">
-                AND type = #{type}
-            </if>
-        </where>
-
-    </select>
+            FROM article
+            <where>
+                id &lt; #{lastId}
+                <if test="type != null">
+                    AND type = #{type}
+                </if>
+            </where>
+            ORDER BY id,created_at DESC
+            LIMIT #{pageSize}
+        </select>
 
     <select id="getListArticleDESC" resultType="com.zhuxi.pojo.VO.Article.ArticleVO">
         SELECT
@@ -30,13 +33,10 @@
             created_at
         FROM article
         <where>
-        <![CDATA[
-         id < #{lastId} AND status = 2
-
+         id &lt; #{lastId} AND status = 2
            <if test="type != null">
            AND type = #{type}
            </if>
-        ]]>
          </where>
         ORDER BY id,created_at DESC
         LIMIT #{pageSize}

@@ -1,7 +1,9 @@
 package com.zhuxi.controller.Admin;
 
+import com.zhuxi.Result.PageResult;
 import com.zhuxi.Result.Result;
 import com.zhuxi.annotation.RequireRole;
+import com.zhuxi.pojo.VO.Article.AdminArticleVO;
 import com.zhuxi.service.business.ArticleService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -48,5 +50,19 @@ public class AdminArticleController {
             @PathVariable Long id
     ) {
         return adminArticleService.deleteArticle(id);
+    }
+
+    @GetMapping("/list")
+    @RequireRole(Role.ADMIN)
+    @Operation(summary = "获取文章列表接口")
+    public Result<PageResult<AdminArticleVO, Long>> getListArticleDESC(
+            @Parameter(description = "上一条数据的id")
+            Long lastId,
+            @Parameter(description = "每页数据量")
+            @RequestParam(defaultValue = "10") Integer pageSize,
+            @Parameter(description = "文章类型")
+            Integer type
+    ) {
+        return adminArticleService.getListArticleByAdmin(lastId,pageSize,type);
     }
 }

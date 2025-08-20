@@ -3,6 +3,8 @@ package com.zhuxi.service.Impl;
 import com.zhuxi.Constant.MessageReturn;
 import com.zhuxi.Result.PageResult;
 import com.zhuxi.Result.Result;
+import com.zhuxi.pojo.DTO.Admin.DashboardDTO;
+import com.zhuxi.pojo.VO.Product.SupplierVO;
 import com.zhuxi.service.business.AdminProductService;
 import com.zhuxi.service.Tx.ProductTxService;
 import com.zhuxi.utils.IdSnowFLake;
@@ -10,6 +12,7 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.amqp.core.*;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.TransactionSynchronization;
@@ -18,10 +21,8 @@ import com.zhuxi.pojo.DTO.RealStock.RealStockDTO;
 import com.zhuxi.pojo.DTO.product.*;
 import com.zhuxi.pojo.VO.Admin.AdminProductVO;
 import com.zhuxi.pojo.VO.Product.ProductSpecDetailVO;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.math.BigDecimal;
+import java.util.*;
 
 
 @Service
@@ -30,6 +31,8 @@ public class AdminProductServiceImpl implements AdminProductService {
     private final ProductTxService productTxService;
     private final IdSnowFLake snowflake;
     private final RabbitTemplate rabbitTemplate;
+    @Value("${stock-threshold}")
+    private Integer safeStock;
 
     public AdminProductServiceImpl(ProductTxService productTxService, IdSnowFLake snowflake,
                                    @Qualifier("rabbitTemplate")
@@ -199,6 +202,97 @@ public class AdminProductServiceImpl implements AdminProductService {
     }
 
     /**
+     * 采购商品
+     */
+    @Override
+    @Transactional
+    public Result<Void> purchase(newProductPurchase New) {
+        if(New == null){
+            return Result.error(MessageReturn.BODY_NO_MAIN_OR_IS_NULL);
+        }
+        Long specId = New.getSpecId();
+        Integer supplierId = New.getSupplierId();
+        Integer quantity = New.getQuantity();
+        if (/*New.getProductId() ==  null ||*/  specId == null ||  supplierId == null || New.getPurchasePrice() == null || quantity == null){
+            return Result.error(MessageReturn.BODY_NO_MAIN_OR_IS_NULL);
+        }
+        //计算总额
+        New.setTotalAmount(New.getPurchasePrice().multiply(new BigDecimal(New.getQuantity())));
+        productTxService.isExistsSupplier(supplierId);
+        productTxService.purchase(New);
+        productTxService.updateRealStock(specId,quantity);
+        productTxService.updateSpec(New.getPurchasePrice(),specId);
+        return Result.success(MessageReturn.OPERATION_SUCCESS);
+    }
+
+    /**
+     * 获取供应商列表
+     */
+    @Override
+    public Result<PageResult<SupplierVO, Integer>> getSupplierList(Integer lastId, Integer pageSize) {
+        boolean hasMore = false;
+        boolean first = (lastId == null || lastId <= 0);
+        boolean hasPrevious = !first;
+
+        if ( first){
+            lastId = Integer.MAX_VALUE;
+        }
+        List<SupplierVO> items = productTxService.getSupplierList(lastId, pageSize + 1);
+        if (items.size() == pageSize + 1){
+            hasMore = true;
+            lastId = items.get(pageSize).getId();
+            items = items.subList(0, pageSize);
+        }
+
+        PageResult<SupplierVO, Integer> supplierVOIntegerPageResult = new PageResult<>(items, lastId, hasPrevious, hasMore);
+
+        return Result.success(MessageReturn.OPERATION_SUCCESS, supplierVOIntegerPageResult);
+    }
+
+    /**
+     * 添加商品规格(仅限下架时才可添加)
+     */
+    @Override
+    @Transactional
+    public Result<Void> addSpec(List<SpecAddDTO> SpecAddDTO) {
+
+        Result result = checkIsNull(SpecAddDTO);
+        int code = result.getCode();
+        if (code == 500){
+            return result;
+        }
+        for (SpecAddDTO specAddDTO : SpecAddDTO){
+            specAddDTO.setSnowflakeId(snowflake.getIdInt());
+        }
+        productTxService.isExistsOnSale(SpecAddDTO.get(0).getProductId());
+        productTxService.addSpec(SpecAddDTO);
+        return Result.success(MessageReturn.OPERATION_SUCCESS);
+    }
+
+    /**
+     * 获取仪表盘数据
+     */
+    @Override
+    public Result<DashboardDTO> getDashboardData() {
+        DashboardDTO dashboardDTO = productTxService.getDashboardDTO();
+        return Result.success(MessageReturn.OPERATION_SUCCESS, dashboardDTO);
+    }
+
+    /**
+     * 获取利润数据
+     */
+    @Override
+    public Result<List<Map<String, Object>>> getProfitData(Integer targetYear) {
+        // 如果 是非4位数 直接返回错误
+        if (targetYear != null && targetYear.toString().length() != 4){
+            return Result.error(MessageReturn.YEAR_IS_NOT_4_DIGIT);
+        }
+
+        List<Map<String, Object>> profitData = productTxService.getProfitData(targetYear);
+        return Result.success(MessageReturn.OPERATION_SUCCESS, profitData);
+    }
+
+    /**
      * 修改商品
      */
     @Override
@@ -219,7 +313,7 @@ public class AdminProductServiceImpl implements AdminProductService {
         if (productId == null)
             return Result.error(MessageReturn.PRODUCT_ID_IS_NULL + "或" + MessageReturn.BODY_NO_MAIN_OR_IS_NULL);
 
-        List<Long> specIds = null;
+        List<Long> specIds = new ArrayList<>();
         if (spec != null) {
             for (ProductSpecUpdateDTO productSpecUpdateDTO : spec) {
                 Long specId = productSpecUpdateDTO.getId();
@@ -228,8 +322,9 @@ public class AdminProductServiceImpl implements AdminProductService {
                     return Result.error(MessageReturn.PRODUCT_SPEC_ID_IS_NULL);
                 if (productSpecUpdateDTO.getStock() != null){
                     Integer realStock = productTxService.getRealStock(productId, productSpecUpdateDTO.getId());
-                    if (productSpecUpdateDTO.getStock() > realStock)
+                    if (realStock - productSpecUpdateDTO.getStock() < safeStock){
                         return Result.error(MessageReturn.QUANTITY_OVER_STOCK);
+                    }
                 }
             }
         }
@@ -318,7 +413,17 @@ public class AdminProductServiceImpl implements AdminProductService {
     }
 
 
+    private Result checkIsNull(List<SpecAddDTO> specAddDTO){
+        if (specAddDTO == null)
+            return Result.error(MessageReturn.BODY_NO_MAIN_OR_IS_NULL);
 
+        for (SpecAddDTO specAddDTO1 : specAddDTO){
+            if (specAddDTO1.getProductId() == null || specAddDTO1.getSpec() == null){
+                return Result.error(MessageReturn.PRODUCT_ID_IS_NULL);
+            }
+        }
+        return Result.success();
+    }
 
 
 }

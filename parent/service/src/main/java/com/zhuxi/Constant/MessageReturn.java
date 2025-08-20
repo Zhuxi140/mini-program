@@ -1,6 +1,11 @@
 package com.zhuxi.Constant;
 
+import org.springframework.beans.factory.annotation.Value;
+
 public class MessageReturn {
+
+    @Value("${stock-threshold}")
+    public static Integer safeStock;
 
     public static final String OPERATION_ERROR = "操作失败";
     public static final String USER_NOT_LOGIN = "未登录";
@@ -42,10 +47,7 @@ public class MessageReturn {
     public static final String PRODUCT_ID_IS_NULL = "商品id为空";
     public static final String CART_ID_IS_NULL = "购物车id为空";
     public static final String SPEC_ID_IS_NULL = "商品规格id为空";
-    public static final String MIN_PRICE_ERROR = "最小价格错误";
-    public static final String URL_IS_NULL = "URL为空";
-    public static final String STOCK_NOT_ENOUGH = "库存不足";
-    public static final String QUANTITY_OVER_STOCK = "售出数量超出库存";
+    public static final String QUANTITY_OVER_STOCK = "售出数量和总库量的差值不应小于" + safeStock;
     public static final String PRODUCT_SPEC_ID_IS_NULL = "商品规格id为空";
     public static final String PRODUCT_ID_NOT_EXIST = "商品不存在";
     public static final String SPEC_NOT_EXIST = "商品规格暂不存在";
@@ -95,4 +97,9 @@ public class MessageReturn {
     public static final String DELETE_ERROR = "删除失败";
     public static final String UNKNOWN_ERROR = "未知错误";
     public static final String NO_RECORDS = "无记录";
+    public static final String SUPPLIER_ID_NOT_EXIST = "供应商不存在";
+    public static final String PURCHASE_ERROR = "采购失败";
+    public static final String SUPPLIER_NOT_EXIST = "供应商不存在";
+    public static final String NO_PROFIT_RECORD = "无利润记录";
+    public static final String YEAR_IS_NOT_4_DIGIT= "年份格式错误(应为4位数字)";
 }

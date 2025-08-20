@@ -19,7 +19,7 @@ public class OrderShowVO {
     private String productName;
     @Schema(description = "商品规格名称")
     private String specName;
-    @Schema(description = "商品图片组")
+    @Schema(description = "商品封面")
     private String coverUrl;
     @Schema(description = "订单金额")
     private BigDecimal totalAmount;

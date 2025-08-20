@@ -5,9 +5,14 @@ import com.fasterxml.jackson.annotation.JsonView;
 import com.zhuxi.Result.PageResult;
 import com.zhuxi.Result.Result;
 import com.zhuxi.annotation.RequireRole;
+import com.zhuxi.pojo.DTO.Admin.DashboardDTO;
+import com.zhuxi.pojo.DTO.product.SpecAddDTO;
+import com.zhuxi.pojo.DTO.product.newProductPurchase;
+import com.zhuxi.pojo.VO.Product.SupplierVO;
 import com.zhuxi.service.business.AdminProductService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.web.bind.annotation.*;
 import com.zhuxi.pojo.DTO.product.ProductAddDTO;
@@ -16,6 +21,7 @@ import com.zhuxi.pojo.VO.Product.ProductSpecDetailVO;
 import com.zhuxi.pojo.entity.Role;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/adminProducts")
@@ -134,4 +140,70 @@ public class AdminProductController {
     ){
         return adminProductService.stopSale(id);
     }
+
+
+    @PostMapping("/purchase")
+    @RequireRole(Role.ADMIN)
+    @Operation(
+            summary = "商品采购",
+            description = "商品采购"
+    )
+    public Result<Void> purchase(
+            @Parameter(description = "商品采购信息", required = true)
+            @RequestBody
+            newProductPurchase newProductPurchase
+    ){
+        return adminProductService.purchase(newProductPurchase);
+    }
+
+
+    @GetMapping("/supplierList")
+    @RequireRole(Role.ADMIN)
+    @Operation(
+            summary = "获取供应商列表",
+            description = "获取供应商列表"
+    )
+    public Result<PageResult<SupplierVO, Integer>> getSupplierList(
+            @Parameter(description = "供应商id(第一次请求无需给值)", required = true)
+            Integer lastId,
+            @Parameter(description = "分页大小(后端默认为10)")
+            @RequestParam(defaultValue = "10") Integer pageSize
+    ){
+        return adminProductService.getSupplierList(lastId, pageSize);
+    }
+
+    @PostMapping("/addSpec")
+    @RequireRole(Role.ADMIN)
+    @Operation(
+            summary = "添加商品规格",
+            description = "添加商品规格"
+    )
+    public Result<Void> addSpec(
+            @Parameter(description = "商品规格信息", required = true)
+            @RequestBody
+            List<SpecAddDTO> SpecAddDTO
+    ){
+        return adminProductService.addSpec(SpecAddDTO);
+    }
+
+    @GetMapping("/dashboard")
+    @RequireRole(Role.ADMIN)
+    @Operation(
+            summary = "获取仪表盘数据",
+            description = "获取仪表盘数据"
+    )
+    public Result<DashboardDTO> getDashboardData(){
+        return adminProductService.getDashboardData();
+    }
+
+    @GetMapping("/profitData")
+    @RequireRole(Role.ADMIN)
+    @Operation(
+            summary = "获取利润数据",
+            description = "获取利润数据"
+    )
+    public Result<List<Map<String, Object>>> getProfitData(@Schema(description = "查询年份") Integer targetYear){
+        return adminProductService.getProfitData(targetYear);
+    }
+
 }

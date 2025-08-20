@@ -36,6 +36,26 @@
         LIMIT #{pageSize}
     </select>
 
+    <select id="getUserTrend" resultType="java.util.Map">
+        SELECT
+        DATE_FORMAT(created_at, '%Y-%m') AS `month`,
+        COUNT(*) AS newUserCount
+        FROM
+        `user`
+        WHERE
+        status = 1
+        <if test="Year != null">
+            AND YEAR(created_at) = #{Year}
+        </if>
+        <if test="Year == null">
+            AND YEAR(created_at) = YEAR(NOW())
+        </if>
+        GROUP BY
+        `month`
+        ORDER BY
+        `month` ASC
+    </select>
+
 
     <update id="updateUser" parameterType="com.zhuxi.pojo.DTO.User.UserUpdateDTO">
         UPDATE user

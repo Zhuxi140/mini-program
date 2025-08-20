@@ -1,18 +1,17 @@
 package com.zhuxi.mapper;
 
 
+import com.zhuxi.pojo.DTO.Admin.DashboardDTO;
+import com.zhuxi.pojo.VO.Product.*;
 import org.apache.ibatis.annotations.*;
 import com.zhuxi.pojo.DTO.RealStock.RealStockDTO;
 import com.zhuxi.pojo.DTO.product.*;
 import com.zhuxi.pojo.VO.Admin.AdminProductVO;
-import com.zhuxi.pojo.VO.Product.ProductDetailVO;
-import com.zhuxi.pojo.VO.Product.ProductOverviewVO;
-import com.zhuxi.pojo.VO.Product.ProductSpecDetailVO;
-import com.zhuxi.pojo.VO.Product.ProductSpecVO;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 
 @Mapper
 public interface ProductMapper {
@@ -80,7 +79,8 @@ public interface ProductMapper {
            spec.purchase_price,
            spec.stock,
            real_stock.stock AS real_stock
-    FROM spec JOIN real_stock ON real_stock.product_id = #{productId}
+    FROM spec JOIN real_stock ON real_stock.spec_id = spec.id
+    WHERE spec.product_id = #{productId}
     """)
     List<ProductSpecDetailVO> getProductSpecDetail(Long productId);
 
@@ -100,12 +100,18 @@ public interface ProductMapper {
     """)
     int addSpec(@Param("pSDto") ProductSpecDTO productSpecDTO,@Param("productId")  Long id);
 
+
+    int addSpecOnce(List<SpecAddDTO> specAddDTO);
+
     //初始化真实库存记录
     Boolean addRealStock(@Param("list") List<RealStockDTO> realStockDTO);
 
 
     // 修改商品基础信息
     int updateProductBase(@Param("base") ProductBaseUpdateDTO productBaseUpdateDTO);
+
+    @Select("SELECT COUNT(*) FROM supplier WHERE id = #{id}")
+    int isExistSupplier(Integer supplierId);
 
     @Select("SELECT product.status FROM product WHERE id = #{id}")
     Integer getProductStatus(Long id);
@@ -149,8 +155,10 @@ public interface ProductMapper {
     int stopSale(Long id);
 
     @Select("""
-    SELECT NOT EXISTS(
-    SELECT 1 FROM spec s 
+    SELECT EXISTS(SELECT 1 FROM spec WHERE product_id = #{id})
+    AND
+    NOT EXISTS(
+    SELECT 1 FROM spec s
              WHERE s.product_id = #{id}
              AND (s.price IS NULL or s.stock <= 0))
     """)
@@ -220,5 +228,47 @@ public interface ProductMapper {
 
     @Select("SELECT stock FROM spec WHERE product_id = #{productId}")
     List<Integer> getSpecStockList(Long productId);
+
+    @Select("""
+    SELECT
+           s.id,
+           s.name,
+           s.contact,
+           s.phone,
+           s.address,
+           s.rating,
+           s.is_active
+    FROM supplier s
+    WHERE id < #{lastId}
+    ORDER BY id DESC
+    LIMIT #{pageSize}
+    """)
+    List<SupplierVO> getSupplierList(Integer lastId, Integer pageSize);
+
+
+    @Insert("""
+    INSERT INTO
+    purchase_record(spec_id,supplier_id,purchase_price,quantity,total_amount)
+    VALUE(#{New.specId},#{New.supplierId},#{New.purchasePrice},#{New.quantity},#{New.totalAmount})
+    """)
+    int purchase(@Param("New") newProductPurchase New);
+
+    @Select("SELECT COUNT(*) FROM supplier WHERE id = #{supplierId}")
+    int isExist(Integer supplierId);
+
+    @Update("UPDATE real_stock SET stock = #{Stock} WHERE spec_id = #{specId}")
+    int updateRealStock(@Param("Stock") Integer Stock, @Param("specId") Long specId);
+
+    @Update("""
+    UPDATE spec SET purchase_price = #{purchasePrice} WHERE id = #{specId}
+    """)
+    int updateSpec(BigDecimal purchasePrice, Long specId);
+
+    DashboardDTO getDashboardDTO();
+
+    @MapKey("month")
+    List<Map<String, Object>> getProfitDate(Integer targetYear);
+
+
 
 }
