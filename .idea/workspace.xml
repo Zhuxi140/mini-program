@@ -7,34 +7,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="372da862-f7c4-4fa2-93c3-bf2ac1fe9e6e" name="更改" comment="feat(admin): 新增管理端文章接口并优化文章列表获取方式- 新增管理端文章列表接口，支持分页和排序&#10;- 重构普通文章列表获取方式，统一接口返回类型&#10;- 新增文章状态字段，用于管理端展示&#10;- 优化文章列表查询性能，减少数据库查询次数">
-      <change beforePath="$PROJECT_DIR$/.idea/dataSources.local.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources.local.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/sqldialects.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/sqldialects.xml" afterDir="false" />
+    <list default="true" id="372da862-f7c4-4fa2-93c3-bf2ac1fe9e6e" name="更改" comment="feat(order): 优化订单创建和状态查询功能&#10;&#10;- 新增订单创建接口和状态查询接口&#10;- 优化订单创建逻辑，包括单订单和订单组&#10;- 添加订单状态查询功能，支持轮询方式&#10;- 优化订单相关数据结构和接口定义&#10;- 优化 Redis 缓存和 Lua脚本在订单创建和状态查询中的应用">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/Constant/MessageReturn.java" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/Constant/MessageReturn.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/Interceptor/UserAccessInterceptor.java" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/Interceptor/UserAccessInterceptor.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/config/WebMvcConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/config/WebMvcConfig.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/controller/User/OrderController.java" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/controller/User/OrderController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/mapper/OrderMapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/mapper/OrderMapper.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/service/Cache/LoginRedisCache.java" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/service/Cache/LoginRedisCache.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/service/Cache/OrderRedisCache.java" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/service/Cache/OrderRedisCache.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/service/Impl/OrderServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/service/Impl/OrderServiceImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/service/Listener/OrderListener.java" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/service/Listener/OrderListener.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/service/MessageService/OrderMessage.java" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/service/MessageService/OrderMessage.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/service/Rollback/OrderRollback.java" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/service/Rollback/OrderRollback.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/service/Sync/OrderSyncService.java" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/service/Sync/OrderSyncService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/service/Tx/OrderTxService.java" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/service/Tx/OrderTxService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/service/business/OrderService.java" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/service/business/OrderService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/utils/RedisUntil.java" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/utils/RedisUntil.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/parent/service/src/main/resources/mapper/OrderMapper.xml" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/src/main/resources/mapper/OrderMapper.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/Constant/MessageReturn.class" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/Constant/MessageReturn.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/Interceptor/UserAccessInterceptor.class" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/config/WebMvcConfig.class" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/config/WebMvcConfig.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/controller/User/OrderController.class" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/controller/User/OrderController.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/mapper/OrderMapper.class" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/mapper/OrderMapper.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/service/Impl/OrderServiceImpl.class" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/service/Impl/OrderServiceImpl.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/service/Tx/OrderTxService.class" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/service/Tx/OrderTxService.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/service/business/OrderService.class" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/service/business/OrderService.class" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -349,15 +325,8 @@
       <workItem from="1755650941142" duration="18852000" />
       <workItem from="1755742945439" duration="1368000" />
       <workItem from="1755745437919" duration="86000" />
-      <workItem from="1755745532614" duration="10175000" />
-    </task>
-    <task id="LOCAL-00010" summary="feat(service): 添加商品管理功能- 新增商品添加和更新接口&#10;- 实现商品信息的数据库操作&#10;- 添加商品相关错误提示&#10;- 优化代码结构，提高可维护性">
-      <option name="closed" value="true" />
-      <created>1751532787551</created>
-      <option name="number" value="00010" />
-      <option name="presentableId" value="LOCAL-00010" />
-      <option name="project" value="LOCAL" />
-      <updated>1751532787551</updated>
+      <workItem from="1755745532614" duration="10463000" />
+      <workItem from="1755758526020" duration="312000" />
     </task>
     <task id="LOCAL-00011" summary="feat(product): 重构商品模块- 将 ProductAddDTO 重构为 ProductBaseDTO 和 ProductSpecDTO 列表&#10;- 新增商品规格相关功能&#10;- 修改商品详情和列表的查询逻辑&#10;-优化数据库表结构&#10;- 更新相关控制器、服务、Mapper 和 XML 文件">
       <option name="closed" value="true" />
@@ -743,7 +712,15 @@
       <option name="project" value="LOCAL" />
       <updated>1755677421593</updated>
     </task>
-    <option name="localTasksCounter" value="59" />
+    <task id="LOCAL-00059" summary="feat(order): 优化订单创建和状态查询功能&#10;&#10;- 新增订单创建接口和状态查询接口&#10;- 优化订单创建逻辑，包括单订单和订单组&#10;- 添加订单状态查询功能，支持轮询方式&#10;- 优化订单相关数据结构和接口定义&#10;- 优化 Redis 缓存和 Lua脚本在订单创建和状态查询中的应用">
+      <option name="closed" value="true" />
+      <created>1755758443587</created>
+      <option name="number" value="00059" />
+      <option name="presentableId" value="LOCAL-00059" />
+      <option name="project" value="LOCAL" />
+      <updated>1755758443587</updated>
+    </task>
+    <option name="localTasksCounter" value="60" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -761,7 +738,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="feat(order): 实现订单列表按时间分页查询并缓存到 Redis&#10;&#10;- 新增按时间分页查询订单列表的功能&#10;-将订单数据预加载到 Redis 中&#10;- 实现从 Redis 中获取订单列表的方法&#10;- 优化订单列表的展示逻辑，合并同一组的订单&#10;- 调整数据库查询方式，提高查询效率" />
     <MESSAGE value="feat(service): 优化商品列表和订单列表的查询逻辑&#10;&#10;- 修改商品列表查询接口，使用 Long 类型替代 Double 类型表示分数- 优化订单列表查询逻辑，使用 Redis 缓存提高性能- 调整产品和服务接口，以适应新的查询逻辑&#10;- 修复了一些与数据类型和查询结果相关的小问题&#10;- 修理一些事务传播属性以更符合其所在场景" />
     <MESSAGE value="refactor(service): 重构服务模块代码&#10;&#10;- 修改包名：将 service 包拆分为 business、Tx、Cache 等子包- 重命名类：更新类名以适应新的包结构&#10;- 添加 RabbitMQ 配置：在 application.yaml 中添加 RabbitMQ 相关配置&#10;- 优化导入语句：更新导入语句以使用新的包路径&#10;- 调整日志输出：删除多余的日志输出语句&#10;-" />
     <MESSAGE value="refactor(service): 重构服务模块代码&#10;&#10;- 新增 RabbitMQ 配置&#10;- 为部分接口添加消息队列逻辑&#10;- 新增部分对应redis的刷新逻辑&#10;- 使用雪花id代替原本的主键id 以防止业务信息泄漏&#10;- 优化大量接口逻辑&#10;- 优化部分业务逻辑&#10;- 优化部分代码结构和命名" />
@@ -786,7 +762,8 @@
     <MESSAGE value="feat(service): 实现用户维度布隆过滤器并优化登录逻辑- 新增用户布隆过滤器相关功能，包括用户数据加载和过滤逻辑&#10;&#10;- 优化登录逻辑，将 JWT 解析结果存储在请求属性中&#10;- 修改拦截器和权限检查逻辑，使用请求属性中的 JWT 信息&#10;- 更新数据库查询方法，支持按用户 ID 查询订单&#10;- 优化大多数接口拦截器逻辑" />
     <MESSAGE value="- 修复拦截器部分错误" />
     <MESSAGE value="feat(admin): 新增管理端文章接口并优化文章列表获取方式- 新增管理端文章列表接口，支持分页和排序&#10;- 重构普通文章列表获取方式，统一接口返回类型&#10;- 新增文章状态字段，用于管理端展示&#10;- 优化文章列表查询性能，减少数据库查询次数" />
-    <option name="LAST_COMMIT_MESSAGE" value="feat(admin): 新增管理端文章接口并优化文章列表获取方式- 新增管理端文章列表接口，支持分页和排序&#10;- 重构普通文章列表获取方式，统一接口返回类型&#10;- 新增文章状态字段，用于管理端展示&#10;- 优化文章列表查询性能，减少数据库查询次数" />
+    <MESSAGE value="feat(order): 优化订单创建和状态查询功能&#10;&#10;- 新增订单创建接口和状态查询接口&#10;- 优化订单创建逻辑，包括单订单和订单组&#10;- 添加订单状态查询功能，支持轮询方式&#10;- 优化订单相关数据结构和接口定义&#10;- 优化 Redis 缓存和 Lua脚本在订单创建和状态查询中的应用" />
+    <option name="LAST_COMMIT_MESSAGE" value="feat(order): 优化订单创建和状态查询功能&#10;&#10;- 新增订单创建接口和状态查询接口&#10;- 优化订单创建逻辑，包括单订单和订单组&#10;- 添加订单状态查询功能，支持轮询方式&#10;- 优化订单相关数据结构和接口定义&#10;- 优化 Redis 缓存和 Lua脚本在订单创建和状态查询中的应用" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

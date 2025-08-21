@@ -320,8 +320,8 @@ public class OrderServiceImpl implements OrderService {
         Integer orderStatusB = (Integer)orderStatus;
         if (orderStatusB == 1){
             if (waitTime == null){
-                waitTime = 1000;
-            }else if(waitTime >= 30000){
+                waitTime = 400;
+            }else if(waitTime >= 15000){
                 String addingOrder = "order:adding:" + orderSn;
                 Object result = redisUntil.UseLua(redisScript, Collections.singletonList(addingOrder), Collections.emptyList());
                 if (result instanceof Integer statusA){
@@ -357,8 +357,8 @@ public class OrderServiceImpl implements OrderService {
         Integer orderStatusB = (Integer)orderStatus;
         if (orderStatusB == 1){
             if (waitTime == null){
-                waitTime = 1000;
-            }else if(waitTime >= 30000){
+                waitTime = 400;
+            }else if(waitTime >= 15000){
                 String addingOrder = "order:adding:group:" + groupSn;
                 Object result = redisUntil.UseLua(redisScript, Collections.singletonList(addingOrder), Collections.emptyList());
                 if (result instanceof Integer statusA){
