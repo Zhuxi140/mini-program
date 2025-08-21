@@ -5,6 +5,7 @@ import com.zhuxi.Exception.RedisException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataAccessException;
 import org.springframework.data.redis.core.*;
+import org.springframework.data.redis.core.script.DefaultRedisScript;
 import org.springframework.data.redis.serializer.RedisSerializer;
 import org.springframework.stereotype.Component;
 
@@ -22,12 +23,17 @@ public class RedisUntil {
     private final RedisTemplate<String,Object> redisTemplate;
     private final ZSetOperations<String, Object> zSetOperations;
     private final HashOperations<String, Object, Object> HashOperations;
+    private final ValueOperations<String, String> stringOps;
+    private final StringRedisTemplate stringRedisTemplate;
 
-    public RedisUntil(RedisTemplate<String,Object>  redisTemplate) {
+
+    public RedisUntil(RedisTemplate<String,Object>  redisTemplate,StringRedisTemplate stringRedisTemplate) {
         stringValueOperations = redisTemplate.opsForValue();
         this.redisTemplate = redisTemplate;
         zSetOperations = redisTemplate.opsForZSet();
         HashOperations = redisTemplate.opsForHash();
+        this.stringRedisTemplate = stringRedisTemplate;
+        this.stringOps = stringRedisTemplate.opsForValue();
     }
 
 
@@ -40,6 +46,10 @@ public class RedisUntil {
     //redis String类型操作
     public Object getStringValue(String key){
         return stringValueOperations.get(key);
+    }
+
+    public void setStringValueString(String key,String value,long time,TimeUnit unit){
+        stringOps.set(key,value,time, unit);
     }
 
 
@@ -216,6 +226,9 @@ public class RedisUntil {
     }
 
 
+    public Object UseLua(DefaultRedisScript<?> redisScript,List<String> keys,Object... args){
+        return redisTemplate.execute(redisScript, keys, args);
+    }
 
 
 

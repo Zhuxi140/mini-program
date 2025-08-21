@@ -10,11 +10,15 @@ import com.zhuxi.service.Cache.OrderRedisCache;
 import com.zhuxi.service.Sync.OrderSyncService;
 import com.zhuxi.service.Tx.OrderTxService;
 import com.zhuxi.utils.IdSnowFLake;
+import com.zhuxi.utils.RedisUntil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.core.MessageDeliveryMode;
 import org.springframework.amqp.core.MessageProperties;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.data.redis.core.ZSetOperations;
+import org.springframework.data.redis.core.script.DefaultRedisScript;
+import org.springframework.scripting.support.ResourceScriptSource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.TransactionSynchronization;
@@ -27,6 +31,7 @@ import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 @Service
 @Slf4j
@@ -37,13 +42,23 @@ public class OrderServiceImpl implements OrderService {
     private final OrderRedisCache orderRedisCache;
     private final OrderSyncService orderSyncService;
     private final RabbitTemplate rabbitTemplate;
+    private final DefaultRedisScript<Integer> redisScript;
+    private final RedisUntil  redisUntil;
 
-    public OrderServiceImpl(OrderTxService orderTxService, IdSnowFLake idSnowFLake, OrderRedisCache orderRedisCache, OrderSyncService orderSyncService, RabbitTemplate rabbitTemplate) {
+    public OrderServiceImpl(OrderTxService orderTxService, IdSnowFLake idSnowFLake,
+                            OrderRedisCache orderRedisCache, OrderSyncService orderSyncService,
+                            RabbitTemplate rabbitTemplate, RedisUntil redisUntil) {
         this.orderTxService = orderTxService;
         this.idSnowFLake = idSnowFLake;
         this.orderRedisCache = orderRedisCache;
         this.orderSyncService = orderSyncService;
         this.rabbitTemplate = rabbitTemplate;
+        this.redisUntil = redisUntil;
+        this.redisScript = new DefaultRedisScript<>();
+        this.redisScript.setScriptSource(
+                new ResourceScriptSource(new ClassPathResource("Lua/checkOrderStatus.lua"))
+        );
+        this.redisScript.setResultType(Integer.class);
     }
 
     /**
@@ -112,9 +127,10 @@ public class OrderServiceImpl implements OrderService {
             // 将单号临时存储Redis
             orderRedisCache.saveOrderLock(orderSn,productQuantity);
 
+            orderRedisCache.addOrderStatus(orderSn);
             orderSyncService.syncOrder(orderAddDTO,userId,pSn,iSn,productId,specId,productQuantity,orderSn,frontPrice);
 
-        return Result.success(MessageReturn.OPERATION_SUCCESS,orderSn);
+        return Result.success("创建中，请耐心等待",orderSn);
     }
 
     /**
@@ -122,7 +138,7 @@ public class OrderServiceImpl implements OrderService {
      */
     @Override
     @Transactional(rollbackFor = {transactionalException.class,RuntimeException.class })
-    public Result<Void> addGroup(List<OrderAddDTO> orderAddDTO, Long userId) {
+    public Result<String> addGroup(List<OrderAddDTO> orderAddDTO, Long userId) {
         if(orderAddDTO == null || orderAddDTO.isEmpty())
             return Result.error(MessageReturn.BODY_NO_MAIN_OR_IS_NULL);
 
@@ -130,9 +146,23 @@ public class OrderServiceImpl implements OrderService {
 
         for(int i = 0; i < orderAddDTO.size(); i++){
             OrderAddDTO order = orderAddDTO.get(i);
-            // 验证必填字段(productId、specId、productQuantity、totalAmount)
+            // 验证必填字段
             validateMustFields( order,i);
-            specIds.add(order.getSpecId());
+            Long specSnowflake = order.getSpecSnowflake();
+            List<Long> idBySnowflake = orderRedisCache.getIdBySnowflake(specSnowflake);
+            Long productId = idBySnowflake.get(0);
+            Long specId = idBySnowflake.get(1);
+            if (productId == null){
+                productId = orderTxService.getProductIdBySnowFlake(specSnowflake);
+                orderRedisCache.saveProductId(specSnowflake,productId);
+            }
+            if (specId == null){
+                specId = orderTxService.getSpecBySnowFlake(specSnowflake);
+                orderRedisCache.saveSpecId(specSnowflake,specId);
+            }
+            order.setSpecId(specId);
+            order.setProductId(productId);
+            specIds.add(specId);
         }
 
         List<Integer> productSaleStockList = orderTxService.getProductSaleStockList(specIds);
@@ -141,6 +171,7 @@ public class OrderServiceImpl implements OrderService {
         List<InventoryLockAddDTO> inventoryLockAddDTOS = new ArrayList<>();
         List<OrderAddDTO> orderAddDTOS = new ArrayList<>();
         List<Integer> quantityList = new ArrayList<>();
+        List<String> orderSnList = new ArrayList<>();
 
         BigDecimal amount = new BigDecimal("0.00");
         for(int i = 0; i < orderAddDTO.size(); i++){
@@ -150,7 +181,9 @@ public class OrderServiceImpl implements OrderService {
             // 处理地址
             dealAddressId(order,userId,i);
             // 生成订单编号
-            order.setOrderSn(generateSn(1));
+            String orderSn = generateSn(1);
+            orderSnList.add(orderSn);
+            order.setOrderSn(orderSn);
             // 验证价格
             validatePrice( order,i);
             amount = amount.add(order.getTotalAmount());
@@ -167,25 +200,13 @@ public class OrderServiceImpl implements OrderService {
 
         // 创建订单组
         OrderGroupDTO orderGroupDTO1 = new OrderGroupDTO(null, generateSn(3), userId, amount, 0);
-        orderTxService.insertOrderGroupList(orderGroupDTO1);
 
-        for (OrderAddDTO addDTO : orderAddDTOS) {
-            addDTO.setGroupId(orderGroupDTO1.getId());
-        }
 
-        // 创建订单
-        orderTxService.insertOrderList(orderAddDTOS);
-            for(int i = 0; i < paymentAddDTOS.size(); i++){
-                Long id = orderAddDTOS.get(i).getId();
-                paymentAddDTOS.get(i).setOrderId(id);
-                inventoryLockAddDTOS.get(i).setOrderId(id);
-            }
-        // 创建支付记录和锁库存
-        orderTxService.insertPaymentList(paymentAddDTOS);
-        orderTxService.insertInventoryLockList(inventoryLockAddDTOS);
-        orderTxService.releaseLockStockList(specIds, quantityList);
-
-        return Result.success(MessageReturn.OPERATION_SUCCESS);
+        String groupTarget = generateSn(3);
+        String addingOrder = "order:adding:group:" + groupTarget;
+        redisUntil.setStringValue(addingOrder, "1", 1, TimeUnit.HOURS);
+        orderSyncService.syncOrderGroups(orderGroupDTO1, orderAddDTOS, paymentAddDTOS, inventoryLockAddDTOS, specIds, quantityList,groupTarget,orderSnList);
+        return Result.success("创建中",groupTarget);
     }
 
     /**
@@ -282,11 +303,83 @@ public class OrderServiceImpl implements OrderService {
             isHit = false;
         }
         orderTxService.deleteOrder(orderId,userId,isHit,orderSn);
-
-        // 删除Redis
         orderRedisCache.deleteOrder(orderSn);
 
         return Result.success(MessageReturn.OPERATION_SUCCESS);
+    }
+
+    /**
+     * 获取订单状态(轮询)
+     */
+    @Override
+    public Result<Integer> getOrderStatus(String orderSn,Integer waitTime) {
+        if (orderSn == null){
+            return Result.error(MessageReturn.ORDER_USER_ID_IS_NULL);
+        }
+        Object orderStatus = orderRedisCache.getOrderStatus(orderSn);
+        Integer orderStatusB = (Integer)orderStatus;
+        if (orderStatusB == 1){
+            if (waitTime == null){
+                waitTime = 1000;
+            }else if(waitTime >= 30000){
+                String addingOrder = "order:adding:" + orderSn;
+                Object result = redisUntil.UseLua(redisScript, Collections.singletonList(addingOrder), Collections.emptyList());
+                if (result instanceof Integer statusA){
+                    if (statusA != 2){
+                        Result.success("创建订单超时");
+                    }
+                }else if(result instanceof Long statusA){
+                    if (statusA != 2){
+                        Result.success("创建订单超时");
+                    }
+                }
+            }
+            else{
+                waitTime = waitTime * 2;
+            }
+            return Result.success("订单正在创建",waitTime);
+        }else if (orderStatusB == 2){
+            return Result.success("订单创建成功！");
+        }else {
+            return Result.success("订创建订单超时");
+        }
+    }
+
+    /**
+     * 获取订单组状态(轮询)
+     */
+    @Override
+    public Result<Integer> getOrderGroupStatus(String groupSn,Integer waitTime) {
+        if (groupSn == null){
+            return Result.error(MessageReturn.GROUP_ID_IS_NULL);
+        }
+        Object orderStatus = orderRedisCache.getOrderStatus(groupSn);
+        Integer orderStatusB = (Integer)orderStatus;
+        if (orderStatusB == 1){
+            if (waitTime == null){
+                waitTime = 1000;
+            }else if(waitTime >= 30000){
+                String addingOrder = "order:adding:group:" + groupSn;
+                Object result = redisUntil.UseLua(redisScript, Collections.singletonList(addingOrder), Collections.emptyList());
+                if (result instanceof Integer statusA){
+                    if (statusA != 2){
+                        Result.success("创建订单超时");
+                    }
+                }else if(result instanceof Long statusA){
+                    if (statusA != 2){
+                        Result.success("创建订单超时");
+                    }
+                }
+            }
+            else{
+                waitTime = waitTime * 2;
+            }
+            return Result.success("订单正在创建",waitTime);
+        }else if (orderStatusB == 2){
+            return Result.success("订单创建成功！");
+        }else {
+            return Result.success("订创建订单超时");
+        }
     }
 
 
@@ -311,13 +404,12 @@ public class OrderServiceImpl implements OrderService {
 
     // 验证必填字段
     private void validateMustFields(OrderAddDTO orderAddDTO, int i){
-        if(orderAddDTO.getProductId() == null
-           || orderAddDTO.getSpecId() == null
+        if(orderAddDTO.getSpecSnowflake() == null
            || orderAddDTO.getProductQuantity() == null
            || orderAddDTO.getTotalAmount() == null
            || orderAddDTO.getProductQuantity() < 1
         )
-            throw new transactionalException("订单"+ i + ": " + MessageReturn.FIELDS_IS_NULL + "/" + MessageReturn.QUANTITY_IS_NULL_OR_LESS_THAN_ONE);
+            throw new transactionalException("订单"+ i + ": 商品规格号为空" + "/" + MessageReturn.QUANTITY_IS_NULL_OR_LESS_THAN_ONE + "/ 价格为空");
     }
 
     // 处理地址

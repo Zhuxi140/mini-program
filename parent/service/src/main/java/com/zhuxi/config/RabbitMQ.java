@@ -31,7 +31,7 @@ public class RabbitMQ {
         return factory;
     }
 
-    @Bean
+    @Bean("rabbitTemplate")
     public RabbitTemplate rabbitTemplate(ConnectionFactory connectionFactory,ConfirmCallbackDispatcher confirmCallbackDispatcher) {
         RabbitTemplate rabbitTemplate = new RabbitTemplate();
         rabbitTemplate.setMessageConverter(jackson2JsonMessageConverter());
@@ -41,7 +41,7 @@ public class RabbitMQ {
         return rabbitTemplate;
     }
 
-    @Bean
+    @Bean("expressTemplate")
     public RabbitTemplate expressTemplate(ConfirmCallbackDispatcher confirmCallbackDispatcher) {
         RabbitTemplate rabbitTemplate = new RabbitTemplate(noConfirmConnectionFactory());
         rabbitTemplate.setMessageConverter(jackson2JsonMessageConverter());

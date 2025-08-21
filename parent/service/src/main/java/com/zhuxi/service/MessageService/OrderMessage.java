@@ -1,5 +1,6 @@
 package com.zhuxi.service.MessageService;
 
+import com.zhuxi.pojo.DTO.Order.OrderMqDTO;
 import com.zhuxi.service.Listener.MessageHandler.BizConfirmCallback;
 import com.zhuxi.service.Listener.MessageHandler.BizCorrelationData;
 import com.zhuxi.service.Listener.MessageHandler.ConfirmCallbackDispatcher;
@@ -50,14 +51,14 @@ public class OrderMessage {
             });
         }
 
-        public void sendOrderDelayMessage(String orderSn,String exchange,String routingKey) {
+        public void sendOrderDelayMessage(OrderMqDTO orderMqDTO, String exchange, String routingKey) {
             BizCorrelationData correlationData = new BizCorrelationData(
-                    UUID.randomUUID().toString(), "ORDER", orderSn
+                    UUID.randomUUID().toString(), "ORDER", orderMqDTO.getOrderSn()
             );
             rabbitTemplate.convertAndSend(
                     exchange,
                     routingKey,
-                    orderSn,
+                    orderMqDTO,
                     msg -> {
                         // 将correlationId存入消息头，用于Return回调识别
                         MessageProperties props = msg.getMessageProperties();

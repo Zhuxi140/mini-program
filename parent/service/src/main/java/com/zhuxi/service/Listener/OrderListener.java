@@ -5,6 +5,7 @@ import com.rabbitmq.client.Channel;
 import com.zhuxi.Exception.MQException;
 import com.zhuxi.pojo.DTO.DeadMessage.DeadMessageAddDTO;
 import com.zhuxi.pojo.DTO.DeadMessage.DeadMessageUpdate;
+import com.zhuxi.pojo.DTO.Order.OrderMqDTO;
 import com.zhuxi.pojo.DTO.Order.OrderRedisDTO;
 import com.zhuxi.service.Cache.OrderRedisCache;
 import com.zhuxi.service.Tx.DeadMessageTXService;
@@ -21,6 +22,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.support.TransactionTemplate;
 
 import java.io.IOException;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
@@ -61,7 +63,7 @@ public class OrderListener {
     ),
             containerFactory = "manual"
     )
-    public void orderNew(String orderSn,Channel channel,@Header(AmqpHeaders.MESSAGE_ID) String messageId,
+    public void orderNew(OrderMqDTO orderMqDTO,Channel channel,@Header(AmqpHeaders.MESSAGE_ID) String messageId,
                          @Header(AmqpHeaders.DELIVERY_TAG) long tag)    {
         if (redisUntil.hsaKey("messageId:order:new:"+ messageId)){
             log.error("重复消息-----messageId:{}",messageId);
@@ -69,6 +71,7 @@ public class OrderListener {
         }
 
         try {
+            String orderSn = orderMqDTO.getOrderSn();
             if (orderSn == null || orderSn.isEmpty()){
                 log.error("orderSn is null or empty");
                 throw new MQException("orderSn is null or empty");
@@ -126,6 +129,38 @@ public class OrderListener {
 
 
     @RabbitListener(bindings = @QueueBinding(
+            value = @Queue(value = "order.neww.queue", durable = "true",
+                    arguments = {
+                            @Argument(name = "x-dead-letter-exchange", value = "dead.order.exchange"),
+                            @Argument(name = "x-dead-letter-routing-key", value = "neww"),
+                    }
+            ),
+            exchange = @Exchange(value = "order.exchange"),
+            key = "neww"
+    ),
+            containerFactory = "auto"
+    )
+    public void orderNew(OrderMqDTO orderMqDTO, @Header(AmqpHeaders.MESSAGE_ID) String messageId)    {
+        if (redisUntil.hsaKey("messageId:order:new:"+ messageId)){
+            log.error("重复消息-----messageId:{}",messageId);
+            return;
+        }
+        try {
+            OrderRedisDTO orderRedis = orderTxService.getOrderRedis(orderMqDTO.getUserId(), orderMqDTO.getOrderSn());
+            orderRedisCache.syncOrderData(Collections.singletonList(orderRedis), orderMqDTO.getUserId());
+            redisUntil.setStringValue("messageId:order:new:"+ messageId,"1",1, TimeUnit.HOURS);
+        }catch (MQException e){
+            redisUntil.setStringValue(deadKey + "new:" + messageId, "type=MQException---{" + e.getMessage() + "}", 24, TimeUnit.HOURS);
+            throw new MQException(e.getMessage());
+        }catch (Exception e){
+            redisUntil.setStringValue(deadKey + "new:" + messageId, "type=MQException---{" + e.getMessage() + "}", 24, TimeUnit.HOURS);
+            throw new AmqpRejectAndDontRequeueException(e.getMessage());
+        }
+
+    }
+
+
+    @RabbitListener(bindings = @QueueBinding(
             value = @Queue(value = "order.sync.queue", durable = "true"),
             exchange = @Exchange(value = "order.exchange"),
             key = "sync"
@@ -169,7 +204,7 @@ public class OrderListener {
             exchange = @Exchange(value = "dead.order.exchange"),
             key = "new"
     ))
-    public void deadOrderNew(String orderSn,
+    public void deadOrderNew(OrderMqDTO orderMqDTO,
                              @Header(AmqpHeaders.MESSAGE_ID) String messageId,
                              @Header(name = "x-death",required = false) List<Map<String, ?>> xDeath
                              ) {
@@ -179,12 +214,11 @@ public class OrderListener {
             log.error("重复消息-----dead---messageId:{}",messageId);
             return;
         }
-
         try{
-            durableDate(xDeath,messageId,orderSn,dead,valuee);
+            durableDate(xDeath,messageId,orderMqDTO,dead,valuee);
         }catch (Exception e){
             log.error("----死信记录失败----日志兜底---- 死信记录错误{}",e.getMessage());
-            HandlerException(xDeath,messageId,orderSn,dead,valuee);
+            HandlerException(xDeath,messageId,orderMqDTO,dead,valuee);
             throw new AmqpRejectAndDontRequeueException(e.getMessage());
         }
     }
@@ -209,6 +243,31 @@ public class OrderListener {
         }catch (Exception e){
             log.error("----死信记录失败----日志兜底---- 死信记录错误{}",e.getMessage());
             HandlerException(xDeath,messageId,userId,dead,valuee);
+            throw new AmqpRejectAndDontRequeueException(e.getMessage());
+        }
+    }
+
+
+    @RabbitListener(bindings = @QueueBinding(
+            value = @Queue(value = "dead.neww.order.queue", durable = "true"),
+            exchange = @Exchange(value = "dead.order.exchange"),
+            key = "neww"
+    ))
+    public void deadOrderNeww(OrderMqDTO orderMqDTO,
+                             @Header(AmqpHeaders.MESSAGE_ID) String messageId,
+                             @Header(name = "x-death",required = false) List<Map<String, ?>> xDeath
+    ) {
+        String dead = deadKey + "new:";
+        String valuee = vale + "new:";
+        if (redisUntil.hsaKey(valuee + messageId)){
+            log.error("重复消息-----dead---messageId:{}",messageId);
+            return;
+        }
+        try{
+            durableDate(xDeath,messageId,orderMqDTO,dead,valuee);
+        }catch (Exception e){
+            log.error("----死信记录失败----日志兜底---- 死信记录错误{}",e.getMessage());
+            HandlerException(xDeath,messageId,orderMqDTO,dead,valuee);
             throw new AmqpRejectAndDontRequeueException(e.getMessage());
         }
     }

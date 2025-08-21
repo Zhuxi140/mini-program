@@ -90,6 +90,15 @@ public class OrderTxService {
     }
 
     @Transactional(readOnly = true,propagation = Propagation.SUPPORTS)
+    public OrderRedisDTO getOrderRedis(Long userId,String orderSn) {
+        OrderRedisDTO orderRedisList = orderMapper.getOrderRedis(userId,orderSn);
+        if (orderRedisList == null){
+            throw new transactionalException(MessageReturn.ORDER_NOT_EXIST);
+        }
+        return orderRedisList;
+    }
+
+    @Transactional(readOnly = true,propagation = Propagation.SUPPORTS)
     public List<OrderRedisDTO> getOrderList(Long userId, LocalDateTime createdAt, Integer pageSize) {
         List<OrderRedisDTO> orderList = orderMapper.getOrderList(userId, createdAt, pageSize);
         if(orderList == null || orderList.size() <= 0) {
@@ -291,7 +300,18 @@ public class OrderTxService {
     @Transactional(readOnly = true,propagation = Propagation.SUPPORTS)
     public int getOrderStatus(Long orderId){
         int orderStatus = orderMapper.getOrderStatus(orderId);
+        return orderStatus;
+    }
 
+    @Transactional(readOnly = true,propagation = Propagation.SUPPORTS)
+    public int getOrderStatusB(String orderSn,Long id,boolean isHit){
+        if (!isHit){
+            id = getOrderIdDelete(orderSn);
+        }
+        Integer orderStatus = orderMapper.getOrderStatus(id);
+        if (orderStatus == null){
+            return 1;
+        }
         return orderStatus;
     }
 
@@ -445,6 +465,8 @@ public class OrderTxService {
             throw new transactionalException(MessageReturn.DELETE_ORDER_ERROR);
         }
     }
+
+
 
 
 

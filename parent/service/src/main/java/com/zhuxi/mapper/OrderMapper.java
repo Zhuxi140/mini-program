@@ -185,6 +185,8 @@ public interface OrderMapper {
 
     List<OrderRedisDTO> getOrderRedisList(Long userId,Long lastId,int pageSize);
 
+    OrderRedisDTO getOrderRedis(Long userId,String orderSn);
+
     @Select("""
     SELECT DISTINCT user.id
     FROM user JOIN `order` ON  user.id = `order`.user_id
@@ -212,6 +214,6 @@ public interface OrderMapper {
 
 
     @Select("SELECT status FROM `order` WHERE id = #{orderId}")
-    int getOrderStatus(Long orderId);
+    Integer getOrderStatus(Long orderId);
 
 }

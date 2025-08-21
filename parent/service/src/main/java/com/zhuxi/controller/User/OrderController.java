@@ -46,7 +46,7 @@ public class OrderController {
             summary = "创建多个商品订单",
             description = "创建订单"
     )
-    public Result<Void> addGroup(
+    public Result<String> addGroup(
             @RequestBody List<OrderAddDTO> orderAddDTO,
             @Parameter(description = "用户id",hidden = true)
             @CurrentUserId Long userId
@@ -121,5 +121,33 @@ public class OrderController {
             @CurrentUserId Long userId
     ){
         return orderService.deleteOrder(orderSn,userId);
+    }
+
+    @GetMapping("/status")
+//    @RequireRole(Role.USER)
+    @Operation(
+            summary = "获取单个订单状态（轮询）",
+            description = "获取单个订单状态（轮询）"
+    )
+    public Result<Integer> getOrderStatus(
+            @Parameter(description = "订单标记号",required = true)
+            String orderSn,
+            @Parameter(description = "等待时间（毫秒）第一次不用给",required = true)
+            Integer waitTime
+    ){
+        return orderService.getOrderStatus(orderSn,waitTime);
+    }
+
+    @GetMapping("/status/group")
+    @Operation(
+            summary = "获取订单组状态（轮询）",
+            description = "获取订单组状态（轮询）"
+    )
+    public Result<Integer> getOrderGroupStatus(
+            @Parameter(description = "订单组标记号",required = true)
+            String groupSn,
+            Integer waitTime
+    ){
+        return orderService.getOrderGroupStatus(groupSn,waitTime);
     }
 }

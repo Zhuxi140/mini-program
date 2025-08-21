@@ -55,6 +55,20 @@ public class OrderRedisCache {
         redisUntil.hPut(key,"Quantity",productQuantity);
     }
 
+    public void addOrderStatus(String orderSn){
+        String addingOrder = "order:adding:" + orderSn;
+        redisUntil.setStringValueString(addingOrder, "1", 30, TimeUnit.HOURS);
+    }
+
+    public Object getOrderStatus(String orderSn){
+        String addingOrder = "order:adding:" + orderSn;
+        Object stringValue = redisUntil.getStringValue(addingOrder);
+        if (stringValue != null){
+            return stringValue;
+        }
+        return null;
+    }
+
     public Integer getOrderLock(String orderSn) {
         String key = gerOrderLockKey(orderSn);
         Object o = redisUntil.hGet(key, "Quantity");
@@ -190,7 +204,6 @@ public class OrderRedisCache {
                         p.expire(orderDetailKey,15, TimeUnit.DAYS);
                     }
                 }
-
                 HashMap.clear();
             });
 

@@ -76,6 +76,8 @@ public class LoginRedisCache {
         Object id = redisUntil.hGet(getUserInfoKey(openId), "id");
         if (id instanceof Long){
             return (Long) id;
+        }else if(id == null){
+            return null;
         }else{
             return Long.valueOf((Integer)id);
         }
