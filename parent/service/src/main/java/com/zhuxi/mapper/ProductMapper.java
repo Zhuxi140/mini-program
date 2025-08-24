@@ -270,5 +270,13 @@ public interface ProductMapper {
     List<Map<String, Object>> getProfitDate(Integer targetYear);
 
 
+    @Insert("""
+    INSERT INTO supplier(name, contact, phone, address, rating, is_active)
+    VALUE(#{name},#{contact},#{phone},#{address},5,1)
+    """)
+    int addSupplier(SupplierAddDTO sa);
+
+
+    int updateSupplier(Integer rating,Integer isActive,Integer id);
 
 }

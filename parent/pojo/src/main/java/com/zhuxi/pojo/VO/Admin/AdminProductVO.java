@@ -12,6 +12,8 @@ public class AdminProductVO {
     private String name;
     @Schema(description = "商品封面图片")
     private String coverUrl;
+    @Schema(description = "商品产地")
+    private String origin;
     @Schema(description = "供应商名称")
     private String supplierName;
     @Schema(description = "商品规格数量")
@@ -32,10 +34,11 @@ public class AdminProductVO {
     public AdminProductVO() {
     }
 
-    public AdminProductVO(Long id, String name, String coverUrl, String supplierName, Long specCount, BigDecimal minPrice, BigDecimal maxPrice, Long totalRealStock, Long onSaleStock, String stockStatus, int status) {
+    public AdminProductVO(Long id, String name, String coverUrl, String origin, String supplierName, Long specCount, BigDecimal minPrice, BigDecimal maxPrice, Long totalRealStock, Long onSaleStock, String stockStatus, int status) {
         this.id = id;
         this.name = name;
         this.coverUrl = coverUrl;
+        this.origin = origin;
         this.supplierName = supplierName;
         this.specCount = specCount;
         this.minPrice = minPrice;
@@ -133,5 +136,13 @@ public class AdminProductVO {
 
     public void setStatus(int status) {
         this.status = status;
+    }
+
+    public String getOrigin() {
+        return origin;
+    }
+
+    public void setOrigin(String origin) {
+        this.origin = origin;
     }
 }

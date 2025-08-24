@@ -43,4 +43,11 @@ public interface AdminProductService {
     Result<List<Map<String, Object>>> getProfitData(Integer targetYear);
 
 
+    // 增加供应商
+    Result<Void> addSupplier(SupplierAddDTO supplierAddDTO);
+
+    // 修改供应商信息
+    Result<Void> updateSupplier(Integer rating,Integer isActive,Integer id);
+
+
 }

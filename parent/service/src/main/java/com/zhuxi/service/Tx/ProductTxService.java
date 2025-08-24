@@ -38,6 +38,22 @@ public class ProductTxService {
     }
 
 
+    @Transactional(rollbackFor = transactionalException.class)
+    public void addSupplier(SupplierAddDTO supplierAddDTO){
+        int i = productMapper.addSupplier(supplierAddDTO);
+        if (i != 1){
+            throw new transactionalException(MessageReturn.INSERT_ERROR);
+        }
+    }
+
+    @Transactional(rollbackFor = transactionalException.class)
+    public void updateSupplier(Integer rating,Integer isActive,Integer id){
+        int i = productMapper.updateSupplier(rating,isActive,id);
+        if (i != 1){
+            throw new transactionalException(MessageReturn.UPDATE_ERROR);
+        }
+    }
+
     @Transactional(readOnly = true,propagation = Propagation.SUPPORTS)
     public List<snowFlakeMap> getSnowFlakeMap(Long lastId,int pageSize){
         List<snowFlakeMap> snowFlakeMap = productMapper.getSnowFlakeMap(lastId, pageSize);

@@ -7,9 +7,35 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="372da862-f7c4-4fa2-93c3-bf2ac1fe9e6e" name="更改" comment="修复上一个提交的小bug">
+    <list default="true" id="372da862-f7c4-4fa2-93c3-bf2ac1fe9e6e" name="更改" comment="fix(order): 修复上一个提交的小 bug">
+      <change beforePath="$PROJECT_DIR$/.idea/dataSources/b42a7732-a8a8-435b-b349-6f9f6e04249d.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources/b42a7732-a8a8-435b-b349-6f9f6e04249d.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/sqldialects.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/sqldialects.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/service/MessageService/OrderMessage.java" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/service/MessageService/OrderMessage.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/parent/com/zhuxi/pojo/VO/Admin/AdminProductVO.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/parent/com/zhuxi/pojo/VO/Admin/AdminProductVO.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/parent/pojo/src/main/java/com/zhuxi/pojo/VO/Admin/AdminProductVO.java" beforeDir="false" afterPath="$PROJECT_DIR$/parent/pojo/src/main/java/com/zhuxi/pojo/VO/Admin/AdminProductVO.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/Constant/MessageReturn.java" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/Constant/MessageReturn.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/controller/Admin/AdminProductController.java" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/controller/Admin/AdminProductController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/mapper/ProductMapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/mapper/ProductMapper.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/service/Impl/AdminProductServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/service/Impl/AdminProductServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/service/Tx/ProductTxService.java" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/service/Tx/ProductTxService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/service/business/AdminProductService.java" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/service/business/AdminProductService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/parent/service/src/main/resources/mapper/ProductMapper.xml" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/src/main/resources/mapper/ProductMapper.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/Constant/MessageReturn.class" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/Constant/MessageReturn.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/controller/Admin/AdminProductController.class" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/controller/Admin/AdminProductController.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/controller/OSSController.class" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/controller/OSSController.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/mapper/ProductMapper.class" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/mapper/ProductMapper.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/service/Impl/AdminProductServiceImpl$4.class" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/service/Impl/AdminProductServiceImpl$4.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/service/Impl/AdminProductServiceImpl.class" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/service/Impl/AdminProductServiceImpl.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/service/Impl/AdminServiceImpl.class" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/service/Impl/AdminServiceImpl.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/service/Impl/CartServiceImpl.class" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/service/Impl/CartServiceImpl.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/service/Impl/DeadMessageServiceImpl.class" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/service/Impl/DeadMessageServiceImpl.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/service/Impl/OrderServiceImpl.class" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/service/Impl/OrderServiceImpl.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/service/Impl/PayServiceImpl.class" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/service/Impl/PayServiceImpl.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/service/Impl/WechatServiceImpl.class" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/service/Impl/WechatServiceImpl.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/service/MessageService/OrderMessage.class" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/service/MessageService/OrderMessage.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/service/Tx/ProductTxService.class" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/service/Tx/ProductTxService.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/service/business/AdminProductService.class" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/service/business/AdminProductService.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/parent/service/target/classes/mapper/ProductMapper.xml" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/target/classes/mapper/ProductMapper.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -173,6 +199,11 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
+    <list>
+      <item itemvalue="JUnit.ServiceApplicationTests" />
+      <item itemvalue="JUnit.ServiceApplicationTests.contextLoads" />
+      <item itemvalue="Spring Boot.ServiceApplication" />
+    </list>
     <recent_temporary>
       <list>
         <item itemvalue="JUnit.ServiceApplicationTests.contextLoads" />
@@ -326,15 +357,10 @@
       <workItem from="1755745437919" duration="86000" />
       <workItem from="1755745532614" duration="10463000" />
       <workItem from="1755758526020" duration="629000" />
-      <workItem from="1755765109165" duration="427000" />
-    </task>
-    <task id="LOCAL-00012" summary="refactor(oss): 重构 OSS 文件上传流程&#10;&#10;- 新增 OSSConfigDTO 和 OssTokenDTO 类，优化参数传输&#10;- 修改文件上传逻辑，支持多文件同时上传&#10;- 更新 Article 和 Product 相关 mapper 和 service 接口- 优化回调处理逻辑，增加对不同上传类型的支持">
-      <option name="closed" value="true" />
-      <created>1751697445251</created>
-      <option name="number" value="00012" />
-      <option name="presentableId" value="LOCAL-00012" />
-      <option name="project" value="LOCAL" />
-      <updated>1751697445251</updated>
+      <workItem from="1755765109165" duration="474000" />
+      <workItem from="1755825857897" duration="1016000" />
+      <workItem from="1755829214792" duration="2935000" />
+      <workItem from="1755910793119" duration="837000" />
     </task>
     <task id="LOCAL-00013" summary="优化事务处理&#10;优化商品、规格等交互逻辑&#10;构建供应商、进货记录等模块&#10;去除一些冗余字段，逻辑更清晰。">
       <option name="closed" value="true" />
@@ -720,7 +746,15 @@
       <option name="project" value="LOCAL" />
       <updated>1755759120042</updated>
     </task>
-    <option name="localTasksCounter" value="61" />
+    <task id="LOCAL-00061" summary="fix(order): 修复上一个提交的小 bug">
+      <option name="closed" value="true" />
+      <created>1755765573528</created>
+      <option name="number" value="00061" />
+      <option name="presentableId" value="LOCAL-00061" />
+      <option name="project" value="LOCAL" />
+      <updated>1755765573528</updated>
+    </task>
+    <option name="localTasksCounter" value="62" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -738,7 +772,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="refactor(service): 重构服务模块代码&#10;&#10;- 修改包名：将 service 包拆分为 business、Tx、Cache 等子包- 重命名类：更新类名以适应新的包结构&#10;- 添加 RabbitMQ 配置：在 application.yaml 中添加 RabbitMQ 相关配置&#10;- 优化导入语句：更新导入语句以使用新的包路径&#10;- 调整日志输出：删除多余的日志输出语句&#10;-" />
     <MESSAGE value="refactor(service): 重构服务模块代码&#10;&#10;- 新增 RabbitMQ 配置&#10;- 为部分接口添加消息队列逻辑&#10;- 新增部分对应redis的刷新逻辑&#10;- 使用雪花id代替原本的主键id 以防止业务信息泄漏&#10;- 优化大量接口逻辑&#10;- 优化部分业务逻辑&#10;- 优化部分代码结构和命名" />
     <MESSAGE value="feat(service): 重构服务层代码并添加消息队列支持&#10;&#10;- 重构了多个服务实现类的代码结构，提高了代码可读性和可维护性&#10;- 在 AdminProductServiceImpl 中添加了消息队列发送逻辑，支持异步处理商品规格相关操作&#10;- 更新了应用配置文件，添加了 RabbitMQ 相关配置&#10;- 将 Message 类重命名为 MessageReturn，更准确地反映了其用途&#10;- 优化了错误处理和消息返回机制，统一使用 MessageReturn 类中的错误信息" />
     <MESSAGE value="- 添加自动任务" />
@@ -763,7 +796,8 @@
     <MESSAGE value="feat(admin): 新增管理端文章接口并优化文章列表获取方式- 新增管理端文章列表接口，支持分页和排序&#10;- 重构普通文章列表获取方式，统一接口返回类型&#10;- 新增文章状态字段，用于管理端展示&#10;- 优化文章列表查询性能，减少数据库查询次数" />
     <MESSAGE value="feat(order): 优化订单创建和状态查询功能&#10;&#10;- 新增订单创建接口和状态查询接口&#10;- 优化订单创建逻辑，包括单订单和订单组&#10;- 添加订单状态查询功能，支持轮询方式&#10;- 优化订单相关数据结构和接口定义&#10;- 优化 Redis 缓存和 Lua脚本在订单创建和状态查询中的应用" />
     <MESSAGE value="修复上一个提交的小bug" />
-    <option name="LAST_COMMIT_MESSAGE" value="修复上一个提交的小bug" />
+    <MESSAGE value="fix(order): 修复上一个提交的小 bug" />
+    <option name="LAST_COMMIT_MESSAGE" value="fix(order): 修复上一个提交的小 bug" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

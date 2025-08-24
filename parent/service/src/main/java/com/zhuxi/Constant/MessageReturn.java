@@ -18,7 +18,7 @@ public class MessageReturn {
     public static final String LOGIN_SUCCESS = "登录成功";
     public static final String OPERATION_SUCCESS = "操作成功";
     public static final String PARAM_ERROR = "参数错误";
-    public static final String BODY_NO_MAIN_OR_IS_NULL = "请求中缺少必要字段或DTO/VO为空";
+    public static final String BODY_NO_MAIN_OR_IS_NULL = "请求(体)中缺少必要字段或请求体为空";
     public static final String FIELDS_IS_NULL = "字段为空";
     public static final String USERNAME_OR_PASSWORD_ERROR = "用户名或密码错误";
     public static final String USER_EXIST = "用户已存在";

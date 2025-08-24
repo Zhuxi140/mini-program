@@ -292,6 +292,39 @@ public class AdminProductServiceImpl implements AdminProductService {
         return Result.success(MessageReturn.OPERATION_SUCCESS, profitData);
     }
 
+    @Override
+    @Transactional
+    public Result<Void> addSupplier(SupplierAddDTO sa) {
+
+        if (sa == null){
+            return Result.error(MessageReturn.BODY_NO_MAIN_OR_IS_NULL);
+        }
+        String name = sa.getName();
+        String contact = sa.getContact();
+        String address = sa.getAddress();
+        String phone = sa.getPhone();
+        if (name == null || contact == null || address == null || phone == null ||
+            name.isEmpty() || contact.isEmpty() || address.isEmpty() || phone.isEmpty()){
+            return Result.error(MessageReturn.BODY_NO_MAIN_OR_IS_NULL);
+        }
+
+        productTxService.addSupplier(sa);
+
+        return Result.success(MessageReturn.OPERATION_SUCCESS);
+    }
+
+    @Override
+    @Transactional
+    public Result<Void> updateSupplier(Integer rating, Integer isActive, Integer id) {
+        if (rating == null || isActive == null || id == null){
+            return Result.error(MessageReturn.BODY_NO_MAIN_OR_IS_NULL);
+        }
+
+        productTxService.updateSupplier(rating, isActive, id);
+
+        return Result.success(MessageReturn.OPERATION_SUCCESS);
+    }
+
     /**
      * 修改商品
      */

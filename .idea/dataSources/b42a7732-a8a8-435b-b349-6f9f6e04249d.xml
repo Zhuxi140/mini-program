@@ -932,7 +932,7 @@ mini\\_program|schema||Xu||UPDATE|G</Grants>
       <CollationName>utf8mb3_general_ci</CollationName>
     </schema>
     <schema id="289" parent="1" name="mini_program">
-      <LastIntrospectionLocalTimestamp>2025-08-20.01:24:13</LastIntrospectionLocalTimestamp>
+      <LastIntrospectionLocalTimestamp>2025-08-22.01:37:09</LastIntrospectionLocalTimestamp>
       <CollationName>latin1_swedish_ci</CollationName>
     </schema>
     <schema id="290" parent="1" name="mysql">
@@ -1392,7 +1392,7 @@ user_id</ColNames>
       <UnderlyingIndexName>dead_letter_message_pk</UnderlyingIndexName>
     </key>
     <column id="376" parent="297" name="id">
-      <AutoIncrement>157</AutoIncrement>
+      <AutoIncrement>162</AutoIncrement>
       <NotNull>1</NotNull>
       <Position>1</Position>
       <StoredType>bigint|0s</StoredType>
@@ -1521,7 +1521,7 @@ spec_id</ColNames>
       <UnderlyingIndexName>inventory_lock_pk_2</UnderlyingIndexName>
     </key>
     <column id="402" parent="298" name="id">
-      <AutoIncrement>157</AutoIncrement>
+      <AutoIncrement>162</AutoIncrement>
       <Comment>订单ID</Comment>
       <NotNull>1</NotNull>
       <Position>1</Position>
@@ -1718,7 +1718,7 @@ spec_id</ColNames>
       <UnderlyingIndexName>group_sn</UnderlyingIndexName>
     </key>
     <column id="440" parent="300" name="id">
-      <AutoIncrement>157</AutoIncrement>
+      <AutoIncrement>162</AutoIncrement>
       <NotNull>1</NotNull>
       <Position>1</Position>
       <StoredType>bigint unsigned|0s</StoredType>
@@ -2012,7 +2012,7 @@ spec_id</ColNames>
       <UnderlyingIndexName>product_pk</UnderlyingIndexName>
     </key>
     <column id="498" parent="303" name="id">
-      <AutoIncrement>1</AutoIncrement>
+      <AutoIncrement>122</AutoIncrement>
       <NotNull>1</NotNull>
       <Position>1</Position>
       <StoredType>bigint unsigned|0s</StoredType>
@@ -2074,443 +2074,451 @@ spec_id</ColNames>
       <Type>btree</Type>
       <Unique>1</Unique>
     </index>
-    <index id="510" parent="303" name="purchase_record_spec_id_fk">
+    <index id="510" parent="303" name="purchase_record_pk_2">
+      <ColNames>spec_id</ColNames>
+      <Type>btree</Type>
+      <Unique>1</Unique>
+    </index>
+    <index id="511" parent="303" name="purchase_record_spec_id_fk">
       <ColNames>spec_id</ColNames>
       <Type>btree</Type>
     </index>
-    <index id="511" parent="303" name="purchase_record_supplier_id_fk">
+    <index id="512" parent="303" name="purchase_record_supplier_id_fk">
       <ColNames>supplier_id</ColNames>
       <Type>btree</Type>
     </index>
-    <key id="512" parent="303" name="PRIMARY">
+    <key id="513" parent="303" name="PRIMARY">
       <NameSurrogate>1</NameSurrogate>
       <Primary>1</Primary>
       <UnderlyingIndexName>PRIMARY</UnderlyingIndexName>
     </key>
-    <key id="513" parent="303" name="purchase_record_pk">
+    <key id="514" parent="303" name="purchase_record_pk">
       <UnderlyingIndexName>purchase_record_pk</UnderlyingIndexName>
     </key>
-    <column id="514" parent="304" name="id">
-      <AutoIncrement>52</AutoIncrement>
+    <key id="515" parent="303" name="purchase_record_pk_2">
+      <UnderlyingIndexName>purchase_record_pk_2</UnderlyingIndexName>
+    </key>
+    <column id="516" parent="304" name="id">
+      <AutoIncrement>54</AutoIncrement>
       <NotNull>1</NotNull>
       <Position>1</Position>
       <StoredType>bigint|0s</StoredType>
     </column>
-    <column id="515" parent="304" name="snowflake_id">
+    <column id="517" parent="304" name="snowflake_id">
       <Position>2</Position>
       <StoredType>bigint|0s</StoredType>
     </column>
-    <column id="516" parent="304" name="product_id">
+    <column id="518" parent="304" name="product_id">
       <Comment>关联商品ID</Comment>
       <NotNull>1</NotNull>
       <Position>3</Position>
       <StoredType>bigint unsigned|0s</StoredType>
     </column>
-    <column id="517" parent="304" name="spec_id">
+    <column id="519" parent="304" name="spec_id">
       <Comment>关联商品规格ID</Comment>
       <NotNull>1</NotNull>
       <Position>4</Position>
       <StoredType>bigint unsigned|0s</StoredType>
     </column>
-    <column id="518" parent="304" name="stock">
+    <column id="520" parent="304" name="stock">
       <Comment>真实库存</Comment>
       <NotNull>1</NotNull>
       <Position>5</Position>
       <StoredType>int unsigned|0s</StoredType>
     </column>
-    <column id="519" parent="304" name="created_at">
+    <column id="521" parent="304" name="created_at">
       <DefaultExpression>CURRENT_TIMESTAMP</DefaultExpression>
       <Position>6</Position>
       <StoredType>datetime|0s</StoredType>
     </column>
-    <foreign-key id="520" parent="304" name="real_stock_ibfk_1">
+    <foreign-key id="522" parent="304" name="real_stock_ibfk_1">
       <ColNames>product_id</ColNames>
       <RefColNames>id</RefColNames>
       <RefTableName>product</RefTableName>
     </foreign-key>
-    <foreign-key id="521" parent="304" name="real_stock_ibfk_2">
+    <foreign-key id="523" parent="304" name="real_stock_ibfk_2">
       <ColNames>spec_id</ColNames>
       <RefColNames>id</RefColNames>
       <RefTableName>spec</RefTableName>
     </foreign-key>
-    <index id="522" parent="304" name="PRIMARY">
+    <index id="524" parent="304" name="PRIMARY">
       <ColNames>id</ColNames>
       <Type>btree</Type>
       <Unique>1</Unique>
     </index>
-    <index id="523" parent="304" name="real_stock_pk">
+    <index id="525" parent="304" name="real_stock_pk">
       <ColNames>snowflake_id</ColNames>
       <Type>btree</Type>
       <Unique>1</Unique>
     </index>
-    <index id="524" parent="304" name="real_stock_product_id_spec_id_index">
+    <index id="526" parent="304" name="real_stock_product_id_spec_id_index">
       <ColNames>product_id
 spec_id</ColNames>
       <Type>btree</Type>
     </index>
-    <index id="525" parent="304" name="product_id">
+    <index id="527" parent="304" name="product_id">
       <ColNames>product_id</ColNames>
       <Type>btree</Type>
     </index>
-    <index id="526" parent="304" name="spec_id">
+    <index id="528" parent="304" name="spec_id">
       <ColNames>spec_id</ColNames>
       <Type>btree</Type>
     </index>
-    <key id="527" parent="304" name="PRIMARY">
+    <key id="529" parent="304" name="PRIMARY">
       <NameSurrogate>1</NameSurrogate>
       <Primary>1</Primary>
       <UnderlyingIndexName>PRIMARY</UnderlyingIndexName>
     </key>
-    <key id="528" parent="304" name="real_stock_pk">
+    <key id="530" parent="304" name="real_stock_pk">
       <UnderlyingIndexName>real_stock_pk</UnderlyingIndexName>
     </key>
-    <column id="529" parent="305" name="id">
-      <AutoIncrement>60</AutoIncrement>
+    <column id="531" parent="305" name="id">
+      <AutoIncrement>65</AutoIncrement>
       <NotNull>1</NotNull>
       <Position>1</Position>
       <StoredType>bigint unsigned|0s</StoredType>
     </column>
-    <column id="530" parent="305" name="snowflake_id">
+    <column id="532" parent="305" name="snowflake_id">
       <Position>2</Position>
       <StoredType>bigint|0s</StoredType>
     </column>
-    <column id="531" parent="305" name="product_id">
+    <column id="533" parent="305" name="product_id">
       <Comment>商品ID</Comment>
       <NotNull>1</NotNull>
       <Position>3</Position>
       <StoredType>bigint unsigned|0s</StoredType>
     </column>
-    <column id="532" parent="305" name="spec">
+    <column id="534" parent="305" name="spec">
       <Comment>规格名称</Comment>
       <NotNull>1</NotNull>
       <Position>4</Position>
       <StoredType>varchar(100)|0s</StoredType>
     </column>
-    <column id="533" parent="305" name="purchase_price">
+    <column id="535" parent="305" name="purchase_price">
       <Comment>进货价</Comment>
       <Position>5</Position>
       <StoredType>decimal(10,2 digit)|0s</StoredType>
     </column>
-    <column id="534" parent="305" name="price">
+    <column id="536" parent="305" name="price">
       <Comment>售价</Comment>
       <Position>6</Position>
       <StoredType>decimal(10,2 digit) unsigned|0s</StoredType>
     </column>
-    <column id="535" parent="305" name="cover_url">
+    <column id="537" parent="305" name="cover_url">
       <Comment>规格图片OSS路径</Comment>
       <Position>7</Position>
       <StoredType>varchar(255)|0s</StoredType>
     </column>
-    <column id="536" parent="305" name="stock">
+    <column id="538" parent="305" name="stock">
       <Comment>出售库存</Comment>
       <NotNull>1</NotNull>
       <Position>8</Position>
       <StoredType>int unsigned|0s</StoredType>
     </column>
-    <column id="537" parent="305" name="created_at">
+    <column id="539" parent="305" name="created_at">
       <DefaultExpression>CURRENT_TIMESTAMP</DefaultExpression>
       <Position>9</Position>
       <StoredType>datetime|0s</StoredType>
     </column>
-    <foreign-key id="538" parent="305" name="spec_ibfk_1">
+    <foreign-key id="540" parent="305" name="spec_ibfk_1">
       <ColNames>product_id</ColNames>
       <OnDelete>cascade</OnDelete>
       <RefColNames>id</RefColNames>
       <RefTableName>product</RefTableName>
     </foreign-key>
-    <index id="539" parent="305" name="PRIMARY">
+    <index id="541" parent="305" name="PRIMARY">
       <ColNames>id</ColNames>
       <Type>btree</Type>
       <Unique>1</Unique>
     </index>
-    <index id="540" parent="305" name="spec_pk">
+    <index id="542" parent="305" name="spec_pk">
       <ColNames>snowflake_id</ColNames>
       <Type>btree</Type>
       <Unique>1</Unique>
     </index>
-    <index id="541" parent="305" name="spec_pk_2">
+    <index id="543" parent="305" name="spec_pk_2">
       <ColNames>spec
 product_id</ColNames>
       <Type>btree</Type>
       <Unique>1</Unique>
     </index>
-    <index id="542" parent="305" name="spec_product_id_price_index">
+    <index id="544" parent="305" name="spec_product_id_price_index">
       <ColNames>product_id
 price</ColNames>
       <Type>btree</Type>
     </index>
-    <key id="543" parent="305" name="PRIMARY">
+    <key id="545" parent="305" name="PRIMARY">
       <NameSurrogate>1</NameSurrogate>
       <Primary>1</Primary>
       <UnderlyingIndexName>PRIMARY</UnderlyingIndexName>
     </key>
-    <key id="544" parent="305" name="spec_pk">
+    <key id="546" parent="305" name="spec_pk">
       <UnderlyingIndexName>spec_pk</UnderlyingIndexName>
     </key>
-    <key id="545" parent="305" name="spec_pk_2">
+    <key id="547" parent="305" name="spec_pk_2">
       <UnderlyingIndexName>spec_pk_2</UnderlyingIndexName>
     </key>
-    <column id="546" parent="306" name="id">
+    <column id="548" parent="306" name="id">
       <AutoIncrement>6</AutoIncrement>
       <Comment>供应商ID</Comment>
       <NotNull>1</NotNull>
       <Position>1</Position>
       <StoredType>int unsigned|0s</StoredType>
     </column>
-    <column id="547" parent="306" name="name">
+    <column id="549" parent="306" name="name">
       <Comment>供应商名称</Comment>
       <NotNull>1</NotNull>
       <Position>2</Position>
       <StoredType>varchar(100)|0s</StoredType>
     </column>
-    <column id="548" parent="306" name="contact">
+    <column id="550" parent="306" name="contact">
       <Comment>负责人</Comment>
       <NotNull>1</NotNull>
       <Position>3</Position>
       <StoredType>varchar(50)|0s</StoredType>
     </column>
-    <column id="549" parent="306" name="phone">
+    <column id="551" parent="306" name="phone">
       <Comment>联系电话</Comment>
       <NotNull>1</NotNull>
       <Position>4</Position>
       <StoredType>varchar(15)|0s</StoredType>
     </column>
-    <column id="550" parent="306" name="address">
+    <column id="552" parent="306" name="address">
       <Comment>地址</Comment>
       <Position>5</Position>
       <StoredType>varchar(200)|0s</StoredType>
     </column>
-    <column id="551" parent="306" name="rating">
+    <column id="553" parent="306" name="rating">
       <Comment>信用评级(1-5星)</Comment>
       <DefaultExpression>3</DefaultExpression>
       <Position>6</Position>
       <StoredType>tinyint|0s</StoredType>
     </column>
-    <column id="552" parent="306" name="is_active">
+    <column id="554" parent="306" name="is_active">
       <Comment>是否合作中</Comment>
       <DefaultExpression>1</DefaultExpression>
       <Position>7</Position>
       <StoredType>tinyint(1)|0s</StoredType>
     </column>
-    <column id="553" parent="306" name="created_at">
+    <column id="555" parent="306" name="created_at">
       <DefaultExpression>CURRENT_TIMESTAMP</DefaultExpression>
       <Position>8</Position>
       <StoredType>datetime|0s</StoredType>
     </column>
-    <index id="554" parent="306" name="PRIMARY">
+    <index id="556" parent="306" name="PRIMARY">
       <ColNames>id</ColNames>
       <Type>btree</Type>
       <Unique>1</Unique>
     </index>
-    <index id="555" parent="306" name="name">
+    <index id="557" parent="306" name="name">
       <ColNames>name</ColNames>
       <Type>btree</Type>
       <Unique>1</Unique>
     </index>
-    <key id="556" parent="306" name="PRIMARY">
+    <key id="558" parent="306" name="PRIMARY">
       <NameSurrogate>1</NameSurrogate>
       <Primary>1</Primary>
       <UnderlyingIndexName>PRIMARY</UnderlyingIndexName>
     </key>
-    <key id="557" parent="306" name="name">
+    <key id="559" parent="306" name="name">
       <UnderlyingIndexName>name</UnderlyingIndexName>
     </key>
-    <column id="558" parent="307" name="id">
+    <column id="560" parent="307" name="id">
       <AutoIncrement>21</AutoIncrement>
       <Comment>用户ID</Comment>
       <NotNull>1</NotNull>
       <Position>1</Position>
       <StoredType>bigint unsigned|0s</StoredType>
     </column>
-    <column id="559" parent="307" name="snowflake_id">
+    <column id="561" parent="307" name="snowflake_id">
       <Position>2</Position>
       <StoredType>bigint|0s</StoredType>
     </column>
-    <column id="560" parent="307" name="openid">
+    <column id="562" parent="307" name="openid">
       <Comment>微信openid（唯一标识）</Comment>
       <Position>3</Position>
       <StoredType>varchar(50)|0s</StoredType>
     </column>
-    <column id="561" parent="307" name="phone">
+    <column id="563" parent="307" name="phone">
       <Comment>手机号（唯一）</Comment>
       <Position>4</Position>
       <StoredType>varchar(15)|0s</StoredType>
     </column>
-    <column id="562" parent="307" name="address_id">
+    <column id="564" parent="307" name="address_id">
       <Position>5</Position>
       <StoredType>bigint|0s</StoredType>
     </column>
-    <column id="563" parent="307" name="name">
+    <column id="565" parent="307" name="name">
       <Comment>昵称</Comment>
       <DefaultExpression>&apos;金银花用户&apos;</DefaultExpression>
       <NotNull>1</NotNull>
       <Position>6</Position>
       <StoredType>varchar(50)|0s</StoredType>
     </column>
-    <column id="564" parent="307" name="avatar">
+    <column id="566" parent="307" name="avatar">
       <Comment>自定义头像路径</Comment>
       <Position>7</Position>
       <StoredType>varchar(255)|0s</StoredType>
     </column>
-    <column id="565" parent="307" name="role">
+    <column id="567" parent="307" name="role">
       <DefaultExpression>&apos;USER&apos;</DefaultExpression>
       <Position>8</Position>
       <StoredType>varchar(5)|0s</StoredType>
     </column>
-    <column id="566" parent="307" name="status">
+    <column id="568" parent="307" name="status">
       <Comment>状态：0禁用，1正常</Comment>
       <DefaultExpression>1</DefaultExpression>
       <Position>9</Position>
       <StoredType>tinyint(1)|0s</StoredType>
     </column>
-    <column id="567" parent="307" name="created_at">
+    <column id="569" parent="307" name="created_at">
       <DefaultExpression>CURRENT_TIMESTAMP</DefaultExpression>
       <NotNull>1</NotNull>
       <Position>10</Position>
       <StoredType>timestamp|0s</StoredType>
     </column>
-    <column id="568" parent="307" name="updated_at">
+    <column id="570" parent="307" name="updated_at">
       <DefaultExpression>CURRENT_TIMESTAMP</DefaultExpression>
       <NotNull>1</NotNull>
       <OnUpdate>CURRENT_TIMESTAMP</OnUpdate>
       <Position>11</Position>
       <StoredType>timestamp|0s</StoredType>
     </column>
-    <column id="569" parent="307" name="last_time">
+    <column id="571" parent="307" name="last_time">
       <DefaultExpression>CURRENT_TIMESTAMP</DefaultExpression>
       <Position>12</Position>
       <StoredType>datetime|0s</StoredType>
     </column>
-    <index id="570" parent="307" name="PRIMARY">
+    <index id="572" parent="307" name="PRIMARY">
       <ColNames>id</ColNames>
       <Type>btree</Type>
       <Unique>1</Unique>
     </index>
-    <index id="571" parent="307" name="user_pk">
+    <index id="573" parent="307" name="user_pk">
       <ColNames>snowflake_id</ColNames>
       <Type>btree</Type>
       <Unique>1</Unique>
     </index>
-    <index id="572" parent="307" name="openid">
+    <index id="574" parent="307" name="openid">
       <ColNames>openid</ColNames>
       <Type>btree</Type>
       <Unique>1</Unique>
     </index>
-    <index id="573" parent="307" name="user_id_last_time_index">
+    <index id="575" parent="307" name="user_id_last_time_index">
       <ColNames>id
 last_time</ColNames>
       <Type>btree</Type>
     </index>
-    <index id="574" parent="307" name="user_address_id_index">
+    <index id="576" parent="307" name="user_address_id_index">
       <ColNames>address_id</ColNames>
       <Type>btree</Type>
     </index>
-    <key id="575" parent="307" name="PRIMARY">
+    <key id="577" parent="307" name="PRIMARY">
       <NameSurrogate>1</NameSurrogate>
       <Primary>1</Primary>
       <UnderlyingIndexName>PRIMARY</UnderlyingIndexName>
     </key>
-    <key id="576" parent="307" name="user_pk">
+    <key id="578" parent="307" name="user_pk">
       <UnderlyingIndexName>user_pk</UnderlyingIndexName>
     </key>
-    <key id="577" parent="307" name="openid">
+    <key id="579" parent="307" name="openid">
       <UnderlyingIndexName>openid</UnderlyingIndexName>
     </key>
-    <column id="578" parent="308" name="id">
+    <column id="580" parent="308" name="id">
       <AutoIncrement>9</AutoIncrement>
       <Comment>地址ID</Comment>
       <NotNull>1</NotNull>
       <Position>1</Position>
       <StoredType>bigint unsigned|0s</StoredType>
     </column>
-    <column id="579" parent="308" name="snowflake_id">
+    <column id="581" parent="308" name="snowflake_id">
       <Position>2</Position>
       <StoredType>int|0s</StoredType>
     </column>
-    <column id="580" parent="308" name="user_id">
+    <column id="582" parent="308" name="user_id">
       <Comment>关联用户ID</Comment>
       <NotNull>1</NotNull>
       <Position>3</Position>
       <StoredType>bigint unsigned|0s</StoredType>
     </column>
-    <column id="581" parent="308" name="recipient">
+    <column id="583" parent="308" name="recipient">
       <Comment>收货人姓名</Comment>
       <NotNull>1</NotNull>
       <Position>4</Position>
       <StoredType>varchar(20)|0s</StoredType>
     </column>
-    <column id="582" parent="308" name="phone">
+    <column id="584" parent="308" name="phone">
       <Comment>收货人手机号</Comment>
       <NotNull>1</NotNull>
       <Position>5</Position>
       <StoredType>varchar(15)|0s</StoredType>
     </column>
-    <column id="583" parent="308" name="province">
+    <column id="585" parent="308" name="province">
       <Comment>省</Comment>
       <NotNull>1</NotNull>
       <Position>6</Position>
       <StoredType>varchar(20)|0s</StoredType>
     </column>
-    <column id="584" parent="308" name="city">
+    <column id="586" parent="308" name="city">
       <Comment>市</Comment>
       <NotNull>1</NotNull>
       <Position>7</Position>
       <StoredType>varchar(20)|0s</StoredType>
     </column>
-    <column id="585" parent="308" name="district">
+    <column id="587" parent="308" name="district">
       <Comment>区/县</Comment>
       <NotNull>1</NotNull>
       <Position>8</Position>
       <StoredType>varchar(20)|0s</StoredType>
     </column>
-    <column id="586" parent="308" name="detail">
+    <column id="588" parent="308" name="detail">
       <Comment>详细地址</Comment>
       <NotNull>1</NotNull>
       <Position>9</Position>
       <StoredType>varchar(100)|0s</StoredType>
     </column>
-    <column id="587" parent="308" name="is_default">
+    <column id="589" parent="308" name="is_default">
       <Comment>是否默认地址（1-是 0-否）</Comment>
       <DefaultExpression>0</DefaultExpression>
       <Position>10</Position>
       <StoredType>tinyint(1)|0s</StoredType>
     </column>
-    <column id="588" parent="308" name="created_at">
+    <column id="590" parent="308" name="created_at">
       <DefaultExpression>CURRENT_TIMESTAMP</DefaultExpression>
       <Position>11</Position>
       <StoredType>datetime|0s</StoredType>
     </column>
-    <column id="589" parent="308" name="updated_at">
+    <column id="591" parent="308" name="updated_at">
       <DefaultExpression>CURRENT_TIMESTAMP</DefaultExpression>
       <OnUpdate>CURRENT_TIMESTAMP</OnUpdate>
       <Position>12</Position>
       <StoredType>datetime|0s</StoredType>
     </column>
-    <foreign-key id="590" parent="308" name="user_address_user_id_fk">
+    <foreign-key id="592" parent="308" name="user_address_user_id_fk">
       <ColNames>user_id</ColNames>
       <RefColNames>id</RefColNames>
       <RefTableName>user</RefTableName>
     </foreign-key>
-    <index id="591" parent="308" name="PRIMARY">
+    <index id="593" parent="308" name="PRIMARY">
       <ColNames>id</ColNames>
       <Type>btree</Type>
       <Unique>1</Unique>
     </index>
-    <index id="592" parent="308" name="user_address_pk">
+    <index id="594" parent="308" name="user_address_pk">
       <ColNames>snowflake_id</ColNames>
       <Type>btree</Type>
       <Unique>1</Unique>
     </index>
-    <index id="593" parent="308" name="user_address_user_id_fk">
+    <index id="595" parent="308" name="user_address_user_id_fk">
       <ColNames>user_id</ColNames>
       <Type>btree</Type>
     </index>
-    <key id="594" parent="308" name="PRIMARY">
+    <key id="596" parent="308" name="PRIMARY">
       <NameSurrogate>1</NameSurrogate>
       <Primary>1</Primary>
       <UnderlyingIndexName>PRIMARY</UnderlyingIndexName>
     </key>
-    <key id="595" parent="308" name="user_address_pk">
+    <key id="597" parent="308" name="user_address_pk">
       <UnderlyingIndexName>user_address_pk</UnderlyingIndexName>
     </key>
   </database-model>

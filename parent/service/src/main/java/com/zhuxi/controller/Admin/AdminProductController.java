@@ -6,8 +6,7 @@ import com.zhuxi.Result.PageResult;
 import com.zhuxi.Result.Result;
 import com.zhuxi.annotation.RequireRole;
 import com.zhuxi.pojo.DTO.Admin.DashboardDTO;
-import com.zhuxi.pojo.DTO.product.SpecAddDTO;
-import com.zhuxi.pojo.DTO.product.newProductPurchase;
+import com.zhuxi.pojo.DTO.product.*;
 import com.zhuxi.pojo.VO.Product.SupplierVO;
 import com.zhuxi.service.business.AdminProductService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -15,8 +14,6 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.web.bind.annotation.*;
-import com.zhuxi.pojo.DTO.product.ProductAddDTO;
-import com.zhuxi.pojo.DTO.product.ProductUpdateDTO;
 import com.zhuxi.pojo.VO.Product.ProductSpecDetailVO;
 import com.zhuxi.pojo.entity.Role;
 
@@ -204,6 +201,38 @@ public class AdminProductController {
     )
     public Result<List<Map<String, Object>>> getProfitData(@Schema(description = "查询年份") Integer targetYear){
         return adminProductService.getProfitData(targetYear);
+    }
+
+    @PostMapping("/addSupplier")
+    @RequireRole(Role.SUPER_ADMIN)
+    @Operation(
+            summary = "添加供应商",
+            description = "添加供应商"
+    )
+    public Result<Void> addSupplier(
+            @Parameter(description = "供应商信息", required = true)
+            @RequestBody
+            SupplierAddDTO sa
+    ){
+        return adminProductService.addSupplier(sa);
+    }
+
+    @PutMapping("/updateSupplier")
+    @RequireRole(Role.SUPER_ADMIN)
+    @Operation(
+            summary = "更新供应商信息",
+            description = "更新供应商信息"
+    )
+    public Result<Void> updateSupplier(
+            @Parameter(description = "供应商id", required = true)
+            @RequestParam
+            Integer id,
+            @Parameter(description = "供应商信用星级")
+            Integer rating,
+            @Parameter(description = "供应商是否正在合作")
+            Integer isActive
+    ){
+        return adminProductService.updateSupplier(rating,isActive,id);
     }
 
 }
