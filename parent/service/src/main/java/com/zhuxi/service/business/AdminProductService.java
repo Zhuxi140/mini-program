@@ -5,6 +5,7 @@ import com.zhuxi.Result.Result;
 import com.zhuxi.pojo.DTO.Admin.DashboardDTO;
 import com.zhuxi.pojo.DTO.product.*;
 import com.zhuxi.pojo.VO.Product.ProductSpecDetailVO;
+import com.zhuxi.pojo.VO.Product.ProductSpecIdVO;
 import com.zhuxi.pojo.VO.Product.SupplierVO;
 
 import java.util.List;
@@ -16,7 +17,7 @@ public interface AdminProductService {
 
     Result<Void> update(ProductUpdateDTO productUpdateDTO);
 
-    Result<Void> add(ProductAddDTO productAddDTO);
+    Result<ProductSpecIdVO> add(ProductAddDTO productAddDTO);
 
     Result<Void> delete(Long id);
 

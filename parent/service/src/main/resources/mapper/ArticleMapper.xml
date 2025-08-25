@@ -20,7 +20,7 @@
                     AND type = #{type}
                 </if>
             </where>
-            ORDER BY id,created_at DESC
+            ORDER BY id DESC,created_at DESC
             LIMIT #{pageSize}
         </select>
 

@@ -16,7 +16,7 @@ public interface ArticleService {
     Result<PageResult<ArticleVO, Long>> getListArticleDESC(Long lastId, Integer pageSize, Integer  type);
 
     //添加文章
-    Result<Void> insertArticle(ArticleInsertOrUpdateDTO articleInsertOrUpdateDTO);
+    Result<Long> insertArticle(ArticleInsertOrUpdateDTO articleInsertOrUpdateDTO);
 
     //修改文章
     Result<Void> updateArticle(ArticleInsertOrUpdateDTO articleInsertOrUpdateDTO,Long id);

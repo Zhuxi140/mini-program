@@ -330,11 +330,14 @@ public class ProductTxService {
     }
 
     @Transactional(rollbackFor = transactionalException.class)
-    public Integer updateBase(ProductBaseUpdateDTO productBaseUpdateDTO){
-        int exist = productMapper.isExist(productBaseUpdateDTO.getSupplierId());
-        if(exist <= 0){
-            throw new transactionalException(MessageReturn.SUPPLIER_ID_NOT_EXIST);
+    public Integer updateBase(ProductBaseUpdateDTO productBaseUpdateDTO,boolean isSupplier){
+        if (isSupplier){
+            int exist = productMapper.isExist(productBaseUpdateDTO.getSupplierId());
+            if(exist <= 0){
+                throw new transactionalException(MessageReturn.SUPPLIER_ID_NOT_EXIST);
+            }
         }
+
         if(productMapper.updateProductBase(productBaseUpdateDTO) <= 0){
             throw new transactionalException(MessageReturn.UPDATE_ERROR);
         }

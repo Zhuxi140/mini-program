@@ -4,6 +4,7 @@ import com.zhuxi.Constant.MessageReturn;
 import com.zhuxi.Result.PageResult;
 import com.zhuxi.Result.Result;
 import com.zhuxi.pojo.DTO.Admin.DashboardDTO;
+import com.zhuxi.pojo.VO.Product.ProductSpecIdVO;
 import com.zhuxi.pojo.VO.Product.SupplierVO;
 import com.zhuxi.service.business.AdminProductService;
 import com.zhuxi.service.Tx.ProductTxService;
@@ -68,7 +69,7 @@ public class AdminProductServiceImpl implements AdminProductService {
      */
     @Override
     @Transactional
-    public Result<Void> add(ProductAddDTO productAddDTO) {
+    public Result<ProductSpecIdVO> add(ProductAddDTO productAddDTO) {
         if (productAddDTO == null || productAddDTO.getBase() == null || productAddDTO.getSpec() == null)
             return Result.error(MessageReturn.BODY_NO_MAIN_OR_IS_NULL);
 
@@ -83,16 +84,22 @@ public class AdminProductServiceImpl implements AdminProductService {
         }
         productTxService.addSpec(spec, id);
 
+
         List<RealStockDTO> realStockDTO = productAddDTO.getSpec().stream().map(productSpecDTO -> {
             RealStockDTO realStockDTO1 = new RealStockDTO();
             realStockDTO1.setProductId(id);
             realStockDTO1.setSpecId(productSpecDTO.getId());
             return realStockDTO1;
         }).toList();
-
         productTxService.addRealStock(realStockDTO);
 
-        return Result.success(MessageReturn.OPERATION_SUCCESS);
+        ProductSpecIdVO productSpecIdVO = new ProductSpecIdVO();
+        productSpecIdVO.setProductId(id);
+        for (int i = 0; i < spec.size(); i++){
+            Long id1 = spec.get(i).getId();
+            productSpecIdVO.getSpecId().add(id1);
+        }
+        return Result.success(MessageReturn.OPERATION_SUCCESS,productSpecIdVO);
     }
 
 
@@ -361,7 +368,11 @@ public class AdminProductServiceImpl implements AdminProductService {
                 }
             }
         }
-        Integer status = productTxService.updateBase(base);
+        boolean isSupplier = false;
+        if(base.getSupplierId() != null){
+            isSupplier = true;
+        }
+        Integer status = productTxService.updateBase(base,isSupplier);
         if (spec != null) {
             productTxService.updateSpec(spec,productId);
         }

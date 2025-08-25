@@ -86,8 +86,8 @@ public interface ProductMapper {
 
     // 添加商品基础信息
     @Insert("""
-    INSERT INTO product(name,description,origin,status)
-    VALUES (#{name},#{description},#{origin},#{status})
+    INSERT INTO product(snowflake_id,name,description,origin,status)
+    VALUES (#{productNumber},#{name},#{description},#{origin},#{status})
     """)
     @Options(useGeneratedKeys = true, keyColumn = "id", keyProperty = "id")
     Boolean addBase(ProductBaseDTO productBaseDTO);
@@ -95,8 +95,8 @@ public interface ProductMapper {
     //添加规格信息
     @Options(useGeneratedKeys = true,keyProperty = "pSDto.id",keyColumn = "id")
     @Insert("""
-    INSERT INTO spec(product_id,spec,stock)
-    VALUE(#{productId},#{pSDto.spec},0)
+    INSERT INTO spec(snowflake_id,product_id,spec,stock)
+    VALUE(#{pSDto.specNumber},#{productId},#{pSDto.spec},0)
     """)
     int addSpec(@Param("pSDto") ProductSpecDTO productSpecDTO,@Param("productId")  Long id);
 

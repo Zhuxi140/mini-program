@@ -24,6 +24,7 @@ public class ProductBaseDTO {
     @JsonIgnore
     private Integer status = 0;
 
+
     public ProductBaseDTO(Long id, String name, Long productNumber, String description, String origin, Integer status ) {
         this.id = id;
         this.name = name;

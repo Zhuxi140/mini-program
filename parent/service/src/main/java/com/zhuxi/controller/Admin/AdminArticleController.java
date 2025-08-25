@@ -25,7 +25,7 @@ public class AdminArticleController {
     @PostMapping
     @RequireRole(Role.ADMIN)
     @Operation(summary = "添加文章接口")
-    public Result<Void> addArticle(@RequestBody ArticleInsertOrUpdateDTO articleInsertOrUpdateDTO) {
+    public Result<Long> addArticle(@RequestBody ArticleInsertOrUpdateDTO articleInsertOrUpdateDTO) {
         return adminArticleService.insertArticle(articleInsertOrUpdateDTO);
     }
 

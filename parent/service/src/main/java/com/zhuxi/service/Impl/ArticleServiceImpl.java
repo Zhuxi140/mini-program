@@ -6,6 +6,7 @@ import com.zhuxi.Result.Result;
 import com.zhuxi.pojo.VO.Article.AdminArticleVO;
 import com.zhuxi.service.business.ArticleService;
 import com.zhuxi.service.Tx.ArticleTxService;
+import io.swagger.v3.oas.annotations.media.Schema;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import com.zhuxi.pojo.DTO.article.ArticleInsertOrUpdateDTO;
@@ -89,7 +90,7 @@ public class ArticleServiceImpl implements ArticleService {
      */
     @Override
     @Transactional
-    public Result<Void> insertArticle(ArticleInsertOrUpdateDTO articleInsertOrUpdateDTO) {
+    public Result<Long> insertArticle(ArticleInsertOrUpdateDTO articleInsertOrUpdateDTO) {
 
         if(articleInsertOrUpdateDTO == null)
             return Result.error(MessageReturn.NO_DATA);
@@ -99,8 +100,8 @@ public class ArticleServiceImpl implements ArticleService {
             return Result.error(MessageReturn.PARAM_ERROR);
 
         articleTxService.insertArticle(articleInsertOrUpdateDTO);
-
-        return Result.success(MessageReturn.OPERATION_SUCCESS);
+        Long articleId = articleInsertOrUpdateDTO.getId();
+        return Result.success(MessageReturn.OPERATION_SUCCESS,articleId);
     }
 
     /**

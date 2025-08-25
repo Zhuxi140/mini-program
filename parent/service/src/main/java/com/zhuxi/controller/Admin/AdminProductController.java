@@ -7,6 +7,7 @@ import com.zhuxi.Result.Result;
 import com.zhuxi.annotation.RequireRole;
 import com.zhuxi.pojo.DTO.Admin.DashboardDTO;
 import com.zhuxi.pojo.DTO.product.*;
+import com.zhuxi.pojo.VO.Product.ProductSpecIdVO;
 import com.zhuxi.pojo.VO.Product.SupplierVO;
 import com.zhuxi.service.business.AdminProductService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -72,7 +73,7 @@ public class AdminProductController {
             summary = "添加商品",
             description = "添加商品时，为确保数据统一，可售库存强制为0"
     )
-    public Result<Void> add(
+    public Result<ProductSpecIdVO> add(
             @Parameter(description = "商品信息", required = true)
             @RequestBody
             ProductAddDTO productAddDTO

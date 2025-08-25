@@ -33,6 +33,7 @@ public interface ArticleMapper {
         INSERT INTO article(title,status, type)
         VALUE (#{title},#{status},#{type})
         """)
+    @Options(useGeneratedKeys = true,keyColumn = "id",keyProperty = "id")
         Boolean insertArticle(ArticleInsertOrUpdateDTO articleInsertOrUpdateDTO);
 
 

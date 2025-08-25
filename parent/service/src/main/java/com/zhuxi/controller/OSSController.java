@@ -90,8 +90,8 @@ public class OSSController {
     @PostMapping("/oss/token")
     @Operation(summary = "获取OSS上传token", description = "严格遵守规定值传输")
     public List<OssTokenDTO> getOssToken(
-            @Parameter(description = "JWT", hidden = true)
-            @RequestHeader("Authorization") String token,
+/*            @Parameter(description = "JWT", hidden = true)
+            @RequestHeader("Authorization") String token,*/
             @Parameter(description = "上传文件", required = true)
             @RequestBody List<OSSConfigDTO> configs,
             @Parameter(hidden = true)
@@ -298,9 +298,9 @@ public class OSSController {
             id = claims.get("id", Long.class);
         }
         Map<String,String> map;
-        OssTokenDTO ossTokenDTO = new OssTokenDTO();
         List<OssTokenDTO> ossTokenDTOS = new ArrayList<>();
         for(OSSConfigDTO config : configs) {
+            OssTokenDTO ossTokenDTO = new OssTokenDTO();
             if (id == null){
                 throw new OSSException(MessageReturn.JWT_DATA_ERROR);
             }
@@ -311,25 +311,35 @@ public class OSSController {
             checkCategory(category);
             String type = config.getType();
             checkType(type);
+            Long productId = config.getProductId();
+            Long articleId = config.getArticleId();
+            Long specId = config.getSpecId();
             switch (category.toLowerCase()) {
                 case "avatar": {
-                    if (!(s).equalsIgnoreCase("user"))
+                    if (!(role).equalsIgnoreCase("user"))
                         throw new RuntimeException(MessageReturn.ROLE_ERROR);
-                    String s1 = generateObjectName(type, category, fileType, id, config.getProductId(), config.getArticleId(), config.getSpecId());
-                    map = generateUrl(s1, fileType, category, type, id, config.getProductId(), config.getArticleId(), config.getSpecId());
+                    String s1 = generateObjectName(type, category, fileType, id,productId ,articleId ,specId );
+                    map = generateUrl(s1, fileType, category, type, id, productId, articleId, specId);
                     ossTokenDTO.setUrl(map.get("url"));
                     ossTokenDTO.setObjectName(map.get("objectName"));
                     ossTokenDTOS.add(ossTokenDTO);
-                    ossTokenDTO.clear();
                 } break;
                 case "product", "article", "spec": {
-                    checkRole(s);
-                    String s1 = generateObjectName(type, config.getCategory(), config.getFileType(), id, config.getProductId(), config.getArticleId(), config.getSpecId());
-                    map = generateUrl(s1, config.getFileType(), config.getCategory(), config.getType(), id, config.getProductId(), config.getArticleId(), config.getSpecId());
+                    checkRole(role);
+                    if (productId != null){
+                        if (specId == null){
+                            throw  new OSSException("缺少必要字段");
+                        }
+                    }else{
+                        if (articleId == null){
+                            throw  new OSSException("缺少必要字段");
+                        }
+                    }
+                    String s1 = generateObjectName(type, category, fileType, id, productId, articleId, specId);
+                    map = generateUrl(s1, fileType, category, type, id, productId, articleId, specId);
                     ossTokenDTO.setUrl(map.get("url"));
                     ossTokenDTO.setObjectName(map.get("objectName"));
                     ossTokenDTOS.add(ossTokenDTO);
-                    ossTokenDTO.clear();
                 } break;
                 default:
                     throw new RuntimeException(MessageReturn.NO_CATEGORY);
@@ -342,10 +352,10 @@ public class OSSController {
     // 生成objectName
     private String generateObjectName(String type,String category,String fileType,Long id,Long productId,Long articleId,Long specId){
         String Path = switch ( category + "_" + type){
-            case "product_coverurl" -> "product/Id" +  productId + "/admin" + id + "/coverUrl/";
+            case "product_coverUrl" -> "product/Id" +  productId + "/admin" + id + "/coverUrl/";
             case "product_images" -> "productId/Id" +  productId + "/admin" + id + "/images/";
-            case "spec_coverurl" ->   "product/Id" +  productId + "/admin" + id + "/spec" + specId + "/";
-            case "article_coverurl" -> "article/Id" + articleId + "/admin" + id + "/coverUrl/";
+            case "spec_coverUrl" ->   "product/Id" +  productId + "/admin" + id + "/spec" + specId + "/";
+            case "article_coverUrl" -> "article/Id" + articleId + "/admin" + id + "/coverUrl/";
             case "article_content" -> "article/Id" + articleId + "/admin" + id + "/content/";
             case "article_images" -> "article/Id" +articleId + "/admin" + id + "/images/";
             case "avatar_avatar" -> "avatar/user" + id + "/";
@@ -425,9 +435,13 @@ public class OSSController {
                 """);
         callbackMap.put("callbackBodyType", " application/x-www-form-urlencoded");
         callbackMap.put("x:id", id.toString());
-        callbackMap.put("x:productId", productId.toString());
-        callbackMap.put("x:articleId", articleId.toString());
-        callbackMap.put("x:specId", specId.toString());
+        if (productId != null){
+            callbackMap.put("x:productId", productId.toString());
+            callbackMap.put("x:specId", specId.toString());
+        }
+        if (articleId != null){
+            callbackMap.put("x:articleId", articleId.toString());
+        }
         callbackMap.put("x:categoryType", category + "_" + type);
 
 
@@ -437,11 +451,10 @@ public class OSSController {
         request.addQueryParameter("callback",base64Callback);
 
         URL url = build.generatePresignedUrl(request);
-
-        return Map.of(
-                "url", url.toString(),
-                "objectName", objectName
-                );
+        Map<String, String> data = new HashMap<>();
+        data.put("url", url.toString());
+        data.put("objectName", objectName);
+        return data;
 
     } catch (JSONException e) {
         throw new RuntimeException(e);

@@ -1,11 +1,15 @@
 package com.zhuxi.pojo.DTO.article;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 import java.util.List;
 
 public class ArticleInsertOrUpdateDTO {
 
+    @Schema(hidden = true)
+    @JsonIgnore
+    private Long id;
     @Schema(description = "标题", requiredMode = Schema.RequiredMode.REQUIRED)
     private String title;
 
@@ -16,7 +20,8 @@ public class ArticleInsertOrUpdateDTO {
     private Integer type;
 
 
-    public ArticleInsertOrUpdateDTO(String title,Integer status, Integer type) {
+    public ArticleInsertOrUpdateDTO(Long id, String title, Integer status, Integer type) {
+        this.id = id;
         this.title = title;
         this.status = status;
         this.type = type;
@@ -50,4 +55,11 @@ public class ArticleInsertOrUpdateDTO {
     }
 
 
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
 }
