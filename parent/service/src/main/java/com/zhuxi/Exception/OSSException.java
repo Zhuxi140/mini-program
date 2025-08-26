@@ -1,12 +1,13 @@
 package com.zhuxi.Exception;
 
-public class OSSException extends RuntimeException {
-    private int code;
+public class OSSException extends LocatedException {
+    private final int code;
     public OSSException(String message) {
         super(message);
         this.code = 500;
     }
-    public OSSException(String message, Throwable cause) {
-        super(message, cause);
+
+    public int getCode() {
+        return code;
     }
 }

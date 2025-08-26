@@ -1,6 +1,6 @@
 package com.zhuxi.Exception;
 
-public class transactionalException extends RuntimeException {
+public class transactionalException extends LocatedException {
 
   private final int code;
   public transactionalException(String message) {

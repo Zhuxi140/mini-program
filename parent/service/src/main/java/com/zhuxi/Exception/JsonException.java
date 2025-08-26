@@ -1,6 +1,6 @@
 package com.zhuxi.Exception;
 
-public class JsonException extends RuntimeException{
+public class JsonException extends LocatedException{
 
     private final int code;
 
@@ -9,9 +9,8 @@ public class JsonException extends RuntimeException{
         this.code = 500;
     }
 
-    public JsonException(String message, Throwable cause, int code) {
-        super(message, cause);
-        this.code = code;
-    }
 
+    public int getCode() {
+        return code;
+    }
 }

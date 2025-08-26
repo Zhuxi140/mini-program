@@ -7,41 +7,18 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="372da862-f7c4-4fa2-93c3-bf2ac1fe9e6e" name="更改" comment="feat(product): 添加供应商管理功能- 新增供应商添加和更新接口&#10;- 实现供应商信息的数据库操作&#10;- 优化错误信息提示">
+    <list default="true" id="372da862-f7c4-4fa2-93c3-bf2ac1fe9e6e" name="更改" comment="chore: 修复OSS上传凭证逻辑问题、修复部分分页未指定DESC而导致查询问题">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/parent/com/zhuxi/pojo/DTO/article/ArticleInsertOrUpdateDTO.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/parent/com/zhuxi/pojo/DTO/article/ArticleInsertOrUpdateDTO.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/parent/com/zhuxi/pojo/DTO/product/ProductBaseDTO.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/parent/com/zhuxi/pojo/DTO/product/ProductBaseDTO.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/parent/pojo/src/main/java/com/zhuxi/pojo/DTO/article/ArticleInsertOrUpdateDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/parent/pojo/src/main/java/com/zhuxi/pojo/DTO/article/ArticleInsertOrUpdateDTO.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/parent/pojo/src/main/java/com/zhuxi/pojo/DTO/product/ProductBaseDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/parent/pojo/src/main/java/com/zhuxi/pojo/DTO/product/ProductBaseDTO.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/controller/Admin/AdminArticleController.java" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/controller/Admin/AdminArticleController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/controller/Admin/AdminProductController.java" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/controller/Admin/AdminProductController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/controller/OSSController.java" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/controller/OSSController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/mapper/ArticleMapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/mapper/ArticleMapper.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/mapper/ProductMapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/mapper/ProductMapper.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/service/Impl/AdminProductServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/service/Impl/AdminProductServiceImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/service/Impl/ArticleServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/service/Impl/ArticleServiceImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/service/Tx/ProductTxService.java" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/service/Tx/ProductTxService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/service/business/AdminProductService.java" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/service/business/AdminProductService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/service/business/ArticleService.java" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/service/business/ArticleService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/parent/service/src/main/resources/mapper/ArticleMapper.xml" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/src/main/resources/mapper/ArticleMapper.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/parent/service/src/main/resources/static/1.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/controller/Admin/AdminArticleController.class" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/controller/Admin/AdminArticleController.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/controller/Admin/AdminProductController.class" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/controller/Admin/AdminProductController.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/controller/OSSController$CallbackData.class" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/controller/OSSController$CallbackData.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/controller/OSSController.class" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/controller/OSSController.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/mapper/ArticleMapper.class" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/mapper/ArticleMapper.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/mapper/ProductMapper.class" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/mapper/ProductMapper.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/service/Impl/AdminProductServiceImpl$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/service/Impl/AdminProductServiceImpl$1.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/service/Impl/AdminProductServiceImpl$2.class" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/service/Impl/AdminProductServiceImpl$2.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/service/Impl/AdminProductServiceImpl$3.class" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/service/Impl/AdminProductServiceImpl$3.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/service/Impl/AdminProductServiceImpl$4.class" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/service/Impl/AdminProductServiceImpl$4.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/service/Impl/AdminProductServiceImpl.class" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/service/Impl/AdminProductServiceImpl.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/service/Impl/ArticleServiceImpl.class" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/service/Impl/ArticleServiceImpl.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/service/Tx/ProductTxService.class" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/service/Tx/ProductTxService.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/service/business/AdminProductService.class" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/service/business/AdminProductService.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/service/business/ArticleService.class" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/service/business/ArticleService.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/parent/service/target/classes/mapper/ArticleMapper.xml" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/target/classes/mapper/ArticleMapper.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/parent/service/target/classes/static/1.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/Exception/BloomFilterRejectException.java" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/Exception/BloomFilterRejectException.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/Exception/DefenseException.java" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/Exception/DefenseException.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/Exception/JsonException.java" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/Exception/JsonException.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/Exception/JwtException.java" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/Exception/JwtException.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/Exception/LoginException.java" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/Exception/LoginException.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/Exception/OSSException.java" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/Exception/OSSException.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/Exception/WechatException.java" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/Exception/WechatException.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/Exception/transactionalException.java" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/Exception/transactionalException.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/handler/GlobalExceptionHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/handler/GlobalExceptionHandler.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/handler/GlobalExceptionHandler.class" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/handler/GlobalExceptionHandler.class" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -53,10 +30,10 @@
       <list>
         <option value="Enum" />
         <option value="Mybatis Mapper" />
-        <option value="Exception" />
         <option value="Interface" />
         <option value="AnnotationType" />
         <option value="Class" />
+        <option value="Exception" />
       </list>
     </option>
   </component>
@@ -369,14 +346,8 @@
       <workItem from="1755910793119" duration="837000" />
       <workItem from="1755998428223" duration="2743000" />
       <workItem from="1756082920231" duration="9087000" />
-    </task>
-    <task id="LOCAL-00014" summary="优化事务逻辑&#10;优化sql语句性能&#10;重构商品业务逻辑，完善逻辑。&#10;增加更完整的数据效验&#10;完善了整体业务完整思路">
-      <option name="closed" value="true" />
-      <created>1751877927541</created>
-      <option name="number" value="00014" />
-      <option name="presentableId" value="LOCAL-00014" />
-      <option name="project" value="LOCAL" />
-      <updated>1751877927541</updated>
+      <workItem from="1756095109302" duration="1141000" />
+      <workItem from="1756170695825" duration="2853000" />
     </task>
     <task id="LOCAL-00015" summary="refactor(cart): 重构购物车相关接口和实体类&#10;&#10;- 修改了购物车更新逻辑，支持更新商品数量或规格&#10;- 重命名了相关DTO和方法名称，使其更加清晰&#10;- 更新了数据库连接信息&#10;- 优化了错误消息常量&#10;- 调整了订单相关实体类结构">
       <option name="closed" value="true" />
@@ -762,7 +733,15 @@
       <option name="project" value="LOCAL" />
       <updated>1755998501564</updated>
     </task>
-    <option name="localTasksCounter" value="63" />
+    <task id="LOCAL-00063" summary="chore: 修复OSS上传凭证逻辑问题、修复部分分页未指定DESC而导致查询问题">
+      <option name="closed" value="true" />
+      <created>1756095202264</created>
+      <option name="number" value="00063" />
+      <option name="presentableId" value="LOCAL-00063" />
+      <option name="project" value="LOCAL" />
+      <updated>1756095202265</updated>
+    </task>
+    <option name="localTasksCounter" value="64" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -780,7 +759,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="feat(service): 重构服务层代码并添加消息队列支持&#10;&#10;- 重构了多个服务实现类的代码结构，提高了代码可读性和可维护性&#10;- 在 AdminProductServiceImpl 中添加了消息队列发送逻辑，支持异步处理商品规格相关操作&#10;- 更新了应用配置文件，添加了 RabbitMQ 相关配置&#10;- 将 Message 类重命名为 MessageReturn，更准确地反映了其用途&#10;- 优化了错误处理和消息返回机制，统一使用 MessageReturn 类中的错误信息" />
     <MESSAGE value="- 添加自动任务" />
     <MESSAGE value="feat(order): 实现订单消息发送和取消逻辑&#10;&#10;- 在 OrderSyncService 中添加订单创建后的消息发送逻辑&#10;- 新增 OrderTask 类，用于处理订单取消任务&#10;- 在 OrderController 中更新取消订单的接口，移除 userId 参数&#10;- 调整 PayController 中的 PayDTO，增加 orderSn 和 quantity 字段&#10;- 更新相关 mapper 和 service 接口，以支持新的订单取消逻辑&#10;- 添加自动任务实现兜底" />
     <MESSAGE value="refactor(order): 优化订单处理逻辑&#10;&#10;- 重构了订单创建、取消和自动取消的逻辑- 优化了库存锁定和释放的处理方式&#10;- 改进了消息发送机制，确保事务一致性- 调整了订单状态同步策略，提高系统可靠性&#10;- 修正了错误的消息发送逻辑" />
@@ -805,7 +783,8 @@
     <MESSAGE value="修复上一个提交的小bug" />
     <MESSAGE value="fix(order): 修复上一个提交的小 bug" />
     <MESSAGE value="feat(product): 添加供应商管理功能- 新增供应商添加和更新接口&#10;- 实现供应商信息的数据库操作&#10;- 优化错误信息提示" />
-    <option name="LAST_COMMIT_MESSAGE" value="feat(product): 添加供应商管理功能- 新增供应商添加和更新接口&#10;- 实现供应商信息的数据库操作&#10;- 优化错误信息提示" />
+    <MESSAGE value="chore: 修复OSS上传凭证逻辑问题、修复部分分页未指定DESC而导致查询问题" />
+    <option name="LAST_COMMIT_MESSAGE" value="chore: 修复OSS上传凭证逻辑问题、修复部分分页未指定DESC而导致查询问题" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

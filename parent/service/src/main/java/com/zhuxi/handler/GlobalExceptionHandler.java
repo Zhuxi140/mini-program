@@ -14,19 +14,18 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler({transactionalException.class})
     public Result<Void> handleException(transactionalException e) {
-        String message = e.getMessage();
-        log.warn("error : {}",message);
-        return Result.error(message);
+        log.warn("error : {}\n  Location:{}",e.getMessage(),e.getLocation());
+        return Result.error(e.getMessage());
     }
 
     @ExceptionHandler({JsonException.class,LoginException.class,WechatException.class,OSSException.class})
-    public Result<Void> handleOtherException(Exception e){
-        log.warn("error :{}",e.getMessage());
+    public Result<Void> handleOtherException(LocatedException e){
+        log.warn("error : {}\n  Location:{}",e.getMessage(),e.getLocation());
         return Result.error("error :" + e.getMessage());
     }
     @ExceptionHandler({BloomFilterRejectException.class,DefenseException.class,JwtException.class})
-    public Result<Void> handlerSafeException(Exception e){
-        log.warn("error : {}",e.getMessage());
+    public Result<Void> handlerSafeException(LocatedException e){
+        log.warn("error : {}\n  Location:{}",e.getMessage(),e.getLocation());
         return Result.error("safe error :" + e.getMessage());
     }
 
