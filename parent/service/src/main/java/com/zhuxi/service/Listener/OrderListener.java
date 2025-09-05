@@ -105,7 +105,7 @@ public class OrderListener {
                 try {
                     channel.basicAck(tag, false);
                 } catch (IOException e) {
-                    log.error("重试失败");
+                    log.error("重试失败-----" + " " + e.getMessage());
                 }
             } else {
                 log.info("订单延迟消息处理失败 进入死信");
@@ -113,11 +113,11 @@ public class OrderListener {
                     redisUntil.setStringValue(deadKey + "new:"+ messageId,"1",24, TimeUnit.HOURS);
                     channel.basicNack(tag, false, false);
                 } catch (IOException ex) {
-                    log.error("重试失败");
+                    log.error("重试失败"+ " " + ex.getMessage());
                 }
             }
         }catch (Exception e){
-            log.error("订单延迟消息处理失败 进入死信");
+            log.error("订单延迟消息处理失败 进入死信------" + e.getMessage());
             try {
                 redisUntil.setStringValue(deadKey + "new:"+ messageId,"1",24, TimeUnit.HOURS);
                 channel.basicNack(tag, false, false);
@@ -150,7 +150,8 @@ public class OrderListener {
             orderRedisCache.syncOrderData(Collections.singletonList(orderRedis), orderMqDTO.getUserId());
             redisUntil.setStringValue("messageId:order:new:"+ messageId,"1",1, TimeUnit.HOURS);
         }catch (MQException e){
-            redisUntil.setStringValue(deadKey + "new:" + messageId, "type=MQException---{" + e.getMessage() + "}", 24, TimeUnit.HOURS);
+            String location = e.getLocation();
+            redisUntil.setStringValue(deadKey + "new:" + messageId, "type=MQException---{" + e.getMessage() +  "," + location + "}", 24, TimeUnit.HOURS);
             throw new MQException(e.getMessage());
         }catch (Exception e){
             redisUntil.setStringValue(deadKey + "new:" + messageId, "type=MQException---{" + e.getMessage() + "}", 24, TimeUnit.HOURS);
@@ -190,7 +191,8 @@ public class OrderListener {
             }
                 redisUntil.setStringValue("messageId:order:sync:" + messageId, "1", 24, TimeUnit.HOURS);
             }catch(MQException e){
-                redisUntil.setStringValue(deadKey + "sync:" + messageId, "type=MQException---{" + e.getMessage() + "}", 24, TimeUnit.HOURS);
+            String location = e.getLocation();
+                redisUntil.setStringValue(deadKey + "sync:" + messageId, "type=MQException---{" + e.getMessage() +  "," + location + "}", 24, TimeUnit.HOURS);
                 throw new AmqpRejectAndDontRequeueException(e.getMessage());
             }catch (Exception e){
                 redisUntil.setStringValue(deadKey + "sync:" + messageId, "type=other Exception---{" + e.getMessage() + "}", 24, TimeUnit.HOURS);

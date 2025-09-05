@@ -4,6 +4,7 @@ import com.zhuxi.Constant.MessageReturn;
 import com.zhuxi.Exception.MQException;
 import com.zhuxi.Exception.transactionalException;
 import com.zhuxi.mapper.OrderMapper;
+import com.zhuxi.service.Cache.OrderRedisCache;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.executor.BatchResult;
 import org.apache.ibatis.session.ExecutorType;
@@ -12,6 +13,8 @@ import org.apache.ibatis.session.SqlSessionFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionSynchronizationAdapter;
+import org.springframework.transaction.support.TransactionSynchronizationManager;
 import org.springframework.transaction.support.TransactionTemplate;
 import com.zhuxi.pojo.DTO.Order.*;
 
@@ -27,11 +30,13 @@ public class OrderTxService {
     private final OrderMapper orderMapper;
     private final TransactionTemplate transactionTemplate;
     private final SqlSessionFactory sqlSessionFactory;
+    private final OrderRedisCache orderRedisCache;
 
-    public OrderTxService(OrderMapper orderMapper, TransactionTemplate transactionTemplate, SqlSessionFactory sqlSessionFactory) {
+    public OrderTxService(OrderMapper orderMapper, TransactionTemplate transactionTemplate, SqlSessionFactory sqlSessionFactory, OrderRedisCache orderRedisCache) {
         this.orderMapper = orderMapper;
         this.transactionTemplate = transactionTemplate;
         this.sqlSessionFactory = sqlSessionFactory;
+        this.orderRedisCache = orderRedisCache;
     }
 
 
@@ -367,6 +372,7 @@ public class OrderTxService {
         return orderIdList;
     }
 
+    @Transactional(rollbackFor = transactionalException.class)
     public void concealOrderList(List<Long> orderIds) {
         final int BATCH_SIZE = 50;
         try (SqlSession sqlSession = sqlSessionFactory.openSession(ExecutorType.BATCH)) {
@@ -388,6 +394,15 @@ public class OrderTxService {
             List<BatchResult> batchResults = sqlSession.flushStatements();
             validateBatchResults(batchResults, orderIds.size());
             sqlSession.commit();
+            TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronizationAdapter() {
+                @Override
+                public void afterCommit() {
+                    List<String> orderSnList = orderMapper.getOrderSnList(orderIds);
+                    for (String orderSn : orderSnList){
+                        orderRedisCache.syncOrderStatus(orderSn,4);
+                    }
+                }
+            });
         } catch (Exception e) {
             throw new transactionalException("批处理失败--:" + e.getMessage());
         }

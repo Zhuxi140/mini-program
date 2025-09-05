@@ -73,7 +73,8 @@ public class ProductListener {
             reBuildBloom.addProductData(productId);
             redisUntil.setStringValue("messageId:product.spec:new:" + messageId, "1", 5, TimeUnit.MILLISECONDS);
         }catch(MQException e){
-            redisUntil.setStringValue((deadKey + "new:" + messageId), "type=MQException---{" + e.getMessage() + "}", 24, TimeUnit.HOURS);
+            String location = e.getLocation();
+            redisUntil.setStringValue((deadKey + "new:" + messageId), "type=MQException---{" + e.getMessage() +  "," + location + "}", 24, TimeUnit.HOURS);
             throw new MQException(e.getMessage());
         }catch(Exception e){
             redisUntil.setStringValue((deadKey + "new:" + messageId), "type=other Exception---{" + e.getMessage() + "}", 24, TimeUnit.HOURS);
@@ -137,7 +138,8 @@ public class ProductListener {
             }
         redisUntil.setStringValue("messageId:product.spec:Already:" + messageId, "1", 5, TimeUnit.MILLISECONDS);
         }catch (MQException e){
-            redisUntil.setStringValue((deadKey + "Already:" + messageId), "type=MQException---{" + e.getMessage() + "}", 24, TimeUnit.HOURS);
+            String location = e.getLocation();
+            redisUntil.setStringValue((deadKey + "Already:" + messageId), "type=MQException---{" + e.getMessage() +  "," + location +"}", 24, TimeUnit.HOURS);
             throw new MQException(e.getMessage());
         }catch (Exception e){
             redisUntil.setStringValue((deadKey + "Already:" + messageId), "type=other Exception---{" + e.getMessage() + "}", 24, TimeUnit.HOURS);
@@ -176,7 +178,8 @@ public class ProductListener {
             }
         redisUntil.setStringValue("messageId:product.spec:delete.stopSale:"+ messageId,"1",1, TimeUnit.HOURS);
         }catch (MQException e){
-            redisUntil.setStringValue((deadKey + "dS:" + messageId), "type=MQException---{" + e.getMessage() + "}", 24, TimeUnit.HOURS);
+            String location = e.getLocation();
+            redisUntil.setStringValue((deadKey + "dS:" + messageId), "type=MQException---{" + e.getMessage() +  "," + location + "}", 24, TimeUnit.HOURS);
             throw new MQException(e.getMessage());
         }catch (Exception e){
             redisUntil.setStringValue((deadKey + "dS:" + messageId), "type=other Exception---{" + e.getMessage() + "}", 24, TimeUnit.HOURS);

@@ -78,7 +78,8 @@ public class WechatListener {
             }
             redisUntil.setStringValue("messageId:wechat:login:" + messageId, "1", 5, TimeUnit.MINUTES);
         } catch (MQException e) {
-            redisUntil.setStringValue(deadKey + "login:" + messageId, "type=MQException---{" + e.getMessage() + "}", 24, TimeUnit.HOURS);
+            String location = e.getLocation();
+            redisUntil.setStringValue(deadKey + "login:" + messageId, "type=MQException---{" + e.getMessage() +  "," + location +"}", 24, TimeUnit.HOURS);
             throw new MQException("微信登录异常");
         }catch (Exception e){
             redisUntil.setStringValue(deadKey + "login:" + messageId, "type=other Exception---{" + e.getMessage() + "}", 24, TimeUnit.HOURS);

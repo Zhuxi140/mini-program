@@ -216,4 +216,5 @@ public interface OrderMapper {
     @Select("SELECT status FROM `order` WHERE id = #{orderId}")
     Integer getOrderStatus(Long orderId);
 
+    List<String> getOrderSnList(List<Long> orderIds);
 }

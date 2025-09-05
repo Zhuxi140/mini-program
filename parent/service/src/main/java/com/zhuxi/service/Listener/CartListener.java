@@ -68,7 +68,8 @@ public class CartListener {
             }
             redisUntil.setStringValue("messageId:cart:delete:" + messageId, "1", 5, TimeUnit.MINUTES);
         }catch (MQException e){
-            redisUntil.setStringValue((cartKey + "delete:" + messageId), "type=MQException---{" + e.getMessage() + "}", 24, TimeUnit.HOURS);
+            String location = e.getLocation();
+            redisUntil.setStringValue((cartKey + "delete:" + messageId), "type=MQException---{" + e.getMessage() + "," + location + "}", 24, TimeUnit.HOURS);
             throw new MQException(e.getMessage());
         }catch (Exception e){
             redisUntil.setStringValue((cartKey + "delete:" + messageId), "type=other Exception---{" + e.getMessage() + "}", 24, TimeUnit.HOURS);
@@ -98,7 +99,8 @@ public class CartListener {
             cartRedisCache.deleteAllCart(userId);
             redisUntil.setStringValue("messageId:cart:deleteAll:" + messageId, "1", 5, TimeUnit.MINUTES);
         }catch (MQException e){
-            redisUntil.setStringValue((cartKey + "deleteAll:" + messageId), "type=MQException---{" + e.getMessage() + "}", 24, TimeUnit.HOURS);
+            String location = e.getLocation();
+            redisUntil.setStringValue((cartKey + "deleteAll:" + messageId), "type=MQException---{" + e.getMessage() +  "," + location +  "}", 24, TimeUnit.HOURS);
             throw new MQException(e.getMessage());
         }catch (Exception e){
             redisUntil.setStringValue((cartKey + "deleteAll:" + messageId), "type=other Exception---{" + e.getMessage() + "}", 24, TimeUnit.HOURS);
@@ -130,7 +132,8 @@ public class CartListener {
             cartRedisCache.syncCartInit(listCartOne,userId);
             redisUntil.setStringValue("messageId:cart:lack:" + messageId, "1", 5, TimeUnit.MINUTES);
         }catch (MQException e){
-            redisUntil.setStringValue((cartKey + "lack:" + messageId), "type=MQException---{" + e.getMessage() + "}", 24, TimeUnit.HOURS);
+            String location = e.getLocation();
+            redisUntil.setStringValue((cartKey + "lack:" + messageId), "type=MQException---{" + e.getMessage() +  "," + location + "}", 24, TimeUnit.HOURS);
             throw new AmqpRejectAndDontRequeueException(e.getMessage());
         }catch (Exception e){
             redisUntil.setStringValue((cartKey + "lack:" + messageId), "type=other Exception---{" + e.getMessage() + "}", 24, TimeUnit.HOURS);
@@ -173,7 +176,8 @@ public class CartListener {
             }
             redisUntil.setStringValue("messageId:cart:add:" + messageId, "1", 5, TimeUnit.MINUTES);
         }catch (MQException e){
-            redisUntil.setStringValue((cartKey + "add:" + messageId), "type=MQException---{" + e.getMessage() + "}", 24, TimeUnit.HOURS);
+            String location = e.getLocation();
+            redisUntil.setStringValue((cartKey + "add:" + messageId), "type=MQException---{" + e.getMessage() +  "," + location + "}", 24, TimeUnit.HOURS);
             throw new MQException(e.getMessage());
         }catch (Exception e){
             redisUntil.setStringValue((cartKey + "add:" + messageId), "type=other Exception---{" + e.getMessage() + "}", 24, TimeUnit.HOURS);
@@ -204,7 +208,8 @@ public class CartListener {
              cartRedisCache.updateCart(cartUpdateDTO);
              redisUntil.setStringValue("messageId:cart:update:" + messageId, "1", 5, TimeUnit.MINUTES);
         }catch (MQException e){
-            redisUntil.setStringValue((cartKey + "update:" + messageId), "type=MQException---{" + e.getMessage() + "}", 24, TimeUnit.HOURS);
+            String location = e.getLocation();
+            redisUntil.setStringValue((cartKey + "update:" + messageId), "type=MQException---{" + e.getMessage() +  "," + location + "}", 24, TimeUnit.HOURS);
             throw new MQException(e.getMessage());
         }catch (Exception e){
             redisUntil.setStringValue((cartKey + "update:" + messageId), "type=other Exception---{" + e.getMessage() + "}", 24, TimeUnit.HOURS);
