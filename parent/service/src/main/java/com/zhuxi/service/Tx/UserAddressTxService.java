@@ -85,6 +85,15 @@ public class UserAddressTxService {
             throw new transactionalException(MessageReturn.UPDATE_ERROR);
     }
 
+    @Transactional(readOnly = true,propagation = Propagation.SUPPORTS)
+    public boolean isDefault(Long addressId){
+        Boolean aDefault = userAddressMapper.isDefault(addressId);
+        if (aDefault == null) {
+            throw new transactionalException(MessageReturn.SELECT_ERROR);
+        }
+        return aDefault;
+    }
+
     @Transactional(rollbackFor = transactionalException.class)
     public void cancelDefaultAndUpdateUserAddressId(Long addressId, Long userId){
         if(userAddressMapper.cancelDefault(addressId) == 0)

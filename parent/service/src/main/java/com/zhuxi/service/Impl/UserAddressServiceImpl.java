@@ -57,8 +57,11 @@ public class UserAddressServiceImpl implements UserAddressService {
 
         Long defaultAddressId = userAddressTxService.getDefaultAddressId(userId);
 
-        if(defaultAddressId != null)
+        if(addressId.equals(defaultAddressId)){
+            return Result.error(MessageReturn.USER_ADDRESS_ALREADY_DEFAULT);
+        }else if(defaultAddressId != null){
             userAddressTxService.cancelDefault(defaultAddressId);
+        }
 
         userAddressTxService.setDefaultAndUpdateUserAddressId(addressId,userId);
 
@@ -76,6 +79,10 @@ public class UserAddressServiceImpl implements UserAddressService {
         if(addressId == null)
             return Result.error(MessageReturn.PARAM_ERROR);
 
+        boolean aDefault = userAddressTxService.isDefault(addressId);
+        if (!aDefault){
+            return Result.error(MessageReturn.USER_ADDRESS_NOT_DEFAULT);
+        }
         userAddressTxService.cancelDefaultAndUpdateUserAddressId(addressId,userId);
 
         return Result.success(MessageReturn.OPERATION_SUCCESS);

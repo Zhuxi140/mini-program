@@ -9,17 +9,18 @@
   <component name="ChangeListManager">
     <list default="true" id="372da862-f7c4-4fa2-93c3-bf2ac1fe9e6e" name="更改" comment="refactor(exception): 重构异常处理逻辑并添加错误代码支持&#10;&#10;- 创建 LocatedException 抽象类，增加 getLocation 方法获取异常位置信息- 修改现有异常类，使其继承自 LocatedException&#10;- 在异常类中添加 getCode 方法返回错误代码- 更新全局异常处理器，记录异常位置信息&#10;- 删除未使用的异常构造函数">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/Exception/MQException.java" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/Exception/MQException.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/mapper/OrderMapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/mapper/OrderMapper.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/service/Listener/CartListener.java" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/service/Listener/CartListener.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/service/Listener/OrderListener.java" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/service/Listener/OrderListener.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/service/Listener/ProductListener.java" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/service/Listener/ProductListener.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/service/Listener/WechatListener.java" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/service/Listener/WechatListener.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/service/Tx/OrderTxService.java" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/service/Tx/OrderTxService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/parent/service/src/main/resources/mapper/OrderMapper.xml" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/src/main/resources/mapper/OrderMapper.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/Exception/BloomFilterRejectException.class" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/Exception/BloomFilterRejectException.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/Exception/DefenseException.class" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/Exception/DefenseException.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/Exception/JwtException.class" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/Exception/JwtException.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/Constant/MessageReturn.java" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/Constant/MessageReturn.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/service/Impl/UserAddressServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/service/Impl/UserAddressServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/service/Tx/UserAddressTxService.java" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/service/Tx/UserAddressTxService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/Exception/JsonException.class" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/Exception/JsonException.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/Exception/LoginException.class" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/Exception/LoginException.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/Exception/OSSException.class" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/Exception/OSSException.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/Exception/WechatException.class" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/Exception/WechatException.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/Exception/transactionalException.class" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/Exception/transactionalException.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/handler/GlobalExceptionHandler.class" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/handler/GlobalExceptionHandler.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/mapper/OrderMapper.class" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/mapper/OrderMapper.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/service/Tx/OrderTxService.class" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/service/Tx/OrderTxService.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/parent/service/target/classes/mapper/OrderMapper.xml" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/target/classes/mapper/OrderMapper.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -350,15 +351,10 @@
       <workItem from="1756095109302" duration="1141000" />
       <workItem from="1756170695825" duration="2900000" />
       <workItem from="1756602988574" duration="53000" />
-      <workItem from="1757033874027" duration="1414000" />
-    </task>
-    <task id="LOCAL-00016" summary="feat(order): 添加订单相关功能- 新增订单添加接口和相关服务&#10;- 实现订单创建、支付记录添加等功能&#10;- 添加购物车数量和规格更新逻辑&#10;- 新增订单相关的数据传输对象和实体类">
-      <option name="closed" value="true" />
-      <created>1751968303255</created>
-      <option name="number" value="00016" />
-      <option name="presentableId" value="LOCAL-00016" />
-      <option name="project" value="LOCAL" />
-      <updated>1751968303255</updated>
+      <workItem from="1757033874027" duration="1594000" />
+      <workItem from="1757232177545" duration="1400000" />
+      <workItem from="1757305687901" duration="163000" />
+      <workItem from="1757321490859" duration="5024000" />
     </task>
     <task id="LOCAL-00017" summary="feat(service): 实现订单组创建功能&#10;&#10;- 新增批量创建订单、支付记录和库存预占的功能&#10;- 优化订单编号生成逻辑，使用雪花算法&#10;-增加库存验证和地址处理逻辑&#10;- 更新数据库映射，支持批量插入操作&#10;- 引入hutool工具库，用于生成唯一ID">
       <option name="closed" value="true" />
@@ -744,7 +740,15 @@
       <option name="project" value="LOCAL" />
       <updated>1756173597743</updated>
     </task>
-    <option name="localTasksCounter" value="65" />
+    <task id="LOCAL-00065" summary="refactor(exception): 重构异常处理逻辑并添加错误代码支持&#10;&#10;- 创建 LocatedException 抽象类，增加 getLocation 方法获取异常位置信息- 修改现有异常类，使其继承自 LocatedException&#10;- 在异常类中添加 getCode 方法返回错误代码- 更新全局异常处理器，记录异常位置信息&#10;- 删除未使用的异常构造函数">
+      <option name="closed" value="true" />
+      <created>1757035343259</created>
+      <option name="number" value="00065" />
+      <option name="presentableId" value="LOCAL-00065" />
+      <option name="project" value="LOCAL" />
+      <updated>1757035343260</updated>
+    </task>
+    <option name="localTasksCounter" value="66" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">

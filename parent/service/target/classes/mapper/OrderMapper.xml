@@ -248,6 +248,14 @@
         AND o.status != 7
         ]]>
     </select>
+    <select id="getOrderSnList" resultType="java.lang.String">
+        SELECT order_sn
+            FROM `order`
+        WHERE `order`.id IN
+        <foreach item="orderIds" collection="orderIds" separator="," open="(" close=")">
+            #{orderIds}
+        </foreach>
+    </select>
 
     <update id="releaseProductSaleStockList">
      UPDATE spec

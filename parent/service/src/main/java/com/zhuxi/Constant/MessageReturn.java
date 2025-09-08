@@ -103,4 +103,6 @@ public class MessageReturn {
     public static final String SUPPLIER_NOT_EXIST = "供应商不存在";
     public static final String NO_PROFIT_RECORD = "无利润记录";
     public static final String YEAR_IS_NOT_4_DIGIT= "年份格式错误(应为4位数字)";
+    public static final String USER_ADDRESS_NOT_DEFAULT= "该地址非默认地址";
+    public static final String USER_ADDRESS_ALREADY_DEFAULT= "该地址已经是默认地址";
 }
