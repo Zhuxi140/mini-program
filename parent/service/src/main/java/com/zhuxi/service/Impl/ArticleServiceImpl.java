@@ -7,6 +7,7 @@ import com.zhuxi.pojo.VO.Article.AdminArticleVO;
 import com.zhuxi.service.business.ArticleService;
 import com.zhuxi.service.Tx.ArticleTxService;
 import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import com.zhuxi.pojo.DTO.article.ArticleInsertOrUpdateDTO;
@@ -16,6 +17,7 @@ import com.zhuxi.pojo.VO.Article.ArticleVO;
 import java.util.List;
 
 @Service
+@Slf4j
 public class ArticleServiceImpl implements ArticleService {
 
     private final ArticleTxService articleTxService;
@@ -32,7 +34,6 @@ public class ArticleServiceImpl implements ArticleService {
 
         if(id == null)
             return Result.error(MessageReturn.ARTICLE_IS_NOT_EXIST);
-
         ArticleDetailVO articleDetailById = articleTxService.getArticleDetailById(id);
         return Result.success(MessageReturn.OPERATION_SUCCESS,articleDetailById);
     }

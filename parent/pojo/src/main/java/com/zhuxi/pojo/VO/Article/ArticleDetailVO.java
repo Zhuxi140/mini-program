@@ -14,8 +14,8 @@ public class ArticleDetailVO {
     private String title;
     @Schema(description = "文章类型(1为公告，2为文章/新闻")
     private String type;
-    @Schema(description = "包含HTML的文本OSS路径")
-    private String contentOssKey;
+    @Schema(description = "包含HTML的文本")
+    private String content;
     @Schema(description = "文章内容图片OSS")
     private List<String> contentImages;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
@@ -25,11 +25,11 @@ public class ArticleDetailVO {
     public ArticleDetailVO() {
     }
 
-    public ArticleDetailVO(Long id, String title, String type, String contentOssKey, List<String> contentImages, LocalDateTime createdAt) {
+    public ArticleDetailVO(Long id, String title, String type, String content, List<String> contentImages, LocalDateTime createdAt) {
         this.id = id;
         this.title = title;
         this.type = type;
-        this.contentOssKey = contentOssKey;
+        this.content = content;
         this.contentImages = contentImages;
         this.createdAt = createdAt;
     }
@@ -58,13 +58,6 @@ public class ArticleDetailVO {
         this.type = type;
     }
 
-    public String getContentOssKey() {
-        return contentOssKey;
-    }
-
-    public void setContentOssKey(String coverOssKey) {
-        this.contentOssKey = contentOssKey;
-    }
 
     public List<String> getContentImages() {
         return contentImages;
@@ -80,5 +73,13 @@ public class ArticleDetailVO {
 
     public void setCreatedAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
+    }
+
+    public String getContent() {
+        return content;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
     }
 }

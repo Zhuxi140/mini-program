@@ -17,7 +17,7 @@ public interface ArticleMapper {
         SELECT id,
                title,
                type,
-               content_oss_key,
+               content,
                content_images,
                created_at
         FROM article

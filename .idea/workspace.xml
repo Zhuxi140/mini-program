@@ -8,16 +8,14 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="372da862-f7c4-4fa2-93c3-bf2ac1fe9e6e" name="更改" comment="修改少量bug">
+      <change beforePath="$PROJECT_DIR$/.idea/dataSources.local.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources.local.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/dataSources.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/dataSources/b42a7732-a8a8-435b-b349-6f9f6e04249d.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources/b42a7732-a8a8-435b-b349-6f9f6e04249d.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/service/Impl/UserAddressServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/service/Impl/UserAddressServiceImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/Constant/MessageReturn.class" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/Constant/MessageReturn.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/Exception/MQException.class" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/Exception/MQException.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/service/Impl/UserAddressServiceImpl.class" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/service/Impl/UserAddressServiceImpl.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/service/Listener/CartListener.class" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/service/Listener/CartListener.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/service/Listener/OrderListener.class" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/service/Listener/OrderListener.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/service/Listener/ProductListener.class" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/service/Listener/ProductListener.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/service/Listener/WechatListener.class" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/service/Listener/WechatListener.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/service/Tx/UserAddressTxService.class" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/service/Tx/UserAddressTxService.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/parent/pojo/src/main/java/com/zhuxi/pojo/VO/Article/ArticleDetailVO.java" beforeDir="false" afterPath="$PROJECT_DIR$/parent/pojo/src/main/java/com/zhuxi/pojo/VO/Article/ArticleDetailVO.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/mapper/ArticleMapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/mapper/ArticleMapper.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/service/Impl/ArticleServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/service/Impl/ArticleServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/parent/service/src/main/resources/application.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/src/main/resources/application.yaml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -357,14 +355,8 @@
       <workItem from="1757336211217" duration="318000" />
       <workItem from="1757336539201" duration="17000" />
       <workItem from="1757336565094" duration="2251000" />
-    </task>
-    <task id="LOCAL-00018" summary="feat(order): 添加订单取消功能- 新增订单取消相关接口和方法&#10;- 实现订单状态更新、预占库存释放等功能&#10;- 添加异常处理和日志记录&#10;- 优化数据库操作，提高性能">
-      <option name="closed" value="true" />
-      <created>1752132375620</created>
-      <option name="number" value="00018" />
-      <option name="presentableId" value="LOCAL-00018" />
-      <option name="project" value="LOCAL" />
-      <updated>1752132375620</updated>
+      <workItem from="1757397026863" duration="39000" />
+      <workItem from="1757397887048" duration="8783000" />
     </task>
     <task id="LOCAL-00019" summary="修正swagger-ui文档的错误标识描述">
       <option name="closed" value="true" />
@@ -750,7 +742,15 @@
       <option name="project" value="LOCAL" />
       <updated>1757327720743</updated>
     </task>
-    <option name="localTasksCounter" value="67" />
+    <task id="LOCAL-00067" summary="修改少量bug">
+      <option name="closed" value="true" />
+      <created>1757397059795</created>
+      <option name="number" value="00067" />
+      <option name="presentableId" value="LOCAL-00067" />
+      <option name="project" value="LOCAL" />
+      <updated>1757397059795</updated>
+    </task>
+    <option name="localTasksCounter" value="68" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
