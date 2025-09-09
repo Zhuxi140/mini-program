@@ -30,8 +30,9 @@ public class UserAddressServiceImpl implements UserAddressService {
 
         int exist = userAddressTxService.isExist(userId);
 
-        if(exist == 5)
+        if(exist == 10){
             return Result.error(MessageReturn.USER_ADDRESS_MAX);
+        }
         else if(exist == 0){
             userAddressDTO.setIsDefault(1);
             Long defaultAddressId = userAddressTxService.getDefaultAddressId(userId);

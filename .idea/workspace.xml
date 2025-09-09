@@ -7,20 +7,17 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="372da862-f7c4-4fa2-93c3-bf2ac1fe9e6e" name="更改" comment="refactor(exception): 重构异常处理逻辑并添加错误代码支持&#10;&#10;- 创建 LocatedException 抽象类，增加 getLocation 方法获取异常位置信息- 修改现有异常类，使其继承自 LocatedException&#10;- 在异常类中添加 getCode 方法返回错误代码- 更新全局异常处理器，记录异常位置信息&#10;- 删除未使用的异常构造函数">
+    <list default="true" id="372da862-f7c4-4fa2-93c3-bf2ac1fe9e6e" name="更改" comment="修改少量bug">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/Constant/MessageReturn.java" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/Constant/MessageReturn.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/service/Impl/UserAddressServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/service/Impl/UserAddressServiceImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/service/Tx/UserAddressTxService.java" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/src/main/java/com/zhuxi/service/Tx/UserAddressTxService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/Exception/JsonException.class" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/Exception/JsonException.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/Exception/LoginException.class" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/Exception/LoginException.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/Exception/OSSException.class" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/Exception/OSSException.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/Exception/WechatException.class" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/Exception/WechatException.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/Exception/transactionalException.class" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/Exception/transactionalException.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/handler/GlobalExceptionHandler.class" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/handler/GlobalExceptionHandler.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/mapper/OrderMapper.class" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/mapper/OrderMapper.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/service/Tx/OrderTxService.class" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/service/Tx/OrderTxService.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/parent/service/target/classes/mapper/OrderMapper.xml" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/target/classes/mapper/OrderMapper.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/Constant/MessageReturn.class" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/Constant/MessageReturn.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/Exception/MQException.class" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/Exception/MQException.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/service/Impl/UserAddressServiceImpl.class" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/service/Impl/UserAddressServiceImpl.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/service/Listener/CartListener.class" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/service/Listener/CartListener.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/service/Listener/OrderListener.class" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/service/Listener/OrderListener.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/service/Listener/ProductListener.class" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/service/Listener/ProductListener.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/service/Listener/WechatListener.class" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/service/Listener/WechatListener.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/service/Tx/UserAddressTxService.class" beforeDir="false" afterPath="$PROJECT_DIR$/parent/service/target/classes/com/zhuxi/service/Tx/UserAddressTxService.class" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -354,15 +351,12 @@
       <workItem from="1757033874027" duration="1594000" />
       <workItem from="1757232177545" duration="1400000" />
       <workItem from="1757305687901" duration="163000" />
-      <workItem from="1757321490859" duration="5024000" />
-    </task>
-    <task id="LOCAL-00017" summary="feat(service): 实现订单组创建功能&#10;&#10;- 新增批量创建订单、支付记录和库存预占的功能&#10;- 优化订单编号生成逻辑，使用雪花算法&#10;-增加库存验证和地址处理逻辑&#10;- 更新数据库映射，支持批量插入操作&#10;- 引入hutool工具库，用于生成唯一ID">
-      <option name="closed" value="true" />
-      <created>1752054663716</created>
-      <option name="number" value="00017" />
-      <option name="presentableId" value="LOCAL-00017" />
-      <option name="project" value="LOCAL" />
-      <updated>1752054663716</updated>
+      <workItem from="1757321490859" duration="6280000" />
+      <workItem from="1757329249487" duration="188000" />
+      <workItem from="1757329601831" duration="33000" />
+      <workItem from="1757336211217" duration="318000" />
+      <workItem from="1757336539201" duration="17000" />
+      <workItem from="1757336565094" duration="2251000" />
     </task>
     <task id="LOCAL-00018" summary="feat(order): 添加订单取消功能- 新增订单取消相关接口和方法&#10;- 实现订单状态更新、预占库存释放等功能&#10;- 添加异常处理和日志记录&#10;- 优化数据库操作，提高性能">
       <option name="closed" value="true" />
@@ -748,7 +742,15 @@
       <option name="project" value="LOCAL" />
       <updated>1757035343260</updated>
     </task>
-    <option name="localTasksCounter" value="66" />
+    <task id="LOCAL-00066" summary="修改少量bug">
+      <option name="closed" value="true" />
+      <created>1757327720743</created>
+      <option name="number" value="00066" />
+      <option name="presentableId" value="LOCAL-00066" />
+      <option name="project" value="LOCAL" />
+      <updated>1757327720743</updated>
+    </task>
+    <option name="localTasksCounter" value="67" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -766,7 +768,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="feat(order): 实现订单消息发送和取消逻辑&#10;&#10;- 在 OrderSyncService 中添加订单创建后的消息发送逻辑&#10;- 新增 OrderTask 类，用于处理订单取消任务&#10;- 在 OrderController 中更新取消订单的接口，移除 userId 参数&#10;- 调整 PayController 中的 PayDTO，增加 orderSn 和 quantity 字段&#10;- 更新相关 mapper 和 service 接口，以支持新的订单取消逻辑&#10;- 添加自动任务实现兜底" />
     <MESSAGE value="refactor(order): 优化订单处理逻辑&#10;&#10;- 重构了订单创建、取消和自动取消的逻辑- 优化了库存锁定和释放的处理方式&#10;- 改进了消息发送机制，确保事务一致性- 调整了订单状态同步策略，提高系统可靠性&#10;- 修正了错误的消息发送逻辑" />
     <MESSAGE value="测试方法中 输入错误 导致不能启动项目" />
     <MESSAGE value="feat(service): 重构购物车模块并添加 Redis 缓存支持- 重命名和重构了购物车相关的 DTO 类&#10;- 在 CartMapper 中添加了新的查询方法- 更新了 CartService 接口和实现类，增加了对 Redis缓存的支持&#10;- 优化了购物车商品添加逻辑，支持规格号和商品号&#10;- 在 OrderMapper 中添加了新的查询用户 ID 的 SQL&#10;- 更新了 OrderMessage 类，将订单消息延迟时间改为 30 分钟&#10;-移除了 OrderRedisCache 中的 IdSnowFLake 依赖&#10;- 更新了 RedisCacheProperties 类，添加了 CartCache 相关配置" />
@@ -791,7 +792,8 @@
     <MESSAGE value="feat(product): 添加供应商管理功能- 新增供应商添加和更新接口&#10;- 实现供应商信息的数据库操作&#10;- 优化错误信息提示" />
     <MESSAGE value="chore: 修复OSS上传凭证逻辑问题、修复部分分页未指定DESC而导致查询问题" />
     <MESSAGE value="refactor(exception): 重构异常处理逻辑并添加错误代码支持&#10;&#10;- 创建 LocatedException 抽象类，增加 getLocation 方法获取异常位置信息- 修改现有异常类，使其继承自 LocatedException&#10;- 在异常类中添加 getCode 方法返回错误代码- 更新全局异常处理器，记录异常位置信息&#10;- 删除未使用的异常构造函数" />
-    <option name="LAST_COMMIT_MESSAGE" value="refactor(exception): 重构异常处理逻辑并添加错误代码支持&#10;&#10;- 创建 LocatedException 抽象类，增加 getLocation 方法获取异常位置信息- 修改现有异常类，使其继承自 LocatedException&#10;- 在异常类中添加 getCode 方法返回错误代码- 更新全局异常处理器，记录异常位置信息&#10;- 删除未使用的异常构造函数" />
+    <MESSAGE value="修改少量bug" />
+    <option name="LAST_COMMIT_MESSAGE" value="修改少量bug" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
