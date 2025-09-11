@@ -1,6 +1,8 @@
 package com.zhuxi.pojo.VO.Product;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 import java.math.BigDecimal;
@@ -9,6 +11,7 @@ import java.time.LocalDateTime;
 public class ProductOverviewVO {
 
     @Schema(description = "商品号")
+    @JsonSerialize(using = ToStringSerializer.class)
     private Long productNumber;
     @Schema(description = "商品id")
     @JsonIgnore
