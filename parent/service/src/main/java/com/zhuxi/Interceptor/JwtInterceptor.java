@@ -38,10 +38,10 @@ public class JwtInterceptor implements HandlerInterceptor {
             Object handler
             )
     throws Exception {
-        String requestURI = request.getRequestURI();
+    /*    String requestURI = request.getRequestURI();
 
         log.info("--------处理url:{}",requestURI);
-
+*/
       /*  List<String> excludePaths = jwtInterceptorProperties.getExcludePaths();*/
 
         if ("OPTIONS".equalsIgnoreCase(request.getMethod())) {

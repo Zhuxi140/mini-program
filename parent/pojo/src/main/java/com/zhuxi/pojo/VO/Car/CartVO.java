@@ -1,6 +1,8 @@
 package com.zhuxi.pojo.VO.Car;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 import java.math.BigDecimal;
@@ -12,7 +14,9 @@ public class CartVO {
     @JsonIgnore
     private Long userId;
     @Schema(description = "商品号")
+    @JsonSerialize(using = ToStringSerializer.class)
     private Long productSnowflake;
+    @JsonSerialize(using = ToStringSerializer.class)
     @Schema(description = "规格号")
     private Long specSnowflake;
     @Schema(description = "购买数量")

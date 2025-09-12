@@ -252,7 +252,6 @@ public class OrderRedisCache {
                 .stream()
                 .map(t -> Objects.requireNonNull(t.getValue()).toString())
                 .collect(Collectors.toCollection(LinkedHashSet::new));
-
         List<String> keys = orderSns.stream()
                 .map(this::getOrderDetailKey)
                 .toList();
@@ -390,7 +389,7 @@ public class OrderRedisCache {
         List<Object> objects = redisUntil.executePipeline(pipe -> {
             key.forEach(t -> pipe.opsForHash().multiGet(t, strings));
         });
-
+        log.error("396 objects: {}", objects);
         return covertOrderShowVO(objects);
     }
 

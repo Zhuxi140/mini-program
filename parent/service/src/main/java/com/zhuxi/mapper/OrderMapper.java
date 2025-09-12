@@ -190,10 +190,11 @@ public interface OrderMapper {
     @Select("""
     SELECT DISTINCT user.id
     FROM user JOIN `order` ON  user.id = `order`.user_id
-    WHERE user.id > #{lastId} AND last_time >= DATE_SUB(NOW(),INTERVAL 30 DAY)
+    WHERE user.id > #{lastId}
     ORDER BY user.id
     LIMIT #{pageSize}
     """)
+    // AND last_time >= DATE_SUB(NOW(),INTERVAL 30 DAY)
     List<Long> getUserIds(Long lastId,int pageSize);
 
     @Select("""
